@@ -5,6 +5,7 @@ Projeto back-end de __portifólio__, que complementa o projeto front-end [Projet
 
 ### Framework(s)
 * Express JS: Criação de rotas que atenderão as requisições.
+* Jest: Para testes TDD.
 
 ### Biblioteca(s)
 
@@ -13,7 +14,8 @@ Projeto back-end de __portifólio__, que complementa o projeto front-end [Projet
 
 ### Outra(s)
 * NPM: Para gerenciamento de pacotes;
-* Mongoose: Modelador de objeto MongoDB para Node.JS.
+* Mongoose: Modelador de objeto MongoDB para Node.JS;
+* Supertest: Módulo para realização de requisições, neste caso foi utilizado em testes com Jest.
 
 ## Possíveis melhorias futuras
 
