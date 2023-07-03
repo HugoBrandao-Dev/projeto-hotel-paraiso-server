@@ -1,0 +1,19 @@
+{
+  "name": "projeto-hotel-paraiso-server",
+  "version": "1.0.0",
+  "description": "Projeto back-end de portfolio, que sera server-side do Projeto Hotel Paraiso.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HugoBrandao-Dev/projeto-hotel-paraiso-server.git"
+  },
+  "author": "Hugo da Rocha Brandao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HugoBrandao-Dev/projeto-hotel-paraiso-server/issues"
+  },
+  "homepage": "https://github.com/HugoBrandao-Dev/projeto-hotel-paraiso-server#readme"
+}
