@@ -4,6 +4,7 @@ const router = express.Router()
 
 // Controllers
 const HomeController = require('../controllers/HomeController')
+const UserController = require('../controllers/UserController')
 
 router.get('/', HomeController.index)
 
