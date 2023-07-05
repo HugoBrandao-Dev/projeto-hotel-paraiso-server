@@ -84,6 +84,16 @@ class UserController {
       no_symbols: true
     })
   }
+  isValidAddInformation(information) {
+    let itsValidPT_BR = validator.isAlphanumeric(information, ['pt-BR'], {
+      ignore: ' \n\',.:$-()'
+    })
+    let itsValidEN_US = validator.isAlphanumeric(information, ['en-US'], {
+      ignore: ' \n\',.:$-()'
+    })
+
+    return itsValidPT_BR || itsValidEN_US
+  },
 
   async create(req, res) {
     try {
@@ -252,6 +262,17 @@ class UserController {
           errorFields.push({
             field: 'iptNumber',
             error: 'Este campo deve conter somente números.'
+          })
+        }
+      }
+
+      if (req.body.information) {
+        let information = req.body.information
+
+        if (!this.isValidAddInformation(information)) {
+          errorFields.push({
+            field: 'iptAddInformation',
+            error: 'Este campo contém caracteres inválidos.'
           })
         }
       }
