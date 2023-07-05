@@ -31,6 +31,17 @@ class UserController {
   isValidCity(city) {
     // Implementar método.
   }
+  isValidCPF(cpf) {
+    let isInt = validator.isInt(cpf, {
+      allow_leading_zeroes: true
+    })
+    let isLength = validator.isLength(cpf, {
+      min: 11,
+      max: 11
+    })
+
+    return isInt && isLength
+  }
 
   async create(req, res) {
     try {
@@ -130,6 +141,30 @@ class UserController {
           field: 'iptCity',
           error: 'Informe a sua cidade de nascimento.'
         })
+      }
+
+      // Validação do CPF, para usuários Brasileiros.
+      if (req.body.country == 'BR') {
+        if (req.body.cpf) {
+          let cpf = req.body.cpf
+
+          if (!this.isValidCPF(cpf)) {
+            errorFields.push({
+              field: 'iptCPF',
+              error: 'CPF inválido.'
+            })
+          }
+        } else {
+          errorFields.push({
+            field: 'iptCPF',
+            error: 'Este campo é obrigatório para Brasileiros.'
+          })
+        }
+
+      // Validação do Passport Numbr, para usuários extrangeiros
+      } else {
+
+      }
     } catch (error) {
       res.status(500)
       throw new Error(error)
