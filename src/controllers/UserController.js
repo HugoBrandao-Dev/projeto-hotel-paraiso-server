@@ -15,6 +15,9 @@ class UserController {
   isValidPassword(password) {
     return validator.isStrongPassword(password)
   }
+  isValidCountry(country) {
+    return validator.isISO31661Alpha2(country)
+  }
 
   async create(req, res) {
     try {
@@ -64,6 +67,21 @@ class UserController {
         errorFields.push({
           field: 'iptPassword',
           error: 'Informe uma senha.'
+        })
+      }
+
+      if (req.body.country) {
+        let country = req.body.country
+        if (!this.isValidCountry(country)) {
+          errorFields.push({
+            field: 'iptCountry',
+            error: 'País inválido.'
+          })
+        }
+      } else {
+        errorFields.push({
+          field: 'iptCountry',
+          error: 'Informe o seu país de nascimento.'
         })
       }
     } catch (error) {
