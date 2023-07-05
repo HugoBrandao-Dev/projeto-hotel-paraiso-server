@@ -79,6 +79,11 @@ class UserController {
 
     return itsValidPT_BR || itsValidEN_US
   }
+  isValidNumber(number) {
+    return validator.isNumeric(number, {
+      no_symbols: true
+    })
+  }
 
   async create(req, res) {
     try {
@@ -236,6 +241,17 @@ class UserController {
           errorFields.push({
             field: 'iptRoad',
             error: 'Este campo tem caracteres inválidos.'
+          })
+        }
+      }
+
+      if (req.body.number) {
+        let number = req.body.number
+
+        if (!this.isValidNumber(number)) {
+          errorFields.push({
+            field: 'iptNumber',
+            error: 'Este campo deve conter somente números.'
           })
         }
       }
