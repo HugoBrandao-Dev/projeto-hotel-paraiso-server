@@ -59,6 +59,27 @@ class UserController {
   isValidPassportNumber(countryCode, passportNumber) {
     return validator.isPassportNumber(passportNumber, countryCode)
   }
+  async isValidCEP(cep) {
+    try {
+      let isLength = validator.isLength(cep, {
+        min: 8,
+        max: 8
+      })
+      let isNumeric = validator.isNumeric(cep, {
+        no_symbols: true
+      })
+
+      if (isLength && isNumeric) {
+        let response = await axios.get('https://viacep.com.br/ws/01001000/json/')
+        if (!response.data.erro) {
+          return true
+        }
+      }
+      return false
+    } catch (error) {
+      console.log(error)
+    }
+  }
   isValidNeighborhood(neighborhood) {
     let itsValidPT_BR = validator.isAlphanumeric(neighborhood, ['pt-BR'], {
       ignore: ' \':,.'
@@ -232,6 +253,18 @@ class UserController {
       }
 
       /* ##### CAMPOS OPCIONAIS ##### */
+
+      if (req.body.cep) {
+        let cep = req.body.cep
+
+        let isValid = await this.isValidCEP(cep)
+        if (!isValid) {
+          errorFields.push({
+            field: 'iptCEP',
+            error: 'O valor do CEP é inválido.'
+          })
+        }
+      }
 
       if (req.body.neighborhood) {
         let neighborhood = req.body.neighborhood
