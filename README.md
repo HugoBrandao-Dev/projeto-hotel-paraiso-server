@@ -8,6 +8,8 @@ Projeto back-end de __portifólio__, que complementa o projeto front-end [Projet
 * Jest: Para testes TDD.
 
 ### Biblioteca(s)
+* ValidatorJS: Para validação de determinados valores. Neste projeto, foi utilizada para validar 
+campos de formulários de cadastro e atualização de usuário, reservar, etc.
 
 ### Banco de dados
 * MongoDB: SGBD para armazenamento de dados.
