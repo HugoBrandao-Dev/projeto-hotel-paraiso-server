@@ -1,6 +1,7 @@
 const axios = require('axios')
 const validator = require('validator')
 const axios_countryStateCity = axios.create({
+  baseURL: 'https://api.countrystatecity.in/v1',
   headers: {
     'X-CSCAPI-KEY': 'UlRPNjR3OGhQOGhiRmloR0FWaDNwSGY2VzZIWlRKRzBNZDN5WUdPdQ=='
   }
@@ -26,8 +27,14 @@ class UserController {
   isValidCountry(country) {
     return validator.isISO31661Alpha2(country)
   }
-  isValidState(state) {
-    // Implementar método.
+  async isValidState(country, state) {
+    try {
+      let response = await axios_countryStateCity.get(`/countries/${ country }/states`)
+      let states = response.data.map(item => item.iso2)
+      return validator.isIn(state, states)
+    } catch (error) {
+      console.log(error)
+    }
   }
   isValidCity(city) {
     // Implementar método.
@@ -117,7 +124,8 @@ class UserController {
         let state = req.body.state
 
         // O método de validação de estado deve ser implementado.
-        if (!this.isValidState(state)) {
+        let isValid = await this.isValidState(state)
+        if (!isValid) {
           errorFields.push({
             field: 'iptState',
             error: 'Estado inválido.'
