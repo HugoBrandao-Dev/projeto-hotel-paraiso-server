@@ -59,6 +59,16 @@ class UserController {
   isValidPassportNumber(countryCode, passportNumber) {
     return validator.isPassportNumber(passportNumber, countryCode)
   }
+  isValidNeighborhood(neighborhood) {
+    let itsValidPT_BR = validator.isAlphanumeric(neighborhood, ['pt-BR'], {
+      ignore: ' \':,.'
+    })
+    let itsValidEN_US = validator.isAlphanumeric(neighborhood, ['en-US'], {
+      ignore: ' \':,.'
+    })
+
+    return itsValidPT_BR || itsValidEN_US
+  }
 
   async create(req, res) {
     try {
@@ -192,6 +202,19 @@ class UserController {
           errorFields.push({
             field: 'iptPassportNumber',
             error: "This field is mandatory for foreigners."
+          })
+        }
+      }
+
+      /* ##### CAMPOS OPCIONAIS ##### */
+
+      if (req.body.neighborhood) {
+        let neighborhood = req.body.neighborhood
+
+        if (!this.isValidNeighborhood(neighborhood)) {
+          errorFields.push({
+            field: 'iptNeighborhood',
+            error: 'Este campo tem caracteres inválidos.'
           })
         }
       }
