@@ -9,6 +9,9 @@ class UserController {
 
     return itsValidPT_BR || itsValidEN_US
   }
+  isValidEmail(email) {
+    return validator.isEmail(email)
+  }
 
   async create(req, res) {
     try {
@@ -27,6 +30,21 @@ class UserController {
       } else {
         errorFields.push({
           field: 'iptName',
+          error: 'Este campo é obrigatório.'
+        })
+      }
+
+      if (req.body.email) {
+        let email = req.body.email
+        if (!this.isValidEmail(email)) {
+          errorFields.push({
+            field: 'iptEmail',
+            error: 'O email informado é inválido.'
+          })
+        }
+      } else {
+        errorFields.push({
+          field: 'iptEmail',
           error: 'Este campo é obrigatório.'
         })
       }
