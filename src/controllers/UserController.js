@@ -28,6 +28,9 @@ class UserController {
   isValidState(state) {
     // Implementar método.
   }
+  isValidCity(city) {
+    // Implementar método.
+  }
 
   async create(req, res) {
     try {
@@ -111,6 +114,22 @@ class UserController {
           error: 'Informe o seu estado de nascimento.'
         })
       }
+
+      if (req.body.city) {
+        let city = req.body.city
+
+        // O método de validação de cidade deve ser implementado.
+        if (!this.isValidCity(city)) {
+          errorFields.push({
+            field: 'iptCity',
+            error: 'Cidade inválida.'
+          })
+        }
+      } else {
+        errorFields.push({
+          field: 'iptCity',
+          error: 'Informe a sua cidade de nascimento.'
+        })
     } catch (error) {
       res.status(500)
       throw new Error(error)
