@@ -36,8 +36,14 @@ class UserController {
       console.log(error)
     }
   }
-  isValidCity(city) {
-    // Implementar método.
+  async isValidCity(country, state, city) {
+    try {
+      let response = await axios_countryStateCity.get(`/countries/${ country }/states/${ state }/cities`)
+      let cities = response.data.map(item => item.name)
+      return validator.isIn(city, cities)
+    } catch (error) {
+      console.log(error)
+    }
   }
   isValidCPF(cpf) {
     let isInt = validator.isInt(cpf, {
@@ -142,7 +148,8 @@ class UserController {
         let city = req.body.city
 
         // O método de validação de cidade deve ser implementado.
-        if (!this.isValidCity(city)) {
+        let isValid = await this.isValidCity(country, state, city)
+        if (!isValid) {
           errorFields.push({
             field: 'iptCity',
             error: 'Cidade inválida.'
