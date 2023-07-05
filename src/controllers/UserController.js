@@ -12,6 +12,9 @@ class UserController {
   isValidEmail(email) {
     return validator.isEmail(email)
   }
+  isValidPassword(password) {
+    return validator.isStrongPassword(password)
+  }
 
   async create(req, res) {
     try {
@@ -46,6 +49,21 @@ class UserController {
         errorFields.push({
           field: 'iptEmail',
           error: 'Este campo é obrigatório.'
+        })
+      }
+
+      if (req.body.password) {
+        let password = req.body.password
+        if (!this.isValidPassword(password)) {
+          errorFields.push({
+            field: 'iptPassword',
+            error: 'A senha informada é inválida.'
+          })
+        }
+      } else {
+        errorFields.push({
+          field: 'iptPassword',
+          error: 'Informe uma senha.'
         })
       }
     } catch (error) {
