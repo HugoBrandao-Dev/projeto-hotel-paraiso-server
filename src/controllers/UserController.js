@@ -42,6 +42,9 @@ class UserController {
 
     return isInt && isLength
   }
+  isValidPassportNumber(countryCode, passportNumber) {
+    return validator.isPassportNumber(passportNumber, countryCode)
+  }
 
   async create(req, res) {
     try {
@@ -163,7 +166,22 @@ class UserController {
 
       // Validação do Passport Numbr, para usuários extrangeiros
       } else {
+        if (req.body.passportNumber) {
+          let passportNumber = req.body.passportNumber
+          let countryCode = req.body.country
 
+          if (!this.isValidPassportNumber(countryCode, passportNumber)) {
+            errorFields.push({
+              field: 'iptPassportNumber',
+              error: 'Invalid passport number.'
+            })
+          }
+        } else {
+          errorFields.push({
+            field: 'iptPassportNumber',
+            error: "This field is mandatory for foreigners."
+          })
+        }
       }
     } catch (error) {
       res.status(500)
