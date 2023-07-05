@@ -15,8 +15,9 @@ Projeto back-end de __portifólio__, que complementa o projeto front-end [Projet
 ### Outra(s)
 * NPM: Para gerenciamento de pacotes;
 * Mongoose: Modelador de objeto MongoDB para Node.JS;
-* Supertest: Módulo para realização de requisições, neste caso foi utilizado em testes com Jest.
-* CORS: Pacote que possibilita requisições na mesma origem do servidor.
+* Supertest: Módulo para realização de requisições, neste caso foi utilizado em testes com Jest;
+* CORS: Pacote que possibilita requisições na mesma origem do servidor;
+* Axios: Cliente HTTP para as requisições internas no projeto.
 
 ## Possíveis melhorias futuras
 

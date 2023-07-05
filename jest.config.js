@@ -1,3 +1,6 @@
 module.exports = {
-  testEnvironment: 'node'
+  testEnvironment: 'node',
+  moduleNameMapper: {
+    "axios": "axios/dist/node/axios.cjs"
+  }
 }
