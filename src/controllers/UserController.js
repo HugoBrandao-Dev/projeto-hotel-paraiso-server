@@ -1,3 +1,10 @@
+const axios = require('axios')
+const axios_countryStateCity = axios.create({
+  headers: {
+    'X-CSCAPI-KEY': 'UlRPNjR3OGhQOGhiRmloR0FWaDNwSGY2VzZIWlRKRzBNZDN5WUdPdQ=='
+  }
+})
+
 class UserController {
   isValidName(name) {
     let itsValidPT_BR = validator.isAlpha(name, ['pt-BR'], {
@@ -17,6 +24,9 @@ class UserController {
   }
   isValidCountry(country) {
     return validator.isISO31661Alpha2(country)
+  }
+  isValidState(state) {
+    // Implementar método.
   }
 
   async create(req, res) {
@@ -82,6 +92,23 @@ class UserController {
         errorFields.push({
           field: 'iptCountry',
           error: 'Informe o seu país de nascimento.'
+        })
+      }
+
+      if (req.body.state) {
+        let state = req.body.state
+
+        // O método de validação de estado deve ser implementado.
+        if (!this.isValidState(state)) {
+          errorFields.push({
+            field: 'iptState',
+            error: 'Estado inválido.'
+          })
+        }
+      } else {
+        errorFields.push({
+          field: 'iptState',
+          error: 'Informe o seu estado de nascimento.'
         })
       }
     } catch (error) {
