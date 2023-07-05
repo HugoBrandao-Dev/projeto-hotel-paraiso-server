@@ -69,6 +69,16 @@ class UserController {
 
     return itsValidPT_BR || itsValidEN_US
   }
+  isValidRoad(road) {
+    let itsValidPT_BR = validator.isAlphanumeric(road, ['pt-BR'], {
+      ignore: ' \':,.'
+    })
+    let itsValidEN_US = validator.isAlphanumeric(road, ['en-US'], {
+      ignore: ' \':,.'
+    })
+
+    return itsValidPT_BR || itsValidEN_US
+  }
 
   async create(req, res) {
     try {
@@ -214,6 +224,17 @@ class UserController {
         if (!this.isValidNeighborhood(neighborhood)) {
           errorFields.push({
             field: 'iptNeighborhood',
+            error: 'Este campo tem caracteres inválidos.'
+          })
+        }
+      }
+
+      if (req.body.road) {
+        let road = req.body.road
+
+        if (!this.isValidRoad(road)) {
+          errorFields.push({
+            field: 'iptRoad',
             error: 'Este campo tem caracteres inválidos.'
           })
         }
