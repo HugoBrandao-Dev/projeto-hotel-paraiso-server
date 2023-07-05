@@ -118,47 +118,43 @@ class UserController {
             field: 'iptCountry',
             error: 'País inválido.'
           })
+        } else {
+          if (req.body.state) {
+            let state = req.body.state
+            let isValid = await this.isValidState(country, state)
+            if (!isValid) {
+              errorFields.push({
+                field: 'iptState',
+                error: 'Estado inválido.'
+              })
+            } else {
+              if (req.body.city) {
+                let city = req.body.city
+                let isValid = await this.isValidCity(country, state, city)
+                if (!isValid) {
+                  errorFields.push({
+                    field: 'iptCity',
+                    error: 'Cidade inválida.'
+                  })
+                }
+              } else {
+                errorFields.push({
+                  field: 'iptCity',
+                  error: 'Informe a sua cidade de nascimento.'
+                })
+              }
+            }
+          } else {
+            errorFields.push({
+              field: 'iptState',
+              error: 'Informe o seu estado de nascimento.'
+            })
+          }
         }
       } else {
         errorFields.push({
           field: 'iptCountry',
           error: 'Informe o seu país de nascimento.'
-        })
-      }
-
-      if (req.body.state) {
-        let state = req.body.state
-
-        // O método de validação de estado deve ser implementado.
-        let isValid = await this.isValidState(state)
-        if (!isValid) {
-          errorFields.push({
-            field: 'iptState',
-            error: 'Estado inválido.'
-          })
-        }
-      } else {
-        errorFields.push({
-          field: 'iptState',
-          error: 'Informe o seu estado de nascimento.'
-        })
-      }
-
-      if (req.body.city) {
-        let city = req.body.city
-
-        // O método de validação de cidade deve ser implementado.
-        let isValid = await this.isValidCity(country, state, city)
-        if (!isValid) {
-          errorFields.push({
-            field: 'iptCity',
-            error: 'Cidade inválida.'
-          })
-        }
-      } else {
-        errorFields.push({
-          field: 'iptCity',
-          error: 'Informe a sua cidade de nascimento.'
         })
       }
 
