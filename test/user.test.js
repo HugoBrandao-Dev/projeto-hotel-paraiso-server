@@ -26,6 +26,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo de Senha
       let password = userController.isValidPassword('@TobiaS&591022@')
       expect(password).toEqual(true)
+
+      // Teste para o campo de Número do Telefone
+      let phoneNumber = userController.isValidPhoneNumber('5599984752352')
+      expect(phoneNumber).toEqual(true)
     } catch (error) {
       fail(error)
     }
