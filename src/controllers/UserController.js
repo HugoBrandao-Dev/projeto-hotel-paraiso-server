@@ -24,6 +24,9 @@ class UserController {
   isValidPassword(password) {
     return validator.isStrongPassword(password)
   }
+  isValidPhoneNumber(phoneNumber) {
+    return validator.isMobilePhone(phoneNumber)
+  }
   isValidCountry(country) {
     return validator.isISO31661Alpha2(country)
   }
@@ -148,6 +151,22 @@ class UserController {
       } else {
         errorFields.push({
           field: 'iptEmail',
+          error: 'Este campo é obrigatório.'
+        })
+      }
+
+      if (req.body.phoneNumber) {
+        let phoneNumber = req.body.phoneNumber
+
+        if (!this.isValidPhoneNumber(phoneNumber)) {
+          errorFields.push({
+            field: 'iptPhoneNumber',
+            error: 'Número de telefone inválido.'
+          })
+        }
+      } else {
+        errorFields.push({
+          field: 'iptPhoneNumber',
           error: 'Este campo é obrigatório.'
         })
       }
