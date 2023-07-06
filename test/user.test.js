@@ -18,6 +18,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo Email
       let email = userController.isValidEmail('tobias@gmail.com')
       expect(email).toEqual(true)
+
+      // Teste para o campo Data de Nascimento
+      let birthDate = userController.analyzeBirthDate('1985-06-09')
+      expect(birthDate).toEqual('')
     } catch (error) {
       fail(error)
     }
