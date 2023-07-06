@@ -21,6 +21,30 @@ class UserController {
   isValidEmail(email) {
     return validator.isEmail(email)
   }
+  analyzeBirthDate(date) {
+    let date = new Date()
+
+    let day = date.getDate()
+    if (day < 10) {
+      day = `0${ day }`
+    }
+    let month = date.getMonth() + 1
+    if (month < 10) {
+      month = `0${ month }`
+    }
+
+    // Data de nascimento mínima é 18 anos.
+    let year = date.getFullYear() - 18
+    let fullDate = `${ year }-${ month }-${ day }`
+
+    let isBefore = validator.isBefore(date, fullDate)
+    let isEqual = validator.isEqual(date, fullDate)
+
+    if (!isBefore && !isEqual) {
+      return 'Somente usuários com mais de 18 anos podem se cadastrar.'
+    }
+    return ''
+  }
   isValidPassword(password) {
     return validator.isStrongPassword(password)
   }
@@ -152,6 +176,21 @@ class UserController {
         errorFields.push({
           field: 'iptEmail',
           error: 'Este campo é obrigatório.'
+        })
+      }
+
+      if (req.body.birthDate) {
+        let birthDate = req.body.birthDate
+
+        let msg = this.analyzeBirthDate(birthDate)
+        if (msg.length > 0) {
+          field: 'iptBirthDate',
+          error: msg
+        }
+      } else {
+        errorFields.push({
+          field: 'iptBirthDate',
+          error: 'Este campo é obrigatório'
         })
       }
 
