@@ -11,6 +11,10 @@ Projeto back-end de __portifólio__, que complementa o projeto front-end [Projet
 * ValidatorJS: Para validação de determinados valores. Neste projeto, foi utilizada para validar 
 campos de formulários de cadastro e atualização de usuário, reservar, etc.
 
+### API(s)
+* Country State City: Para busca por informações de países, dos seus estados e cidades;
+* ViaCEP: Para busca de informações de um endereço (bairro, rua, etc.), baseado em um CEP.
+
 ### Banco de dados
 * MongoDB: SGBD para armazenamento de dados.
 
