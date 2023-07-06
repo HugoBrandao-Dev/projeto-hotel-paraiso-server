@@ -38,7 +38,7 @@ class UserController {
     let fullDate = `${ year }-${ month }-${ day }`
 
     let isBefore = validator.isBefore(date, fullDate)
-    let isEqual = validator.isEqual(date, fullDate)
+    let isEqual = validator.equals(date, fullDate)
 
     if (!isBefore && !isEqual) {
       return 'Somente usuários com mais de 18 anos podem se cadastrar.'
