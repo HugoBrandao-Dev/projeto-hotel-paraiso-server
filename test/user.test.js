@@ -22,6 +22,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo Data de Nascimento
       let birthDate = userController.analyzeBirthDate('1985-06-09')
       expect(birthDate).toEqual('')
+
+      // Teste para o campo de Senha
+      let password = userController.isValidPassword('@TobiaS&591022@')
+      expect(password).toEqual(true)
     } catch (error) {
       fail(error)
     }
