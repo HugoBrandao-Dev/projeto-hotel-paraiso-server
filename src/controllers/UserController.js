@@ -22,19 +22,19 @@ class UserController {
     return validator.isEmail(email)
   }
   analyzeBirthDate(date) {
-    let date = new Date()
+    let dateNow = new Date()
 
-    let day = date.getDate()
+    let day = dateNow.getDate()
     if (day < 10) {
       day = `0${ day }`
     }
-    let month = date.getMonth() + 1
+    let month = dateNow.getMonth() + 1
     if (month < 10) {
       month = `0${ month }`
     }
 
     // Data de nascimento mínima é 18 anos.
-    let year = date.getFullYear() - 18
+    let year = dateNow.getFullYear() - 18
     let fullDate = `${ year }-${ month }-${ day }`
 
     let isBefore = validator.isBefore(date, fullDate)
@@ -141,7 +141,7 @@ class UserController {
     })
 
     return itsValidPT_BR || itsValidEN_US
-  },
+  }
 
   async create(req, res) {
     try {
@@ -184,8 +184,10 @@ class UserController {
 
         let msg = this.analyzeBirthDate(birthDate)
         if (msg.length > 0) {
-          field: 'iptBirthDate',
-          error: msg
+          errorFields.push({
+            field: 'iptBirthDate',
+            error: msg
+          })
         }
       } else {
         errorFields.push({
