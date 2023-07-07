@@ -46,6 +46,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo de CEP
       let cep = await userController.isValidCEP('01001000')
       expect(cep).toEqual(true)
+
+      // Teste para o campo de CPF
+      let cpf = userController.isValidCPF('22222222222')
+      expect(cpf).toEqual(true)
     } catch (error) {
       fail(error)
     }
