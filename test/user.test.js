@@ -30,6 +30,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo de Número do Telefone
       let phoneNumber = userController.isValidPhoneNumber('5599984752352')
       expect(phoneNumber).toEqual(true)
+
+      // Teste para o campo de País
+      let country = userController.isValidCountry('BR')
+      expect(country).toEqual(true)
     } catch (error) {
       fail(error)
     }
