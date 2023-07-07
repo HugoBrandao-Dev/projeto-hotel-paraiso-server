@@ -62,6 +62,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo de Rua/Avenida
       let road = userController.isValidRoad('Praça da Sé')
       expect(road).toEqual(true)
+
+      // Teste para o campo de Número da Casa
+      let number = userController.isValidNumber('15006')
+      expect(number).toEqual(true)
     } catch (error) {
       fail(error)
     }
