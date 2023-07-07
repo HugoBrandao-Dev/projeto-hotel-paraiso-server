@@ -38,6 +38,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo de Estado
       let state = await userController.isValidState('BR', 'SP')
       expect(state).toEqual(true)
+
+      // Teste para o campo de Cidade
+      let city = await userController.isValidCity('BR', 'SP', 'São Paulo')
+      expect(city).toEqual(true)
     } catch (error) {
       fail(error)
     }
