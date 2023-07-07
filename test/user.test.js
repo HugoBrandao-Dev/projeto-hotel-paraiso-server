@@ -75,4 +75,16 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
       fail(error)
     }
   })
+
+  test('Devem retornar FALSE para os valores informados.', async function() {
+    const userController = UserController
+    
+    // Teste para o campo Data de Nascimento
+    let birthDate = userController.analyzeBirthDate('2010-06-09')
+    expect(birthDate).toBe('Somente usuários com mais de 18 anos podem se cadastrar.')
+
+    // Teste para o campo de Senha
+    let password = userController.isValidPassword('@tobias&591022@')
+    expect(password).toEqual(false)
+  })
 })
