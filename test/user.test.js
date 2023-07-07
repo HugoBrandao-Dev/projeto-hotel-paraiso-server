@@ -42,6 +42,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo de Cidade
       let city = await userController.isValidCity('BR', 'SP', 'São Paulo')
       expect(city).toEqual(true)
+
+      // Teste para o campo de CEP
+      let cep = await userController.isValidCEP('01001000')
+      expect(cep).toEqual(true)
     } catch (error) {
       fail(error)
     }
