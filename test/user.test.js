@@ -54,6 +54,10 @@ describe("Suite de testes das rotas User.", function() {
       // Teste para o campo de Número de Passaporte
       let passportNumber = userController.isValidPassportNumber('US', '431276122')
       expect(passportNumber).toEqual(true)
+
+      // Teste para o campo de Bairro
+      let neighborhood = userController.isValidNeighborhood('Sé')
+      expect(neighborhood).toEqual(true)
     } catch (error) {
       fail(error)
     }
