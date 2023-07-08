@@ -20,67 +20,67 @@ describe("Suite de testes das rotas User.", function() {
       expect(email.hasError.value).toEqual(false)
 
       // Teste para o campo Data de Nascimento
-      let birthDate = userController.analyzeBirthDate('1985-06-09')
+      let birthDate = userController.analyzeUserBirthDate('1985-06-09')
       expect(birthDate.field).toEqual('iptBirthDate')
       expect(birthDate.hasError.value).toEqual(false)
       expect(birthDate.hasError.error).toEqual('')
 
       // Teste para o campo de Senha
-      let password = userController.analyzePassword('@TobiaS&591022@')
+      let password = userController.analyzeUserPassword('@TobiaS&591022@')
       expect(password.field).toEqual('iptPassword')
       expect(password.hasError.value).toEqual(false)
       expect(password.hasError.error).toEqual('')
 
       // Teste para o campo de Número do Telefone
-      let phoneNumber = userController.analyzePhoneNumber('5599984752352')
+      let phoneNumber = userController.analyzeUserPhoneNumber('5599984752352')
       expect(phoneNumber.field).toEqual('iptPhoneNumber')
       expect(phoneNumber.hasError.value).toEqual(false)
       expect(phoneNumber.hasError.error).toEqual('')
 
       // Teste para o campo de País
-      let country = userController.analyzeCountry('BR')
+      let country = userController.analyzeUserCountry('BR')
       expect(country.field).toEqual('iptCountry')
       expect(country.hasError.value).toEqual(false)
       expect(country.hasError.error).toEqual('')
 
       // Teste para o campo de Estado
-      let state = await userController.analyzeState('BR', 'SP')
+      let state = await userController.analyzeUserState('BR', 'SP')
       expect(state.field).toEqual('iptState')
       expect(state.hasError.value).toEqual(false)
       expect(state.hasError.error).toEqual('')
 
       // Teste para o campo de Cidade
-      let city = await userController.analyzeCity('BR', 'SP', 'São Paulo')
+      let city = await userController.analyzeUserCity('BR', 'SP', 'São Paulo')
       expect(city.field).toEqual('iptCity')
       expect(city.hasError.value).toEqual(false)
       expect(city.hasError.error).toEqual('')
 
       // Teste para o campo de CPF
-      let cpf = userController.analyzeCPF('22222222222')
+      let cpf = userController.analyzeUserCPF('22222222222')
       expect(cpf.field).toEqual('iptCPF')
       expect(cpf.hasError.value).toEqual(false)
       expect(cpf.hasError.error).toEqual('')
 
       // Teste para o campo de Número de Passaporte
-      let passportNumber = userController.analyzePassportNumber('US', '431276122')
+      let passportNumber = userController.analyzeUserPassportNumber('US', '431276122')
       expect(passportNumber.field).toEqual('iptPassportNumber')
       expect(passportNumber.hasError.value).toEqual(false)
       expect(passportNumber.hasError.error).toEqual('')
 
       // Teste para o campo de CEP
-      let cep = await userController.analyzeCEP('01001000')
+      let cep = await userController.analyzeUserCEP('01001000')
       expect(cep.field).toEqual('iptCEP')
       expect(cep.hasError.value).toEqual(false)
       expect(cep.hasError.error).toEqual('')
 
       // Teste para o campo de Bairro
-      let neighborhood = userController.analyzeNeighborhood('Sé')
+      let neighborhood = userController.analyzeUserNeighborhood('Sé')
       expect(neighborhood.field).toEqual('iptNeighborhood')
       expect(neighborhood.hasError.value).toEqual(false)
       expect(neighborhood.hasError.error).toEqual('')
 
       // Teste para o campo de Rua/Avenida
-      let road = userController.analyzeRoad('Praça da Sé')
+      let road = userController.analyzeUserRoad('Praça da Sé')
       expect(road.field).toEqual('iptRoad')
       expect(road.hasError.value).toEqual(false)
       expect(road.hasError.error).toEqual('')
@@ -107,23 +107,23 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     const userController = UserController
 
     // Testes para o campo Data de Nascimento
-    let birthDate = userController.analyzeBirthDate('')
+    let birthDate = userController.analyzeUserBirthDate('')
     expect(birthDate.field).toEqual('iptBirthDate')
     expect(birthDate.hasError.value).toEqual(true)
     expect(birthDate.hasError.error).toBe('O campo Data de Nascimento é obrigatório.')
 
-    let birthDateUnder18 = userController.analyzeBirthDate('2010-06-09')
+    let birthDateUnder18 = userController.analyzeUserBirthDate('2010-06-09')
     expect(birthDateUnder18.field).toEqual('iptBirthDate')
     expect(birthDateUnder18.hasError.value).toEqual(true)
     expect(birthDateUnder18.hasError.error).toBe('Somente usuários com mais de 18 anos podem se cadastrar.')
 
     // Testes para o campo de Senha
-    let password = userController.analyzePassword('')
+    let password = userController.analyzeUserPassword('')
     expect(password.field).toEqual('iptPassword')
     expect(password.hasError.value).toEqual(true)
     expect(password.hasError.error).toBe('O campo de Senha é obrigatório.')
 
-    let passwordTooWeak = userController.analyzePassword('@tobias&591022@')
+    let passwordTooWeak = userController.analyzeUserPassword('@tobias&591022@')
     expect(passwordTooWeak.field).toEqual('iptPassword')
     expect(passwordTooWeak.hasError.value).toEqual(true)
     expect(passwordTooWeak.hasError.error).toBe('A senha é muito fraca.')

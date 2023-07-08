@@ -52,7 +52,7 @@ class UserController {
     }
     return result
   }
-  analyzeBirthDate(date = '') {
+  analyzeUserBirthDate(date = '') {
     let result = { field: 'iptBirthDate', hasError: { value: false, error: '' }}
 
     // Caso o usuário não tenha passado um email
@@ -86,7 +86,7 @@ class UserController {
     }
     return result
   }
-  analyzePassword(password = '') {
+  analyzeUserPassword(password = '') {
     let result = { field: 'iptPassword', hasError: { value: false, error: '' }}
 
     if (!password) {
@@ -104,7 +104,7 @@ class UserController {
 
     return result
   }
-  analyzePhoneNumber(phoneNumber = '') {
+  analyzeUserPhoneNumber(phoneNumber = '') {
     let result = { field: 'iptPhoneNumber', hasError: { value: false, error: '' }}
 
     if (!phoneNumber) {
@@ -122,7 +122,7 @@ class UserController {
 
     return result
   }
-  analyzeCountry(country = '') {
+  analyzeUserCountry(country = '') {
     let result = { field: 'iptCountry', hasError: { value: false, error: '' }}
 
     if (!country) {
@@ -140,7 +140,7 @@ class UserController {
 
     return result
   }
-  async analyzeState(country, state = '') {
+  async analyzeUserState(country, state = '') {
     try {
       let result = { field: 'iptState', hasError: { value: false, error: '' }}
 
@@ -164,7 +164,7 @@ class UserController {
       console.log(error)
     }
   }
-  async analyzeCity(country, state, city = '') {
+  async analyzeUserCity(country, state, city = '') {
     try {
       let result = { field: 'iptCity', hasError: { value: false, error: '' }}
 
@@ -188,7 +188,7 @@ class UserController {
       console.log(error)
     }
   }
-  analyzeCPF(cpf) {
+  analyzeUserCPF(cpf) {
     let result = { field: 'iptCPF', hasError: { value: false, error: '' }}
 
       if (!cpf) {
@@ -215,7 +215,7 @@ class UserController {
 
       return result
   }
-  analyzePassportNumber(countryCode = '', passportNumber = '') {
+  analyzeUserPassportNumber(countryCode = '', passportNumber = '') {
     let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
 
     if (!countryCode) {
@@ -238,7 +238,7 @@ class UserController {
 
     return result
   }
-  async analyzeCEP(cep = '') {
+  async analyzeUserCEP(cep = '') {
     try {
       let result = { field: 'iptCEP', hasError: { value: false, error: '' }}
 
@@ -278,7 +278,7 @@ class UserController {
       console.log(error)
     }
   }
-  analyzeNeighborhood(neighborhood = '') {
+  analyzeUserNeighborhood(neighborhood = '') {
     let acceptableChars = ' \':,.'
     let result = { field: 'iptNeighborhood', hasError: { value: false, error: '' }}
 
@@ -298,7 +298,7 @@ class UserController {
 
     return result
   }
-  analyzeRoad(road = '') {
+  analyzeUserRoad(road = '') {
     let acceptableChars = ' \':,.'
     let result = { field: 'iptRoad', hasError: { value: false, error: '' }}
 
