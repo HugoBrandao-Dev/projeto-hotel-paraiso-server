@@ -122,8 +122,23 @@ class UserController {
 
     return result
   }
-  isValidCountry(country) {
-    return validator.isISO31661Alpha2(country)
+  analyzeCountry(country = '') {
+    let result = { field: 'iptCountry', hasError: { value: false, error: '' }}
+
+    if (!country) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo de País de Nascimento é obrigatório.'
+      return result
+    }
+
+    let isValid = validator.isISO31661Alpha2(country)
+
+    if (!isValid) {
+      result.hasError.value = true
+      result.hasError.error = 'País inválido.'
+    }
+
+    return result
   }
   async isValidState(country, state) {
     try {

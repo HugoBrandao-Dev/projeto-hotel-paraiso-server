@@ -38,8 +38,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(phoneNumber.hasError.error).toEqual('')
 
       // Teste para o campo de País
-      let country = userController.isValidCountry('BR')
-      expect(country).toEqual(true)
+      let country = userController.analyzeCountry('BR')
+      expect(country.field).toEqual('iptCountry')
+      expect(country.hasError.value).toEqual(false)
+      expect(country.hasError.error).toEqual('')
 
       // Teste para o campo de Estado
       let state = await userController.isValidState('BR', 'SP')
