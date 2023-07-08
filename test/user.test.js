@@ -32,8 +32,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(password.hasError.error).toEqual('')
 
       // Teste para o campo de Número do Telefone
-      let phoneNumber = userController.isValidPhoneNumber('5599984752352')
-      expect(phoneNumber).toEqual(true)
+      let phoneNumber = userController.analyzePhoneNumber('5599984752352')
+      expect(phoneNumber.field).toEqual('iptPhoneNumber')
+      expect(phoneNumber.hasError.value).toEqual(false)
+      expect(phoneNumber.hasError.error).toEqual('')
 
       // Teste para o campo de País
       let country = userController.isValidCountry('BR')
