@@ -83,12 +83,26 @@ class UserController {
     if (!isBefore && !isEqual) {
       result.hasError.value = true
       result.hasError.error = 'Somente usuários com mais de 18 anos podem se cadastrar.'
-      return result
     }
     return result
   }
-  isValidPassword(password) {
-    return validator.isStrongPassword(password)
+  analyzePassword(password = '') {
+    let result = { field: 'iptPassword', hasError: { value: false, error: '' }}
+
+    if (!password) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo de Senha é obrigatório.'
+      return result
+    }
+
+    let isValid = validator.isStrongPassword(password)
+
+    if (!isValid) {
+      result.hasError.value = true
+      result.hasError.error = 'A senha é muito fraca.'
+    }
+
+    return result
   }
   isValidPhoneNumber(phoneNumber) {
     return validator.isMobilePhone(phoneNumber)

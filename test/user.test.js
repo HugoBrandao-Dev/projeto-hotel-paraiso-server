@@ -26,8 +26,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(birthDate.hasError.error).toEqual('')
 
       // Teste para o campo de Senha
-      let password = userController.isValidPassword('@TobiaS&591022@')
-      expect(password).toEqual(true)
+      let password = userController.analyzePassword('@TobiaS&591022@')
+      expect(password.field).toEqual('iptPassword')
+      expect(password.hasError.value).toEqual(false)
+      expect(password.hasError.error).toEqual('')
 
       // Teste para o campo de Número do Telefone
       let phoneNumber = userController.isValidPhoneNumber('5599984752352')
@@ -81,7 +83,7 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
   test('Devem retornar FALSE para os valores informados.', async function() {
     const userController = UserController
 
-    // Teste para o campo Data de Nascimento
+    // Testes para o campo Data de Nascimento
     let birthDate = userController.analyzeBirthDate('')
     expect(birthDate.field).toEqual('iptBirthDate')
     expect(birthDate.hasError.value).toEqual(true)
@@ -92,8 +94,15 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(birthDateUnder18.hasError.value).toEqual(true)
     expect(birthDateUnder18.hasError.error).toBe('Somente usuários com mais de 18 anos podem se cadastrar.')
 
-    // Teste para o campo de Senha
-    let password = userController.isValidPassword('@tobias&591022@')
-    expect(password).toEqual(false)
+    // Testes para o campo de Senha
+    let password = userController.analyzePassword('')
+    expect(password.field).toEqual('iptPassword')
+    expect(password.hasError.value).toEqual(true)
+    expect(password.hasError.error).toBe('O campo de Senha é obrigatório.')
+
+    let passwordTooWeak = userController.analyzePassword('@tobias&591022@')
+    expect(passwordTooWeak.field).toEqual('iptPassword')
+    expect(passwordTooWeak.hasError.value).toEqual(true)
+    expect(passwordTooWeak.hasError.error).toBe('A senha é muito fraca.')
   })
 })
