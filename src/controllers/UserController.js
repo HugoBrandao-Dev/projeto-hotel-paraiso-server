@@ -298,15 +298,25 @@ class UserController {
 
     return result
   }
-  isValidRoad(road) {
-    let itsValidPT_BR = validator.isAlphanumeric(road, ['pt-BR'], {
-      ignore: ' \':,.'
-    })
-    let itsValidEN_US = validator.isAlphanumeric(road, ['en-US'], {
-      ignore: ' \':,.'
-    })
+  analyzeRoad(road = '') {
+    let acceptableChars = ' \':,.'
+    let result = { field: 'iptRoad', hasError: { value: false, error: '' }}
 
-    return itsValidPT_BR || itsValidEN_US
+    if (road) {
+      let itsValidPT_BR = validator.isAlphanumeric(road, ['pt-BR'], {
+        ignore: acceptableChars
+      })
+      let itsValidEN_US = validator.isAlphanumeric(road, ['en-US'], {
+        ignore: acceptableChars
+      })
+
+      if (!itsValidPT_BR && !itsValidEN_US) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de Rua possui caracteres inválidos.'
+      }
+    }
+
+    return result
   }
   isValidNumber(number) {
     return validator.isNumeric(number, {

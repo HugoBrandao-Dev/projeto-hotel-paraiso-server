@@ -80,8 +80,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(neighborhood.hasError.error).toEqual('')
 
       // Teste para o campo de Rua/Avenida
-      let road = userController.isValidRoad('Praça da Sé')
-      expect(road).toEqual(true)
+      let road = userController.analyzeRoad('Praça da Sé')
+      expect(road.field).toEqual('iptRoad')
+      expect(road.hasError.value).toEqual(false)
+      expect(road.hasError.error).toEqual('')
 
       // Teste para o campo de Número da Casa
       let number = userController.isValidNumber('15006')
