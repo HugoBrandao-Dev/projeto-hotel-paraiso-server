@@ -86,13 +86,16 @@ describe("Suite de testes das rotas User.", function() {
       expect(road.hasError.error).toEqual('')
 
       // Teste para o campo de Número da Casa
-      let number = userController.isValidNumber('15006')
+      let number = userController.analyzeUserHouseNumber('15006')
+      expect(number.field).toEqual('iptHouseNumber')
+      expect(number.hasError.value).toEqual(false)
+      expect(number.hasError.error).toEqual('')
 
       // Teste para o campo de Informações Adicinais
       let information = userController.isValidAddInformation(`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sed diam purus. Nulla at imperdiet ante. Vivamus dapibus et nisi eget euismod. Pellentesque lectus nibh, fringilla ut tellus id, sollicitudin auctor diam. In lacinia turpis vel nulla eleifend, nec efficitur lorem mollis. Mauris auctor velit arcu, ac pellentesque leo consequat nec. Donec euismod tristique erat, at dignissim erat. Vivamus luctus tempor metus, nec finibus massa pulvinar ut. Nulla rutrum mauris sit amet turpis dignissim, non tempor ipsum ultrices.
 
 Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tincidunt eget, accumsan vitae dui. Sed porttitor vel metus nec feugiat. Sed id turpis sed nisl condimentum pellentesque. Nulla feugiat non est ac faucibus. Nam rutrum diam dui, nec semper diam convallis non. Curabitur a sagittis tortor, at porttitor lectus. Nulla mollis, velit et volutpat molestie, eros felis hendrerit odio, at sodales velit lacus eget lorem. Curabitur nec lacinia ante. Donec vel nisi ante.`)
-      expect(number).toEqual(true)
+      expect(information).toEqual(true)
     } catch (error) {
       fail(error)
     }

@@ -318,10 +318,22 @@ class UserController {
 
     return result
   }
-  isValidNumber(number) {
-    return validator.isNumeric(number, {
-      no_symbols: true
-    })
+  analyzeUserHouseNumber(number) {
+    let acceptableChars = ' \':,.'
+    let result = { field: 'iptHouseNumber', hasError: { value: false, error: '' }}
+
+    if (number) {
+      let isValid = validator.isNumeric(number, {
+        no_symbols: true
+      })
+
+      if (!isValid) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de Número da Casa possui caracteres inválidos.'
+      }
+    }
+
+    return result
   }
   isValidAddInformation(information) {
     let itsValidPT_BR = validator.isAlphanumeric(information, ['pt-BR'], {
