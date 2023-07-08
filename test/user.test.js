@@ -62,8 +62,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(cpf.hasError.error).toEqual('')
 
       // Teste para o campo de Número de Passaporte
-      let passportNumber = userController.isValidPassportNumber('US', '431276122')
-      expect(passportNumber).toEqual(true)
+      let passportNumber = userController.analyzePassportNumber('US', '431276122')
+      expect(passportNumber.field).toEqual('iptPassportNumber')
+      expect(passportNumber.hasError.value).toEqual(false)
+      expect(passportNumber.hasError.error).toEqual('')
 
       // Teste para o campo de CEP
       let cep = await userController.isValidCEP('01001000')

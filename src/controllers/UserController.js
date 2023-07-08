@@ -196,7 +196,7 @@ class UserController {
         result.hasError.error = 'O campo de CPF é obrigatório.'
         return result
       }
-      
+
       let isInt = validator.isInt(cpf, {
         allow_leading_zeroes: true
       })
@@ -215,8 +215,28 @@ class UserController {
 
       return result
   }
-  isValidPassportNumber(countryCode, passportNumber) {
-    return validator.isPassportNumber(passportNumber, countryCode)
+  analyzePassportNumber(countryCode = '', passportNumber = '') {
+    let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
+
+    if (!countryCode) {
+      result.hasError.value = true
+      result.hasError.error = 'É necessário informar o seu País de Nascimento.'
+      return result
+    }
+    if (!passportNumber) {
+      result.hasError.value = true
+      result.hasError.error = 'Este campo é obrigatório.'
+      return result
+    }
+
+    let isValid = validator.isPassportNumber(passportNumber, countryCode)
+
+    if (!isValid) {
+      result.hasError.value = true
+      result.hasError.error = 'Número de passaporte inválido.'
+    }
+
+    return result
   }
   async isValidCEP(cep) {
     try {
