@@ -55,17 +55,19 @@ describe("Suite de testes das rotas User.", function() {
       expect(city.hasError.value).toEqual(false)
       expect(city.hasError.error).toEqual('')
 
-      // Teste para o campo de CEP
-      let cep = await userController.isValidCEP('01001000')
-      expect(cep).toEqual(true)
-
       // Teste para o campo de CPF
-      let cpf = userController.isValidCPF('22222222222')
-      expect(cpf).toEqual(true)
+      let cpf = userController.analyzeCPF('22222222222')
+      expect(cpf.field).toEqual('iptCPF')
+      expect(cpf.hasError.value).toEqual(false)
+      expect(cpf.hasError.error).toEqual('')
 
       // Teste para o campo de Número de Passaporte
       let passportNumber = userController.isValidPassportNumber('US', '431276122')
       expect(passportNumber).toEqual(true)
+
+      // Teste para o campo de CEP
+      let cep = await userController.isValidCEP('01001000')
+      expect(cep).toEqual(true)
 
       // Teste para o campo de Bairro
       let neighborhood = userController.isValidNeighborhood('Sé')

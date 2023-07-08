@@ -188,16 +188,32 @@ class UserController {
       console.log(error)
     }
   }
-  isValidCPF(cpf) {
-    let isInt = validator.isInt(cpf, {
-      allow_leading_zeroes: true
-    })
-    let isLength = validator.isLength(cpf, {
-      min: 11,
-      max: 11
-    })
+  analyzeCPF(cpf) {
+    let result = { field: 'iptCPF', hasError: { value: false, error: '' }}
 
-    return isInt && isLength
+      if (!cpf) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de CPF é obrigatório.'
+        return result
+      }
+      
+      let isInt = validator.isInt(cpf, {
+        allow_leading_zeroes: true
+      })
+      let hasLength = validator.isLength(cpf, {
+        min: 11,
+        max: 11
+      })
+
+      if (!isInt) {
+        result.hasError.value = true
+        result.hasError.error = 'O CPF possui caracteres inválidos.'
+      } else if (!hasLength) {
+        result.hasError.value = true
+        result.hasError.error = 'Faltam digitos no seu CPF.'
+      }
+
+      return result
   }
   isValidPassportNumber(countryCode, passportNumber) {
     return validator.isPassportNumber(passportNumber, countryCode)
