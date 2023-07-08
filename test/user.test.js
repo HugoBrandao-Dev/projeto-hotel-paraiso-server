@@ -44,8 +44,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(country.hasError.error).toEqual('')
 
       // Teste para o campo de Estado
-      let state = await userController.isValidState('BR', 'SP')
-      expect(state).toEqual(true)
+      let state = await userController.analyzeState('BR', 'SP')
+      expect(state.field).toEqual('iptState')
+      expect(state.hasError.value).toEqual(false)
+      expect(state.hasError.error).toEqual('')
 
       // Teste para o campo de Cidade
       let city = await userController.isValidCity('BR', 'SP', 'São Paulo')
