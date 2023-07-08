@@ -164,11 +164,26 @@ class UserController {
       console.log(error)
     }
   }
-  async isValidCity(country, state, city) {
+  async analyzeCity(country, state, city = '') {
     try {
+      let result = { field: 'iptCity', hasError: { value: false, error: '' }}
+
+      if (!city) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de Cidade de Nascimento é obrigatório.'
+        return result
+      }
+
       let response = await axios_countryStateCity.get(`/countries/${ country }/states/${ state }/cities`)
       let cities = response.data.map(item => item.name)
-      return validator.isIn(city, cities)
+      let isValid = validator.isIn(city, cities)
+
+      if (!isValid) {
+        result.hasError.value = true
+        result.hasError.error = 'Cidade inválida.'
+      }
+
+      return result
     } catch (error) {
       console.log(error)
     }
