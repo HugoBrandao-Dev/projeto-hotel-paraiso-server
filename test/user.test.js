@@ -13,11 +13,15 @@ describe("Suite de testes das rotas User.", function() {
 
       // Teste para o campo Nome (nome completo).
       let name = userController.analyzeUserName('Tobias de Oliveira')
+      expect(name.field).toEqual('iptName')
       expect(name.hasError.value).toEqual(false)
+      expect(name.hasError.error).toEqual('')
 
       // Teste para o campo Email
       let email = userController.analyzeUserEmail('tobias@gmail.com')
+      expect(email.field).toEqual('iptEmail')
       expect(email.hasError.value).toEqual(false)
+      expect(email.hasError.error).toEqual('')
 
       // Teste para o campo Data de Nascimento
       let birthDate = userController.analyzeUserBirthDate('1985-06-09')
