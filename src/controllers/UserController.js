@@ -8,15 +8,29 @@ const axios_countryStateCity = axios.create({
 })
 
 class UserController {
-  isValidName(name) {
+  analyzeUserName(name = '') {
+    let acceptableChars = ' \''
+    let result = { field: 'iptName', hasError: { value: false, error: '' }}
+
+    // Caso o usuário não tenha passado um nome
+    if (!name) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo Nome é obrigatório.'
+      return result
+    }
+
     let itsValidPT_BR = validator.isAlpha(name, ['pt-BR'], {
-      ignore: ' \''
+      ignore: acceptableChars
     })
     let itsValidEN_US = validator.isAlpha(name, ['en-US'], {
-      ignore: ' \''
+      ignore: acceptableChars
     })
 
-    return itsValidPT_BR || itsValidEN_US
+    if (!itsValidPT_BR && !itsValidEN_US) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo Nome possui caracteres inválidos.'
+    }
+    return result
   }
   isValidEmail(email) {
     return validator.isEmail(email)

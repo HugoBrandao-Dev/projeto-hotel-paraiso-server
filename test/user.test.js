@@ -11,9 +11,9 @@ describe("Suite de testes das rotas User.", function() {
     try {
       const userController = UserController
 
-      // Teste para o campo Nome
-      let name = userController.isValidName('Tobias de Oliveira')
-      expect(name).toEqual(true)
+      // Teste para o campo Nome (nome completo).
+      let name = userController.analyzeUserName('Tobias de Oliveira')
+      expect(name.hasError.value).toEqual(false)
 
       // Teste para o campo Email
       let email = userController.isValidEmail('tobias@gmail.com')
@@ -78,7 +78,7 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
 
   test('Devem retornar FALSE para os valores informados.', async function() {
     const userController = UserController
-    
+
     // Teste para o campo Data de Nascimento
     let birthDate = userController.analyzeBirthDate('2010-06-09')
     expect(birthDate).toBe('Somente usuários com mais de 18 anos podem se cadastrar.')
