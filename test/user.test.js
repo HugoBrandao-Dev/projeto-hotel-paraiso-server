@@ -68,8 +68,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(passportNumber.hasError.error).toEqual('')
 
       // Teste para o campo de CEP
-      let cep = await userController.isValidCEP('01001000')
-      expect(cep).toEqual(true)
+      let cep = await userController.analyzeCEP('01001000')
+      expect(cep.field).toEqual('iptCEP')
+      expect(cep.hasError.value).toEqual(false)
+      expect(cep.hasError.error).toEqual('')
 
       // Teste para o campo de Bairro
       let neighborhood = userController.isValidNeighborhood('Sé')

@@ -238,9 +238,17 @@ class UserController {
 
     return result
   }
-  async isValidCEP(cep) {
+  async analyzeCEP(cep = '') {
     try {
-      let isLength = validator.isLength(cep, {
+      let result = { field: 'iptCEP', hasError: { value: false, error: '' }}
+
+      if (!cep) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de CEP é obrigatório.'
+        return result
+      }
+
+      let hasLength = validator.isLength(cep, {
         min: 8,
         max: 8
       })
@@ -248,13 +256,24 @@ class UserController {
         no_symbols: true
       })
 
-      if (isLength && isNumeric) {
-        let response = await axios.get('https://viacep.com.br/ws/01001000/json/')
-        if (!response.data.erro) {
-          return true
+
+      if (!hasLength) {
+        result.hasError.value = true
+        result.hasError.error = 'Faltam números no CEP informado.'
+      } else if (!isNumeric) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de CEP possui caracteres inválidos.'
+      } else {
+        if (hasLength && isNumeric) {
+          let response = await axios.get('https://viacep.com.br/ws/01001000/json/')
+          if (response.data.erro) {
+            result.hasError.value = true
+            result.hasError.error = 'O CEP informado não existe.'
+          }
         }
       }
-      return false
+
+      return result
     } catch (error) {
       console.log(error)
     }
