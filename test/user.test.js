@@ -74,8 +74,10 @@ describe("Suite de testes das rotas User.", function() {
       expect(cep.hasError.error).toEqual('')
 
       // Teste para o campo de Bairro
-      let neighborhood = userController.isValidNeighborhood('Sé')
-      expect(neighborhood).toEqual(true)
+      let neighborhood = userController.analyzeNeighborhood('Sé')
+      expect(neighborhood.field).toEqual('iptNeighborhood')
+      expect(neighborhood.hasError.value).toEqual(false)
+      expect(neighborhood.hasError.error).toEqual('')
 
       // Teste para o campo de Rua/Avenida
       let road = userController.isValidRoad('Praça da Sé')

@@ -278,15 +278,25 @@ class UserController {
       console.log(error)
     }
   }
-  isValidNeighborhood(neighborhood) {
-    let itsValidPT_BR = validator.isAlphanumeric(neighborhood, ['pt-BR'], {
-      ignore: ' \':,.'
-    })
-    let itsValidEN_US = validator.isAlphanumeric(neighborhood, ['en-US'], {
-      ignore: ' \':,.'
-    })
+  analyzeNeighborhood(neighborhood = '') {
+    let acceptableChars = ' \':,.'
+    let result = { field: 'iptNeighborhood', hasError: { value: false, error: '' }}
 
-    return itsValidPT_BR || itsValidEN_US
+    if (neighborhood) {
+      let itsValidPT_BR = validator.isAlphanumeric(neighborhood, ['pt-BR'], {
+        ignore: acceptableChars
+      })
+      let itsValidEN_US = validator.isAlphanumeric(neighborhood, ['en-US'], {
+        ignore: acceptableChars
+      })
+
+      if (!itsValidPT_BR && !itsValidEN_US) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de Bairro possui caracteres inválidos.'
+      }
+    }
+
+    return result
   }
   isValidRoad(road) {
     let itsValidPT_BR = validator.isAlphanumeric(road, ['pt-BR'], {
