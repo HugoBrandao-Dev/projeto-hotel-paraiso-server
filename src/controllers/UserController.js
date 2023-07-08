@@ -335,13 +335,26 @@ class UserController {
 
     return result
   }
-  isValidAddInformation(information) {
-    let itsValidPT_BR = validator.isAlphanumeric(information, ['pt-BR'], {
-      ignore: ' \n\',.:$-()'
-    })
-    let itsValidEN_US = validator.isAlphanumeric(information, ['en-US'], {
-      ignore: ' \n\',.:$-()'
-    })
+  analyzeUserAdditionalInformation(information = '') {
+    let acceptableChars = ' \n\',.:$-()'
+    let result = { field: 'iptAdditionalInformation', hasError: { value: false, error: '' }}
+
+    if (information) {
+      let itsValidPT_BR = validator.isAlphanumeric(information, ['pt-BR'], {
+        ignore: acceptableChars
+      })
+      let itsValidEN_US = validator.isAlphanumeric(information, ['en-US'], {
+        ignore: acceptableChars
+      })
+
+      if (!itsValidPT_BR && !itsValidEN_US) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo de Rua possui caracteres inválidos.'
+      }
+    }
+
+    return result
+    
 
     return itsValidPT_BR || itsValidEN_US
   }
