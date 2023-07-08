@@ -32,8 +32,25 @@ class UserController {
     }
     return result
   }
-  isValidEmail(email) {
-    return validator.isEmail(email)
+  analyzeUserEmail(email = '') {
+    let result = { field: 'iptEmail', hasError: { value: false, error: '' }}
+
+    // Caso o usuário não tenha passado um email
+    if (!email) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo Email é obrigatório.'
+      return result
+    }
+
+    let isValid = validator.isEmail(email)
+
+    // Verificar se o email já existe.
+
+    if (!isValid) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo Email possui caracteres inválidos.'
+    }
+    return result
   }
   analyzeBirthDate(date) {
     let dateNow = new Date()

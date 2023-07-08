@@ -16,8 +16,8 @@ describe("Suite de testes das rotas User.", function() {
       expect(name.hasError.value).toEqual(false)
 
       // Teste para o campo Email
-      let email = userController.isValidEmail('tobias@gmail.com')
-      expect(email).toEqual(true)
+      let email = userController.analyzeUserEmail('tobias@gmail.com')
+      expect(email.hasError.value).toEqual(false)
 
       // Teste para o campo Data de Nascimento
       let birthDate = userController.analyzeBirthDate('1985-06-09')
