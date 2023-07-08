@@ -21,7 +21,9 @@ describe("Suite de testes das rotas User.", function() {
 
       // Teste para o campo Data de Nascimento
       let birthDate = userController.analyzeBirthDate('1985-06-09')
-      expect(birthDate).toEqual('')
+      expect(birthDate.field).toEqual('iptBirthDate')
+      expect(birthDate.hasError.value).toEqual(false)
+      expect(birthDate.hasError.error).toEqual('')
 
       // Teste para o campo de Senha
       let password = userController.isValidPassword('@TobiaS&591022@')
@@ -80,8 +82,15 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     const userController = UserController
 
     // Teste para o campo Data de Nascimento
-    let birthDate = userController.analyzeBirthDate('2010-06-09')
-    expect(birthDate).toBe('Somente usuários com mais de 18 anos podem se cadastrar.')
+    let birthDate = userController.analyzeBirthDate('')
+    expect(birthDate.field).toEqual('iptBirthDate')
+    expect(birthDate.hasError.value).toEqual(true)
+    expect(birthDate.hasError.error).toBe('O campo Data de Nascimento é obrigatório.')
+
+    let birthDateUnder18 = userController.analyzeBirthDate('2010-06-09')
+    expect(birthDateUnder18.field).toEqual('iptBirthDate')
+    expect(birthDateUnder18.hasError.value).toEqual(true)
+    expect(birthDateUnder18.hasError.error).toBe('Somente usuários com mais de 18 anos podem se cadastrar.')
 
     // Teste para o campo de Senha
     let password = userController.isValidPassword('@tobias&591022@')

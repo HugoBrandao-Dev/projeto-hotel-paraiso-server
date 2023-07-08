@@ -52,7 +52,16 @@ class UserController {
     }
     return result
   }
-  analyzeBirthDate(date) {
+  analyzeBirthDate(date = '') {
+    let result = { field: 'iptBirthDate', hasError: { value: false, error: '' }}
+
+    // Caso o usuário não tenha passado um email
+    if (!date) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo Data de Nascimento é obrigatório.'
+      return result
+    }
+
     let dateNow = new Date()
 
     let day = dateNow.getDate()
@@ -72,9 +81,11 @@ class UserController {
     let isEqual = validator.equals(date, fullDate)
 
     if (!isBefore && !isEqual) {
-      return 'Somente usuários com mais de 18 anos podem se cadastrar.'
+      result.hasError.value = true
+      result.hasError.error = 'Somente usuários com mais de 18 anos podem se cadastrar.'
+      return result
     }
-    return ''
+    return result
   }
   isValidPassword(password) {
     return validator.isStrongPassword(password)
