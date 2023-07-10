@@ -142,5 +142,10 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(stateNotFilled.field).toBe('iptState')
     expect(stateNotFilled.hasError.value).toEqual(true)
     expect(stateNotFilled.hasError.error).toBe('O campo de Estado de Nascimento é obrigatório.')
+
+    let stateInvalid = await userController.analyzeUserState('US', 'SP')
+    expect(stateInvalid.field).toBe('iptState')
+    expect(stateInvalid.hasError.value).toEqual(true)
+    expect(stateInvalid.hasError.error).toBe('Estado inválido.')
   })
 })
