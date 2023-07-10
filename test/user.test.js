@@ -131,5 +131,11 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(passwordTooWeak.field).toBe('iptPassword')
     expect(passwordTooWeak.hasError.value).toEqual(true)
     expect(passwordTooWeak.hasError.error).toBe('A senha é muito fraca.')
+
+    // Testes para o campo de Estado
+    let stateWithoutCountry = await userController.analyzeUserState('', 'VA')
+    expect(stateWithoutCountry.field).toBe('iptState')
+    expect(stateWithoutCountry.hasError.value).toEqual(true)
+    expect(stateWithoutCountry.hasError.error).toBe('É necessário informar o seu País de Nascimento.')
   })
 })
