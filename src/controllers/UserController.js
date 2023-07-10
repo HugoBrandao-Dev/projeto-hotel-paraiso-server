@@ -169,10 +169,15 @@ class UserController {
       console.log(error)
     }
   }
-  async analyzeUserCity(country, state, city = '') {
+  async analyzeUserCity(country = '', state = '', city = '') {
     try {
       let result = { field: 'iptCity', hasError: { value: false, error: '' }}
 
+      if (!country) {
+        result.hasError.value = true
+        result.hasError.error = 'É necessário informar o seu País de Nascimento.'
+        return result
+      }
       if (!city) {
         result.hasError.value = true
         result.hasError.error = 'O campo de Cidade de Nascimento é obrigatório.'
