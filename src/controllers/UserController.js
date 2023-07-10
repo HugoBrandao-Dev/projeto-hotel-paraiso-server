@@ -177,8 +177,11 @@ class UserController {
         result.hasError.value = true
         result.hasError.error = 'É necessário informar o seu País de Nascimento.'
         return result
-      }
-      if (!city) {
+      } else if (!state) {
+        result.hasError.value = true
+        result.hasError.error = 'É necessário informar o seu Estado de Nascimento.'
+        return result
+      } else if (!city) {
         result.hasError.value = true
         result.hasError.error = 'O campo de Cidade de Nascimento é obrigatório.'
         return result
