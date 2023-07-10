@@ -107,8 +107,14 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     }
   })
 
-  test('Devem retornar FALSE para os valores informados.', async function() {
+  test('Devem retornar FALSE para os valores informados aos campos obrigatórios.', async function() {
     const userController = UserController
+
+    // Testes para o campo de Nome
+    let name = userController.analyzeUserName('')
+    expect(name.field).toBe('iptName')
+    expect(name.hasError.value).toEqual(true)
+    expect(name.hasError.error).toBe('O campo Nome é obrigatório.')
 
     // Testes para o campo Data de Nascimento
     let birthDate = userController.analyzeUserBirthDate('')
