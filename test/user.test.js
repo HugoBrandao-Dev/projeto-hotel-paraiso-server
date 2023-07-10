@@ -147,5 +147,11 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(stateInvalid.field).toBe('iptState')
     expect(stateInvalid.hasError.value).toEqual(true)
     expect(stateInvalid.hasError.error).toBe('Estado inválido.')
+
+    // Testes para o campo de Cidade
+    let cityWithoutCountry = await userController.analyzeUserCity('', 'SP', 'São Paulo')
+    expect(cityWithoutCountry.field).toBe('iptCity')
+    expect(cityWithoutCountry.hasError.value).toEqual(true)
+    expect(cityWithoutCountry.hasError.error).toBe('É necessário informar o seu País de Nascimento.')
   })
 })
