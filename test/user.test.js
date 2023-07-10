@@ -163,5 +163,10 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(cityNotFilled.field).toBe('iptCity')
     expect(cityNotFilled.hasError.value).toEqual(true)
     expect(cityNotFilled.hasError.error).toBe('O campo de Cidade de Nascimento é obrigatório.')
+
+    let cityInvalid = await userController.analyzeUserCity('BR', 'SP', 'Rio de Janeiro')
+    expect(cityInvalid.field).toBe('iptCity')
+    expect(cityInvalid.hasError.value).toEqual(true)
+    expect(cityInvalid.hasError.error).toBe('Cidade inválida.')
   })
 })
