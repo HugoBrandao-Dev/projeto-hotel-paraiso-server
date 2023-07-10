@@ -140,10 +140,15 @@ class UserController {
 
     return result
   }
-  async analyzeUserState(country, state = '') {
+  async analyzeUserState(country = '', state = '') {
     try {
       let result = { field: 'iptState', hasError: { value: false, error: '' }}
 
+      if (!country) {
+        result.hasError.value = true
+        result.hasError.error = 'É necessário informar o seu País de Nascimento.'
+        return result
+      }
       if (!state) {
         result.hasError.value = true
         result.hasError.error = 'O campo de Estado de Nascimento é obrigatório.'
