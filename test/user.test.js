@@ -137,5 +137,10 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(stateWithoutCountry.field).toBe('iptState')
     expect(stateWithoutCountry.hasError.value).toEqual(true)
     expect(stateWithoutCountry.hasError.error).toBe('É necessário informar o seu País de Nascimento.')
+
+    let stateNotFilled = await userController.analyzeUserState('US', '')
+    expect(stateNotFilled.field).toBe('iptState')
+    expect(stateNotFilled.hasError.value).toEqual(true)
+    expect(stateNotFilled.hasError.error).toBe('O campo de Estado de Nascimento é obrigatório.')
   })
 })
