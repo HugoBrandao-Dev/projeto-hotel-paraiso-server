@@ -154,9 +154,14 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(cityWithoutCountry.hasError.value).toEqual(true)
     expect(cityWithoutCountry.hasError.error).toBe('É necessário informar o seu País de Nascimento.')
 
-    let cityNotFilled = await userController.analyzeUserCity('BR', '', 'São Paulo')
+    let cityWithoutState = await userController.analyzeUserCity('BR', '', 'São Paulo')
+    expect(cityWithoutState.field).toBe('iptCity')
+    expect(cityWithoutState.hasError.value).toEqual(true)
+    expect(cityWithoutState.hasError.error).toBe('É necessário informar o seu Estado de Nascimento.')
+
+    let cityNotFilled = await userController.analyzeUserCity('BR', 'SP', '')
     expect(cityNotFilled.field).toBe('iptCity')
     expect(cityNotFilled.hasError.value).toEqual(true)
-    expect(cityNotFilled.hasError.error).toBe('É necessário informar o seu Estado de Nascimento.')
+    expect(cityNotFilled.hasError.error).toBe('O campo de Cidade de Nascimento é obrigatório.')
   })
 })
