@@ -218,5 +218,10 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(cpfNotFilled.field).toBe('iptCPF')
     expect(cpfNotFilled.hasError.value).toEqual(true)
     expect(cpfNotFilled.hasError.error).toBe('O campo de CPF é obrigatório.')
+
+    let cpfInvalid = await userController.analyzeUserCPF('0111111111a')
+    expect(cpfInvalid.field).toBe('iptCPF')
+    expect(cpfInvalid.hasError.value).toEqual(true)
+    expect(cpfInvalid.hasError.error).toBe('O CPF possui caracteres inválidos.')
   })
 })
