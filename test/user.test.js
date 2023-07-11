@@ -165,7 +165,13 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(phoneInvalid.hasError.value).toEqual(true)
     expect(phoneInvalid.hasError.error).toBe('O telefone é inválido.')
 
-    // Testes para o campo de Estado
+    // Testes para o campo de País de nascimento
+    let countryNotFilled = userController.analyzeUserCountry('')
+    expect(countryNotFilled.field).toBe('iptCountry')
+    expect(countryNotFilled.hasError.value).toEqual(true)
+    expect(countryNotFilled.hasError.error).toBe('O campo de País de Nascimento é obrigatório.')
+
+    // Testes para o campo de Estado de nascimento
     let stateWithoutCountry = await userController.analyzeUserState('', 'VA')
     expect(stateWithoutCountry.field).toBe('iptState')
     expect(stateWithoutCountry.hasError.value).toEqual(true)
@@ -181,7 +187,7 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(stateInvalid.hasError.value).toEqual(true)
     expect(stateInvalid.hasError.error).toBe('Estado inválido.')
 
-    // Testes para o campo de Cidade
+    // Testes para o campo de Cidade de nascimento
     let cityWithoutCountry = await userController.analyzeUserCity('', 'SP', 'São Paulo')
     expect(cityWithoutCountry.field).toBe('iptCity')
     expect(cityWithoutCountry.hasError.value).toEqual(true)
