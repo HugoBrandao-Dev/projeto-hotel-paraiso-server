@@ -212,5 +212,11 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(cityInvalid.field).toBe('iptCity')
     expect(cityInvalid.hasError.value).toEqual(true)
     expect(cityInvalid.hasError.error).toBe('Cidade inválida.')
+
+    // Testes para o campo de CPF
+    let cpfNotFilled = await userController.analyzeUserCPF('')
+    expect(cpfNotFilled.field).toBe('iptCPF')
+    expect(cpfNotFilled.hasError.value).toEqual(true)
+    expect(cpfNotFilled.hasError.error).toBe('O campo de CPF é obrigatório.')
   })
 })
