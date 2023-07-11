@@ -171,6 +171,11 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(countryNotFilled.hasError.value).toEqual(true)
     expect(countryNotFilled.hasError.error).toBe('O campo de País de Nascimento é obrigatório.')
 
+    let countryInvalid = userController.analyzeUserCountry('Brasil') // A API é em inglês ("Brasil" não é aceito).
+    expect(countryInvalid.field).toBe('iptCountry')
+    expect(countryInvalid.hasError.value).toEqual(true)
+    expect(countryInvalid.hasError.error).toBe('País inválido.')
+
     // Testes para o campo de Estado de nascimento
     let stateWithoutCountry = await userController.analyzeUserState('', 'VA')
     expect(stateWithoutCountry.field).toBe('iptState')
