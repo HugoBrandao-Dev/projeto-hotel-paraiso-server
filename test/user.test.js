@@ -214,17 +214,17 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(cityInvalid.hasError.error).toBe('Cidade inválida.')
 
     // Testes para o campo de CPF
-    let cpfNotFilled = await userController.analyzeUserCPF('')
+    let cpfNotFilled = userController.analyzeUserCPF('')
     expect(cpfNotFilled.field).toBe('iptCPF')
     expect(cpfNotFilled.hasError.value).toEqual(true)
     expect(cpfNotFilled.hasError.error).toBe('O campo de CPF é obrigatório.')
 
-    let cpfInvalid = await userController.analyzeUserCPF('0111111111a')
+    let cpfInvalid = userController.analyzeUserCPF('0111111111a')
     expect(cpfInvalid.field).toBe('iptCPF')
     expect(cpfInvalid.hasError.value).toEqual(true)
     expect(cpfInvalid.hasError.error).toBe('O CPF possui caracteres inválidos.')
 
-    let cpfMissingNumbers = await userController.analyzeUserCPF('0111111111')
+    let cpfMissingNumbers = userController.analyzeUserCPF('0111111111')
     expect(cpfMissingNumbers.field).toBe('iptCPF')
     expect(cpfMissingNumbers.hasError.value).toEqual(true)
     expect(cpfMissingNumbers.hasError.error).toBe('Faltam digitos no seu CPF.')
