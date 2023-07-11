@@ -154,6 +154,12 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(passwordTooWeak.hasError.value).toEqual(true)
     expect(passwordTooWeak.hasError.error).toBe('A senha é muito fraca.')
 
+    // Testes para o campo de Número de Telefone
+    let phoneNumberNotFilled = userController.analyzeUserPhoneNumber('')
+    expect(phoneNumberNotFilled.field).toBe('iptPhoneNumber')
+    expect(phoneNumberNotFilled.hasError.value).toEqual(true)
+    expect(phoneNumberNotFilled.hasError.error).toBe('O campo de Número de Telefone é obrigatório.')
+
     // Testes para o campo de Estado
     let stateWithoutCountry = await userController.analyzeUserState('', 'VA')
     expect(stateWithoutCountry.field).toBe('iptState')
