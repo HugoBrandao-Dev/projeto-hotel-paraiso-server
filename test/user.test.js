@@ -228,5 +228,11 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(cpfMissingNumbers.field).toBe('iptCPF')
     expect(cpfMissingNumbers.hasError.value).toEqual(true)
     expect(cpfMissingNumbers.hasError.error).toBe('Faltam digitos no seu CPF.')
+
+    // Testes para o campo de Número do Passporte
+    let numberWithoutCountryCode = userController.analyzeUserPassportNumber('', '431276122')
+    expect(numberWithoutCountryCode.field).toBe('iptPassportNumber')
+    expect(numberWithoutCountryCode.hasError.value).toEqual(true)
+    expect(numberWithoutCountryCode.hasError.error).toBe('É necessário informar o seu País de Nascimento.')
   })
 })
