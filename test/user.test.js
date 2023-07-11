@@ -111,10 +111,15 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     const userController = UserController
 
     // Testes para o campo de Nome
-    let name = userController.analyzeUserName('')
-    expect(name.field).toBe('iptName')
-    expect(name.hasError.value).toEqual(true)
-    expect(name.hasError.error).toBe('O campo Nome é obrigatório.')
+    let nameNotFilled = userController.analyzeUserName('')
+    expect(nameNotFilled.field).toBe('iptName')
+    expect(nameNotFilled.hasError.value).toEqual(true)
+    expect(nameNotFilled.hasError.error).toBe('O campo Nome é obrigatório.')
+
+    let nameInvalid = userController.analyzeUserName('Tobias de 0liveira')
+    expect(nameInvalid.field).toBe('iptName')
+    expect(nameInvalid.hasError.value).toEqual(true)
+    expect(nameInvalid.hasError.error).toBe('O campo Nome possui caracteres inválidos.')
 
     // Testes para o campo Data de Nascimento
     let birthDate = userController.analyzeUserBirthDate('')
