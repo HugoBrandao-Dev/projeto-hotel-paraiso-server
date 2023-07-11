@@ -201,7 +201,7 @@ class UserController {
       console.log(error)
     }
   }
-  analyzeUserCPF(cpf) {
+  analyzeUserCPF(cpf = '') {
     let result = { field: 'iptCPF', hasError: { value: false, error: '' }}
 
       if (!cpf) {
