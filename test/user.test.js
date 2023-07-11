@@ -223,5 +223,10 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(cpfInvalid.field).toBe('iptCPF')
     expect(cpfInvalid.hasError.value).toEqual(true)
     expect(cpfInvalid.hasError.error).toBe('O CPF possui caracteres inválidos.')
+
+    let cpfMissingNumbers = await userController.analyzeUserCPF('0111111111')
+    expect(cpfMissingNumbers.field).toBe('iptCPF')
+    expect(cpfMissingNumbers.hasError.value).toEqual(true)
+    expect(cpfMissingNumbers.hasError.error).toBe('Faltam digitos no seu CPF.')
   })
 })
