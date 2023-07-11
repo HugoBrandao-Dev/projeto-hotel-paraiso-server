@@ -160,6 +160,11 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(phoneNumberNotFilled.hasError.value).toEqual(true)
     expect(phoneNumberNotFilled.hasError.error).toBe('O campo de Número de Telefone é obrigatório.')
 
+    let phoneInvalid = userController.analyzeUserPhoneNumber('5511a984756545')
+    expect(phoneInvalid.field).toBe('iptPhoneNumber')
+    expect(phoneInvalid.hasError.value).toEqual(true)
+    expect(phoneInvalid.hasError.error).toBe('O telefone é inválido.')
+
     // Testes para o campo de Estado
     let stateWithoutCountry = await userController.analyzeUserState('', 'VA')
     expect(stateWithoutCountry.field).toBe('iptState')
