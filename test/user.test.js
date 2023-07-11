@@ -121,6 +121,12 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(nameInvalid.hasError.value).toEqual(true)
     expect(nameInvalid.hasError.error).toBe('O campo Nome possui caracteres inválidos.')
 
+    // Testes para o campo de Email
+    let emailNotFilled = userController.analyzeUserEmail('')
+    expect(emailNotFilled.field).toBe('iptEmail')
+    expect(emailNotFilled.hasError.value).toEqual(true)
+    expect(emailNotFilled.hasError.error).toBe('O campo Email é obrigatório.')
+
     // Testes para o campo Data de Nascimento
     let birthDate = userController.analyzeUserBirthDate('')
     expect(birthDate.field).toBe('iptBirthDate')
