@@ -234,5 +234,10 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(numberWithoutCountryCode.field).toBe('iptPassportNumber')
     expect(numberWithoutCountryCode.hasError.value).toEqual(true)
     expect(numberWithoutCountryCode.hasError.error).toBe('É necessário informar o seu País de Nascimento.')
+
+    let numberNotFilled = userController.analyzeUserPassportNumber('US', '')
+    expect(numberNotFilled.field).toBe('iptPassportNumber')
+    expect(numberNotFilled.hasError.value).toEqual(true)
+    expect(numberNotFilled.hasError.error).toBe('Este campo é obrigatório.')
   })
 })
