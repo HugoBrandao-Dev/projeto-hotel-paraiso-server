@@ -239,5 +239,10 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(numberNotFilled.field).toBe('iptPassportNumber')
     expect(numberNotFilled.hasError.value).toEqual(true)
     expect(numberNotFilled.hasError.error).toBe('Este campo é obrigatório.')
+
+    let numberInvalid = userController.analyzeUserPassportNumber('US', '1111A1111')
+    expect(numberInvalid.field).toBe('iptPassportNumber')
+    expect(numberInvalid.hasError.value).toEqual(true)
+    expect(numberInvalid.hasError.error).toBe('Número de passaporte inválido.')
   })
 })
