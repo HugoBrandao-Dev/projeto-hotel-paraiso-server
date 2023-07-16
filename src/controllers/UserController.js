@@ -1,378 +1,8 @@
-const axios = require('axios')
-const validator = require('validator')
-const axios_countryStateCity = axios.create({
-  baseURL: 'https://api.countrystatecity.in/v1',
-  headers: {
-    'X-CSCAPI-KEY': 'UlRPNjR3OGhQOGhiRmloR0FWaDNwSGY2VzZIWlRKRzBNZDN5WUdPdQ=='
-  }
-})
+const Analyzer = require('../tools/Analyzer')
 
 class UserController {
-  analyzeUserName(name = '') {
-    let acceptableChars = ' \''
-    let result = { field: 'iptName', hasError: { value: false, error: '' }}
 
-    // Caso o usuário não tenha passado um nome
-    if (!name) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo Nome é obrigatório.'
-      return result
-    }
-
-    let itsValidPT_BR = validator.isAlpha(name, ['pt-BR'], {
-      ignore: acceptableChars
-    })
-    let itsValidEN_US = validator.isAlpha(name, ['en-US'], {
-      ignore: acceptableChars
-    })
-
-    if (!itsValidPT_BR && !itsValidEN_US) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo Nome possui caracteres inválidos.'
-    }
-    return result
-  }
-  analyzeUserEmail(email = '') {
-    let result = { field: 'iptEmail', hasError: { value: false, error: '' }}
-
-    // Caso o usuário não tenha passado um email
-    if (!email) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo Email é obrigatório.'
-      return result
-    }
-
-    let isValid = validator.isEmail(email)
-
-    // Verificar se o email já existe.
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo Email possui caracteres inválidos.'
-    }
-    return result
-  }
-  analyzeUserBirthDate(date = '') {
-    let result = { field: 'iptBirthDate', hasError: { value: false, error: '' }}
-
-    // Caso o usuário não tenha passado um email
-    if (!date) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo Data de Nascimento é obrigatório.'
-      return result
-    }
-
-    let dateNow = new Date()
-
-    let day = dateNow.getDate()
-    if (day < 10) {
-      day = `0${ day }`
-    }
-    let month = dateNow.getMonth() + 1
-    if (month < 10) {
-      month = `0${ month }`
-    }
-
-    // Data de nascimento mínima é 18 anos.
-    let year = dateNow.getFullYear() - 18
-    let fullDate = `${ year }-${ month }-${ day }`
-
-    let isBefore = validator.isBefore(date, fullDate)
-    let isEqual = validator.equals(date, fullDate)
-
-    if (!isBefore && !isEqual) {
-      result.hasError.value = true
-      result.hasError.error = 'Somente usuários com mais de 18 anos podem se cadastrar.'
-    }
-    return result
-  }
-  analyzeUserPassword(password = '') {
-    let result = { field: 'iptPassword', hasError: { value: false, error: '' }}
-
-    if (!password) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo de Senha é obrigatório.'
-      return result
-    }
-
-    let isValid = validator.isStrongPassword(password)
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.error = 'A senha é muito fraca.'
-    }
-
-    return result
-  }
-  analyzeUserPhoneNumber(phoneNumber = '') {
-    let result = { field: 'iptPhoneNumber', hasError: { value: false, error: '' }}
-
-    if (!phoneNumber) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo de Número de Telefone é obrigatório.'
-      return result
-    }
-
-    let isValid = validator.isMobilePhone(phoneNumber)
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.error = 'O telefone é inválido.'
-    }
-
-    return result
-  }
-  analyzeUserCountry(country = '') {
-    let result = { field: 'iptCountry', hasError: { value: false, error: '' }}
-
-    if (!country) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo de País de Nascimento é obrigatório.'
-      return result
-    }
-
-    let isValid = validator.isISO31661Alpha2(country)
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.error = 'País inválido.'
-    }
-
-    return result
-  }
-  async analyzeUserState(country = '', state = '') {
-    try {
-      let result = { field: 'iptState', hasError: { value: false, error: '' }}
-
-      if (!country) {
-        result.hasError.value = true
-        result.hasError.error = 'É necessário informar o seu País de Nascimento.'
-        return result
-      }
-      if (!state) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de Estado de Nascimento é obrigatório.'
-        return result
-      }
-
-      let response = await axios_countryStateCity.get(`/countries/${ country }/states`)
-      let states = response.data.map(item => item.iso2)
-      let isValid = validator.isIn(state, states)
-
-      if (!isValid) {
-        result.hasError.value = true
-        result.hasError.error = 'Estado inválido.'
-      }
-
-      return result
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  async analyzeUserCity(country = '', state = '', city = '') {
-    try {
-      let result = { field: 'iptCity', hasError: { value: false, error: '' }}
-
-      if (!country) {
-        result.hasError.value = true
-        result.hasError.error = 'É necessário informar o seu País de Nascimento.'
-        return result
-      } else if (!state) {
-        result.hasError.value = true
-        result.hasError.error = 'É necessário informar o seu Estado de Nascimento.'
-        return result
-      } else if (!city) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de Cidade de Nascimento é obrigatório.'
-        return result
-      }
-
-      let response = await axios_countryStateCity.get(`/countries/${ country }/states/${ state }/cities`)
-      let cities = response.data.map(item => item.name)
-      let isValid = validator.isIn(city, cities)
-
-      if (!isValid) {
-        result.hasError.value = true
-        result.hasError.error = 'Cidade inválida.'
-      }
-
-      return result
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  analyzeUserCPF(cpf = '') {
-    let result = { field: 'iptCPF', hasError: { value: false, error: '' }}
-
-      if (!cpf) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de CPF é obrigatório.'
-        return result
-      }
-
-      let isInt = validator.isInt(cpf, {
-        allow_leading_zeroes: true
-      })
-      let hasLength = validator.isLength(cpf, {
-        min: 11,
-        max: 11
-      })
-
-      if (!isInt) {
-        result.hasError.value = true
-        result.hasError.error = 'O CPF possui caracteres inválidos.'
-      } else if (!hasLength) {
-        result.hasError.value = true
-        result.hasError.error = 'Faltam digitos no seu CPF.'
-      }
-
-      return result
-  }
-  analyzeUserPassportNumber(countryCode = '', passportNumber = '') {
-    let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
-
-    if (!countryCode) {
-      result.hasError.value = true
-      result.hasError.error = 'É necessário informar o seu País de Nascimento.'
-      return result
-    }
-    if (!passportNumber) {
-      result.hasError.value = true
-      result.hasError.error = 'Este campo é obrigatório.'
-      return result
-    }
-
-    let isValid = validator.isPassportNumber(passportNumber, countryCode)
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.error = 'Número de passaporte inválido.'
-    }
-
-    return result
-  }
-  async analyzeUserCEP(cep = '') {
-    try {
-      let result = { field: 'iptCEP', hasError: { value: false, error: '' }}
-
-      if (!cep) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de CEP é obrigatório.'
-        return result
-      }
-
-      let hasLength = validator.isLength(cep, {
-        min: 8,
-        max: 8
-      })
-      let isNumeric = validator.isNumeric(cep, {
-        no_symbols: true
-      })
-
-
-      if (!hasLength) {
-        result.hasError.value = true
-        result.hasError.error = 'Faltam números no CEP informado.'
-      } else if (!isNumeric) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de CEP possui caracteres inválidos.'
-      } else {
-        if (hasLength && isNumeric) {
-          let response = await axios.get('https://viacep.com.br/ws/01001000/json/')
-          if (response.data.erro) {
-            result.hasError.value = true
-            result.hasError.error = 'O CEP informado não existe.'
-          }
-        }
-      }
-
-      return result
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  analyzeUserNeighborhood(neighborhood = '') {
-    let acceptableChars = ' \':,.'
-    let result = { field: 'iptNeighborhood', hasError: { value: false, error: '' }}
-
-    if (neighborhood) {
-      let itsValidPT_BR = validator.isAlphanumeric(neighborhood, ['pt-BR'], {
-        ignore: acceptableChars
-      })
-      let itsValidEN_US = validator.isAlphanumeric(neighborhood, ['en-US'], {
-        ignore: acceptableChars
-      })
-
-      if (!itsValidPT_BR && !itsValidEN_US) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de Bairro possui caracteres inválidos.'
-      }
-    }
-
-    return result
-  }
-  analyzeUserRoad(road = '') {
-    let acceptableChars = ' \':,.'
-    let result = { field: 'iptRoad', hasError: { value: false, error: '' }}
-
-    if (road) {
-      let itsValidPT_BR = validator.isAlphanumeric(road, ['pt-BR'], {
-        ignore: acceptableChars
-      })
-      let itsValidEN_US = validator.isAlphanumeric(road, ['en-US'], {
-        ignore: acceptableChars
-      })
-
-      if (!itsValidPT_BR && !itsValidEN_US) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de Rua possui caracteres inválidos.'
-      }
-    }
-
-    return result
-  }
-  analyzeUserHouseNumber(number) {
-    let acceptableChars = ' \':,.'
-    let result = { field: 'iptHouseNumber', hasError: { value: false, error: '' }}
-
-    if (number) {
-      let isValid = validator.isNumeric(number, {
-        no_symbols: true
-      })
-
-      if (!isValid) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de Número da Casa possui caracteres inválidos.'
-      }
-    }
-
-    return result
-  }
-  analyzeUserAdditionalInformation(information = '') {
-    let acceptableChars = ' \n\',.:$-()'
-    let result = { field: 'iptAdditionalInformation', hasError: { value: false, error: '' }}
-
-    if (information) {
-      let itsValidPT_BR = validator.isAlphanumeric(information, ['pt-BR'], {
-        ignore: acceptableChars
-      })
-      let itsValidEN_US = validator.isAlphanumeric(information, ['en-US'], {
-        ignore: acceptableChars
-      })
-
-      if (!itsValidPT_BR && !itsValidEN_US) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de Rua possui caracteres inválidos.'
-      }
-    }
-
-    return result
-    
-
-    return itsValidPT_BR || itsValidEN_US
-  }
-
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       let errorFields = []
 
@@ -380,7 +10,7 @@ class UserController {
 
       if (req.body.name) {
         let name = req.body.name
-        if (!this.isValidName(name)) {
+        if (!Analyzer.analyzeUserName(name)) {
           errorFields.push({
             field: 'iptName',
             error: 'O nome informado é inválido.'
@@ -395,7 +25,7 @@ class UserController {
 
       if (req.body.email) {
         let email = req.body.email
-        if (!this.isValidEmail(email)) {
+        if (!Analyzer.analyzeUserEmail(email)) {
           errorFields.push({
             field: 'iptEmail',
             error: 'O email informado é inválido.'
@@ -411,7 +41,7 @@ class UserController {
       if (req.body.birthDate) {
         let birthDate = req.body.birthDate
 
-        let msg = this.analyzeBirthDate(birthDate)
+        let msg = Analyzer.analyzeUserBirthDate(birthDate)
         if (msg.length > 0) {
           errorFields.push({
             field: 'iptBirthDate',
@@ -428,7 +58,7 @@ class UserController {
       if (req.body.phoneNumber) {
         let phoneNumber = req.body.phoneNumber
 
-        if (!this.isValidPhoneNumber(phoneNumber)) {
+        if (!Analyzer.analyzeUserPhoneNumber(phoneNumber)) {
           errorFields.push({
             field: 'iptPhoneNumber',
             error: 'Número de telefone inválido.'
@@ -443,7 +73,7 @@ class UserController {
 
       if (req.body.password) {
         let password = req.body.password
-        if (!this.isValidPassword(password)) {
+        if (!Analyzer.analyzeUserPassword(password)) {
           errorFields.push({
             field: 'iptPassword',
             error: 'A senha informada é inválida.'
@@ -458,7 +88,7 @@ class UserController {
 
       if (req.body.country) {
         let country = req.body.country
-        if (!this.isValidCountry(country)) {
+        if (!Analyzer.analyzeUserCountry(country)) {
           errorFields.push({
             field: 'iptCountry',
             error: 'País inválido.'
@@ -466,7 +96,7 @@ class UserController {
         } else {
           if (req.body.state) {
             let state = req.body.state
-            let isValid = await this.isValidState(country, state)
+            let isValid = await Analyzer.analyzeUserState(country, state)
             if (!isValid) {
               errorFields.push({
                 field: 'iptState',
@@ -475,7 +105,7 @@ class UserController {
             } else {
               if (req.body.city) {
                 let city = req.body.city
-                let isValid = await this.isValidCity(country, state, city)
+                let isValid = await Analyzer.analyzeUserCity(country, state, city)
                 if (!isValid) {
                   errorFields.push({
                     field: 'iptCity',
@@ -508,7 +138,7 @@ class UserController {
         if (req.body.cpf) {
           let cpf = req.body.cpf
 
-          if (!this.isValidCPF(cpf)) {
+          if (!Analyzer.analyzeUserCPF(cpf)) {
             errorFields.push({
               field: 'iptCPF',
               error: 'CPF inválido.'
@@ -527,7 +157,7 @@ class UserController {
           let passportNumber = req.body.passportNumber
           let countryCode = req.body.country
 
-          if (!this.isValidPassportNumber(countryCode, passportNumber)) {
+          if (!Analyzer.analyzeUserPassportNumber(countryCode, passportNumber)) {
             errorFields.push({
               field: 'iptPassportNumber',
               error: 'Invalid passport number.'
@@ -546,7 +176,7 @@ class UserController {
       if (req.body.cep) {
         let cep = req.body.cep
 
-        let isValid = await this.isValidCEP(cep)
+        let isValid = await Analyzer.analyzeUserCEP(cep)
         if (!isValid) {
           errorFields.push({
             field: 'iptCEP',
@@ -558,7 +188,7 @@ class UserController {
       if (req.body.neighborhood) {
         let neighborhood = req.body.neighborhood
 
-        if (!this.isValidNeighborhood(neighborhood)) {
+        if (!Analyzer.analyzeUserNeighborhood(neighborhood)) {
           errorFields.push({
             field: 'iptNeighborhood',
             error: 'Este campo tem caracteres inválidos.'
@@ -569,7 +199,7 @@ class UserController {
       if (req.body.road) {
         let road = req.body.road
 
-        if (!this.isValidRoad(road)) {
+        if (!Analyzer.analyzeUserRoad(road)) {
           errorFields.push({
             field: 'iptRoad',
             error: 'Este campo tem caracteres inválidos.'
@@ -580,7 +210,7 @@ class UserController {
       if (req.body.number) {
         let number = req.body.number
 
-        if (!this.isValidNumber(number)) {
+        if (!Analyzer.analyzeUserNumber(number)) {
           errorFields.push({
             field: 'iptNumber',
             error: 'Este campo deve conter somente números.'
@@ -591,16 +221,23 @@ class UserController {
       if (req.body.information) {
         let information = req.body.information
 
-        if (!this.isValidAddInformation(information)) {
+        if (!Analyzer.analyzeUserAdditionalInformation(information)) {
           errorFields.push({
             field: 'iptAddInformation',
             error: 'Este campo contém caracteres inválidos.'
           })
         }
       }
+
+      if (errorFields.length) {
+        res.status(403)
+        res.json({ msg: 'Erro em algum campo!'})
+        return
+      }
+      res.status(201)
+      res.json({ msg: 'Cadastrado com sucesso!'})
     } catch (error) {
-      res.status(500)
-      throw new Error(error)
+      return next(error)
     }
   }
 }
