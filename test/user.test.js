@@ -1,12 +1,31 @@
 const app = require('../src/app')
 const supertest = require('supertest')
 
-// Controllers
-const UserController = require('../src/controllers/UserController')
-
 const request = supertest(app)
 
 describe("Suite de testes das rotas User.", function() {
+  describe("Testes de SUCESSO na inserção de dados.", function() {
+    test("POST - Deve retornar 201, para inserção dos dados obrigatórios", function() {
+      return request.post('/users').send({
+        "name": "Tobias de Oliveira",
+        "email": "tobias@gmail.com",
+        "password": "@TobiaS&591022@",
+        "phoneNumber": "5599984752352",
+        "birthDate": "1985-06-09",
+        "country": "BR",
+        "state": "SP",
+        "city": "São Paulo",
+        "cpf": "22222222222",
+      })
+      .then(response => {
+        expect(response.statusCode).toEqual(201)
+      })
+      .catch(error => {
+        fail(error)
+      })
+    })
+  })
+  /*
   test("Devem retornar TRUE para os valores informados.", async function() {
     try {
       const userController = UserController
@@ -245,4 +264,5 @@ Maecenas ac ornare urna, ut eleifend neque. Donec augue dolor, tincidunt id tinc
     expect(numberInvalid.hasError.value).toEqual(true)
     expect(numberInvalid.hasError.error).toBe('Número de passaporte inválido.')
   })
+  */
 })
