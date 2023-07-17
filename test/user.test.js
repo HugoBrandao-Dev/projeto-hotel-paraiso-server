@@ -5,7 +5,7 @@ const request = supertest(app)
 
 describe("Suite de testes das rotas User.", function() {
   describe("Testes de SUCESSO na inserção de dados.", function() {
-    test("POST - Deve retornar 201, para inserção dos dados obrigatórios", function() {
+    test("POST - Deve retornar 201, para inserção dos dados obrigatórios para brasileiros.", function() {
       return request.post('/users').send({
         "name": "Tobias de Oliveira",
         "email": "tobias@gmail.com",
@@ -17,10 +17,30 @@ describe("Suite de testes das rotas User.", function() {
         "city": "São Paulo",
         "cpf": "22222222222",
       })
-      .then(response => {
+      .then(function(response) {
         expect(response.statusCode).toEqual(201)
       })
-      .catch(error => {
+      .catch(function(error) {
+        fail(error)
+      })
+    })
+
+    test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
+      return request.post('/users').send({
+        "name": "Dinorá de Oliveira",
+        "email": "dinora@hotmail.com",
+        "password": "@DinorA&3659792@",
+        "phoneNumber": "12129981212",
+        "birthDate": "1999-01-09",
+        "country": "US",
+        "state": "NY",
+        "city": "New York",
+        "passportNumber": "C00001549",
+      })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(201)
+      })
+      .catch(function(error) {
         fail(error)
       })
     })
