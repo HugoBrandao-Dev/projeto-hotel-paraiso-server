@@ -25,6 +25,31 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
 
+    test("POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", function() {
+      return request.post('/users').send({
+        "name": "Tobias de Oliveira",
+        "email": "tobias@gmail.com",
+        "password": "@TobiaS&591022@",
+        "phoneNumber": "5599984752352",
+        "birthDate": "1985-06-09",
+        "country": "BR",
+        "state": "SP",
+        "city": "São Paulo",
+        "cpf": "22222222222",
+        "cep": "08391700",
+        "neighborhood": "Jardim Nova São Paulo",
+        "road": "Rua Nina Simone",
+        "number": "2000",
+        "information": "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+      })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(201)
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
+
     test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
       return request.post('/users').send({
         "name": "Dinorá de Oliveira",
