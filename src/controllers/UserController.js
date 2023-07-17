@@ -210,7 +210,7 @@ class UserController {
       if (req.body.number) {
         let number = req.body.number
 
-        if (!Analyzer.analyzeUserNumber(number)) {
+        if (!Analyzer.analyzeUserHouseNumber(number)) {
           errorFields.push({
             field: 'iptNumber',
             error: 'Este campo deve conter somente números.'
@@ -237,7 +237,8 @@ class UserController {
       res.status(201)
       res.json({ msg: 'Cadastrado com sucesso!'})
     } catch (error) {
-      return next(error)
+      throw new Error(error)
+      res.statusCode(500)
     }
   }
 }
