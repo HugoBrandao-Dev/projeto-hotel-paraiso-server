@@ -44,7 +44,7 @@ describe("Suite de testes das rotas User.", function() {
         cep: "08391700",
         neighborhood: "Jardim Nova São Paulo",
         road: "Rua Nina Simone",
-        number: "2000",
+        house_number: "2000",
         information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
       })
       .then(function(response) {
@@ -90,7 +90,7 @@ describe("Suite de testes das rotas User.", function() {
         passportNumber: "C00001549",
         neighborhood: "Jardim Nova São Paulo",
         road: "Rua Nina Simone",
-        number: "2000",
+        house_number: "2000",
         information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
       })
       .then(function(response) {
@@ -122,7 +122,7 @@ describe("Suite de testes das rotas User.", function() {
           passportNumber,
           neighborhood,
           road,
-          number,
+          house_number,
           information
         } = response.body
 
@@ -180,8 +180,8 @@ describe("Suite de testes das rotas User.", function() {
         expect(road).toBe("Rua Nina Simone")
 
         // Número da casa onde o cliente nasceu.
-        expect(number).toBeDefined()
-        expect(number).toBe("2000")
+        expect(house_number).toBeDefined()
+        expect(house_number).toBe("2000")
 
         // Infomações adicionais do cliente.
         expect(information).toBeDefined()
@@ -209,7 +209,7 @@ describe("Suite de testes das rotas User.", function() {
           passportNumber,
           neighborhood,
           road,
-          number,
+          house_number,
           information
         } = response.body
 
@@ -259,7 +259,7 @@ describe("Suite de testes das rotas User.", function() {
         // Dados opcionais
         expect(neighborhood).toBeUndefined()
         expect(road).toBeUndefined()
-        expect(number).toBeUndefined()
+        expect(house_number).toBeUndefined()
         expect(information).toBeUndefined()
       })
       .catch(function(error) {

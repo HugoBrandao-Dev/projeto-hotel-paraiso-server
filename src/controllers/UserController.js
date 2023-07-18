@@ -230,10 +230,10 @@ class UserController {
         }
       }
 
-      if (req.body.number) {
-        let number = req.body.number
+      if (req.body.house_number) {
+        let house_number = req.body.house_number
 
-        if (!Analyzer.analyzeUserHouseNumber(number)) {
+        if (!Analyzer.analyzeUserHouseNumber(house_number)) {
           errorFields.push({
             field: 'iptNumber',
             error: 'Este campo deve conter somente números.'
