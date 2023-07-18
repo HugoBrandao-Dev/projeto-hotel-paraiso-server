@@ -262,6 +262,90 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário estrangeiro.", function() {
+      return request.get('/users/507f191e810c19729de860ea')
+      .then(function(response) {
+        let { 
+          name,
+          email,
+          birthDate,
+          phoneCode,
+          phoneNumber,
+          country,
+          cep,
+          state,
+          city,
+          cpf,
+          passportNumber,
+          neighborhood,
+          road,
+          house_number,
+          information
+        } = response.body
+
+        expect(response.statusCode).toEqual(200)
+
+        // Nome
+        expect(name).toBeDefined()
+        expect(name).toBe("John Smith")
+
+        // Email
+        expect(email).toBeDefined()
+        expect(email).toBe("john_sm@hotmail.com")
+
+        // Data de nascimento
+        expect(birthDate).toBeDefined()
+        expect(birthDate).toBe("1970-06-11")
+
+        // Código do país do telefone de contato
+        expect(phoneCode).toBeDefined()
+        expect(phoneCode).toBe("1")
+
+        // Número de contato do cliente
+        expect(phoneNumber).toBeDefined()
+        expect(phoneNumber).toBe("2129981212")
+
+        // País de nascimento do cliente
+        expect(country).toBeDefined()
+        expect(country).toBe("US")
+
+        // Estado de nascimento do cliente
+        expect(state).toBeDefined()
+        expect(state).toBe("NY")
+
+        // Cidade de nascimento do cliente
+        expect(city).toBeDefined()
+        expect(city).toBe("New York")
+
+        // Número do Passaporte é vazio, porque o cliente é Brasileiro.
+        expect(passportNumber).toBeDefined()
+        expect(passportNumber).toBe("C00001549")
+        
+        // Nome do bairro onde o cliente nasceu.
+        expect(neighborhood).toBeDefined()
+        expect(neighborhood).toBe("2 Broadway")
+
+        // Nome da rua onde o cliente nasceu.
+        expect(road).toBeDefined()
+        expect(road).toBe("13th Street")
+
+        // Número da casa onde o cliente nasceu.
+        expect(house_number).toBeDefined()
+        expect(house_number).toBe("10310")
+
+        // Infomações adicionais do cliente.
+        expect(information).toBeDefined()
+        expect(information).toBe("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra congue elit non elementum. Praesent fringilla lectus interdum ipsum tempor, ut commodo urna blandit. Nunc sagittis vestibulum luctus. Duis eget arcu nisi. Donec lobortis tellus at porttitor mattis. In ornare ornare posuere. Nunc eu aliquam metus, in sodales tellus. Sed eu mi mi. Nullam varius sed massa interdum vulputate. Morbi sodales justo tellus, quis luctus lorem lacinia eu. Integer efficitur eu ante ac tempus. Phasellus tincidunt fermentum metus ac dignissim.")
+
+        // Campos que podem ser undefined para estrangeiros
+        expect(cpf).toBeUndefined()
+        expect(cep).toBeUndefined()
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
   })
   /*
   test("Devem retornar TRUE para os valores informados.", async function() {
