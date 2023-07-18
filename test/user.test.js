@@ -4,6 +4,9 @@ const supertest = require('supertest')
 const request = supertest(app)
 
 describe("Suite de testes das rotas User.", function() {
+
+  /* ################## CREATE ################## */
+
   describe("Testes de SUCESSO na inserção de dados.", function() {
     test("POST - Deve retornar 201, para inserção dos dados obrigatórios para brasileiros.", function() {
       return request.post('/users').send({
@@ -90,6 +93,97 @@ describe("Suite de testes das rotas User.", function() {
         expect(response.statusCode).toEqual(201)
       })
       .catch(function(error) {
+        fail(error)
+      })
+    })
+  })
+
+  /* ################## READ ################## */
+
+  describe("Testes de SUCESSO na leitura de dados.", function() {
+    test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
+      return request.get('/users/5da9ea674234635bdff45c02')
+      .then(response => {
+        let { 
+          name,
+          email,
+          birthDate,
+          phoneCode,
+          phoneNumber,
+          country,
+          cep,
+          state,
+          city,
+          cpf,
+          passportNumber,
+          neighborhood,
+          road,
+          number,
+          information
+        } = response.body
+
+        expect(response.statusCode).toEqual(200)
+
+        // Nome
+        expect(name).toBeDefined()
+        expect(name).toBe("Jeremias de Oliveira")
+
+        // Email
+        expect(email).toBeDefined()
+        expect(email).toBe("jere_oliveira@yahoo.com")
+
+        // Data de nascimento
+        expect(birthDate).toBeDefined()
+        expect(birthDate).toBe("1999-08-03")
+
+        // CEP do cliente
+        expect(cep).toBeDefined()
+        expect(cep).toBe("08391700")
+
+        // Código do país do telefone de contato
+        expect(phoneCode).toBeDefined()
+        expect(phoneCode).toBe("55")
+
+        // Número de contato do cliente
+        expect(phoneNumber).toBeDefined()
+        expect(phoneNumber).toBe("11984755654")
+
+        // País de nascimento do cliente
+        expect(country).toBeDefined()
+        expect(country).toBe("BR")
+
+        // Estado de nascimento do cliente
+        expect(state).toBeDefined()
+        expect(state).toBe("SP")
+
+        // Cidade de nascimento do cliente
+        expect(city).toBeDefined()
+        expect(city).toBe("São Paulo")
+
+        // CPF do cliente
+        expect(cpf).toBeDefined()
+        expect(cpf).toBe("11111111111")
+
+        // Número do Passaporte é vazio, porque o cliente é Brasileiro.
+        expect(passportNumber).toBe("")
+        
+        // Nome do bairro onde o cliente nasceu.
+        expect(neighborhood).toBeDefined()
+        expect(neighborhood).toBe("Jardim Nova São Paulo")
+
+        // Nome da rua onde o cliente nasceu.
+        expect(road).toBeDefined()
+        expect(road).toBe("Rua Nina Simone")
+
+        // Número da casa onde o cliente nasceu.
+        expect(number).toBeDefined()
+        expect(number).toBe("2000")
+
+        // Infomações adicionais do cliente.
+        expect(information).toBeDefined()
+        expect(information).toBe("Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique.")
+      })
+      .catch(error => {
         fail(error)
       })
     })
