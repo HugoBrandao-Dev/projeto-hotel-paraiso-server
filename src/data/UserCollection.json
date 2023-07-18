@@ -49,6 +49,18 @@
         "road": "13th Street",
         "house_number": "10310",
         "information": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra congue elit non elementum. Praesent fringilla lectus interdum ipsum tempor, ut commodo urna blandit. Nunc sagittis vestibulum luctus. Duis eget arcu nisi. Donec lobortis tellus at porttitor mattis. In ornare ornare posuere. Nunc eu aliquam metus, in sodales tellus. Sed eu mi mi. Nullam varius sed massa interdum vulputate. Morbi sodales justo tellus, quis luctus lorem lacinia eu. Integer efficitur eu ante ac tempus. Phasellus tincidunt fermentum metus ac dignissim."
+      },
+      {
+        "id": "600f191e810c19829de900ea",
+        "name": "Michael Ronald",
+        "email": "mi_ronald@gmail.com",
+        "birthDate": "1979-11-11",
+        "phoneCode": "1",
+        "phoneNumber": "8049981212",
+        "country": "US",
+        "state": "VA",
+        "city": "Richmond",
+        "passportNumber": "431276122"
       }
     ]
   }
