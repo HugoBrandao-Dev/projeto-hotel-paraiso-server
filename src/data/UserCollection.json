@@ -19,6 +19,20 @@
         "road": "Rua Nina Simone",
         "number": "2000",
         "information": "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+      },
+      {
+        "id": "507f1f77bcf86cd799439011",
+        "name": "Tobias de Oliveira",
+        "email": "tobias@gmail.com",
+        "password": "507f1f77bcf86cd799439011",
+        "phoneCode": "21",
+        "phoneNumber": "994755654",
+        "birthDate": "1995-08-03",
+        "country": "BR",
+        "state": "RJ",
+        "cep": "21051990",
+        "city": "Rio de Janeiro",
+        "cpf": "22222222222"
       }
     ]
   }
