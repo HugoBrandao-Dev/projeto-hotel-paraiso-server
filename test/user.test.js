@@ -201,7 +201,12 @@ describe("Suite de testes das rotas User.", function() {
           state,
           cep,
           city,
-          cpf
+          cpf,
+          passportNumber,
+          neighborhood,
+          road,
+          number,
+          information
         } = response.body
 
         // Nome
@@ -243,6 +248,15 @@ describe("Suite de testes das rotas User.", function() {
         // CPF do cliente
         expect(cpf).toBeDefined()
         expect(cpf).toBe("22222222222")
+
+        // Dado condicional
+        expect(passportNumber).toBeUndefined()
+
+        // Dados opcionais
+        expect(neighborhood).toBeUndefined()
+        expect(road).toBeUndefined()
+        expect(number).toBeUndefined()
+        expect(information).toBeUndefined()
       })
       .catch(function(error) {
         fail(error)
