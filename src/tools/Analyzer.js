@@ -104,6 +104,29 @@ class Analyzer {
 
     return result
   }
+
+  static analyzeUserPhoneCode(phoneCode = '') {
+    let result = { field: 'iptPhoneCode', hasError: { value: false, error: '' }}
+
+    if (!phoneCode) {
+      result.hasError.value = true
+      result.hasError.error = 'O campo de Código de Telefone é obrigatório.'
+      return result
+    }
+
+    let isValid = validator.isInt(phoneCode, {
+      min: 1,
+      max: 998
+    })
+
+    if (!isValid) {
+      result.hasError.value = true
+      result.hasError.error = 'O Código de Telefone é inválido.'
+    }
+
+    return result
+  }
+
   static analyzeUserPhoneNumber(phoneNumber = '') {
     let result = { field: 'iptPhoneNumber', hasError: { value: false, error: '' }}
 
