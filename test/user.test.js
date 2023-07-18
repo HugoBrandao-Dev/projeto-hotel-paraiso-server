@@ -350,6 +350,78 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("GET - Deve retornar 200 para busca de informações obrigatórias de um usuario estrangeiro.", function() {
+      return request.get('/users/600f191e810c19829de900ea')
+      .then(function(response) {
+        let {
+          name,
+          email,
+          birthDate,
+          phoneCode,
+          phoneNumber,
+          country,
+          state,
+          city,
+          cpf,
+          passportNumber,
+          neighborhood,
+          road,
+          house_number,
+          information
+        } = response.body
+
+        expect(response.statusCode).toEqual(200)
+
+        // Nome do cliente
+        expect(name).toBeDefined()
+        expect(name).toBe("Michael Ronald")
+
+        // Email do cliente
+        expect(email).toBeDefined()
+        expect(email).toBe("mi_ronald@gmail.com")
+
+        // Data de nascimento do cliente
+        expect(birthDate).toBeDefined()
+        expect(birthDate).toBe("1979-11-11")
+
+        // Código do telefone do cliente
+        expect(phoneCode).toBeDefined()
+        expect(phoneCode).toBe("1")
+
+        // Número do telefone do cliente
+        expect(phoneNumber).toBeDefined()
+        expect(phoneNumber).toBe("8049981212")
+
+        // País do cliente
+        expect(country).toBeDefined()
+        expect(country).toBe("US")
+
+        // Estado do cliente
+        expect(state).toBeDefined()
+        expect(state).toBe("VA")
+
+        // Cidade do cliente
+        expect(city).toBeDefined()
+        expect(city).toBe("Richmond")
+
+        // Número do passaporte do cliente
+        expect(passportNumber).toBeDefined()
+        expect(passportNumber).toBe("431276122")
+
+        // Dado condicional
+        expect(cpf).toBeUndefined()
+
+        // Dados opcionais
+        expect(neighborhood).toBeUndefined()
+        expect(road).toBeUndefined()
+        expect(house_number).toBeUndefined()
+        expect(information).toBeUndefined()
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
   })
   /*
   test("Devem retornar TRUE para os valores informados.", async function() {
