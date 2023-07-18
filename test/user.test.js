@@ -187,6 +187,67 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
+      return request.get("/users/507f1f77bcf86cd799439011")
+      .then(function(response) {
+        let {
+          name,
+          email,
+          phoneCode,
+          phoneNumber,
+          birthDate,
+          country,
+          state,
+          cep,
+          city,
+          cpf
+        } = response.body
+
+        // Nome
+        expect(name).toBeDefined()
+        expect(name).toBe("Tobias de Oliveira")
+
+        // Email
+        expect(email).toBeDefined()
+        expect(email).toBe("tobias@gmail.com")
+
+        // Data de nascimento
+        expect(birthDate).toBeDefined()
+        expect(birthDate).toBe("1995-08-03")
+
+        // Código do país do telefone de contato
+        expect(phoneCode).toBeDefined()
+        expect(phoneCode).toBe("21")
+
+        // Número de contato do cliente
+        expect(phoneNumber).toBeDefined()
+        expect(phoneNumber).toBe("994755654")
+
+        // País de nascimento do cliente
+        expect(country).toBeDefined()
+        expect(country).toBe("BR")
+
+        // CEP do cliente
+        expect(cep).toBeDefined()
+        expect(cep).toBe("21051990")
+
+        // Estado de nascimento do cliente
+        expect(state).toBeDefined()
+        expect(state).toBe("RJ")
+
+        // Cidade de nascimento do cliente
+        expect(city).toBeDefined()
+        expect(city).toBe("Rio de Janeiro")
+
+        // CPF do cliente
+        expect(cpf).toBeDefined()
+        expect(cpf).toBe("22222222222")
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
   })
   /*
   test("Devem retornar TRUE para os valores informados.", async function() {
