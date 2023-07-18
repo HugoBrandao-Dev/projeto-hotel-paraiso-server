@@ -10,15 +10,16 @@ describe("Suite de testes das rotas User.", function() {
   describe("Testes de SUCESSO na inserção de dados.", function() {
     test("POST - Deve retornar 201, para inserção dos dados obrigatórios para brasileiros.", function() {
       return request.post('/users').send({
-        "name": "Tobias de Oliveira",
-        "email": "tobias@gmail.com",
-        "password": "@TobiaS&591022@",
-        "phoneNumber": "5599984752352",
-        "birthDate": "1985-06-09",
-        "country": "BR",
-        "state": "SP",
-        "city": "São Paulo",
-        "cpf": "22222222222",
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "22222222222",
       })
       .then(function(response) {
         expect(response.statusCode).toEqual(201)
@@ -30,20 +31,21 @@ describe("Suite de testes das rotas User.", function() {
 
     test("POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", function() {
       return request.post('/users').send({
-        "name": "Tobias de Oliveira",
-        "email": "tobias@gmail.com",
-        "password": "@TobiaS&591022@",
-        "phoneNumber": "5599984752352",
-        "birthDate": "1985-06-09",
-        "country": "BR",
-        "state": "SP",
-        "city": "São Paulo",
-        "cpf": "22222222222",
-        "cep": "08391700",
-        "neighborhood": "Jardim Nova São Paulo",
-        "road": "Rua Nina Simone",
-        "number": "2000",
-        "information": "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11999847523",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "22222222222",
+        cep: "08391700",
+        neighborhood: "Jardim Nova São Paulo",
+        road: "Rua Nina Simone",
+        number: "2000",
+        information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
       })
       .then(function(response) {
         expect(response.statusCode).toEqual(201)
@@ -55,15 +57,16 @@ describe("Suite de testes das rotas User.", function() {
 
     test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
       return request.post('/users').send({
-        "name": "Dinorá de Oliveira",
-        "email": "dinora@hotmail.com",
-        "password": "@DinorA&3659792@",
-        "phoneNumber": "12129981212",
-        "birthDate": "1999-01-09",
-        "country": "US",
-        "state": "NY",
-        "city": "New York",
-        "passportNumber": "C00001549",
+        name: "Dinorá de Oliveira",
+        email: "dinora@hotmail.com",
+        password: "@DinorA&3659792@",
+        phoneCode: "1",
+        phoneNumber: "2129981212",
+        birthDate: "1999-01-09",
+        country: "US",
+        state: "NY",
+        city: "New York",
+        passportNumber: "C00001549",
       })
       .then(function(response) {
         expect(response.statusCode).toEqual(201)
@@ -75,19 +78,20 @@ describe("Suite de testes das rotas User.", function() {
 
     test("POST - Deve retornar 201, para inserção dos dados obrigatórios + opcionais de estrangeiros.", function() {
       return request.post('/users').send({
-        "name": "Dinorá de Oliveira",
-        "email": "dinora@hotmail.com",
-        "password": "@DinorA&3659792@",
-        "phoneNumber": "12129981212",
-        "birthDate": "1998-04-09",
-        "country": "US",
-        "state": "NY",
-        "city": "New York",
-        "passportNumber": "C00001549",
-        "neighborhood": "Jardim Nova São Paulo",
-        "road": "Rua Nina Simone",
-        "number": "2000",
-        "information": "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+        name: "Dinorá de Oliveira",
+        email: "dinora@hotmail.com",
+        password: "@DinorA&3659792@",
+        phoneCode: "1",
+        phoneNumber: "2129981212",
+        birthDate: "1998-04-09",
+        country: "US",
+        state: "NY",
+        city: "New York",
+        passportNumber: "C00001549",
+        neighborhood: "Jardim Nova São Paulo",
+        road: "Rua Nina Simone",
+        number: "2000",
+        information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
       })
       .then(function(response) {
         expect(response.statusCode).toEqual(201)
