@@ -1,7 +1,9 @@
 const Analyzer = require('../tools/Analyzer')
 
-class UserController {
+// Models
+const User = require('../models/User')
 
+class UserController {
   async create(req, res, next) {
     try {
       let errorFields = []
@@ -239,6 +241,22 @@ class UserController {
     } catch (error) {
       throw new Error(error)
       res.statusCode(500)
+    }
+  }
+  async read(req, res) {
+    try {
+      let id = req.params.id
+
+      let user = await User.findOne(id)
+      if (user) {
+        res.status(200)
+        res.json(user)
+      } else {
+        res.sendStatus(404)
+      }
+    } catch (error) {
+      throw new Error(error)
+      res.sendStatus(500)
     }
   }
 }
