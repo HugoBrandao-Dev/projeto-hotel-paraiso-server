@@ -57,21 +57,42 @@ class UserController {
         })
       }
 
-      if (req.body.phoneNumber) {
-        let phoneNumber = req.body.phoneNumber
+      if (req.body.phoneCode) {
+        let phoneCode = req.body.phoneCode
 
-        if (!Analyzer.analyzeUserPhoneNumber(phoneNumber)) {
+        if (!Analyzer.analyzeUserPhoneCode(phoneCode)) {
           errorFields.push({
-            field: 'iptPhoneNumber',
-            error: 'Número de telefone inválido.'
+            field: 'iptPhoneCode',
+            error: 'Código do país inválido.'
           })
+        } else {
+          if (req.body.phoneNumber) {
+            let phoneNumber = req.body.phoneNumber
+
+            // O método de analize do número do telefone exige que o tenha o código do telefone.
+            if (!Analyzer.analyzeUserPhoneNumber(`${ phoneCode }${ phoneNumber }`)) {
+              errorFields.push({
+                field: 'iptPhoneNumber',
+                error: 'Número de telefone inválido.'
+              })
+            }
+          } else {
+            errorFields.push({
+              field: 'iptPhoneNumber',
+              error: 'Este campo é obrigatório.'
+            })
+          }
         }
+
+        
       } else {
         errorFields.push({
-          field: 'iptPhoneNumber',
-          error: 'Este campo é obrigatório.'
+          field: 'iptPhoneCode',
+          error: 'Informe seu país antes de adicionar o telefone.'
         })
       }
+
+      
 
       if (req.body.password) {
         let password = req.body.password
