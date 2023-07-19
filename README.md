@@ -23,7 +23,8 @@ campos de formulários de cadastro e atualização de usuário, reservar, etc.
 * Mongoose: Modelador de objeto MongoDB para Node.JS;
 * Supertest: Módulo para realização de requisições, neste caso foi utilizado em testes com Jest;
 * CORS: Pacote que possibilita requisições na mesma origem do servidor;
-* Axios: Cliente HTTP para as requisições internas no projeto.
+* Axios: Cliente HTTP para as requisições internas no projeto;
+* UUID: Pacote de geração de IDs. Utilizado durante os testes com o Jest.
 
 ## Possíveis melhorias futuras
 
