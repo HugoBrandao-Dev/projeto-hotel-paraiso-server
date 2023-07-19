@@ -8,7 +8,7 @@ const UserController = require('../controllers/UserController')
 
 router.get('/', HomeController.index)
 router.post('/users', UserController.create)
-router.get('/users', UserController.readMore)
+router.get('/users', UserController.readMany)
 router.get('/users/:id', UserController.read)
 
 module.exports = router

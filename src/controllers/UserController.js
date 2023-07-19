@@ -325,9 +325,9 @@ class UserController {
     }
   }
 
-  async readMore(req, res) {
+  async readMany(req, res) {
     try {
-      let users = await User.findMore()
+      let users = await User.findMany()
       res.status(200)
       res.json(users)
     } catch (error) {

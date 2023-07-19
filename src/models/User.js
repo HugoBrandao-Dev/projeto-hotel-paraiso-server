@@ -21,7 +21,7 @@ class User {
     }
   }
 
-  async findMore() {
+  async findMany() {
     try {
       return await UserCollection.users.data
     } catch (error) {
