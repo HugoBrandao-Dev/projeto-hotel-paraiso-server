@@ -329,7 +329,7 @@ class UserController {
     try {
       let users = await User.findMany()
       res.status(200)
-      res.json(users)
+      res.json({users})
     } catch (error) {
       throw new Error(error)
       res.sendStatus(500)

@@ -483,7 +483,7 @@ describe("Suite de testes das rotas User.", function() {
       return request.get("/users")
       .then(function(response) {
         expect(response.statusCode).toEqual(200)
-        expect(response.body).toBeDefined()
+        expect(response.body.users).toBeDefined()
       })
       .catch(function(error) {
         fail(error)
