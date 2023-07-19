@@ -524,6 +524,22 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("POST - Deve retornar um usuario que tenha o mesmo CPF que o informado.", function() {
+      return request.post('/users/by_passportNumber').send({
+        passportNumber: 'C00001549'
+      })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.user).toMatchObject({
+          "name": "John Smith",
+          "email": "john_sm@hotmail.com"
+        })
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
   })
   
   /*
