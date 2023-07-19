@@ -327,9 +327,18 @@ class UserController {
 
   async readMany(req, res) {
     try {
-      let users = await User.findMany()
+      let users = []
+
+      // No mongodb, skip = offset
+      if ((req.query.offset || req.query.offset == 0) && req.query.limit) {
+        let skip = req.query.offset
+        let limit = req.query.limit
+        users = await User.findMany(skip, limit)
+      } else {
+        users = await User.findMany()
+      }
       res.status(200)
-      res.json({users})
+      res.json({ users })
     } catch (error) {
       throw new Error(error)
       res.sendStatus(500)
