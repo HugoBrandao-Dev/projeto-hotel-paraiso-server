@@ -20,6 +20,15 @@ class User {
       return []
     }
   }
+
+  async findMore() {
+    try {
+      return await UserCollection.users.data
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
 }
 
 module.exports = new User()
