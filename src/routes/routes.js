@@ -9,6 +9,7 @@ const UserController = require('../controllers/UserController')
 router.get('/', HomeController.index)
 router.post('/users', UserController.create)
 router.post('/users/by_cpf', UserController.readByCPF)
+router.post('/users/by_passportNumber', UserController.readByPassportNumber)
 router.get('/users', UserController.readMany)
 router.get('/users/:id', UserController.read)
 
