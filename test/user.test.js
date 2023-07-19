@@ -478,7 +478,19 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("GET - Deve retornar uma lista de usuários.", function() {
+      return request.get("/users")
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200)
+        expect(response.body).toBeDefined()
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
   })
+  
   /*
   test("Devem retornar TRUE para os valores informados.", async function() {
     try {
