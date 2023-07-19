@@ -308,6 +308,7 @@ class UserController {
       res.statusCode(500)
     }
   }
+
   async read(req, res) {
     try {
       let id = req.params.id
@@ -319,6 +320,18 @@ class UserController {
       } else {
         res.sendStatus(404)
       }
+    } catch (error) {
+      throw new Error(error)
+      res.sendStatus(500)
+    }
+  }
+
+  async readByCPF(req, res) {
+    try {
+      let cpf = req.body.cpf
+      let user = await User.findByCPF(cpf)
+      res.status(200)
+      res.json({ user })
     } catch (error) {
       throw new Error(error)
       res.sendStatus(500)
