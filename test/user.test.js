@@ -489,6 +489,25 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
+      return request.get('/users?offset=1&limit=3')
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.users.length).toEqual(2)
+        expect(response.body.users[0]).toMatchObject({
+          "email": "tobias@gmail.com",
+          "cpf": "22222222222"
+        })
+        expect(response.body.users[1]).toMatchObject({
+          "email": "john_sm@hotmail.com",
+          "passportNumber": "C00001549"
+        })
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
   })
   
   /*
