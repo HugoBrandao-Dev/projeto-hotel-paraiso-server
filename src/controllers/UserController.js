@@ -1,4 +1,5 @@
 const Analyzer = require('../tools/Analyzer')
+const uuid = require('uuid')
 
 // Models
 const User = require('../models/User')
@@ -7,16 +8,22 @@ class UserController {
   async create(req, res, next) {
     try {
       let errorFields = []
+      let user = {}
+
+      user.id = uuid.v4()
 
       /* ##### CAMPOS OBRIGATÓRIOS ##### */
 
       if (req.body.name) {
         let name = req.body.name
+
         if (!Analyzer.analyzeUserName(name)) {
           errorFields.push({
             field: 'iptName',
             error: 'O nome informado é inválido.'
           })
+        } else {
+          user.name = name
         }
       } else {
         errorFields.push({
@@ -32,6 +39,8 @@ class UserController {
             field: 'iptEmail',
             error: 'O email informado é inválido.'
           })
+        } else {
+          user.email = email
         }
       } else {
         errorFields.push({
@@ -49,6 +58,8 @@ class UserController {
             field: 'iptBirthDate',
             error: msg
           })
+        } else {
+          user.birthDate = birthDate
         }
       } else {
         errorFields.push({
@@ -66,6 +77,7 @@ class UserController {
             error: 'Código do país inválido.'
           })
         } else {
+          user.phoneCode = phoneCode
           if (req.body.phoneNumber) {
             let phoneNumber = req.body.phoneNumber
 
@@ -75,6 +87,8 @@ class UserController {
                 field: 'iptPhoneNumber',
                 error: 'Número de telefone inválido.'
               })
+            } else {
+              user.phoneNumber = phoneNumber
             }
           } else {
             errorFields.push({
@@ -83,8 +97,6 @@ class UserController {
             })
           }
         }
-
-        
       } else {
         errorFields.push({
           field: 'iptPhoneCode',
@@ -92,15 +104,16 @@ class UserController {
         })
       }
 
-      
-
       if (req.body.password) {
         let password = req.body.password
+
         if (!Analyzer.analyzeUserPassword(password)) {
           errorFields.push({
             field: 'iptPassword',
             error: 'A senha informada é inválida.'
           })
+        } else {
+          user.password = password
         }
       } else {
         errorFields.push({
@@ -111,29 +124,36 @@ class UserController {
 
       if (req.body.country) {
         let country = req.body.country
+
         if (!Analyzer.analyzeUserCountry(country)) {
           errorFields.push({
             field: 'iptCountry',
             error: 'País inválido.'
           })
         } else {
+          user.country = country
           if (req.body.state) {
             let state = req.body.state
             let isValid = await Analyzer.analyzeUserState(country, state)
+
             if (!isValid) {
               errorFields.push({
                 field: 'iptState',
                 error: 'Estado inválido.'
               })
             } else {
+              user.state = state
               if (req.body.city) {
                 let city = req.body.city
                 let isValid = await Analyzer.analyzeUserCity(country, state, city)
+
                 if (!isValid) {
                   errorFields.push({
                     field: 'iptCity',
                     error: 'Cidade inválida.'
                   })
+                } else {
+                  user.city = city
                 }
               } else {
                 errorFields.push({
@@ -166,6 +186,8 @@ class UserController {
               field: 'iptCPF',
               error: 'CPF inválido.'
             })
+          } {
+            user.cpf = cpf
           }
         } else {
           errorFields.push({
@@ -185,6 +207,8 @@ class UserController {
               field: 'iptPassportNumber',
               error: 'Invalid passport number.'
             })
+          } else {
+            user.passportNumber = passportNumber
           }
         } else {
           errorFields.push({
@@ -205,6 +229,8 @@ class UserController {
             field: 'iptCEP',
             error: 'O valor do CEP é inválido.'
           })
+        } else {
+          user.cep = cep
         }
       }
 
@@ -216,6 +242,8 @@ class UserController {
             field: 'iptNeighborhood',
             error: 'Este campo tem caracteres inválidos.'
           })
+        } else {
+          user.neighborhood = neighborhood
         }
       }
 
@@ -227,6 +255,8 @@ class UserController {
             field: 'iptRoad',
             error: 'Este campo tem caracteres inválidos.'
           })
+        } else {
+          user.road = road
         }
       }
 
@@ -235,9 +265,11 @@ class UserController {
 
         if (!Analyzer.analyzeUserHouseNumber(house_number)) {
           errorFields.push({
-            field: 'iptNumber',
+            field: 'iptHouseNumber',
             error: 'Este campo deve conter somente números.'
           })
+        } else {
+          user.house_number = house_number
         }
       }
 
@@ -249,6 +281,8 @@ class UserController {
             field: 'iptAddInformation',
             error: 'Este campo contém caracteres inválidos.'
           })
+        } else {
+          user.information = information
         }
       }
 
@@ -256,9 +290,19 @@ class UserController {
         res.status(403)
         res.json({ msg: 'Erro em algum campo!'})
         return
-      }
-      res.status(201)
-      res.json({ msg: 'Cadastrado com sucesso!'})
+      } else {
+        user.created = {
+          createdAt: `${ Date.now() }`,
+          createdBy: uuid.v4()
+        }
+        user.updated = {
+          updatedAt: '',
+          updatedBy: ''
+        }
+        await User.save(user)
+        res.status(201)
+        res.json({ msg: 'Cadastrado com sucesso!'})
+    }
     } catch (error) {
       throw new Error(error)
       res.statusCode(500)
