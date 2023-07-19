@@ -21,8 +21,16 @@ class User {
     }
   }
 
-  async findMany() {
+  async findMany(skip = null, limit = null) {
     try {
+      if (skip) {
+        if (limit) {
+          return await UserCollection.users.data.slice(skip, limit)
+        } else {
+          let userLength = await UserCollection.users.data.length
+          return await UserCollection.users.data.slice(skip, userLength)
+        }
+      }
       return await UserCollection.users.data
     } catch (error) {
       console.log(error)
