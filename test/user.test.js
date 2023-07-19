@@ -123,7 +123,9 @@ describe("Suite de testes das rotas User.", function() {
           neighborhood,
           road,
           house_number,
-          information
+          information,
+          created,
+          updated
         } = response.body
 
         expect(response.statusCode).toEqual(200)
@@ -186,6 +188,18 @@ describe("Suite de testes das rotas User.", function() {
         // Infomações adicionais do cliente.
         expect(information).toBeDefined()
         expect(information).toBe("Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique.")
+
+        expect(created).toBeDefined()
+        expect(created).toMatchObject({
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
+        })
+
+        expect(updated).toBeDefined()
+        expect(updated).toMatchObject({
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
+        })
       })
       .catch(error => {
         fail(error)
@@ -206,6 +220,8 @@ describe("Suite de testes das rotas User.", function() {
           cep,
           city,
           cpf,
+          created,
+          updated,
           passportNumber,
           neighborhood,
           road,
@@ -253,6 +269,18 @@ describe("Suite de testes das rotas User.", function() {
         expect(cpf).toBeDefined()
         expect(cpf).toBe("22222222222")
 
+        expect(created).toBeDefined()
+        expect(created).toMatchObject({
+          "createdAt": "2020-09-12T11:10:06.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
+        })
+
+        expect(updated).toBeDefined()
+        expect(updated).toMatchObject({
+          "updatedAt": "2021-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
+        })
+
         // Dado condicional
         expect(passportNumber).toBeUndefined()
 
@@ -285,7 +313,9 @@ describe("Suite de testes das rotas User.", function() {
           neighborhood,
           road,
           house_number,
-          information
+          information,
+          created,
+          updated
         } = response.body
 
         expect(response.statusCode).toEqual(200)
@@ -342,6 +372,18 @@ describe("Suite de testes das rotas User.", function() {
         expect(information).toBeDefined()
         expect(information).toBe("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra congue elit non elementum. Praesent fringilla lectus interdum ipsum tempor, ut commodo urna blandit. Nunc sagittis vestibulum luctus. Duis eget arcu nisi. Donec lobortis tellus at porttitor mattis. In ornare ornare posuere. Nunc eu aliquam metus, in sodales tellus. Sed eu mi mi. Nullam varius sed massa interdum vulputate. Morbi sodales justo tellus, quis luctus lorem lacinia eu. Integer efficitur eu ante ac tempus. Phasellus tincidunt fermentum metus ac dignissim.")
 
+        expect(created).toBeDefined()
+        expect(created).toMatchObject({
+          "createdAt": "2021-05-102T11:43:42.300Z",
+          "createdBy": "5da9ea674234635bdff45c02"
+        })
+
+        expect(updated).toBeDefined()
+        expect(updated).toMatchObject({
+          "updatedAt": "2022-11-12T14:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
+        })
+
         // Campos que podem ser undefined para estrangeiros
         expect(cpf).toBeUndefined()
         expect(cep).toBeUndefined()
@@ -365,6 +407,8 @@ describe("Suite de testes das rotas User.", function() {
           city,
           cpf,
           passportNumber,
+          created,
+          updated,
           neighborhood,
           road,
           house_number,
@@ -408,6 +452,18 @@ describe("Suite de testes das rotas User.", function() {
         // Número do passaporte do cliente
         expect(passportNumber).toBeDefined()
         expect(passportNumber).toBe("431276122")
+
+        expect(created).toBeDefined()
+        expect(created).toMatchObject({
+          "createdAt": "2022-04-222T20:41:18.365Z",
+          "createdBy": "5da9ea674234635bdff45c02"
+        })
+
+        expect(updated).toBeDefined()
+        expect(updated).toMatchObject({
+          "updatedAt": "2023-02-12T16:06:21.145Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
+        })
 
         // Dado condicional
         expect(cpf).toBeUndefined()
