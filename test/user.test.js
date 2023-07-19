@@ -508,6 +508,22 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("POST - Deve retornar um usuario que tenha o mesmo CPF que o informado.", function() {
+      return request.post('/users/by_cpf').send({
+        cpf: '22222222222'
+      })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.user).toMatchObject({
+          "name": "Tobias de Oliveira",
+          "email": "tobias@gmail.com"
+        })
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
   })
   
   /*
