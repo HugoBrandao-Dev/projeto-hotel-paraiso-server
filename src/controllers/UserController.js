@@ -324,6 +324,17 @@ class UserController {
       res.sendStatus(500)
     }
   }
+
+  async readMore(req, res) {
+    try {
+      let users = await User.findMore()
+      res.status(200)
+      res.json(users)
+    } catch (error) {
+      throw new Error(error)
+      res.sendStatus(500)
+    }
+  }
 }
 
 module.exports = new UserController()
