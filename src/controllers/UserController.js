@@ -338,6 +338,18 @@ class UserController {
     }
   }
 
+  async readByPassportNumber(req, res) {
+    try {
+      let passportNumber = req.body.passportNumber
+      let user = await User.findByPassportNumber(passportNumber)
+      res.status(200)
+      res.json({ user })
+    } catch (error) {
+      throw new Error(error)
+      res.sendStatus(500)
+    }
+  }
+
   async readMany(req, res) {
     try {
       let users = []
