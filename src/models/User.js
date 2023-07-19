@@ -23,7 +23,25 @@ class User {
 
   async findByCPF(cpf) {
     try {
-      const user = await UserCollection.users.data.find(doc => doc.cpf.indexOf(cpf) >= 0)
+      const user = await UserCollection.users.data.find(doc => {
+        if (doc.cpf) {
+          return doc.cpf.indexOf(cpf) >= 0
+        }
+      })
+      return user
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
+  async findByPassportNumber(passportNumber) {
+    try {
+      const user = await UserCollection.users.data.find(doc => {
+        if (doc.passportNumber) {
+          return doc.passportNumber.indexOf(passportNumber) >= 0
+        }
+      })
       return user
     } catch (error) {
       console.log(error)
