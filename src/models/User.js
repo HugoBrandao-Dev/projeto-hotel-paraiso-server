@@ -21,6 +21,16 @@ class User {
     }
   }
 
+  async findByCPF(cpf) {
+    try {
+      const user = await UserCollection.users.data.find(doc => doc.cpf.indexOf(cpf) >= 0)
+      return user
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
   async findMany(skip = null, limit = null) {
     try {
       if (skip) {
