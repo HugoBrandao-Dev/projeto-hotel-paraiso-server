@@ -16,8 +16,7 @@ router.post('/users', UserController.create)
 // Read
 router.get('/users', UserController.readMany)
 router.get('/users/:id', UserController.read)
-// router.post('/users/by_cpf', UserController.readByCPF)
-// router.post('/users/by_passportNumber', UserController.readByPassportNumber)
+router.post('/users/search', UserController.readByDoc)
 
 // Update
 router.put('/users', UserController.update)
