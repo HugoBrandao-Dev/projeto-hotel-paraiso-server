@@ -318,30 +318,6 @@ class UserController {
     }
   }
 
-  async readByCPF(req, res) {
-    try {
-      let cpf = req.body.cpf
-      let user = await User.findByCPF(cpf)
-      res.status(200)
-      res.json({ user })
-    } catch (error) {
-      throw new Error(error)
-      res.sendStatus(500)
-    }
-  }
-
-  async readByPassportNumber(req, res) {
-    try {
-      let passportNumber = req.body.passportNumber
-      let user = await User.findByPassportNumber(passportNumber)
-      res.status(200)
-      res.json({ user })
-    } catch (error) {
-      throw new Error(error)
-      res.sendStatus(500)
-    }
-  }
-
   async readMany(req, res) {
     try {
       let users = []
@@ -356,6 +332,22 @@ class UserController {
       }
       res.status(200)
       res.json({ users })
+    } catch (error) {
+      throw new Error(error)
+      res.sendStatus(500)
+    }
+  }
+
+  async readByDoc(req, res) {
+    try {
+      let type = req.body
+      let user = await User.findByDoc(type)
+      if (user) {
+        res.status(200)
+        res.json({user})
+      } else {
+        res.sendStatus(404)
+      }
     } catch (error) {
       throw new Error(error)
       res.sendStatus(500)
