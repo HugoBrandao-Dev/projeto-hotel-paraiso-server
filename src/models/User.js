@@ -34,34 +34,6 @@ class User {
     }
   }
 
-  async findByCPF(cpf) {
-    try {
-      const user = await UserCollection.users.data.find(doc => {
-        if (doc.cpf) {
-          return doc.cpf.indexOf(cpf) >= 0
-        }
-      })
-      return user
-    } catch (error) {
-      console.log(error)
-      return []
-    }
-  }
-
-  async findByPassportNumber(passportNumber) {
-    try {
-      const user = await UserCollection.users.data.find(doc => {
-        if (doc.passportNumber) {
-          return doc.passportNumber.indexOf(passportNumber) >= 0
-        }
-      })
-      return user
-    } catch (error) {
-      console.log(error)
-      return []
-    }
-  }
-
   async findMany(skip = null, limit = null) {
     try {
       if (skip) {
@@ -73,6 +45,21 @@ class User {
         }
       }
       return await UserCollection.users.data
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
+  async findByDoc(searchType) {
+    try {
+      let type = Object.keys(searchType)[0]
+      let user = await UserCollection.users.data.find(doc => {
+        if (doc[type]) {
+          return doc[type] == searchType[type]
+        }
+      })
+      return user
     } catch (error) {
       console.log(error)
       return []
