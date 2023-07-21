@@ -65,6 +65,20 @@ class User {
       return []
     }
   }
+
+  async update(user) {
+    try {
+      let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == user.id)
+      let infos = Object.keys(user)
+      for (let info of infos) {
+        UserCollection.users.data[userIndex][info] = user[info]
+      }
+      return UserCollection.users.data[userIndex]
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
 }
 
 module.exports = new User()
