@@ -82,7 +82,7 @@ class User {
   async update(user) {
     try {
       const date = new DateFormated('mongodb')
-      
+
       user.updated = {
         updatedAt: date.getDateTime(),
         updatedBy: uuid.v4()
@@ -92,8 +92,18 @@ class User {
       for (let info of infos) {
         UserCollection.users.data[userIndex][info] = user[info]
       }
-      console.log(UserCollection.users.data[userIndex])
       return UserCollection.users.data[userIndex]
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
+  async delete(id) {
+    try {
+      let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == id)
+      let user = await UserCollection.users.data.splice(userIndex, 1)
+      return user
     } catch (error) {
       console.log(error)
       return []
