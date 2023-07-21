@@ -369,6 +369,18 @@ class UserController {
       res.sendStatus(500)
     }
   }
+
+  async update(req, res) {
+    try {
+      let user = req.body.user
+      let result = await User.update(user)
+      res.status(200)
+      res.json({ user: result })
+    } catch (error) {
+      throw new Error(error)
+      res.sendStatus(500)
+    }
+  }
 }
 
 module.exports = new UserController()
