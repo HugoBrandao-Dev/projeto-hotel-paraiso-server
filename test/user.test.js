@@ -525,9 +525,8 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
-    test("POST - Deve retornar um usuario que tenha o mesmo Número de Passaporte que o informado.", function() {
-      return request.post('/users/by_passportNumber').send({
+    test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
+      return request.post('/users/search').send({
         passportNumber: 'C00001549'
       })
       .then(function(response) {
@@ -541,7 +540,6 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
-    */
   })
 
   /* ################## UPDATE ################## */
