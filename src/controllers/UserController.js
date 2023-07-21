@@ -291,14 +291,6 @@ class UserController {
         res.json({ msg: 'Erro em algum campo!'})
         return
       } else {
-        user.created = {
-          createdAt: `${ Date.now() }`,
-          createdBy: uuid.v4()
-        }
-        user.updated = {
-          updatedAt: '',
-          updatedBy: ''
-        }
         await User.save(user)
         res.status(201)
         res.json({ msg: 'Cadastrado com sucesso!'})
