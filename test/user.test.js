@@ -541,6 +541,51 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
+
+  /* ################## UPDATE ################## */
+
+  describe("Testes de SUCESSO na atualizacao de dados.", function() {
+    test("POST - Deve retornar 200 e o usuário com suas informações atualizadas.", function() {
+      let user = {
+        id: "5da9ea674234635bdff45c02",
+        name: "Josias Cruz",
+        email: "jo_cruz@gmail.com",
+        password: "@JosiaS&654975@",
+        role: '0',
+        phoneCode: "55",
+        phoneNumber: "11984222222",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "RJ",
+        city: "Rio de Janeiro",
+        cpf: "11111111111",
+        updated: {
+          updatedAt: `${ Date.now() }`,
+          updatedBy: '507f191e810c19729de860ea'
+        }
+      }
+      return request.put('/users').send({ user })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.user.name).toBe(user.name)
+        expect(response.body.user.email).toBe(user.email)
+        expect(response.body.user.password).toBe(user.password)
+        expect(response.body.user.role).toBe(user.role)
+        expect(response.body.user.phoneCode).toBe(user.phoneCode)
+        expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
+        expect(response.body.user.birthDate).toBe(user.birthDate)
+        expect(response.body.user.country).toBe(user.country)
+        expect(response.body.user.state).toBe(user.state)
+        expect(response.body.user.city).toBe(user.city)
+        expect(response.body.user.cpf).toBe(user.cpf)
+        expect(response.body.user.updated.updatedAt).toBe(user.updated.updatedAt)
+        expect(response.body.user.updated.updatedBy).toBe(user.updated.updatedBy)
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
+  })
   
   /*
   test("Devem retornar TRUE para os valores informados.", async function() {
