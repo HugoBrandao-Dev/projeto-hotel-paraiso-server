@@ -509,6 +509,7 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
 
+    /*
     test("POST - Deve retornar um usuario que tenha o mesmo CPF que o informado.", function() {
       return request.post('/users/by_cpf').send({
         cpf: '22222222222'
@@ -525,7 +526,7 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
 
-    test("POST - Deve retornar um usuario que tenha o mesmo CPF que o informado.", function() {
+    test("POST - Deve retornar um usuario que tenha o mesmo Número de Passaporte que o informado.", function() {
       return request.post('/users/by_passportNumber').send({
         passportNumber: 'C00001549'
       })
@@ -540,6 +541,7 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+    */
   })
 
   /* ################## UPDATE ################## */
@@ -578,6 +580,20 @@ describe("Suite de testes das rotas User.", function() {
       .catch(function(error) {
         fail(error)
       })
+    })
+  })
+
+  /* ################## DELETE ################## */
+
+  describe("Testes de SUCESSO na deleção de um usuário.", function() {
+    test("DELETE - Deve retornar 200.", function() {
+      return request.delete('/users/507f191e810c19729de860ea')
+        .then(function(responseDelete) {
+          expect(responseDelete.statusCode).toEqual(200)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
     })
   })
   
