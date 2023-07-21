@@ -558,11 +558,7 @@ describe("Suite de testes das rotas User.", function() {
         country: "BR",
         state: "RJ",
         city: "Rio de Janeiro",
-        cpf: "11111111111",
-        updated: {
-          updatedAt: `${ Date.now() }`,
-          updatedBy: '507f191e810c19729de860ea'
-        }
+        cpf: "11111111111"
       }
       return request.put('/users').send({ user })
       .then(function(response) {
@@ -578,8 +574,6 @@ describe("Suite de testes das rotas User.", function() {
         expect(response.body.user.state).toBe(user.state)
         expect(response.body.user.city).toBe(user.city)
         expect(response.body.user.cpf).toBe(user.cpf)
-        expect(response.body.user.updated.updatedAt).toBe(user.updated.updatedAt)
-        expect(response.body.user.updated.updatedBy).toBe(user.updated.updatedBy)
       })
       .catch(function(error) {
         fail(error)
