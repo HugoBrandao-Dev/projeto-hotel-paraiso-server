@@ -14,12 +14,15 @@ router.get('/', HomeController.index)
 router.post('/users', UserController.create)
 
 // Read
-router.post('/users/by_cpf', UserController.readByCPF)
-router.post('/users/by_passportNumber', UserController.readByPassportNumber)
 router.get('/users', UserController.readMany)
 router.get('/users/:id', UserController.read)
+// router.post('/users/by_cpf', UserController.readByCPF)
+// router.post('/users/by_passportNumber', UserController.readByPassportNumber)
 
 // Update
 router.put('/users', UserController.update)
+
+// Delete
+router.delete('/users/:id', UserController.delete)
 
 module.exports = router
