@@ -81,11 +81,18 @@ class User {
 
   async update(user) {
     try {
+      const date = new DateFormated('mongodb')
+      
+      user.updated = {
+        updatedAt: date.getDateTime(),
+        updatedBy: uuid.v4()
+      }
       let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == user.id)
       let infos = Object.keys(user)
       for (let info of infos) {
         UserCollection.users.data[userIndex][info] = user[info]
       }
+      console.log(UserCollection.users.data[userIndex])
       return UserCollection.users.data[userIndex]
     } catch (error) {
       console.log(error)
