@@ -373,6 +373,22 @@ class UserController {
       res.sendStatus(500)
     }
   }
+
+  async delete(req, res) {
+    try {
+      let id = req.params.id
+      let user = await User.delete(id)
+      if (user)  {
+        res.status(200)
+        res.json({})
+      } else {
+        res.sendStatus(404)
+      }
+    } catch (error) {
+      throw new Error(error)
+      res.sendStatus(500)
+    }
+  }
 }
 
 module.exports = new UserController()
