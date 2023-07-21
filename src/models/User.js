@@ -1,8 +1,21 @@
 let UserCollection = require('../data/UserCollection.json')
+let DateFormated = require('../tools/DateFormated')
+let uuid = require('uuid')
 
 class User {
   async save(user) {
     try {
+      const date = new DateFormated('mongodb')
+
+      user.created = {
+        createdAt: date.getDateTime(),
+        createdBy: uuid.v4()
+      }
+      user.updated = {
+        updatedAt: '',
+        updatedBy: ''
+      }
+
       await UserCollection.users.data.push(user)
       return
     } catch (error) {
