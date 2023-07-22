@@ -28,7 +28,7 @@ class UserController {
       } else {
         errorFields.push({
           field: 'iptName',
-          error: 'Este campo é obrigatório.'
+          error: 'Este campo é obrigatório'
         })
       }
 
@@ -287,8 +287,17 @@ class UserController {
       }
 
       if (errorFields.length) {
+        let messages = errorFields.map(item => item.error)
         res.status(403)
-        res.json({ msg: 'Erro em algum campo!'})
+        res.json({ 
+          RestException: {
+            "Code": "1",
+            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
+            "Status": "403",
+            "MoreInfo": "/docs/erros/1",
+            "ErrorFields": errorFields
+          }
+        })
         return
       } else {
         await User.save(user)
