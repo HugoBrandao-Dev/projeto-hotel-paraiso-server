@@ -19,21 +19,9 @@ class UserController {
         errorFields.push(nameResult)
       }
 
-      if (req.body.email) {
-        let email = req.body.email
-        if (!Analyzer.analyzeUserEmail(email)) {
-          errorFields.push({
-            field: 'iptEmail',
-            error: 'O email informado é inválido.'
-          })
-        } else {
-          user.email = email
-        }
-      } else {
-        errorFields.push({
-          field: 'iptEmail',
-          error: 'Este campo é obrigatório.'
-        })
+      let emailResult = Analyzer.analyzeUserEmail(req.body.email)
+      if (emailResult.hasError.value) {
+        errorFields.push(emailResult)
       }
 
       if (req.body.birthDate) {
