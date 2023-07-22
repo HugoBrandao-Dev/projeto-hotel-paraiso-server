@@ -100,6 +100,33 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+
+    test("POST - Deve retornar 403, pela ausencia do nome do User.", function() {
+      return request.post('/users').send({
+        name: "",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "22222222222",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(403)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Este campo é obrigatório")
+          expect(response.body.RestException.Status).toBe("403")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptName')
+          expect(response.body.RestException.ErrorFields[0].error).toBe('Este campo é obrigatório')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 
   /* ################## READ ################## */
