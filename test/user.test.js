@@ -129,6 +129,35 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+
+    test("POST - Deve retornar 400, devido a presença de elementos inválidos do nome do User.", function() {
+
+      // O "O" de "Oliveira", na verdade é um 0 (zero).
+      return request.post('/users').send({
+        name: "Tobias de 0liveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "22222222222",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo Nome possui caracteres inválidos")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptName')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Nome possui caracteres inválidos')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 
   /* ################## READ ################## */
