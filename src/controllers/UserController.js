@@ -14,22 +14,9 @@ class UserController {
 
       /* ##### CAMPOS OBRIGATÓRIOS ##### */
 
-      if (req.body.name) {
-        let name = req.body.name
-
-        if (!Analyzer.analyzeUserName(name)) {
-          errorFields.push({
-            field: 'iptName',
-            error: 'O nome informado é inválido.'
-          })
-        } else {
-          user.name = name
-        }
-      } else {
-        errorFields.push({
-          field: 'iptName',
-          error: 'Este campo é obrigatório'
-        })
+      let nameResult = Analyzer.analyzeUserName(req.body.name)
+      if (nameResult.hasError.value) {
+        errorFields.push(nameResult)
       }
 
       if (req.body.email) {
@@ -287,13 +274,13 @@ class UserController {
       }
 
       if (errorFields.length) {
-        let messages = errorFields.map(item => item.error)
-        res.status(403)
+        let messages = errorFields.map(item => item.hasError.error)
+        res.status(400)
         res.json({ 
           RestException: {
             "Code": "1",
             "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": "403",
+            "Status": "400",
             "MoreInfo": "/docs/erros/1",
             "ErrorFields": errorFields
           }

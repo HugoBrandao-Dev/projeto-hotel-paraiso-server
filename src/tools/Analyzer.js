@@ -15,7 +15,7 @@ class Analyzer {
     // Caso o usuário não tenha passado um nome
     if (!name) {
       result.hasError.value = true
-      result.hasError.error = 'O campo Nome é obrigatório.'
+      result.hasError.error = 'O campo Nome é obrigatório'
       return result
     }
 
@@ -28,7 +28,7 @@ class Analyzer {
 
     if (!itsValidPT_BR && !itsValidEN_US) {
       result.hasError.value = true
-      result.hasError.error = 'O campo Nome possui caracteres inválidos.'
+      result.hasError.error = 'O campo Nome possui caracteres inválidos'
     }
     return result
   }
