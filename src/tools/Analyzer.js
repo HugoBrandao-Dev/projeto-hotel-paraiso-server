@@ -33,6 +33,7 @@ class Analyzer {
     return result
   }
   static analyzeUserEmail(email = '') {
+    let acceptableChars = '@_.'
     let result = { field: 'iptEmail', hasError: { value: false, error: '' }}
 
     // Caso o usuário não tenha passado um email
@@ -42,13 +43,17 @@ class Analyzer {
       return result
     }
 
-    let isValid = validator.isEmail(email)
-
     // Verificar se o email já existe.
+
+    let hasCharsValid = validator.isAlphanumeric(email, ['en-US'], {
+      ignore: acceptableChars
+    })
+    let isEmailValid = validator.isEmail(email)
+    let isValid = hasCharsValid && isEmailValid
 
     if (!isValid) {
       result.hasError.value = true
-      result.hasError.error = 'O campo Email possui caracteres inválidos.'
+      result.hasError.error = 'O campo Email possui caracteres inválidos'
     }
     return result
   }
