@@ -100,8 +100,10 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+  })
 
-    test("POST - Deve retornar 403, pela ausencia do nome do User.", function() {
+  describe("Testes de REJEIÇÃO na inserção de dados", function() {
+    test("POST - Deve retornar 400, pela ausencia do nome do User.", function() {
       return request.post('/users').send({
         name: "",
         email: "tobias@gmail.com",
@@ -115,13 +117,13 @@ describe("Suite de testes das rotas User.", function() {
         cpf: "22222222222",
       })
         .then(function(response) {
-          expect(response.statusCode).toEqual(403)
+          expect(response.statusCode).toEqual(400)
           expect(response.body.RestException.Code).toBe("1")
-          expect(response.body.RestException.Message).toBe("Este campo é obrigatório")
-          expect(response.body.RestException.Status).toBe("403")
+          expect(response.body.RestException.Message).toBe("O campo Nome é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
           expect(response.body.RestException.ErrorFields[0].field).toBe('iptName')
-          expect(response.body.RestException.ErrorFields[0].error).toBe('Este campo é obrigatório')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Nome é obrigatório')
         })
         .catch(function(error) {
           fail(error)
