@@ -19,7 +19,7 @@ class UserController {
         errorFields.push(nameResult)
       }
 
-      let emailResult = Analyzer.analyzeUserEmail(req.body.email)
+      let emailResult = await Analyzer.analyzeUserEmail(req.body.email)
       if (emailResult.hasError.value) {
         errorFields.push(emailResult)
       }

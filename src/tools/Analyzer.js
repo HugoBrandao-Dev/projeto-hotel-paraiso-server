@@ -7,6 +7,9 @@ const axios_countryStateCity = axios.create({
 })
 const validator = require('validator')
 
+// Models
+const User = require('../models/User')
+
 class Analyzer {
   static analyzeUserName(name = '') {
     let acceptableChars = ' \''
@@ -32,30 +35,39 @@ class Analyzer {
     }
     return result
   }
-  static analyzeUserEmail(email = '') {
-    let acceptableChars = '@_.'
-    let result = { field: 'iptEmail', hasError: { value: false, error: '' }}
+  static async analyzeUserEmail(email = '') {
+    try {
+      let acceptableChars = '@_.'
+      let result = { field: 'iptEmail', hasError: { value: false, error: '' }}
 
-    // Caso o usuário não tenha passado um email
-    if (!email) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo Email é obrigatório.'
+      // Caso o usuário não tenha passado um email
+      if (!email) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo Email é obrigatório.'
+        return result
+      }
+
+      let user = await User.findByDoc({ email })
+      if (user) {
+        result.hasError.value = true
+        result.hasError.error = 'O Email informado já foi cadastrado anteriormente.'
+        return result
+      }
+
+      let hasCharsValid = validator.isAlphanumeric(email, ['en-US'], {
+        ignore: acceptableChars
+      })
+      let isEmailValid = validator.isEmail(email)
+      let isValid = hasCharsValid && isEmailValid
+
+      if (!isValid) {
+        result.hasError.value = true
+        result.hasError.error = 'O campo Email possui caracteres inválidos'
+      }
       return result
+    } catch (error) {
+      console.log(error)
     }
-
-    // Verificar se o email já existe.
-
-    let hasCharsValid = validator.isAlphanumeric(email, ['en-US'], {
-      ignore: acceptableChars
-    })
-    let isEmailValid = validator.isEmail(email)
-    let isValid = hasCharsValid && isEmailValid
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.error = 'O campo Email possui caracteres inválidos'
-    }
-    return result
   }
   static analyzeUserBirthDate(date = '') {
     let result = { field: 'iptBirthDate', hasError: { value: false, error: '' }}
