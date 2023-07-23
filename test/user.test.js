@@ -103,7 +103,7 @@ describe("Suite de testes das rotas User.", function() {
   })
 
   describe("Testes de REJEIÇÃO na inserção de dados", function() {
-    test("POST - Deve retornar 400, pela ausencia do nome do User.", function() {
+    test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
       return request.post('/users').send({
         name: "",
         email: "tobias@gmail.com",
@@ -159,7 +159,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    test("POST - Deve retornar 400, pela ausencia do email do User.", function() {
+    test("POST - Deve retornar 400, pela ausência do email do User.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
         email: "",
@@ -175,11 +175,11 @@ describe("Suite de testes das rotas User.", function() {
         .then(function(response) {
           expect(response.statusCode).toEqual(400)
           expect(response.body.RestException.Code).toBe("1")
-          expect(response.body.RestException.Message).toBe("O campo Email é obrigatório.")
+          expect(response.body.RestException.Message).toBe("O campo Email é obrigatório")
           expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
           expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
-          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Email é obrigatório.')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Email é obrigatório')
         })
         .catch(function(error) {
           fail(error)
@@ -234,6 +234,33 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
           expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
           expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O Email informado já foi cadastrado anteriormente')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, pela ausência da data de nascimento do User.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "22222222222",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo Data de Nascimento é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptBirthDate')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Data de Nascimento é obrigatório')
         })
         .catch(function(error) {
           fail(error)
