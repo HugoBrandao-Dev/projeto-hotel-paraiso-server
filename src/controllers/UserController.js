@@ -24,23 +24,9 @@ class UserController {
         errorFields.push(emailResult)
       }
 
-      if (req.body.birthDate) {
-        let birthDate = req.body.birthDate
-
-        let msg = Analyzer.analyzeUserBirthDate(birthDate)
-        if (msg.length > 0) {
-          errorFields.push({
-            field: 'iptBirthDate',
-            error: msg
-          })
-        } else {
-          user.birthDate = birthDate
-        }
-      } else {
-        errorFields.push({
-          field: 'iptBirthDate',
-          error: 'Este campo é obrigatório'
-        })
+      let birthDateResult = Analyzer.analyzeUserBirthDate(req.body.birthDate)
+      if (birthDateResult.hasError.value) {
+        errorFields.push(birthDateResult)
       }
 
       if (req.body.phoneCode) {

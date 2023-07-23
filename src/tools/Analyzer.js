@@ -43,7 +43,7 @@ class Analyzer {
       // Caso o usuário não tenha passado um email
       if (!email) {
         result.hasError.value = true
-        result.hasError.error = 'O campo Email é obrigatório.'
+        result.hasError.error = 'O campo Email é obrigatório'
         return result
       }
 
@@ -75,7 +75,7 @@ class Analyzer {
     // Caso o usuário não tenha passado um email
     if (!date) {
       result.hasError.value = true
-      result.hasError.error = 'O campo Data de Nascimento é obrigatório.'
+      result.hasError.error = 'O campo Data de Nascimento é obrigatório'
       return result
     }
 
