@@ -146,7 +146,7 @@ class Analyzer {
 
     if (!isValid) {
       result.hasError.value = true
-      result.hasError.error = 'O Código de Telefone é inválido.'
+      result.hasError.error = 'O Código de Telefone é inválido'
     }
 
     return result
