@@ -29,6 +29,11 @@ class UserController {
         errorFields.push(birthDateResult)
       }
 
+      let passwordResult = Analyzer.analyzeUserPassword(req.body.password)
+      if (passwordResult.hasError.value) {
+        errorFields.push(passwordResult)
+      }
+
       if (req.body.phoneCode) {
         let phoneCode = req.body.phoneCode
 
@@ -62,24 +67,6 @@ class UserController {
         errorFields.push({
           field: 'iptPhoneCode',
           error: 'Informe seu país antes de adicionar o telefone.'
-        })
-      }
-
-      if (req.body.password) {
-        let password = req.body.password
-
-        if (!Analyzer.analyzeUserPassword(password)) {
-          errorFields.push({
-            field: 'iptPassword',
-            error: 'A senha informada é inválida.'
-          })
-        } else {
-          user.password = password
-        }
-      } else {
-        errorFields.push({
-          field: 'iptPassword',
-          error: 'Informe uma senha.'
         })
       }
 
