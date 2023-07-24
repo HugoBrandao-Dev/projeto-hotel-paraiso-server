@@ -37,6 +37,13 @@ class UserController {
       let phoneCodeResult = Analyzer.analyzeUserPhoneCode(req.body.phoneCode)
       if (phoneCodeResult.hasError.value) {
         errorFields.push(phoneCodeResult)
+      } else {
+        let phoneCode = req.body.phoneCode
+
+        let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(phoneCode, req.body.phoneNumber)
+        if (phoneNumberResult.hasError.value) {
+          errorFields.push(phoneNumberResult)
+        } 
       }
 
       if (req.body.country) {
