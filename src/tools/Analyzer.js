@@ -135,7 +135,7 @@ class Analyzer {
 
     if (!phoneCode) {
       result.hasError.value = true
-      result.hasError.error = 'O campo de Código de Telefone é obrigatório.'
+      result.hasError.error = 'O campo de Código de Telefone é obrigatório'
       return result
     }
 
