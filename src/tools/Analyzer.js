@@ -99,7 +99,7 @@ class Analyzer {
 
     if (!isBefore && !isEqual) {
       result.hasError.value = true
-      result.hasError.error = 'Somente usuários com mais de 18 anos podem se cadastrar.'
+      result.hasError.error = 'Somente usuários com mais de 18 anos podem se cadastrar'
     }
     return result
   }

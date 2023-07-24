@@ -266,6 +266,33 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+
+    test("POST - Deve retornar 400, pela idade do usuário ser menor que 18 anos.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "2018-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "22222222222",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Somente usuários com mais de 18 anos podem se cadastrar")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptBirthDate')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('Somente usuários com mais de 18 anos podem se cadastrar')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 
   /* ################## READ ################## */
