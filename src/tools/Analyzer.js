@@ -124,7 +124,7 @@ class Analyzer {
 
     if (!isValid) {
       result.hasError.value = true
-      result.hasError.error = 'A senha é muito fraca.'
+      result.hasError.error = 'A senha é muito fraca'
     }
 
     return result
