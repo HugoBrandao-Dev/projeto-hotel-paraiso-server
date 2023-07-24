@@ -116,7 +116,7 @@ class Analyzer {
 
     if (!password) {
       result.hasError.value = true
-      result.hasError.error = 'O campo de Senha é obrigatório.'
+      result.hasError.error = 'O campo de Senha é obrigatório'
       return result
     }
 
