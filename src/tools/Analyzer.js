@@ -175,7 +175,7 @@ class Analyzer {
 
     if (!country) {
       result.hasError.value = true
-      result.hasError.error = 'O campo de País de Nascimento é obrigatório.'
+      result.hasError.error = 'O campo de País de Nascimento é obrigatório'
       return result
     }
 
