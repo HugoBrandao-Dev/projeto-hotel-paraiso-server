@@ -241,7 +241,7 @@ class Analyzer {
 
       if (!cpf) {
         result.hasError.value = true
-        result.hasError.error = 'O campo de CPF é obrigatório.'
+        result.hasError.error = 'O campo de CPF é obrigatório'
         return result
       }
 
