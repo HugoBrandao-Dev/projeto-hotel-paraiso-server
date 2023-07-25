@@ -204,7 +204,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
-        result.hasError.error = 'Estado inválido.'
+        result.hasError.error = 'Estado inválido'
       }
 
       return result
