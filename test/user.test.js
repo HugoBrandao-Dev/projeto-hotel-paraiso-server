@@ -65,7 +65,7 @@ describe("Suite de testes das rotas User.", function() {
         birthDate: "1999-01-09",
         country: "US",
         state: "NY",
-        city: "New York",
+        city: "New York City",
         passportNumber: "C00001549",
       })
       .then(function(response) {
@@ -86,7 +86,7 @@ describe("Suite de testes das rotas User.", function() {
         birthDate: "1998-04-09",
         country: "US",
         state: "NY",
-        city: "New York",
+        city: "New York City",
         passportNumber: "C00001549",
         neighborhood: "Jardim Nova São Paulo",
         road: "Rua Nina Simone",
@@ -840,7 +840,7 @@ describe("Suite de testes das rotas User.", function() {
 
         // Cidade de nascimento do cliente
         expect(city).toBeDefined()
-        expect(city).toBe("New York")
+        expect(city).toBe("New York City")
 
         // Número do Passaporte é vazio, porque o cliente é Brasileiro.
         expect(passportNumber).toBeDefined()
