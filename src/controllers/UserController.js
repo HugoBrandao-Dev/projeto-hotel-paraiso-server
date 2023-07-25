@@ -52,6 +52,7 @@ class UserController {
       } else {
         let countryCode = req.body.country
 
+        // Validação das localidades (estado e cidade) do usuário.
         let stateResult = await Analyzer.analyzeUserState(countryCode, req.body.state)
         if (stateResult.hasError.value) {
           errorFields.push(stateResult)
@@ -61,6 +62,14 @@ class UserController {
           let cityResult = await Analyzer.analyzeUserCity(countryCode, state, req.body.city)
           if (cityResult.hasError.value) {
             errorFields.push(cityResult)
+          }
+        }
+
+        // Validação da documentação do usuário.
+        if (countryCode == 'BR') {
+          let cpfResult = Analyzer.analyzeUserCPF(req.body.cpf)
+          if (cpfResult.hasError.value) {
+            errorFields.push(cpfResult)
           }
         }
         /*
