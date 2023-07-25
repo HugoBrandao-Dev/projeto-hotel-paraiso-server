@@ -46,101 +46,12 @@ class UserController {
         } 
       }
 
-      if (req.body.country) {
-        let country = req.body.country
-
-        if (!Analyzer.analyzeUserCountry(country)) {
-          errorFields.push({
-            field: 'iptCountry',
-            error: 'País inválido.'
-          })
-        } else {
-          user.country = country
-          if (req.body.state) {
-            let state = req.body.state
-            let isValid = await Analyzer.analyzeUserState(country, state)
-
-            if (!isValid) {
-              errorFields.push({
-                field: 'iptState',
-                error: 'Estado inválido.'
-              })
-            } else {
-              user.state = state
-              if (req.body.city) {
-                let city = req.body.city
-                let isValid = await Analyzer.analyzeUserCity(country, state, city)
-
-                if (!isValid) {
-                  errorFields.push({
-                    field: 'iptCity',
-                    error: 'Cidade inválida.'
-                  })
-                } else {
-                  user.city = city
-                }
-              } else {
-                errorFields.push({
-                  field: 'iptCity',
-                  error: 'Informe a sua cidade de nascimento.'
-                })
-              }
-            }
-          } else {
-            errorFields.push({
-              field: 'iptState',
-              error: 'Informe o seu estado de nascimento.'
-            })
-          }
-        }
-      } else {
-        errorFields.push({
-          field: 'iptCountry',
-          error: 'Informe o seu país de nascimento.'
-        })
+      let countryResult = Analyzer.analyzeUserCountry(req.body.country)
+      if (countryResult.hasError.value) {
+        errorFields.push(countryResult)
       }
 
-      // Validação do CPF, para usuários Brasileiros.
-      if (req.body.country == 'BR') {
-        if (req.body.cpf) {
-          let cpf = req.body.cpf
-
-          if (!Analyzer.analyzeUserCPF(cpf)) {
-            errorFields.push({
-              field: 'iptCPF',
-              error: 'CPF inválido.'
-            })
-          } {
-            user.cpf = cpf
-          }
-        } else {
-          errorFields.push({
-            field: 'iptCPF',
-            error: 'Este campo é obrigatório para Brasileiros.'
-          })
-        }
-
-      // Validação do Passport Numbr, para usuários extrangeiros
-      } else {
-        if (req.body.passportNumber) {
-          let passportNumber = req.body.passportNumber
-          let countryCode = req.body.country
-
-          if (!Analyzer.analyzeUserPassportNumber(countryCode, passportNumber)) {
-            errorFields.push({
-              field: 'iptPassportNumber',
-              error: 'Invalid passport number.'
-            })
-          } else {
-            user.passportNumber = passportNumber
-          }
-        } else {
-          errorFields.push({
-            field: 'iptPassportNumber',
-            error: "This field is mandatory for foreigners."
-          })
-        }
-      }
+      
 
       /* ##### CAMPOS OPCIONAIS ##### */
 
@@ -227,7 +138,7 @@ class UserController {
         await User.save(user)
         res.status(201)
         res.json({ msg: 'Cadastrado com sucesso!'})
-    }
+      }
     } catch (error) {
       throw new Error(error)
       res.statusCode(500)
