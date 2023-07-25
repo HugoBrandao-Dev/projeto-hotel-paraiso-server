@@ -228,7 +228,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
-        result.hasError.error = 'Cidade inválida.'
+        result.hasError.error = 'Cidade inválida'
       }
 
       return result
