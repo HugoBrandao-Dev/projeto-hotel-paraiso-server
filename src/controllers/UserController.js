@@ -55,6 +55,13 @@ class UserController {
         let stateResult = await Analyzer.analyzeUserState(countryCode, req.body.state)
         if (stateResult.hasError.value) {
           errorFields.push(stateResult)
+        } else {
+          let state = req.body.state
+
+          let cityResult = await Analyzer.analyzeUserCity(countryCode, state, req.body.city)
+          if (cityResult.hasError.value) {
+            errorFields.push(cityResult)
+          }
         }
         /*
         // Validação do CPF, para usuários Brasileiros.
