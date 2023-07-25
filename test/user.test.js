@@ -509,6 +509,33 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+
+    test("POST - Deve retornar 400, devido ao ISO do pais de nascimento do usuário ser inválido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BRA",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "22222222222",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("País inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCountry')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("País inválido")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 
   /* ################## READ ################## */

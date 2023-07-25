@@ -183,7 +183,7 @@ class Analyzer {
 
     if (!isValid) {
       result.hasError.value = true
-      result.hasError.error = 'País inválido.'
+      result.hasError.error = 'País inválido'
     }
 
     return result
