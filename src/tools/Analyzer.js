@@ -212,21 +212,13 @@ class Analyzer {
       console.log(error)
     }
   }
-  static async analyzeUserCity(country = '', state = '', city = '') {
+  static async analyzeUserCity(country, state, city = '') {
     try {
       let result = { field: 'iptCity', hasError: { value: false, error: '' }}
 
-      if (!country) {
+      if (!city) {
         result.hasError.value = true
-        result.hasError.error = 'É necessário informar o seu País de Nascimento.'
-        return result
-      } else if (!state) {
-        result.hasError.value = true
-        result.hasError.error = 'É necessário informar o seu Estado de Nascimento.'
-        return result
-      } else if (!city) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de Cidade de Nascimento é obrigatório.'
+        result.hasError.error = 'O campo de Cidade de Nascimento é obrigatório'
         return result
       }
 
