@@ -43,13 +43,19 @@ class UserController {
         let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(phoneCode, req.body.phoneNumber)
         if (phoneNumberResult.hasError.value) {
           errorFields.push(phoneNumberResult)
-        } 
+        }
       }
 
       let countryResult = Analyzer.analyzeUserCountry(req.body.country)
       if (countryResult.hasError.value) {
         errorFields.push(countryResult)
       } else {
+        let countryCode = req.body.country
+
+        let stateResult = await Analyzer.analyzeUserState(countryCode, req.body.state)
+        if (stateResult.hasError.value) {
+          errorFields.push(stateResult)
+        }
         /*
         // Validação do CPF, para usuários Brasileiros.
         if (req.body.country == 'BR') {
