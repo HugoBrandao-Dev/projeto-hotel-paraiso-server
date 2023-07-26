@@ -892,7 +892,7 @@ describe("Suite de testes das rotas User.", function() {
 
         // CPF do cliente
         expect(cpf).toBeDefined()
-        expect(cpf).toBe("22222222222")
+        expect(cpf).toBe("33333333333")
 
         expect(created).toBeDefined()
         expect(created).toMatchObject({
@@ -1122,7 +1122,7 @@ describe("Suite de testes das rotas User.", function() {
         expect(response.body.users.length).toEqual(2)
         expect(response.body.users[0]).toMatchObject({
           "email": "tobias@hotmail.com",
-          "cpf": "22222222222"
+          "cpf": "33333333333"
         })
         expect(response.body.users[1]).toMatchObject({
           "email": "john_sm@hotmail.com",
@@ -1136,7 +1136,7 @@ describe("Suite de testes das rotas User.", function() {
 
     test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
       return request.post('/users/search').send({
-        cpf: '22222222222'
+        cpf: '33333333333'
       })
         .then(function(response) {
           expect(response.statusCode).toEqual(200)
