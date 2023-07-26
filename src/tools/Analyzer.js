@@ -258,7 +258,7 @@ class Analyzer {
         result.hasError.error = 'O CPF possui caracteres inválidos'
       } else if (!hasLength) {
         result.hasError.value = true
-        result.hasError.error = 'Faltam digitos no seu CPF.'
+        result.hasError.error = 'Faltam digitos no seu CPF'
       }
 
       return result
