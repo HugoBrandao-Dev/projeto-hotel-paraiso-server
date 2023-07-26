@@ -67,7 +67,7 @@ class UserController {
 
         // Validação da documentação do usuário.
         if (countryCode == 'BR') {
-          let cpfResult = Analyzer.analyzeUserCPF(req.body.cpf)
+          let cpfResult = await Analyzer.analyzeUserCPF(req.body.cpf)
           if (cpfResult.hasError.value) {
             errorFields.push(cpfResult)
           }

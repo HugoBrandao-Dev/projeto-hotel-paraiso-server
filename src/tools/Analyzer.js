@@ -236,12 +236,21 @@ class Analyzer {
       console.log(error)
     }
   }
-  static analyzeUserCPF(cpf = '') {
-    let result = { field: 'iptCPF', hasError: { value: false, error: '' }}
+  static async analyzeUserCPF(cpf = '') {
+    try {
+      let result = { field: 'iptCPF', hasError: { value: false, error: '' }}
 
       if (!cpf) {
         result.hasError.value = true
         result.hasError.error = 'O campo de CPF é obrigatório'
+        return result
+      }
+
+      // Verificado se o CPF já está cadastrado
+      let user = await User.findByDoc({ cpf })
+      if (user) {
+        result.hasError.value = true
+        result.hasError.error = 'O CPF informado já está cadastrado'
         return result
       }
 
@@ -262,6 +271,9 @@ class Analyzer {
       }
 
       return result
+    } catch (error) {
+      console.log(error)
+    }
   }
   static analyzeUserPassportNumber(countryCode = '', passportNumber = '') {
     let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
