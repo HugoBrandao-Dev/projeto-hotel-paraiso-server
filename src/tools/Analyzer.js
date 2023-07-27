@@ -275,23 +275,34 @@ class Analyzer {
       console.log(error)
     }
   }
-  static analyzeUserPassportNumber(countryCode, passportNumber = '') {
-    let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
+  static async analyzeUserPassportNumber(countryCode, passportNumber = '') {
+    try {
+      let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
 
-    if (!passportNumber) {
-      result.hasError.value = true
-      result.hasError.error = 'This field is required'
+      if (!passportNumber) {
+        result.hasError.value = true
+        result.hasError.error = 'This field is required'
+        return result
+      }
+
+      let user = await User.findByDoc({ passportNumber })
+      if (user) {
+        result.hasError.value = true
+        result.hasError.error = 'Passport number already registred'
+        return result
+      }
+
+      let isValid = validator.isPassportNumber(passportNumber, countryCode)
+
+      if (!isValid) {
+        result.hasError.value = true
+        result.hasError.error = 'Invalid passport number'
+      }
+
       return result
+    } catch (error) {
+      console.log(error)
     }
-
-    let isValid = validator.isPassportNumber(passportNumber, countryCode)
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.error = 'Invalid passport number'
-    }
-
-    return result
   }
   static async analyzeUserCEP(cep = '') {
     try {
