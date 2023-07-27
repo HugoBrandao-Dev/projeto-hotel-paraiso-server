@@ -308,34 +308,30 @@ class Analyzer {
     try {
       let result = { field: 'iptCEP', hasError: { value: false, error: '' }}
 
-      if (!cep) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de CEP é obrigatório.'
-        return result
-      }
+      if (cep) {
+        let hasLength = validator.isLength(cep, {
+          min: 8,
+          max: 8
+        })
+        let isNumeric = validator.isNumeric(cep, {
+          no_symbols: true
+        })
 
-      let hasLength = validator.isLength(cep, {
-        min: 8,
-        max: 8
-      })
-      let isNumeric = validator.isNumeric(cep, {
-        no_symbols: true
-      })
+        if (!hasLength) {
+          result.hasError.value = true
+          result.hasError.error = 'Faltam números no CEP informado'
+          return result
+        } 
+        if (!isNumeric) {
+          result.hasError.value = true
+          result.hasError.error = 'O campo de CEP possui caracteres inválidos'
+          return result
+        }
 
-
-      if (!hasLength) {
-        result.hasError.value = true
-        result.hasError.error = 'Faltam números no CEP informado.'
-      } else if (!isNumeric) {
-        result.hasError.value = true
-        result.hasError.error = 'O campo de CEP possui caracteres inválidos.'
-      } else {
-        if (hasLength && isNumeric) {
-          let response = await axios.get('https://viacep.com.br/ws/01001000/json/')
-          if (response.data.erro) {
-            result.hasError.value = true
-            result.hasError.error = 'O CEP informado não existe.'
-          }
+        let response = await axios.get(`https://viacep.com.br/ws/${ cep }/json/`)
+        if (response.data.erro) {
+          result.hasError.value = true
+          result.hasError.error = 'O CEP informado não existe'
         }
       }
 
