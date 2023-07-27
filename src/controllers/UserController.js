@@ -71,50 +71,14 @@ class UserController {
           if (cpfResult.hasError.value) {
             errorFields.push(cpfResult)
           }
-        }
-        /*
-        // Validação do CPF, para usuários Brasileiros.
-        if (req.body.country == 'BR') {
-          if (req.body.cpf) {
-            let cpf = req.body.cpf
-
-            if (!Analyzer.analyzeUserCPF(cpf)) {
-              errorFields.push({
-                field: 'iptCPF',
-                error: 'CPF inválido.'
-              })
-            } {
-              user.cpf = cpf
-            }
-          } else {
-            errorFields.push({
-              field: 'iptCPF',
-              error: 'Este campo é obrigatório para Brasileiros.'
-            })
-          }
-
-        // Validação do Passport Numbr, para usuários extrangeiros
         } else {
-          if (req.body.passportNumber) {
-            let passportNumber = req.body.passportNumber
-            let countryCode = req.body.country
-
-            if (!Analyzer.analyzeUserPassportNumber(countryCode, passportNumber)) {
-              errorFields.push({
-                field: 'iptPassportNumber',
-                error: 'Invalid passport number.'
-              })
-            } else {
-              user.passportNumber = passportNumber
-            }
-          } else {
-            errorFields.push({
-              field: 'iptPassportNumber',
-              error: "This field is mandatory for foreigners."
-            })
+          console.log(countryCode, req.body.passportNumber)
+          
+          let passportNumberResult = Analyzer.analyzeUserPassportNumber(countryCode, req.body.passportNumber)
+          if (passportNumberResult.hasError.value) {
+            errorFields.push(passportNumberResult)
           }
         }
-        */
       }
 
       /* ##### CAMPOS OPCIONAIS ##### */
