@@ -66,7 +66,7 @@ describe("Suite de testes das rotas User.", function() {
         country: "US",
         state: "NY",
         city: "New York City",
-        passportNumber: "303004786",
+        passportNumber: "100003106",
       })
       .then(function(response) {
         expect(response.statusCode).toEqual(201)
@@ -87,7 +87,7 @@ describe("Suite de testes das rotas User.", function() {
         country: "US",
         state: "NY",
         city: "New York City",
-        passportNumber: "303004786",
+        passportNumber: "100003106",
         neighborhood: "Jardim Nova São Paulo",
         road: "Rua Nina Simone",
         house_number: "2000",
@@ -801,6 +801,33 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
           expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassportNumber')
           expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Invalid passport number")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, uma vez que o número do passaporte do usuário estrangeiro já foi registrado anteriormente.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "US",
+        state: "NY",
+        city: "New York City",
+        passportNumber: "431276122",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Passport number already registred")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassportNumber')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Passport number already registred")
         })
         .catch(function(error) {
           fail(error)

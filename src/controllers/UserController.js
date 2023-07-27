@@ -72,7 +72,7 @@ class UserController {
             errorFields.push(cpfResult)
           }
         } else {
-          let passportNumberResult = Analyzer.analyzeUserPassportNumber(countryCode, req.body.passportNumber)
+          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(countryCode, req.body.passportNumber)
           if (passportNumberResult.hasError.value) {
             errorFields.push(passportNumberResult)
           }
