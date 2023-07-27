@@ -72,8 +72,6 @@ class UserController {
             errorFields.push(cpfResult)
           }
         } else {
-          console.log(countryCode, req.body.passportNumber)
-          
           let passportNumberResult = Analyzer.analyzeUserPassportNumber(countryCode, req.body.passportNumber)
           if (passportNumberResult.hasError.value) {
             errorFields.push(passportNumberResult)

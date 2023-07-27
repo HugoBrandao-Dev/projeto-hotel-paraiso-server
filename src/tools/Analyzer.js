@@ -288,7 +288,7 @@ class Analyzer {
 
     if (!isValid) {
       result.hasError.value = true
-      result.hasError.error = 'Número de passaporte inválido.'
+      result.hasError.error = 'Invalid passport number'
     }
 
     return result
