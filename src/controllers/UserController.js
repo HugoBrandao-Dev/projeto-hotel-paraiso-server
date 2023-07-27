@@ -87,17 +87,9 @@ class UserController {
 
       /* ##### CAMPOS OPCIONAIS ##### */
 
-      if (req.body.neighborhood) {
-        let neighborhood = req.body.neighborhood
-
-        if (!Analyzer.analyzeUserNeighborhood(neighborhood)) {
-          errorFields.push({
-            field: 'iptNeighborhood',
-            error: 'Este campo tem caracteres inválidos.'
-          })
-        } else {
-          user.neighborhood = neighborhood
-        }
+      let neighborhoodResult = Analyzer.analyzeUserNeighborhood(req.body.neighborhood)
+      if (neighborhoodResult.hasError.value) {
+        errorFields.push(neighborhoodResult)
       }
 
       if (req.body.road) {
