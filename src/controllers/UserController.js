@@ -71,6 +71,12 @@ class UserController {
           if (cpfResult.hasError.value) {
             errorFields.push(cpfResult)
           }
+
+          // O CEP é um campo opcional e somente para Brasileiros.
+          let cepResult = await Analyzer.analyzeUserCEP(req.body.cep)
+          if (cepResult.hasError.value) {
+            errorFields.push(cepResult)
+          }
         } else {
           let passportNumberResult = await Analyzer.analyzeUserPassportNumber(countryCode, req.body.passportNumber)
           if (passportNumberResult.hasError.value) {
@@ -80,20 +86,6 @@ class UserController {
       }
 
       /* ##### CAMPOS OPCIONAIS ##### */
-
-      if (req.body.cep) {
-        let cep = req.body.cep
-
-        let isValid = await Analyzer.analyzeUserCEP(cep)
-        if (!isValid) {
-          errorFields.push({
-            field: 'iptCEP',
-            error: 'O valor do CEP é inválido.'
-          })
-        } else {
-          user.cep = cep
-        }
-      }
 
       if (req.body.neighborhood) {
         let neighborhood = req.body.neighborhood
