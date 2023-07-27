@@ -66,7 +66,7 @@ describe("Suite de testes das rotas User.", function() {
         country: "US",
         state: "NY",
         city: "New York City",
-        passportNumber: "C00001549",
+        passportNumber: "303004786",
       })
       .then(function(response) {
         expect(response.statusCode).toEqual(201)
@@ -87,7 +87,7 @@ describe("Suite de testes das rotas User.", function() {
         country: "US",
         state: "NY",
         city: "New York City",
-        passportNumber: "C00001549",
+        passportNumber: "303004786",
         neighborhood: "Jardim Nova São Paulo",
         road: "Rua Nina Simone",
         house_number: "2000",
@@ -1006,7 +1006,7 @@ describe("Suite de testes das rotas User.", function() {
 
         // Número do Passaporte é vazio, porque o cliente é Brasileiro.
         expect(passportNumber).toBeDefined()
-        expect(passportNumber).toBe("C00001549")
+        expect(passportNumber).toBe("303004786")
         
         // Nome do bairro onde o cliente nasceu.
         expect(neighborhood).toBeDefined()
@@ -1153,7 +1153,7 @@ describe("Suite de testes das rotas User.", function() {
         })
         expect(response.body.users[1]).toMatchObject({
           "email": "john_sm@hotmail.com",
-          "passportNumber": "C00001549"
+          "passportNumber": "303004786"
         })
       })
       .catch(function(error) {
@@ -1179,7 +1179,7 @@ describe("Suite de testes das rotas User.", function() {
 
     test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
       return request.post('/users/search').send({
-        passportNumber: 'C00001549'
+        passportNumber: '303004786'
       })
       .then(function(response) {
         expect(response.statusCode).toEqual(200)
