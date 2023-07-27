@@ -275,17 +275,12 @@ class Analyzer {
       console.log(error)
     }
   }
-  static analyzeUserPassportNumber(countryCode = '', passportNumber = '') {
+  static analyzeUserPassportNumber(countryCode, passportNumber = '') {
     let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
 
-    if (!countryCode) {
-      result.hasError.value = true
-      result.hasError.error = 'É necessário informar o seu País de Nascimento.'
-      return result
-    }
     if (!passportNumber) {
       result.hasError.value = true
-      result.hasError.error = 'Este campo é obrigatório.'
+      result.hasError.error = 'This field is required'
       return result
     }
 
