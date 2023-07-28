@@ -1455,6 +1455,42 @@ describe("Suite de testes das rotas User.", function() {
     })
   })
 
+  describe("Testes de REJEIÇÃO na leitura de dados.", function() {
+    test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
+      return request.get('/users/5da9ea674234*635bdff45c02')
+        .then(response => {
+          let { 
+            name,
+            email,
+            birthDate,
+            phoneCode,
+            phoneNumber,
+            country,
+            cep,
+            state,
+            city,
+            cpf,
+            passportNumber,
+            neighborhood,
+            road,
+            house_number,
+            information,
+            created,
+            updated
+          } = response.body
+
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("2")
+          expect(response.body.RestException.Message).toBe("O parâmetro ID possui caracteres inválidos")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/2")
+        })
+        .catch(error => {
+          fail(error)
+        })
+    })
+  })
+
   /* ################## UPDATE ################## */
 
   describe("Testes de SUCESSO na atualizacao de dados.", function() {
