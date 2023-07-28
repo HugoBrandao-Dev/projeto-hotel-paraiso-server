@@ -416,6 +416,24 @@ class Analyzer {
 
     return result
   }
+  static analyzeUserID(id = '') {
+    let acceptableChars = '-'
+    let result = { field: 'id', hasError: { value: false, error: '' }}
+
+    let itsAlphanumeric = validator.isAlphanumeric(id, ['en-US'], {
+      ignore: acceptableChars
+    })
+
+    let itsHexadecimal = validator.isHexadecimal(id)
+
+    if (!itsAlphanumeric && !itsHexadecimal) {
+      result.hasError.value = true
+      result.hasError.error = 'O parâmetro ID possui caracteres inválidos'
+      return result
+    }
+
+    return result
+  }
 }
 
 module.exports = Analyzer
