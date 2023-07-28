@@ -410,7 +410,7 @@ class Analyzer {
 
       if (!itsValidPT_BR && !itsValidEN_US) {
         result.hasError.value = true
-        result.hasError.error = 'O campo de Rua possui caracteres inválidos.'
+        result.hasError.error = 'O campo de Informações Adicionais possui caracteres invalidos'
       }
     }
 
