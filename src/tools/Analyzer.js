@@ -380,8 +380,7 @@ class Analyzer {
 
     return result
   }
-  static analyzeUserHouseNumber(number) {
-    let acceptableChars = ' \':,.'
+  static analyzeUserHouseNumber(number = '') {
     let result = { field: 'iptHouseNumber', hasError: { value: false, error: '' }}
 
     if (number) {
@@ -391,7 +390,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
-        result.hasError.error = 'O campo de Número da Casa possui caracteres inválidos.'
+        result.hasError.error = 'O campo de Número da Casa possui caracteres inválidos'
       }
     }
 
