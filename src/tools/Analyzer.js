@@ -416,23 +416,35 @@ class Analyzer {
 
     return result
   }
-  static analyzeUserID(id = '') {
-    let acceptableChars = '-'
-    let result = { field: 'id', hasError: { value: false, error: '' }}
+  static async analyzeUserID(id = '') {
+    try {
+      let acceptableChars = '-'
+      let result = { field: 'id', hasError: { value: false, type: null, error: '' }}
 
-    let itsAlphanumeric = validator.isAlphanumeric(id, ['en-US'], {
-      ignore: acceptableChars
-    })
+      let itsAlphanumeric = validator.isAlphanumeric(id, ['en-US'], {
+        ignore: acceptableChars
+      })
 
-    let itsHexadecimal = validator.isHexadecimal(id)
+      let itsHexadecimal = validator.isHexadecimal(id)
 
-    if (!itsAlphanumeric && !itsHexadecimal) {
-      result.hasError.value = true
-      result.hasError.error = 'O parâmetro ID possui caracteres inválidos'
+      if (!itsAlphanumeric && !itsHexadecimal) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = 'O parâmetro ID possui caracteres inválidos'
+        return result
+      } else {
+        let user = await User.findOne(id)
+        if (!user) {
+          result.hasError.value = true
+          result.hasError.type = 3
+          result.hasError.error = 'Nenhum usuário com o ID informado está cadastrado'
+        }
+      }
+
       return result
+    } catch (error) {
+      console.log(error)
     }
-
-    return result
   }
 }
 

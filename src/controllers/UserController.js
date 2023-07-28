@@ -133,33 +133,32 @@ class UserController {
 
   async read(req, res) {
     try {
-      let idResult = Analyzer.analyzeUserID(req.params.id)
+      let idResult = await Analyzer.analyzeUserID(req.params.id)
 
       if (idResult.hasError.value) {
-        res.status(400)
-        res.json({
-          RestException: {
-            "Code": "2",
-            "Message": idResult.hasError.error,
-            "Status": "400",
-            "MoreInfo": "/docs/erros/2"
-          }
-        })
+
+        let RestException = {
+          Code: `${ idResult.hasError.type }`,
+          Message: idResult.hasError.error,
+          Status: null,
+          MoreInfo: `/docs/erros/${ idResult.hasError.type }`
+        }
+
+        switch (idResult.hasError.type) {
+          case 3:
+            RestException.Status = '404'
+            break
+          default:
+            RestException.Status = '400'
+        }
+
+        res.status(RestException.Status)
+        res.json({ RestException })
       } else {
         let user = await User.findOne(req.params.id)
         if (user) {
           res.status(200)
           res.json(user)
-        } else {
-          res.status(404)
-          res.json({
-            RestException: {
-              "Code": "2",
-              "Message": "Nenhum usuário com o ID informado está cadastrado",
-              "Status": "404",
-              "MoreInfo": "/docs/erros/2"
-            }
-          })
         }
       }
     } catch (error) {
