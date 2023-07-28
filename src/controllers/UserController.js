@@ -97,17 +97,9 @@ class UserController {
         errorFields.push(roadResult)
       }
 
-      if (req.body.house_number) {
-        let house_number = req.body.house_number
-
-        if (!Analyzer.analyzeUserHouseNumber(house_number)) {
-          errorFields.push({
-            field: 'iptHouseNumber',
-            error: 'Este campo deve conter somente números.'
-          })
-        } else {
-          user.house_number = house_number
-        }
+      let houseNumberResult = Analyzer.analyzeUserHouseNumber(req.body.house_number)
+      if (houseNumberResult.hasError.value) {
+        errorFields.push(houseNumberResult)
       }
 
       if (req.body.information) {
