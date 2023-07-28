@@ -151,7 +151,15 @@ class UserController {
           res.status(200)
           res.json(user)
         } else {
-          res.sendStatus(404)
+          res.status(404)
+          res.json({
+            RestException: {
+              "Code": "2",
+              "Message": "Nenhum usuário com o ID informado está cadastrado",
+              "Status": "404",
+              "MoreInfo": "/docs/erros/2"
+            }
+          })
         }
       }
     } catch (error) {
