@@ -92,17 +92,9 @@ class UserController {
         errorFields.push(neighborhoodResult)
       }
 
-      if (req.body.road) {
-        let road = req.body.road
-
-        if (!Analyzer.analyzeUserRoad(road)) {
-          errorFields.push({
-            field: 'iptRoad',
-            error: 'Este campo tem caracteres inválidos.'
-          })
-        } else {
-          user.road = road
-        }
+      let roadResult = Analyzer.analyzeUserRoad(req.body.road)
+      if (roadResult.hasError.value) {
+        errorFields.push(roadResult)
       }
 
       if (req.body.house_number) {
