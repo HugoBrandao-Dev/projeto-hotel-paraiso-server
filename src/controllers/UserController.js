@@ -133,14 +133,26 @@ class UserController {
 
   async read(req, res) {
     try {
-      let id = req.params.id
+      let idResult = Analyzer.analyzeUserID(req.params.id)
 
-      let user = await User.findOne(id)
-      if (user) {
-        res.status(200)
-        res.json(user)
+      if (idResult.hasError.value) {
+        res.status(400)
+        res.json({
+          RestException: {
+            "Code": "2",
+            "Message": idResult.hasError.error,
+            "Status": "400",
+            "MoreInfo": "/docs/erros/2"
+          }
+        })
       } else {
-        res.sendStatus(404)
+        let user = await User.findOne(req.params.id)
+        if (user) {
+          res.status(200)
+          res.json(user)
+        } else {
+          res.sendStatus(404)
+        }
       }
     } catch (error) {
       throw new Error(error)
