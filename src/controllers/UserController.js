@@ -102,17 +102,9 @@ class UserController {
         errorFields.push(houseNumberResult)
       }
 
-      if (req.body.information) {
-        let information = req.body.information
-
-        if (!Analyzer.analyzeUserAdditionalInformation(information)) {
-          errorFields.push({
-            field: 'iptAddInformation',
-            error: 'Este campo contém caracteres inválidos.'
-          })
-        } else {
-          user.information = information
-        }
+      let informationsResult = Analyzer.analyzeUserAdditionalInformation(req.body.information)
+      if (informationsResult.hasError.value) {
+        errorFields.push(informationsResult)
       }
 
       if (errorFields.length) {
