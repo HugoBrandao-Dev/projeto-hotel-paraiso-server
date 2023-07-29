@@ -103,6 +103,8 @@ describe("Suite de testes das rotas User.", function() {
   })
 
   describe("Testes de REJEIÇÃO na inserção de dados", function() {
+
+    // Testes no NOME
     test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
       return request.post('/users').send({
         name: "",
@@ -159,6 +161,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes no EMAIL
     test("POST - Deve retornar 400, pela ausência do email do User.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -240,6 +243,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes na DATA DE NASCIMENTO/IDADE
     test("POST - Deve retornar 400, pela ausência da data de nascimento do User.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -321,6 +325,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes na SENHA
     test("POST - Deve retornar 400, pela ausência da senha do usuário.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -375,6 +380,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes no CÓDIGO DO TELEFONE/TELEFONE
     test("POST - Deve retornar 400, pela ausência do código do telefone.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -483,6 +489,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes no PAÍS DE NASCIMENTO
     test("POST - Deve retornar 400, pela ausência do país de nascimento do usuário.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -537,6 +544,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes no ESTADO DE NASCIMENTO
     test("POST - Deve retornar 400, pela ausência do estado de nascimento do usuário.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -591,6 +599,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes na CIDADE DE NASCIMENTO
     test("POST - Deve retornar 400, pela ausência do nome da cidade de nascimento do usuário.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -645,6 +654,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes no CPF (para Brasileiros)
     test("POST - Deve retornar 400, pela ausência do CPF do usuário nascido no Brasil.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -699,7 +709,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    test("POST - Deve retornar 400, devido ao valor do CPF do usuário ser inválido.", function() {
+    test("POST - Deve retornar 400, devido ao valor do CPF do usuário estar faltando dígitos.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
         email: "tobias@gmail.com",
@@ -753,6 +763,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes no NÚMERO DE PASSAPORTE (para estrangeiros)
     test("POST - Deve retornar 400, devido a ausência do número do passaporte de um usuário estrangeiro.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -834,6 +845,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Testes no CEP
     test("POST - Deve retornar 400, uma vez que o número do CEP não existe.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -918,6 +930,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Teste no NOME DO BAIRRO
     test("POST - Deve retornar 400, devido a presença de caracteres inválidos no nome do bairro.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -950,6 +963,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Teste no NÚMERO DA CASA
     test("POST - Deve retornar 400, devido a presença de caracteres inválidos no numero da casa do usuario.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
@@ -982,6 +996,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    // Teste nas INFORMAÇÕES ADICIONAIS
     test("POST - Deve retornar 400, devido a presença de caracteres inválidos nas informações adicionais do usuario.", function() {
       return request.post('/users').send({
         name: "Tobias de Oliveira",
