@@ -29,7 +29,12 @@ class UserController {
         errorFields.push(birthDateResult)
       }
 
-      let passwordResult = Analyzer.analyzeUserPassword(req.body.password)
+      let roleResult = Analyzer.analyzeUserPassword(req.body.password)
+      if (roleResult.hasError.value) {
+        errorFields.push(roleResult)
+      }
+
+      let passwordResult = Analyzer.analyzeUserRole(req.body.role)
       if (passwordResult.hasError.value) {
         errorFields.push(passwordResult)
       }
