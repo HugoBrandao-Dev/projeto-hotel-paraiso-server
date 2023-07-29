@@ -130,6 +130,21 @@ class Analyzer {
     return result
   }
 
+  static analyzeUserRole(role = '0') {
+    let result = { field: 'iptRole', hasError: { value: false, type: null, error: '' }}
+
+    let itsNumeric = validator.isNumeric(role, {
+      no_symbols: true
+    })
+    if (!itsNumeric) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = 'O campo de Role possui caracteres inválidos'
+    }
+
+    return result
+  }
+
   static analyzeUserPhoneCode(phoneCode = '') {
     let result = { field: 'iptPhoneCode', hasError: { value: false, error: '' }}
 
