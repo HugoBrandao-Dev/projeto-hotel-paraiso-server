@@ -362,7 +362,7 @@ class Analyzer {
   }
   static analyzeUserRoad(road = '') {
     let acceptableChars = ' \':,.'
-    let result = { field: 'iptRoad', hasError: { value: false, error: '' }}
+    let result = { field: 'iptRoad', hasError: { value: false, type: null, error: '' }}
 
     if (road) {
       let itsValidPT_BR = validator.isAlphanumeric(road, ['pt-BR'], {
@@ -374,6 +374,7 @@ class Analyzer {
 
       if (!itsValidPT_BR && !itsValidEN_US) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'O campo de Rua possui caracteres inválidos'
       }
     }
