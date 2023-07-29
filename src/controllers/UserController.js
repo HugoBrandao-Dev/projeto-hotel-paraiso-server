@@ -8,9 +8,6 @@ class UserController {
   async create(req, res, next) {
     try {
       let errorFields = []
-      let user = {}
-
-      user.id = uuid.v4()
 
       /* ##### CAMPOS OBRIGATÓRIOS ##### */
 
@@ -128,6 +125,43 @@ class UserController {
         })
         return
       } else {
+        let user = {}
+
+        // OBRIGATÓRIOS
+        user.id = uuid.v4()
+        user.name = req.body.name
+        user.email = req.body.email
+        user.password = req.body.password
+        user.role = req.body.role
+        user.phoneCode = req.body.phoneCode
+        user.phoneNumber = req.body.phoneNumber
+        user.birthDate = req.body.birthDate
+        user.country = req.body.country
+        user.state = req.body.state
+        user.city = req.body.city
+        if (req.body.cpf) {
+          user.cpf = req.body.cpf
+        } else {
+          user.passportNumber = req.body.passportNumber
+        }
+
+        // OPCIONAIS/CONDICINAIS
+        if (req.body.cep) {
+          user.cep = req.body.cep
+        }
+        if (req.body.neighborhood) {
+          user.neighborhood = req.body.neighborhood
+        }
+        if (req.body.road) {
+          user.road = req.body.road
+        }
+        if (req.body.house_number) {
+          user.house_number = req.body.house_number
+        }
+        if (req.body.information) {
+          user.information = req.body.information
+        }
+
         await User.save(user)
         res.status(201)
         res.json({ msg: 'Cadastrado com sucesso!'})
@@ -159,7 +193,7 @@ class UserController {
             RestException.Status = '400'
         }
 
-        res.status(RestException.Status)
+        res.status(parseInt(RestException.Status))
         res.json({ RestException })
       } else {
         let user = await User.findOne(req.params.id)
