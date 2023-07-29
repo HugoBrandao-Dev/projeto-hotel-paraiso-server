@@ -29,12 +29,14 @@ class UserController {
         errorFields.push(birthDateResult)
       }
 
-      let roleResult = Analyzer.analyzeUserPassword(req.body.password)
+      // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
+      let role = req.body.role == undefined ? '0' : req.body.role
+      let roleResult = Analyzer.analyzeUserRole(role)
       if (roleResult.hasError.value) {
         errorFields.push(roleResult)
       }
 
-      let passwordResult = Analyzer.analyzeUserRole(req.body.role)
+      let passwordResult = Analyzer.analyzeUserPassword(req.body.password)
       if (passwordResult.hasError.value) {
         errorFields.push(passwordResult)
       }

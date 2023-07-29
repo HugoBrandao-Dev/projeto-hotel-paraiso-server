@@ -130,7 +130,7 @@ class Analyzer {
     return result
   }
 
-  static analyzeUserRole(role = '0') {
+  static analyzeUserRole(role = '') {
     let result = { field: 'iptRole', hasError: { value: false, type: null, error: '' }}
 
     let itsNumeric = validator.isNumeric(role, {
