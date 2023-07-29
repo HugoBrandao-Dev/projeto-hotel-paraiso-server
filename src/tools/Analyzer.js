@@ -140,6 +140,23 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = 'O campo de Role possui caracteres inválidos'
+      return result
+    }
+
+    /*
+    0 - cliente
+    1 - funcionário
+    2 - gerente
+    3 - dono / admin
+    */
+    let itsValid = validator.isInt(role, {
+      max: 3,
+      min: 0
+    })
+    if (!itsValid) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = 'O valor de Role é de uma função inexistente'
     }
 
     return result
