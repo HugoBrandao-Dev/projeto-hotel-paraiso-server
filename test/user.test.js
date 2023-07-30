@@ -106,6 +106,1023 @@ describe("Suite de testes das rotas User.", function() {
     })
   })
 
+  describe("Testes de REJEIÇÃO na inserção de dados", function() {
+    // Testes no NOME
+    test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
+      return request.post('/users').send({
+        name: "",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo Nome é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptName')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Nome é obrigatório')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido a presença de elementos inválidos do nome do User.", function() {
+
+      // O "O" de "Oliveira", na verdade é um 0 (zero).
+      return request.post('/users').send({
+        name: "Tobias de 0liveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo Nome possui caracteres inválidos")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptName')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Nome possui caracteres inválidos')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes no EMAIL
+    test("POST - Deve retornar 400, pela ausência do email do User.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo Email é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Email é obrigatório')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido a presença de elementos inválidos no email do User.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias($)@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo Email possui caracteres inválidos")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Email possui caracteres inválidos')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, por passar um email já cadastrado.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O Email informado já foi cadastrado anteriormente")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O Email informado já foi cadastrado anteriormente')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes na DATA DE NASCIMENTO/IDADE
+    test("POST - Deve retornar 400, pela ausência da data de nascimento do User.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo Data de Nascimento é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptBirthDate')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Data de Nascimento é obrigatório')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, por ter informado uma data de nascimento inválida.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "2+00-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de Data de Nascimento é inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptBirthDate')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo de Data de Nascimento é inválido')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, pela idade do usuário ser menor que 18 anos.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "2018-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Somente usuários com mais de 18 anos podem se cadastrar")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptBirthDate')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('Somente usuários com mais de 18 anos podem se cadastrar')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes na SENHA
+    test("POST - Deve retornar 400, pela ausência da senha do usuário.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de Senha é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassword')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Senha é obrigatório")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido a senha informada ser muito fraca.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@tobias&7qer5464@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("A senha é muito fraca")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassword')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("A senha é muito fraca")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes na FUNÇÃO DA CONTA QUE ESTÁ SENDO CRIADA (role)
+    test("POST - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&7qer5464@",
+        role: "cliente", // role deve ser um valor numérico
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de Role possui caracteres inválidos")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Role possui caracteres inválidos")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao valor da função (role) ser de uma função inexistente.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&7qer5464@",
+        role: "10",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O valor de Role é de uma função inexistente")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O valor de Role é de uma função inexistente")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes no CÓDIGO DO TELEFONE/TELEFONE
+    test("POST - Deve retornar 400, pela ausência do código do telefone.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "",
+        phoneNumber: "11984752352",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de Código de Telefone é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPhoneCode')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Código de Telefone é obrigatório")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao código de telefone informado ser invalido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "1a",
+        phoneNumber: "11984752352",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O Código de Telefone é inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPhoneCode')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O Código de Telefone é inválido")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, pela ausência do telefone do usuario.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de Número de Telefone é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPhoneNumber')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Número de Telefone é obrigatório")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao número de telefone do usuário ser inválido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "asdf115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O telefone é inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPhoneNumber')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O telefone é inválido")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes no PAÍS DE NASCIMENTO
+    test("POST - Deve retornar 400, pela ausência do país de nascimento do usuário.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de País de Nascimento é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCountry')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de País de Nascimento é obrigatório")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao ISO do pais de nascimento do usuário ser inválido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BRA",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("País inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCountry')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("País inválido")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes no ESTADO DE NASCIMENTO
+    test("POST - Deve retornar 400, pela ausência do estado de nascimento do usuário.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de Estado de Nascimento é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptState')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Estado de Nascimento é obrigatório")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao nome/sigla do estado de nascimento ser inválido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "NY",
+        city: "São Paulo",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Estado inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptState')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Estado inválido")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes na CIDADE DE NASCIMENTO
+    test("POST - Deve retornar 400, pela ausência do nome da cidade de nascimento do usuário.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "",
+        cpf: "33333333333",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de Cidade de Nascimento é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCity')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Cidade de Nascimento é obrigatório")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao nome da cidade de nascimento do usuário ser inválido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel do Oeste",
+        cpf: `${ genCPF() }`,
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Cidade inválida")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCity')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Cidade inválida")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes no CPF (para Brasileiros)
+    test("POST - Deve retornar 400, pela ausência do CPF do usuário nascido no Brasil.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel",
+        cpf: "",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de CPF é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCPF')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de CPF é obrigatório")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao valor do CPF do usuário ser inválido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel",
+        cpf: "2a2a2a2a2a2",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O CPF possui caracteres inválidos")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCPF')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O CPF possui caracteres inválidos")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao valor do CPF do usuário estar faltando dígitos.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel",
+        cpf: "222222222",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Faltam digitos no seu CPF")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCPF')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Faltam digitos no seu CPF")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao CPF informado já estar sido cadastrado.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel",
+        cpf: "22222222222",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O CPF informado já está cadastrado")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCPF')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O CPF informado já está cadastrado")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes no NÚMERO DE PASSAPORTE (para estrangeiros)
+    test("POST - Deve retornar 400, devido a ausência do número do passaporte de um usuário estrangeiro.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "US",
+        state: "NY",
+        city: "New York City",
+        passportNumber: "",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("This field is required")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassportNumber')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("This field is required")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, uma vez que o número do passaporte do usuario estrangeiro está errado.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "US",
+        state: "NY",
+        city: "New York City",
+        passportNumber: "C33005988",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Invalid passport number")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassportNumber')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Invalid passport number")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, uma vez que o número do passaporte do usuário estrangeiro já foi registrado anteriormente.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        country: "US",
+        state: "NY",
+        city: "New York City",
+        passportNumber: "431276122",
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Passport number already registred")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassportNumber')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Passport number already registred")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Testes no CEP
+    test("POST - Deve retornar 400, uma vez que o número do CEP não existe.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        cpf: "33333333333",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel",
+        cep: "10100100"
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O CEP informado não existe")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCEP')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O CEP informado não existe")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, uma vez que o falta número do CEP informado.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        cpf: "33333333333",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel",
+        cep: "1010010"
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("Faltam números no CEP informado")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCEP')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Faltam números no CEP informado")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido ao número de CEP possuir caractere inválido.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&6554987@",
+        phoneCode: "55",
+        phoneNumber: "115498653214",
+        birthDate: "2000-02-11",
+        cpf: "33333333333",
+        country: "BR",
+        state: "SP",
+        city: "São Manuel",
+        cep: "1010010a"
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de CEP possui caracteres inválidos")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.ErrorFields[0].field).toBe('iptCEP')
+          expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de CEP possui caracteres inválidos")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Teste no NOME DO BAIRRO
+    test("POST - Deve retornar 400, devido a presença de caracteres inválidos no nome do bairro.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11999847523",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+        cep: "08391700",
+        neighborhood: "<strong>Jardim Nova São Paulo</strong>",
+        road: "Rua Nina Simone",
+        house_number: "2000",
+        information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+            expect(response.body.RestException.Message).toBe("O campo de Bairro possui caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptNeighborhood')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Bairro possui caracteres inválidos")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, devido a presença de caracteres inválidos no nome da rua.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11999847523",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+        cep: "08391700",
+        neighborhood: "Jardim Nova São Paulo",
+        road: "<i>Rua Nina Simone</i>",
+        house_number: "2000",
+        information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+            expect(response.body.RestException.Message).toBe("O campo de Rua possui caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRoad')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Rua possui caracteres inválidos")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Teste no NÚMERO DA CASA
+    test("POST - Deve retornar 400, devido a presença de caracteres inválidos no numero da casa do usuario.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11999847523",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+        cep: "08391700",
+        neighborhood: "Jardim Nova São Paulo",
+        road: "Rua Nina Simone",
+        house_number: "2000as",
+        information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+            expect(response.body.RestException.Message).toBe("O campo de Número da Casa possui caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptHouseNumber')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Número da Casa possui caracteres inválidos")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    // Teste nas INFORMAÇÕES ADICIONAIS
+    test("POST - Deve retornar 400, devido a presença de caracteres inválidos nas informações adicionais do usuario.", function() {
+      return request.post('/users').send({
+        name: "Tobias de Oliveira",
+        email: "tobias@hotmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11999847523",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: "33333333333",
+        cep: "08391700",
+        neighborhood: "Jardim Nova São Paulo",
+        road: "Rua Nina Simone",
+        house_number: "2000",
+        information: "<i>Nunc</i> eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+            expect(response.body.RestException.Message).toBe("O campo de Informações Adicionais possui caracteres invalidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptAdditionalInformation')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Informações Adicionais possui caracteres invalidos")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+  })
+
+
   /* ################## READ ################## */
 
   describe("Testes de SUCESSO na leitura de dados.", function() {
