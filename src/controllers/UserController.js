@@ -259,6 +259,8 @@ class UserController {
         errorFields.push(birthDateResult.hasError.error)
       }
 
+      // Fazer validação do CPF do usuário
+
       let emailResult = await Analyzer.analyzeUserEmail(user.email)
       if (emailResult.hasError.value) {
         errorFields.push(emailResult.hasError.error)
@@ -284,6 +286,11 @@ class UserController {
       let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(user.phoneCode ,user.phoneNumber)
       if (phoneNumberResult.hasError.value) {
         errorFields.push(phoneNumberResult.hasError.error)
+      }
+
+      let countryResult = Analyzer.analyzeUserCountry(user.country)
+      if (countryResult.hasError.value) {
+        errorFields.push(countryResult.hasError.error)
       }
 
       if (errorFields.length) {
