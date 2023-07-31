@@ -293,6 +293,11 @@ class UserController {
         errorFields.push(countryResult.hasError.error)
       }
 
+      let stateResult = await Analyzer.analyzeUserState(user.country, user.state)
+      if (stateResult.hasError.value) {
+        errorFields.push(stateResult.hasError.error)
+      }
+
       if (errorFields.length) {
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)

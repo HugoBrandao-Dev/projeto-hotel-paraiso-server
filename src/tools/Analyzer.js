@@ -239,10 +239,11 @@ class Analyzer {
   }
   static async analyzeUserState(country, state = '') {
     try {
-      let result = { field: 'iptState', hasError: { value: false, error: '' }}
+      let result = { field: 'iptState', hasError: { value: false, type: null, error: '' }}
 
       if (!state) {
         result.hasError.value = true
+        result.hasError.type = 1
         result.hasError.error = 'O campo de Estado de Nascimento é obrigatório'
         return result
       }
@@ -253,6 +254,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'Estado inválido'
       }
 
