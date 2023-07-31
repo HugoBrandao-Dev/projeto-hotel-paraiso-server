@@ -276,6 +276,11 @@ class UserController {
         errorFields.push(roleResult)
       }
 
+      let phoneCodeResult = Analyzer.analyzeUserPhoneCode(user.phoneCode)
+      if (phoneCodeResult.hasError.value) {
+        errorFields.push(phoneCodeResult.hasError.error)
+      }
+
       if (errorFields.length) {
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)
