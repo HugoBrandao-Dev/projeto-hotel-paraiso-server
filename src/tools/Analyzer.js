@@ -120,10 +120,11 @@ class Analyzer {
     return result
   }
   static analyzeUserPassword(password = '') {
-    let result = { field: 'iptPassword', hasError: { value: false, error: '' }}
+    let result = { field: 'iptPassword', hasError: { value: false, type: null, error: '' }}
 
     if (!password) {
       result.hasError.value = true
+      result.hasError.type = 1
       result.hasError.error = 'O campo de Senha é obrigatório'
       return result
     }
@@ -132,6 +133,7 @@ class Analyzer {
 
     if (!isValid) {
       result.hasError.value = true
+      result.hasError.type = 2
       result.hasError.error = 'A senha é muito fraca'
     }
 

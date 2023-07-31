@@ -264,6 +264,11 @@ class UserController {
         errorFields.push(emailResult.hasError.error)
       }
 
+      let passwordResult = Analyzer.analyzeUserPassword(user.password)
+      if (passwordResult.hasError.value) {
+        errorFields.push(passwordResult.hasError.error)
+      }
+
       if (errorFields.length) {
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)
