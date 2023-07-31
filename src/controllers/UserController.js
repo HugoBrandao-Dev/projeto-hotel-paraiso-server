@@ -269,6 +269,13 @@ class UserController {
         errorFields.push(passwordResult.hasError.error)
       }
 
+      // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
+      let role = user.role == undefined ? '0' : user.role
+      let roleResult = Analyzer.analyzeUserRole(role)
+      if (roleResult.hasError.value) {
+        errorFields.push(roleResult)
+      }
+
       if (errorFields.length) {
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)
