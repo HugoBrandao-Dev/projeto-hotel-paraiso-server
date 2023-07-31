@@ -247,7 +247,28 @@ class UserController {
   async update(req, res) {
     try {
       let user = req.body.user
-      let result = await User.update(user)
+      let errorFields = []
+
+      let nameResult = Analyzer.analyzeUserName(user.name)
+      if (nameResult.hasError.value) {
+        errorFields.push(nameResult.hasError.error)
+      }
+
+      if (errorFields.length) {
+        let messages = errorFields.map(item => item.hasError.error)
+        res.status(400)
+        res.json({ 
+          RestException: {
+            "Code": "1",
+            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
+            "Status": "400",
+            "MoreInfo": "/docs/erros/1",
+            "ErrorFields": errorFields
+          }
+        })
+        return
+      }
+      let result = await User.edit(user)
       res.status(200)
       res.json({ user: result })
     } catch (error) {

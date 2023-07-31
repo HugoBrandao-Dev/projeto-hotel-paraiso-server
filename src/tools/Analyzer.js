@@ -13,11 +13,12 @@ const User = require('../models/User')
 class Analyzer {
   static analyzeUserName(name = '') {
     let acceptableChars = ' \''
-    let result = { field: 'iptName', hasError: { value: false, error: '' }}
+    let result = { field: 'iptName', hasError: { value: false, type: null, error: '' }}
 
     // Caso o usuário não tenha passado um nome
     if (!name) {
       result.hasError.value = true
+      result.hasError.type = 1
       result.hasError.error = 'O campo Nome é obrigatório'
       return result
     }
@@ -31,6 +32,7 @@ class Analyzer {
 
     if (!itsValidPT_BR && !itsValidEN_US) {
       result.hasError.value = true
+      result.hasError.type = 2
       result.hasError.error = 'O campo Nome possui caracteres inválidos'
     }
     return result

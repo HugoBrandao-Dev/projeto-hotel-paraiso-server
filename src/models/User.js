@@ -66,7 +66,7 @@ class User {
     }
   }
 
-  async update(user) {
+  async edit(user) {
     try {
       const date = new DateFormated('mongodb')
 
