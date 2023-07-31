@@ -254,6 +254,11 @@ class UserController {
         errorFields.push(nameResult.hasError.error)
       }
 
+      let emailResult = await Analyzer.analyzeUserEmail(user.email)
+      if (emailResult.hasError.value) {
+        errorFields.push(emailResult.hasError.error)
+      }
+
       if (errorFields.length) {
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)

@@ -40,11 +40,12 @@ class Analyzer {
   static async analyzeUserEmail(email = '') {
     try {
       let acceptableChars = '@_.'
-      let result = { field: 'iptEmail', hasError: { value: false, error: '' }}
+      let result = { field: 'iptEmail', hasError: { value: false, type: null, error: '' }}
 
       // Caso o usuário não tenha passado um email
       if (!email) {
         result.hasError.value = true
+        result.hasError.type = 1
         result.hasError.error = 'O campo Email é obrigatório'
         return result
       }
@@ -52,6 +53,7 @@ class Analyzer {
       let user = await User.findByDoc({ email })
       if (user) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'O Email informado já foi cadastrado anteriormente'
         return result
       }
@@ -64,6 +66,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
+        result.hasError.email = 2
         result.hasError.error = 'O campo Email possui caracteres inválidos'
       }
       return result
