@@ -197,10 +197,11 @@ class Analyzer {
   }
 
   static analyzeUserPhoneNumber(phoneCode = '', phoneNumber = '') {
-    let result = { field: 'iptPhoneNumber', hasError: { value: false, error: '' }}
+    let result = { field: 'iptPhoneNumber', hasError: { value: false, type: null, error: '' } }
 
     if (!phoneNumber) {
       result.hasError.value = true
+      result.hasError.type = 1
       result.hasError.error = 'O campo de Número de Telefone é obrigatório'
       return result
     }
@@ -209,6 +210,7 @@ class Analyzer {
 
     if (!isValid) {
       result.hasError.value = true
+      result.hasError.type = 2
       result.hasError.error = 'O telefone é inválido'
     }
 
