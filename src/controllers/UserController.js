@@ -254,6 +254,11 @@ class UserController {
         errorFields.push(nameResult.hasError.error)
       }
 
+      let birthDateResult = Analyzer.analyzeUserBirthDate(user.birthDate)
+      if (birthDateResult.hasError.value) {
+        errorFields.push(birthDateResult.hasError.error)
+      }
+
       let emailResult = await Analyzer.analyzeUserEmail(user.email)
       if (emailResult.hasError.value) {
         errorFields.push(emailResult.hasError.error)

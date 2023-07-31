@@ -76,11 +76,12 @@ class Analyzer {
   }
   static analyzeUserBirthDate(date = '') {
     let minAgeToRegister = 18
-    let result = { field: 'iptBirthDate', hasError: { value: false, error: '' }}
+    let result = { field: 'iptBirthDate', hasError: { value: false, type: null, error: '' }}
 
     // Caso o usuário não tenha passado um email
     if (!date) {
       result.hasError.value = true
+      result.hasError.type = 1
       result.hasError.error = 'O campo Data de Nascimento é obrigatório'
       return result
     }
@@ -88,6 +89,7 @@ class Analyzer {
     let isValid = validator.isDate(date)
     if (!isValid) {
       result.hasError.value = true
+      result.hasError.type = 2
       result.hasError.error = 'O campo de Data de Nascimento é inválido'
       return result
     }
@@ -112,6 +114,7 @@ class Analyzer {
 
     if (!isBefore && !isEqual) {
       result.hasError.value = true
+      result.hasError.type = 2
       result.hasError.error = 'Somente usuários com mais de 18 anos podem se cadastrar'
     }
     return result
