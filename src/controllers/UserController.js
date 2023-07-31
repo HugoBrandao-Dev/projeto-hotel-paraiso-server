@@ -249,6 +249,11 @@ class UserController {
       let user = req.body.user
       let errorFields = []
 
+      let idResult = await Analyzer.analyzeUserID(user.id)
+      if (idResult.hasError.value) {
+        errorFields.push(idResult.hasError.error)
+      }
+
       let nameResult = Analyzer.analyzeUserName(user.name)
       if (nameResult.hasError.value) {
         errorFields.push(nameResult.hasError.error)
