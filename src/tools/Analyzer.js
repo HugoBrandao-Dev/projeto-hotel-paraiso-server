@@ -265,10 +265,11 @@ class Analyzer {
   }
   static async analyzeUserCity(country, state, city = '') {
     try {
-      let result = { field: 'iptCity', hasError: { value: false, error: '' }}
+      let result = { field: 'iptCity', hasError: { value: false, type: null, error: '' }}
 
       if (!city) {
         result.hasError.value = true
+        result.hasError.type = 1
         result.hasError.error = 'O campo de Cidade de Nascimento é obrigatório'
         return result
       }
@@ -279,6 +280,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'Cidade inválida'
       }
 
