@@ -264,7 +264,10 @@ class UserController {
         errorFields.push(birthDateResult.hasError.error)
       }
 
-      // Fazer validação do CPF do usuário
+      let cpfResult = await Analyzer.analyzeUserCPF(user.cpf)
+      if (cpfResult.hasError.value) {
+        errorFields.push(cpfResult.hasError.error)
+      }
 
       let emailResult = await Analyzer.analyzeUserEmail(user.email)
       if (emailResult.hasError.value) {

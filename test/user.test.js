@@ -1609,7 +1609,7 @@ describe("Suite de testes das rotas User.", function() {
         country: "BR",
         state: "RJ",
         city: "Rio de Janeiro",
-        cpf: "11111111111"
+        cpf: `${ genCPF() }`
       }
       return request.put('/users').send({ user })
       .then(function(response) {
