@@ -254,6 +254,8 @@ class UserController {
         errorFields.push(idResult.hasError.error)
       }
 
+      /* ############ CAMPOS OBRIGATÓRIOS ############ */
+
       let nameResult = Analyzer.analyzeUserName(user.name)
       if (nameResult.hasError.value) {
         errorFields.push(nameResult.hasError.error)
@@ -264,9 +266,16 @@ class UserController {
         errorFields.push(birthDateResult.hasError.error)
       }
 
-      let cpfResult = await Analyzer.analyzeUserCPF(user.cpf)
-      if (cpfResult.hasError.value) {
-        errorFields.push(cpfResult.hasError.error)
+      if (user.country == 'BR') {
+        let cpfResult = await Analyzer.analyzeUserCPF(user.cpf)
+        if (cpfResult.hasError.value) {
+          errorFields.push(cpfResult.hasError.error)
+        }
+      } else {
+        let passportNumberResult = await Analyzer.analyzeUserPassportNumber(user.country, user.passportNumber)
+        if (passportNumberResult.hasError.value) {
+          errorFields.push(passportNumberResult.hasError.error)
+        }
       }
 
       let emailResult = await Analyzer.analyzeUserEmail(user.email)
@@ -312,6 +321,7 @@ class UserController {
       }
 
       if (errorFields.length) {
+        console.log(errorFields)
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)
         res.json({ 

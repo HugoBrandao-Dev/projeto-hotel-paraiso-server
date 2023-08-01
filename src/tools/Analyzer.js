@@ -330,10 +330,11 @@ class Analyzer {
   }
   static async analyzeUserPassportNumber(countryCode, passportNumber = '') {
     try {
-      let result = { field: 'iptPassportNumber', hasError: { value: false, error: '' }}
+      let result = { field: 'iptPassportNumber', hasError: { value: false, type: null, error: '' }}
 
       if (!passportNumber) {
         result.hasError.value = true
+        result.hasError.type = 1
         result.hasError.error = 'This field is required'
         return result
       }
@@ -341,6 +342,7 @@ class Analyzer {
       let user = await User.findByDoc({ passportNumber })
       if (user) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'Passport number already registred'
         return result
       }
@@ -349,6 +351,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'Invalid passport number'
       }
 
