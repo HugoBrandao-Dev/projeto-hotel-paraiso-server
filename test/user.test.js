@@ -1,10 +1,23 @@
 const app = require('../src/app')
 const supertest = require('supertest')
+const validator = require('validator')
 
 const request = supertest(app)
 
 function genCPF() {
   return Math.floor(Math.random() * 99999999999) + 1
+}
+
+function genPassportNumber() {
+  let found = false
+  while (!found) {
+    let num = `${ Math.floor(Math.random() * ((499999999 + 1) - 300000000)) + 300000000 }`
+    let isValid = validator.isPassportNumber(num, 'US')
+    if (isValid) {
+      found = true
+      return num
+    }
+  }
 }
 
 describe("Suite de testes das rotas User.", function() {
@@ -1596,7 +1609,7 @@ describe("Suite de testes das rotas User.", function() {
   /* ################## UPDATE ################## */
 
   describe("Testes de SUCESSO na atualizacao de dados.", function() {
-    test("POST - Deve retornar 200 e o usuário com suas informações atualizadas.", function() {
+    test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações atualizadas.", function() {
       let user = {
         id: "5da9ea674234635bdff45c02",
         name: "Josias Cruz",
@@ -1625,6 +1638,41 @@ describe("Suite de testes das rotas User.", function() {
         expect(response.body.user.state).toBe(user.state)
         expect(response.body.user.city).toBe(user.city)
         expect(response.body.user.cpf).toBe(user.cpf)
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
+
+    test("POST - Deve retornar 200 e o usuário estrangeiro com suas informações atualizadas.", function() {
+      let user = {
+        id: "600f191e810c19829de900ea",
+        name: "Michael Ronald",
+        email: "mike_ronald@gmail.com",
+        password: "%Ronald_Michael*1523%",
+        role: "0",
+        birthDate: "1929-01-11",
+        phoneCode: "1",
+        phoneNumber: "8049981210",
+        country: "US",
+        state: "VA",
+        city: "Richmond",
+        passportNumber: `${ genPassportNumber() }`
+      }
+      return request.put('/users').send({ user })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.user.name).toBe(user.name)
+        expect(response.body.user.email).toBe(user.email)
+        expect(response.body.user.password).toBe(user.password)
+        expect(response.body.user.role).toBe(user.role)
+        expect(response.body.user.phoneCode).toBe(user.phoneCode)
+        expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
+        expect(response.body.user.birthDate).toBe(user.birthDate)
+        expect(response.body.user.country).toBe(user.country)
+        expect(response.body.user.state).toBe(user.state)
+        expect(response.body.user.city).toBe(user.city)
+        expect(response.body.user.passportNumber).toBe(user.passportNumber)
       })
       .catch(function(error) {
         fail(error)
