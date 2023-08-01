@@ -77,7 +77,9 @@ class User {
       let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == user.id)
       let infos = Object.keys(user)
       for (let info of infos) {
-        UserCollection.users.data[userIndex][info] = user[info]
+        if (info != 'id') {
+          UserCollection.users.data[userIndex][info] = user[info]
+        }
       }
       return UserCollection.users.data[userIndex]
     } catch (error) {
