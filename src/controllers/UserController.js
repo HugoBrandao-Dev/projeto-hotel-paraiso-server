@@ -340,6 +340,11 @@ class UserController {
         errorFields.push(houseNumberResult.hasError.error)
       }
 
+      let informationsResult = Analyzer.analyzeUserAdditionalInformation(user.information)
+      if (informationsResult.hasError.value) {
+        errorFields.push(informationsResult.hasError.error)
+      }
+
       if (errorFields.length) {
         console.log(errorFields)
         let messages = errorFields.map(item => item.hasError.error)
