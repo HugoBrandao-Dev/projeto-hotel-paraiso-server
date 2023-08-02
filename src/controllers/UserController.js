@@ -330,6 +330,11 @@ class UserController {
         errorFields.push(neighborhoodResult.hasError.error)
       }
 
+      let roadResult = Analyzer.analyzeUserRoad(user.road)
+      if (roadResult.hasError.value) {
+        errorFields.push(roadResult.hasError.error)
+      }
+
       if (errorFields.length) {
         console.log(errorFields)
         let messages = errorFields.map(item => item.hasError.error)
