@@ -325,6 +325,11 @@ class UserController {
         errorFields.push(cityResult.hasError.error)
       }
 
+      let neighborhoodResult = Analyzer.analyzeUserNeighborhood(user.neighborhood)
+      if (neighborhoodResult.hasError.value) {
+        errorFields.push(neighborhoodResult.hasError.error)
+      }
+
       if (errorFields.length) {
         console.log(errorFields)
         let messages = errorFields.map(item => item.hasError.error)
