@@ -271,6 +271,11 @@ class UserController {
         if (cpfResult.hasError.value) {
           errorFields.push(cpfResult.hasError.error)
         }
+
+        let cepResult = await Analyzer.analyzeUserCEP(user.cep)
+        if (cepResult.hasError.value) {
+          errorFields.push(cepResult.hasError.error)
+        }
       } else {
         let passportNumberResult = await Analyzer.analyzeUserPassportNumber(user.country, user.passportNumber)
         if (passportNumberResult.hasError.value) {
