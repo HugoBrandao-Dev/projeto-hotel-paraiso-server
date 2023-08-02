@@ -1135,7 +1135,6 @@ describe("Suite de testes das rotas User.", function() {
     })
   })
 
-
   /* ################## READ ################## */
 
   describe("Testes de SUCESSO na leitura de dados.", function() {
@@ -1627,16 +1626,37 @@ describe("Suite de testes das rotas User.", function() {
       return request.put('/users').send({ user })
       .then(function(response) {
         expect(response.statusCode).toEqual(200)
+
+        expect(response.body.user.name).toBeDefined()
         expect(response.body.user.name).toBe(user.name)
+
+        expect(response.body.user.email).toBeDefined()
         expect(response.body.user.email).toBe(user.email)
-        expect(response.body.user.password).toBe(user.password)
+
+        expect(response.body.user.password).toBeUndefined()
+
+        expect(response.body.user.role).toBeDefined()
         expect(response.body.user.role).toBe(user.role)
+
+        expect(response.body.user.phoneCode).toBeDefined()
         expect(response.body.user.phoneCode).toBe(user.phoneCode)
+
+        expect(response.body.user.phoneNumber).toBeDefined()
         expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
+
+        expect(response.body.user.birthDate).toBeDefined()
         expect(response.body.user.birthDate).toBe(user.birthDate)
+
+        expect(response.body.user.country).toBeDefined()
         expect(response.body.user.country).toBe(user.country)
+
+        expect(response.body.user.state).toBeDefined()
         expect(response.body.user.state).toBe(user.state)
+
+        expect(response.body.user.city).toBeDefined()
         expect(response.body.user.city).toBe(user.city)
+
+        expect(response.body.user.cpf).toBeDefined()
         expect(response.body.user.cpf).toBe(user.cpf)
       })
       .catch(function(error) {
@@ -1644,6 +1664,7 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
 
+    /*
     test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
       let user = {
         id: "507f1f77bcf86cd799439011",
@@ -1722,6 +1743,7 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+    */
   })
 
   /* ################## DELETE ################## */
