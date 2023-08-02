@@ -1609,7 +1609,7 @@ describe("Suite de testes das rotas User.", function() {
   /* ################## UPDATE ################## */
 
   describe("Testes de SUCESSO na atualizacao de dados.", function() {
-    test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações atualizadas.", function() {
+    test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias atualizadas.", function() {
       let user = {
         id: "5da9ea674234635bdff45c02",
         name: "Josias Cruz",
@@ -1638,6 +1638,50 @@ describe("Suite de testes das rotas User.", function() {
         expect(response.body.user.state).toBe(user.state)
         expect(response.body.user.city).toBe(user.city)
         expect(response.body.user.cpf).toBe(user.cpf)
+      })
+      .catch(function(error) {
+        fail(error)
+      })
+    })
+
+    test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
+      let user = {
+        id: "507f1f77bcf86cd799439011",
+        name: "Macunaíma Cruz",
+        email: "macuna_cruz@hotmail.com",
+        password: "Y07f1#6cd7Y9439011@",
+        role: "0",
+        phoneCode: "21",
+        phoneNumber: "994755654",
+        birthDate: "1995-08-03",
+        country: "BR",
+        state: "RJ",
+        cep: "21051990",
+        city: "Rio de Janeiro",
+        cpf: `${ genCPF() }`,
+        neighborhood: "Bairro: Março 29",
+        road: "Rua 29 de março",
+        house_number: "2300",
+        information: "Vivamus vitae turpis fermentum, scelerisque neque eget, aliquet nibh. In consequat, urna quis rhoncus fringilla, elit nisi tincidunt metus, a tempus nibh turpis vel orci. Sed a tellus ac odio viverra blandit. Aenean neque odio, vulputate eget quam eu, commodo aliquam sem. Integer efficitur magna vel aliquam luctus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer mollis tempor libero, a gravida orci suscipit eu. Morbi cursus odio in tempus tincidunt. Nulla facilisi."
+
+      }
+      return request.put('/users').send({ user })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.user.name).toBe(user.name)
+        expect(response.body.user.email).toBe(user.email)
+        expect(response.body.user.role).toBe(user.role)
+        expect(response.body.user.phoneCode).toBe(user.phoneCode)
+        expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
+        expect(response.body.user.birthDate).toBe(user.birthDate)
+        expect(response.body.user.country).toBe(user.country)
+        expect(response.body.user.state).toBe(user.state)
+        expect(response.body.user.city).toBe(user.city)
+        expect(response.body.user.cpf).toBe(user.cpf)
+        expect(response.body.user.neighborhood).toBe(user.neighborhood)
+        expect(response.body.user.road).toBe(user.road)
+        expect(response.body.user.house_number).toBe(user.house_number)
+        expect(response.body.user.information).toBe(user.information)
       })
       .catch(function(error) {
         fail(error)
