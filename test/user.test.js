@@ -5,7 +5,12 @@ const validator = require('validator')
 const request = supertest(app)
 
 function genCPF() {
-  return Math.floor(Math.random() * 99999999999) + 1
+  let cpf = ''
+    for (let v = 1; v <= 11; v++) {
+      let num = Math.floor(Math.random() * 10)
+      cpf += num
+    }
+  return cpf
 }
 
 function genPassportNumber() {
