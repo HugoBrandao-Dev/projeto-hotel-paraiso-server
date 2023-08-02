@@ -1743,8 +1743,7 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
 
-    /*
-    test("POST - Deve retornar 200 e o usuário estrangeiro com suas informações atualizadas.", function() {
+    test("POST - Deve retornar 200 e o usuário estrangeiro com suas informações obrigatórias atualizadas.", function() {
       let user = {
         id: "600f191e810c19829de900ea",
         name: "Michael Ronald",
@@ -1762,23 +1761,43 @@ describe("Suite de testes das rotas User.", function() {
       return request.put('/users').send({ user })
       .then(function(response) {
         expect(response.statusCode).toEqual(200)
+
+        expect(response.body.user.name).toBeDefined()
         expect(response.body.user.name).toBe(user.name)
+
+        expect(response.body.user.email).toBeDefined()
         expect(response.body.user.email).toBe(user.email)
-        expect(response.body.user.password).toBe(user.password)
+
+        expect(response.body.user.password).toBeUndefined()
+
+        expect(response.body.user.role).toBeDefined()
         expect(response.body.user.role).toBe(user.role)
+
+        expect(response.body.user.phoneCode).toBeDefined()
         expect(response.body.user.phoneCode).toBe(user.phoneCode)
+
+        expect(response.body.user.phoneNumber).toBeDefined()
         expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
+
+        expect(response.body.user.birthDate).toBeDefined()
         expect(response.body.user.birthDate).toBe(user.birthDate)
+
+        expect(response.body.user.country).toBeDefined()
         expect(response.body.user.country).toBe(user.country)
+
+        expect(response.body.user.state).toBeDefined()
         expect(response.body.user.state).toBe(user.state)
+
+        expect(response.body.user.city).toBeDefined()
         expect(response.body.user.city).toBe(user.city)
+
+        expect(response.body.user.passportNumber).toBeDefined()
         expect(response.body.user.passportNumber).toBe(user.passportNumber)
       })
       .catch(function(error) {
         fail(error)
       })
     })
-    */
   })
 
   /* ################## DELETE ################## */
