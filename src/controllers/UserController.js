@@ -300,7 +300,7 @@ class UserController {
         errorFields.push(phoneCodeResult.hasError.error)
       }
 
-      let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(user.phoneCode ,user.phoneNumber)
+      let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(user.phoneCode, user.phoneNumber)
       if (phoneNumberResult.hasError.value) {
         errorFields.push(phoneNumberResult.hasError.error)
       }
@@ -336,6 +336,9 @@ class UserController {
         return
       }
       let result = await User.edit(user)
+      if (result.password) {
+        delete result.password
+      }
       res.status(200)
       res.json({ user: result })
     } catch (error) {
