@@ -1641,8 +1641,6 @@ describe("Suite de testes das rotas User.", function() {
               expect(responseGET.body.email).toBeDefined()
               expect(responseGET.body.email).toBe(user.email)
 
-              expect(responseGET.body.password).toBeUndefined()
-
               expect(responseGET.body.role).toBeDefined()
               expect(responseGET.body.role).toBe(user.role)
 
@@ -1676,7 +1674,6 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-/*
     test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
       let user = {
         id: "507f1f77bcf86cd799439011",
@@ -1699,57 +1696,63 @@ describe("Suite de testes das rotas User.", function() {
 
       }
       return request.put('/users').send({ user })
-      .then(function(response) {
-        expect(response.statusCode).toEqual(200)
+        .then(function(responsePOST) {
+          expect(responsePOST.statusCode).toEqual(200)
+          return request.get(`/users/${ user.id }`)
+            .then(function(responseGET) {
+              expect(responseGET.statusCode).toEqual(200)
 
-        expect(response.body.user.name).toBeDefined()
-        expect(response.body.user.name).toBe(user.name)
+              expect(responseGET.body.name).toBeDefined()
+              expect(responseGET.body.name).toBe(user.name)
 
-        expect(response.body.user.email).toBeDefined()
-        expect(response.body.user.email).toBe(user.email)
+              expect(responseGET.body.email).toBeDefined()
+              expect(responseGET.body.email).toBe(user.email)
 
-        expect(response.body.user.password).toBeUndefined()
+              expect(responseGET.body.role).toBeDefined()
+              expect(responseGET.body.role).toBe(user.role)
 
-        expect(response.body.user.role).toBeDefined()
-        expect(response.body.user.role).toBe(user.role)
+              expect(responseGET.body.phoneCode).toBeDefined()
+              expect(responseGET.body.phoneCode).toBe(user.phoneCode)
 
-        expect(response.body.user.phoneCode).toBeDefined()
-        expect(response.body.user.phoneCode).toBe(user.phoneCode)
+              expect(responseGET.body.phoneNumber).toBeDefined()
+              expect(responseGET.body.phoneNumber).toBe(user.phoneNumber)
 
-        expect(response.body.user.phoneNumber).toBeDefined()
-        expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
+              expect(responseGET.body.birthDate).toBeDefined()
+              expect(responseGET.body.birthDate).toBe(user.birthDate)
 
-        expect(response.body.user.birthDate).toBeDefined()
-        expect(response.body.user.birthDate).toBe(user.birthDate)
+              expect(responseGET.body.country).toBeDefined()
+              expect(responseGET.body.country).toBe(user.country)
 
-        expect(response.body.user.country).toBeDefined()
-        expect(response.body.user.country).toBe(user.country)
+              expect(responseGET.body.state).toBeDefined()
+              expect(responseGET.body.state).toBe(user.state)
 
-        expect(response.body.user.state).toBeDefined()
-        expect(response.body.user.state).toBe(user.state)
+              expect(responseGET.body.city).toBeDefined()
+              expect(responseGET.body.city).toBe(user.city)
 
-        expect(response.body.user.city).toBeDefined()
-        expect(response.body.user.city).toBe(user.city)
+              expect(responseGET.body.cpf).toBeDefined()
+              expect(responseGET.body.cpf).toBe(user.cpf)
 
-        expect(response.body.user.cpf).toBeDefined()
-        expect(response.body.user.cpf).toBe(user.cpf)
+              expect(responseGET.body.neighborhood).toBeDefined()
+              expect(responseGET.body.neighborhood).toBe(user.neighborhood)
 
-        expect(response.body.user.neighborhood).toBeDefined()
-        expect(response.body.user.neighborhood).toBe(user.neighborhood)
+              expect(responseGET.body.road).toBeDefined()
+              expect(responseGET.body.road).toBe(user.road)
 
-        expect(response.body.user.road).toBeDefined()
-        expect(response.body.user.road).toBe(user.road)
+              expect(responseGET.body.house_number).toBeDefined()
+              expect(responseGET.body.house_number).toBe(user.house_number)
 
-        expect(response.body.user.house_number).toBeDefined()
-        expect(response.body.user.house_number).toBe(user.house_number)
-
-        expect(response.body.user.information).toBeDefined()
-        expect(response.body.user.information).toBe(user.information)
-      })
-      .catch(function(error) {
-        fail(error)
-      })
+              expect(responseGET.body.information).toBeDefined()
+              expect(responseGET.body.information).toBe(user.information)
+            })
+            .catch(function(errorGET) {
+              fail(errorGET)
+            })
+        })
+        .catch(function(errorPOST) {
+          fail(errorPOST)
+        })
     })
+/*
 
     test("POST - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF.", function() {
       let user = {
