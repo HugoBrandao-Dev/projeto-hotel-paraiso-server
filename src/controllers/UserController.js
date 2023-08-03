@@ -262,9 +262,13 @@ class UserController {
         errorFields.push(nameResult.hasError.error)
       }
 
-      let birthDateResult = Analyzer.analyzeUserBirthDate(user.birthDate)
-      if (birthDateResult.hasError.value) {
-        errorFields.push(birthDateResult.hasError.error)
+      if (user.birthDate) {
+        let birthDateResult = Analyzer.analyzeUserBirthDate(user.birthDate)
+        if (birthDateResult.hasError.value) {
+          errorFields.push(birthDateResult.hasError.error)
+        }
+      } else {
+        fields.birthDate = user.birthDate
       }
 
       if (user.country == 'BR') {
