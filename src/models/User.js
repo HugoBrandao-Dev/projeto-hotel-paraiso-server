@@ -81,7 +81,7 @@ class User {
           UserCollection.users.data[userIndex][info] = user[info]
         }
       }
-      return UserCollection.users.data[userIndex]
+      return
     } catch (error) {
       console.log(error)
       return []
