@@ -292,9 +292,13 @@ class UserController {
         }
       }
 
-      let emailResult = await Analyzer.analyzeUserEmail(user.email)
-      if (emailResult.hasError.value) {
-        errorFields.push(emailResult.hasError.error)
+      if (user.email) {
+        let emailResult = await Analyzer.analyzeUserEmail(user.email)
+        if (emailResult.hasError.value) {
+          errorFields.push(emailResult.hasError.error)
+        }
+      } else {
+        fields.email = user.email
       }
 
       let passwordResult = Analyzer.analyzeUserPassword(user.password)
