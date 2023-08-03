@@ -325,9 +325,13 @@ class UserController {
         errorFields.push(stateResult.hasError.error)
       }
 
-      let cityResult = await Analyzer.analyzeUserCity(user.country, user.state, user.city)
-      if (cityResult.hasError.value) {
-        errorFields.push(cityResult.hasError.error)
+      if (user.city) {
+        let cityResult = await Analyzer.analyzeUserCity(user.country, user.state, user.city)
+        if (cityResult.hasError.value) {
+          errorFields.push(cityResult.hasError.error)
+        } else {
+          fields.city = user.city
+        }
       }
 
       let neighborhoodResult = Analyzer.analyzeUserNeighborhood(user.neighborhood)
