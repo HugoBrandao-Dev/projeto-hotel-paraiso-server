@@ -248,6 +248,7 @@ class UserController {
     try {
       let user = req.body.user
       let errorFields = []
+      let fields = {}
 
       let idResult = await Analyzer.analyzeUserID(user.id)
       if (idResult.hasError.value) {
@@ -267,9 +268,13 @@ class UserController {
       }
 
       if (user.country == 'BR') {
-        let cpfResult = await Analyzer.analyzeUserCPF(user.cpf)
-        if (cpfResult.hasError.value) {
-          errorFields.push(cpfResult.hasError.error)
+        if (user.cpf) {
+          let cpfResult = await Analyzer.analyzeUserCPF(user.cpf)
+          if (cpfResult.hasError.value) {
+            errorFields.push(cpfResult.hasError.error)
+          } else {
+            fields.cpf = user.cpf
+          }
         }
 
         let cepResult = await Analyzer.analyzeUserCEP(user.cep)
