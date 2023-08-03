@@ -377,12 +377,8 @@ class UserController {
         })
         return
       }
-      let result = await User.edit(user)
-      if (result.password) {
-        delete result.password
-      }
-      res.status(200)
-      res.json({ user: result })
+      await User.edit(user)
+      res.sendStatus(200)
     } catch (error) {
       throw new Error(error)
       res.sendStatus(500)
