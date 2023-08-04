@@ -246,133 +246,189 @@ class UserController {
 
   async update(req, res) {
     try {
-      let user = req.body.user
+      const { 
+        id,
+        name,
+        email,
+        password,
+        role,
+        cpf,
+        passportNumber,
+        phoneCode,
+        phoneNumber,
+        birthDate,
+        country,
+        state,
+        city,
+        cep,
+        neighborhood,
+        road,
+        house_number,
+        information
+      } = req.body
       let errorFields = []
       let fields = {}
 
-      let idResult = await Analyzer.analyzeUserID(user.id)
+      let idResult = await Analyzer.analyzeUserID(id)
       if (idResult.hasError.value) {
         errorFields.push(idResult.hasError.error)
+      } else {
+        fields.id = id
       }
 
       /* ############ CAMPOS OBRIGATÓRIOS ############ */
 
-      let nameResult = Analyzer.analyzeUserName(user.name)
+      let nameResult = Analyzer.analyzeUserName(name)
       if (nameResult.hasError.value) {
         errorFields.push(nameResult.hasError.error)
+      } else {
+        fields.name = name
       }
 
-      if (user.birthDate) {
-        let birthDateResult = Analyzer.analyzeUserBirthDate(user.birthDate)
+      if (birthDate) {
+        let birthDateResult = Analyzer.analyzeUserBirthDate(birthDate)
         if (birthDateResult.hasError.value) {
           errorFields.push(birthDateResult.hasError.error)
+        } else {
+          fields.birthDate = birthDate
         }
-      } else {
-        fields.birthDate = user.birthDate
       }
 
-      if (user.country == 'BR') {
-        if (user.cpf) {
-          let cpfResult = await Analyzer.analyzeUserCPF(user.cpf)
+      if (country == 'BR') {
+        if (cpf) {
+          let cpfResult = await Analyzer.analyzeUserCPF(cpf)
           if (cpfResult.hasError.value) {
             errorFields.push(cpfResult.hasError.error)
           } else {
-            fields.cpf = user.cpf
+            fields.cpf = cpf
           }
         }
 
-        let cepResult = await Analyzer.analyzeUserCEP(user.cep)
-        if (cepResult.hasError.value) {
-          errorFields.push(cepResult.hasError.error)
+        if (cep) {
+          let cepResult = await Analyzer.analyzeUserCEP(cep)
+          if (cepResult.hasError.value) {
+            errorFields.push(cepResult.hasError.error)
+          } else {
+            fields.cep = cep
+          }
         }
       } else {
-        if (user.passportNumber) {
-          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(user.country, user.passportNumber)
+        if (passportNumber) {
+          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(country, passportNumber)
           if (passportNumberResult.hasError.value) {
             errorFields.push(passportNumberResult.hasError.error)
           } else {
-            fields.passportNumber = user.passportNumber
+            fields.passportNumber = passportNumber
           }
         }
       }
 
-      if (user.email) {
-        let emailResult = await Analyzer.analyzeUserEmail(user.email)
+      if (email) {
+        let emailResult = await Analyzer.analyzeUserEmail(email)
         if (emailResult.hasError.value) {
           errorFields.push(emailResult.hasError.error)
+        } else {
+          fields.email = email
         }
       } else {
-        fields.email = user.email
+        fields.email = email
       }
 
-      let passwordResult = Analyzer.analyzeUserPassword(user.password)
+      let passwordResult = Analyzer.analyzeUserPassword(password)
       if (passwordResult.hasError.value) {
         errorFields.push(passwordResult.hasError.error)
+      } else {
+        fields.password = password
       }
 
       // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
-      let role = user.role == undefined ? '0' : user.role
-      let roleResult = Analyzer.analyzeUserRole(role)
+      let roleValue = role == undefined ? '0' : role
+      let roleResult = Analyzer.analyzeUserRole(roleValue)
       if (roleResult.hasError.value) {
         errorFields.push(roleResult)
+      } else {
+        fields.role = role
       }
 
-      let phoneCodeResult = Analyzer.analyzeUserPhoneCode(user.phoneCode)
+      let phoneCodeResult = Analyzer.analyzeUserPhoneCode(phoneCode)
       if (phoneCodeResult.hasError.value) {
         errorFields.push(phoneCodeResult.hasError.error)
+      } else {
+        fields.phoneCode = phoneCode
       }
 
-      let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(user.phoneCode, user.phoneNumber)
+      let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(phoneCode, phoneNumber)
       if (phoneNumberResult.hasError.value) {
         errorFields.push(phoneNumberResult.hasError.error)
+      } else {
+        fields.phoneNumber = phoneNumber
       }
 
-      if (user.country) {
-        let countryResult = Analyzer.analyzeUserCountry(user.country)
+      if (country) {
+        let countryResult = Analyzer.analyzeUserCountry(country)
         if (countryResult.hasError.value) {
           errorFields.push(countryResult.hasError.error)
         } else {
-          fields.country = user.country
+          fields.country = country
         }
       }
 
-      if (user.state) {
-        let stateResult = await Analyzer.analyzeUserState(user.country, user.state)
+      if (state) {
+        let stateResult = await Analyzer.analyzeUserState(country, state)
         if (stateResult.hasError.value) {
           errorFields.push(stateResult.hasError.error)
         } else {
-          fields.state = user.state
+          fields.state = state
         }
       }
 
-      if (user.city) {
-        let cityResult = await Analyzer.analyzeUserCity(user.country, user.state, user.city)
+      if (city) {
+        let cityResult = await Analyzer.analyzeUserCity(country, state, city)
         if (cityResult.hasError.value) {
           errorFields.push(cityResult.hasError.error)
         } else {
-          fields.city = user.city
+          fields.city = city
         }
       }
 
-      let neighborhoodResult = Analyzer.analyzeUserNeighborhood(user.neighborhood)
-      if (neighborhoodResult.hasError.value) {
-        errorFields.push(neighborhoodResult.hasError.error)
+      if (neighborhood) {
+        let neighborhoodResult = Analyzer.analyzeUserNeighborhood(neighborhood)
+        if (neighborhoodResult.hasError.value) {
+          errorFields.push(neighborhoodResult.hasError.error)
+        } else {
+          fields.neighborhood = neighborhood
+        }
       }
+      
+      if (road) {
+        let roadResult = Analyzer.analyzeUserRoad(road)
+        if (roadResult.hasError.value) {
+          errorFields.push(roadResult.hasError.error)
+        } else {
+          fields.road = road
+        }
+      }
+      
 
-      let roadResult = Analyzer.analyzeUserRoad(user.road)
-      if (roadResult.hasError.value) {
-        errorFields.push(roadResult.hasError.error)
+      if (house_number) {
+        let houseNumberResult = Analyzer.analyzeUserHouseNumber(house_number)
+        if (houseNumberResult.hasError.value) {
+          errorFields.push(houseNumberResult.hasError.error)
+        } else {
+          fields.house_number = house_number
+        }
       }
+      
 
-      let houseNumberResult = Analyzer.analyzeUserHouseNumber(user.house_number)
-      if (houseNumberResult.hasError.value) {
-        errorFields.push(houseNumberResult.hasError.error)
+      if (information) {
+        let informationsResult = Analyzer.analyzeUserAdditionalInformation(information)
+        if (informationsResult.hasError.value) {
+          errorFields.push(informationsResult.hasError.error)
+        } else {
+          fields.information = information
+        }
       }
-
-      let informationsResult = Analyzer.analyzeUserAdditionalInformation(user.information)
-      if (informationsResult.hasError.value) {
-        errorFields.push(informationsResult.hasError.error)
-      }
+      
 
       if (errorFields.length) {
         console.log(errorFields)
@@ -389,7 +445,7 @@ class UserController {
         })
         return
       }
-      await User.edit(user)
+      await User.edit(fields)
       res.sendStatus(200)
     } catch (error) {
       throw new Error(error)
