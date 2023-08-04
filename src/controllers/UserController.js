@@ -338,7 +338,19 @@ class UserController {
       if (email) {
         let emailResult = await Analyzer.analyzeUserEmail(email)
         if (emailResult.hasError.value) {
-          errorFields.push(emailResult.hasError.error)
+          if (emailResult.hasError.type == 4) {
+            
+            // Busca pelo usuário que tem o mesmo Email informado.
+            let userRegistred = await User.findByDoc({ email })
+
+            // Verifica se o usuário que quer atualizar é o mesmo que já possui o Email.
+            let isTheSameUser = userRegistred.id == id
+
+            // Impede que o usuário atualize com um Email já cadastrado e que não pertença a ele.
+            if (!isTheSameUser) {
+              errorFields.push(emailResult.hasError.error)
+            }
+          }
         } else {
           fields.email = email
         }
