@@ -2023,6 +2023,21 @@ describe("Suite de testes das rotas User.", function() {
           fail(errorPOST)
         })
     })
+
+    test("POST - Deve retornar 200 para usuários que informa o mesmo Email.", function() {
+      let user = {
+        id: "507f191e810c19729de860ea",
+        name: "John Smith John",
+        email: "john_sm@hotmail.com"
+      }
+      return request.put('/users').send(user)
+        .then(function(response) {
+          expect(response.statusCode).toEqual(200)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 
   describe("Testes de FALHA na atualização de dados.", function() {
