@@ -286,9 +286,13 @@ class UserController {
           errorFields.push(cepResult.hasError.error)
         }
       } else {
-        let passportNumberResult = await Analyzer.analyzeUserPassportNumber(user.country, user.passportNumber)
-        if (passportNumberResult.hasError.value) {
-          errorFields.push(passportNumberResult.hasError.error)
+        if (user.passportNumber) {
+          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(user.country, user.passportNumber)
+          if (passportNumberResult.hasError.value) {
+            errorFields.push(passportNumberResult.hasError.error)
+          } else {
+            fields.passportNumber = user.passportNumber
+          }
         }
       }
 
@@ -323,14 +327,22 @@ class UserController {
         errorFields.push(phoneNumberResult.hasError.error)
       }
 
-      let countryResult = Analyzer.analyzeUserCountry(user.country)
-      if (countryResult.hasError.value) {
-        errorFields.push(countryResult.hasError.error)
+      if (user.country) {
+        let countryResult = Analyzer.analyzeUserCountry(user.country)
+        if (countryResult.hasError.value) {
+          errorFields.push(countryResult.hasError.error)
+        } else {
+          fields.country = user.country
+        }
       }
 
-      let stateResult = await Analyzer.analyzeUserState(user.country, user.state)
-      if (stateResult.hasError.value) {
-        errorFields.push(stateResult.hasError.error)
+      if (user.state) {
+        let stateResult = await Analyzer.analyzeUserState(user.country, user.state)
+        if (stateResult.hasError.value) {
+          errorFields.push(stateResult.hasError.error)
+        } else {
+          fields.state = user.state
+        }
       }
 
       if (user.city) {
