@@ -2000,6 +2000,30 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    test("POST - Deve retornar 200 para usuários que querem atualizar somente o Nome.", function() {
+      let user = {
+        id: "5da9ea674234635bdff45c02",
+        name: "Josias de Oliveira Cruz"
+      }
+      return request.put('/users').send(user)
+        .then(function(responsePOST) {
+          expect(responsePOST.statusCode).toEqual(200)
+          return request.get(`/users/${ user.id }`)
+            .then(function(responseGET) {
+              expect(responseGET.statusCode).toEqual(200)
+
+              expect(responseGET.body.name).toBeDefined()
+              expect(responseGET.body.name).toBe(user.name)
+            })
+            .catch(function(errorGET) {
+              fail(errorGET)
+            })
+        })
+        .catch(function(errorPOST) {
+          fail(errorPOST)
+        })
+    })
+
       /*
     test("POST - Deve retornar 200 e o usuário estrangeiro com suas informações obrigatórias atualizadas.", function() {
       let user = {
