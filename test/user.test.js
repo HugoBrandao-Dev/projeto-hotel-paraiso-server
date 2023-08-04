@@ -1768,6 +1768,63 @@ describe("Suite de testes das rotas User.", function() {
         city: "São Paulo"
       }
       return request.put('/users').send({ user })
+        .then(function(responsePOST) {
+          expect(responsePOST.statusCode).toEqual(200)
+          return request.get(`/users/${ user.id }`)
+            .then(function(responseGET) {
+              expect(responseGET.statusCode).toEqual(200)
+
+              expect(responseGET.body.name).toBeDefined()
+              expect(responseGET.body.name).toBe(user.name)
+
+              expect(responseGET.body.email).toBeDefined()
+              expect(responseGET.body.email).toBe(user.email)
+
+              expect(responseGET.body.password).toBeDefined()
+              expect(responseGET.body.password).toBe(user.password)
+
+              expect(responseGET.body.role).toBeDefined()
+              expect(responseGET.body.role).toBe(user.role)
+
+              expect(responseGET.body.phoneCode).toBeDefined()
+              expect(responseGET.body.phoneCode).toBe(user.phoneCode)
+
+              expect(responseGET.body.phoneNumber).toBeDefined()
+              expect(responseGET.body.phoneNumber).toBe(user.phoneNumber)
+
+              expect(responseGET.body.birthDate).toBeDefined()
+              expect(responseGET.body.birthDate).toBe(user.birthDate)
+
+              expect(responseGET.body.country).toBeDefined()
+              expect(responseGET.body.country).toBe(user.country)
+
+              expect(responseGET.body.state).toBeDefined()
+              expect(responseGET.body.state).toBe(user.state)
+
+              expect(responseGET.body.city).toBeDefined()
+              expect(responseGET.body.city).toBe(user.city)
+            })
+            .catch(function(errorGET) {
+
+            })
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF e Cidade.", function() {
+      let user = {
+        id: "5da9ea674234635bdff45c02",
+        name: "Josias de Oliveira",
+        email: "joz_cruz_de_oliveira@gmail.com",
+        password: "@JosiaS&654975@",
+        role: '0',
+        phoneCode: "55",
+        phoneNumber: "11984222222",
+        birthDate: "1970-06-11"
+      }
+      return request.put('/users').send({ user })
       .then(function(responsePOST) {
         expect(responsePOST.statusCode).toEqual(200)
         return request.get(`/users/${ user.id }`)
@@ -1794,73 +1851,17 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseGET.body.birthDate).toBeDefined()
             expect(responseGET.body.birthDate).toBe(user.birthDate)
-
-            expect(responseGET.body.country).toBeDefined()
-            expect(responseGET.body.country).toBe(user.country)
-
-            expect(responseGET.body.state).toBeDefined()
-            expect(responseGET.body.state).toBe(user.state)
-
-            expect(responseGET.body.city).toBeDefined()
-            expect(responseGET.body.city).toBe(user.city)
           })
           .catch(function(errorGET) {
-
+            fail(errorGET)
           })
       })
-      .catch(function(error) {
+      .catch(function(errorPOST) {
         fail(error)
       })
     })
 
     /*
-    test("POST - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF e Cidade.", function() {
-      let user = {
-        id: "5da9ea674234635bdff45c02",
-        name: "Josias de Oliveira",
-        email: "joz_cruz_de_oliveira@gmail.com",
-        password: "@JosiaS&654975@",
-        role: '0',
-        phoneCode: "55",
-        phoneNumber: "11984222222",
-        birthDate: "1970-06-11",
-        country: "BR",
-        state: "SP"
-      }
-      return request.put('/users').send({ user })
-      .then(function(response) {
-        expect(response.statusCode).toEqual(200)
-
-        expect(response.body.user.name).toBeDefined()
-        expect(response.body.user.name).toBe(user.name)
-
-        expect(response.body.user.email).toBeDefined()
-        expect(response.body.user.email).toBe(user.email)
-
-        expect(response.body.user.password).toBeUndefined()
-
-        expect(response.body.user.role).toBeDefined()
-        expect(response.body.user.role).toBe(user.role)
-
-        expect(response.body.user.phoneCode).toBeDefined()
-        expect(response.body.user.phoneCode).toBe(user.phoneCode)
-
-        expect(response.body.user.phoneNumber).toBeDefined()
-        expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
-
-        expect(response.body.user.birthDate).toBeDefined()
-        expect(response.body.user.birthDate).toBe(user.birthDate)
-
-        expect(response.body.user.country).toBeDefined()
-        expect(response.body.user.country).toBe(user.country)
-
-        expect(response.body.user.state).toBeDefined()
-        expect(response.body.user.state).toBe(user.state)
-      })
-      .catch(function(error) {
-        fail(error)
-      })
-    })
 
     test("POST - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF, Cidade e Data de Nascimento.", function() {
       let user = {
