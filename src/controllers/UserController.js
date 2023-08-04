@@ -272,6 +272,18 @@ class UserController {
       let idResult = await Analyzer.analyzeUserID(id)
       if (idResult.hasError.value) {
         errorFields.push(idResult.hasError.error)
+        if (idResult.hasError.type == 3) {
+          res.status(404)
+          res.json({
+            RestException: {
+              "Code": "3",
+              "Message": idResult.hasError.error,
+              "Status": "404",
+              "MoreInfo": "/docs/erros/3"
+            }
+          })
+          return
+        }
       } else {
         fields.id = id
       }
