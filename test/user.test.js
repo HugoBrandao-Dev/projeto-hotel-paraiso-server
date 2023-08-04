@@ -1628,7 +1628,7 @@ describe("Suite de testes das rotas User.", function() {
         city: "Rio de Janeiro",
         cpf: `${ genCPF() }`
       }
-      return request.put('/users').send({ user })
+      return request.put('/users').send(user)
         .then(function(responsePOST) {
           expect(responsePOST.statusCode).toEqual(200)
           return request.get(`/users/${ user.id }`)
@@ -1673,7 +1673,7 @@ describe("Suite de testes das rotas User.", function() {
           fail(errorPOST)
         })
     })
-
+    
     test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
       let user = {
         id: "507f1f77bcf86cd799439011",
@@ -1695,7 +1695,7 @@ describe("Suite de testes das rotas User.", function() {
         information: "Vivamus vitae turpis fermentum, scelerisque neque eget, aliquet nibh. In consequat, urna quis rhoncus fringilla, elit nisi tincidunt metus, a tempus nibh turpis vel orci. Sed a tellus ac odio viverra blandit. Aenean neque odio, vulputate eget quam eu, commodo aliquam sem. Integer efficitur magna vel aliquam luctus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer mollis tempor libero, a gravida orci suscipit eu. Morbi cursus odio in tempus tincidunt. Nulla facilisi."
 
       }
-      return request.put('/users').send({ user })
+      return request.put('/users').send(user)
         .then(function(responsePOST) {
           expect(responsePOST.statusCode).toEqual(200)
           return request.get(`/users/${ user.id }`)
@@ -1767,7 +1767,7 @@ describe("Suite de testes das rotas User.", function() {
         state: "SP",
         city: "São Paulo"
       }
-      return request.put('/users').send({ user })
+      return request.put('/users').send(user)
         .then(function(responsePOST) {
           expect(responsePOST.statusCode).toEqual(200)
           return request.get(`/users/${ user.id }`)
@@ -1824,7 +1824,7 @@ describe("Suite de testes das rotas User.", function() {
         phoneNumber: "11984222222",
         birthDate: "1970-06-11"
       }
-      return request.put('/users').send({ user })
+      return request.put('/users').send(user)
       .then(function(responsePOST) {
         expect(responsePOST.statusCode).toEqual(200)
         return request.get(`/users/${ user.id }`)
@@ -1862,7 +1862,6 @@ describe("Suite de testes das rotas User.", function() {
     })
 
     /*
-
     test("POST - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF, Cidade e Data de Nascimento.", function() {
       let user = {
         id: "5da9ea674234635bdff45c02",
