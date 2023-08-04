@@ -1904,48 +1904,43 @@ describe("Suite de testes das rotas User.", function() {
           fail(errorPOST)
         })
     })
-
-    /*
-    test("POST - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF, Cidade e Data de Nascimento e Email", function() {
+    test("POST - Deve retornar 200 para usuários Brasileiro que querem atualizar somente o Nome, Email, Senha e Função.", function() {
       let user = {
         id: "5da9ea674234635bdff45c02",
         name: "Josias de Oliveira",
+        email: "Oliveira_jo@yahoo.com",
         password: "@JosiaS&654975@",
-        role: '0',
-        phoneCode: "55",
-        phoneNumber: "11984222222",
-        country: "BR",
-        state: "SP"
+        role: '1'
       }
-      return request.put('/users').send({ user })
-      .then(function(response) {
-        expect(response.statusCode).toEqual(200)
+      return request.put('/users').send(user)
+        .then(function(responsePOST) {
+          expect(responsePOST.statusCode).toEqual(200)
+          return request.get(`/users/${ user.id }`)
+            .then(function(responseGET) {
+              expect(responseGET.statusCode).toEqual(200)
 
-        expect(response.body.user.name).toBeDefined()
-        expect(response.body.user.name).toBe(user.name)
+              expect(responseGET.body.name).toBeDefined()
+              expect(responseGET.body.name).toBe(user.name)
 
-        expect(response.body.user.password).toBeUndefined()
+              expect(responseGET.body.email).toBeDefined()
+              expect(responseGET.body.email).toBe(user.email)
 
-        expect(response.body.user.role).toBeDefined()
-        expect(response.body.user.role).toBe(user.role)
+              expect(responseGET.body.password).toBeDefined()
+              expect(responseGET.body.password).toBe(user.password)
 
-        expect(response.body.user.phoneCode).toBeDefined()
-        expect(response.body.user.phoneCode).toBe(user.phoneCode)
-
-        expect(response.body.user.phoneNumber).toBeDefined()
-        expect(response.body.user.phoneNumber).toBe(user.phoneNumber)
-
-        expect(response.body.user.country).toBeDefined()
-        expect(response.body.user.country).toBe(user.country)
-
-        expect(response.body.user.state).toBeDefined()
-        expect(response.body.user.state).toBe(user.state)
-      })
-      .catch(function(error) {
-        fail(error)
-      })
+              expect(responseGET.body.role).toBeDefined()
+              expect(responseGET.body.role).toBe(user.role)
+            })
+            .catch(function(errorGET) {
+              fail(errorGET)
+            })
+        })
+        .catch(function(errorPOST) {
+          fail(errorPOST)
+        })
     })
 
+      /*
     test("POST - Deve retornar 200 e o usuário estrangeiro com suas informações obrigatórias atualizadas.", function() {
       let user = {
         id: "600f191e810c19829de900ea",
