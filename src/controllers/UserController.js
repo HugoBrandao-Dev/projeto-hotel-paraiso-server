@@ -334,11 +334,13 @@ class UserController {
         fields.email = email
       }
 
-      let passwordResult = Analyzer.analyzeUserPassword(password)
-      if (passwordResult.hasError.value) {
-        errorFields.push(passwordResult.hasError.error)
-      } else {
-        fields.password = password
+      if (password) {
+        let passwordResult = Analyzer.analyzeUserPassword(password)
+        if (passwordResult.hasError.value) {
+          errorFields.push(passwordResult.hasError.error)
+        } else {
+          fields.password = password
+        }
       }
 
       // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
