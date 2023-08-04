@@ -350,18 +350,22 @@ class UserController {
         fields.role = role
       }
 
-      let phoneCodeResult = Analyzer.analyzeUserPhoneCode(phoneCode)
-      if (phoneCodeResult.hasError.value) {
-        errorFields.push(phoneCodeResult.hasError.error)
-      } else {
-        fields.phoneCode = phoneCode
+      if (phoneCode) {
+        let phoneCodeResult = Analyzer.analyzeUserPhoneCode(phoneCode)
+        if (phoneCodeResult.hasError.value) {
+          errorFields.push(phoneCodeResult.hasError.error)
+        } else {
+          fields.phoneCode = phoneCode
+        }
       }
 
-      let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(phoneCode, phoneNumber)
-      if (phoneNumberResult.hasError.value) {
-        errorFields.push(phoneNumberResult.hasError.error)
-      } else {
-        fields.phoneNumber = phoneNumber
+      if (phoneNumber) {
+        let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(phoneCode, phoneNumber)
+        if (phoneNumberResult.hasError.value) {
+          errorFields.push(phoneNumberResult.hasError.error)
+        } else {
+          fields.phoneNumber = phoneNumber
+        }
       }
 
       if (country) {
