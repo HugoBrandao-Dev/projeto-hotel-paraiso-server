@@ -310,35 +310,6 @@ class UserController {
         }
       }
 
-      if (country == 'BR') {
-        if (cpf) {
-          let cpfResult = await Analyzer.analyzeUserCPF(cpf)
-          if (cpfResult.hasError.value) {
-            errorFields.push(cpfResult.hasError.error)
-          } else {
-            fields.cpf = cpf
-          }
-        }
-
-        if (cep) {
-          let cepResult = await Analyzer.analyzeUserCEP(cep)
-          if (cepResult.hasError.value) {
-            errorFields.push(cepResult.hasError.error)
-          } else {
-            fields.cep = cep
-          }
-        }
-      } else {
-        if (passportNumber) {
-          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(country, passportNumber)
-          if (passportNumberResult.hasError.value) {
-            errorFields.push(passportNumberResult.hasError.error)
-          } else {
-            fields.passportNumber = passportNumber
-          }
-        }
-      }
-
       if (email) {
         let emailResult = await Analyzer.analyzeUserEmail(email)
         if (emailResult.hasError.value) {
@@ -394,6 +365,7 @@ class UserController {
           fields.phoneNumber = phoneNumber
         }
       }
+      
 
       if (country) {
         let countryResult = Analyzer.analyzeUserCountry(country)
@@ -401,6 +373,47 @@ class UserController {
           errorFields.push(countryResult.hasError.error)
         } else {
           fields.country = country
+          /*
+          } else {
+            if (passportNumber) {
+              let passportNumberResult = await Analyzer.analyzeUserPassportNumber(country, passportNumber)
+              if (passportNumberResult.hasError.value) {
+                errorFields.push(passportNumberResult.hasError.error)
+              } else {
+                fields.passportNumber = passportNumber
+              }
+            }
+          }
+          */
+        }
+      }
+
+      if (country == 'BR' || userRegistred.country == 'BR') {
+        if (cpf) {
+          let cpfResult = await Analyzer.analyzeUserCPF(cpf)
+          if (cpfResult.hasError.value) {
+            if (cpfResult.hasError.type == 4) {
+
+              // Verifica se o usuário que quer atualizar é o mesmo que já possui o Email.
+              let isTheSameUser = userRegistred.id == id
+
+              // Impede que o usuário atualize com um Email já cadastrado e que não pertença a ele.
+              if (!isTheSameUser) {
+                errorFields.push(cpfResult.hasError.error)
+              }
+            }
+          } else {
+            fields.cpf = cpf
+          }
+        }
+
+        if (cep) {
+          let cepResult = await Analyzer.analyzeUserCEP(cep)
+          if (cepResult.hasError.value) {
+            errorFields.push(cepResult.hasError.error)
+          } else {
+            fields.cep = cep
+          }
         }
       }
 

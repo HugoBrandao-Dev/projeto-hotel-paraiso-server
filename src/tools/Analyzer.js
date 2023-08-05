@@ -291,10 +291,11 @@ class Analyzer {
   }
   static async analyzeUserCPF(cpf = '') {
     try {
-      let result = { field: 'iptCPF', hasError: { value: false, error: '' }}
+      let result = { field: 'iptCPF', hasError: { value: false, type: null, error: '' }}
 
       if (!cpf) {
         result.hasError.value = true
+        result.hasError.type = 1
         result.hasError.error = 'O campo de CPF é obrigatório'
         return result
       }
@@ -303,6 +304,7 @@ class Analyzer {
       let user = await User.findByDoc({ cpf })
       if (user) {
         result.hasError.value = true
+        result.hasError.type = 4
         result.hasError.error = 'O CPF informado já está cadastrado'
         return result
       }
@@ -317,9 +319,11 @@ class Analyzer {
 
       if (!isInt) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'O CPF possui caracteres inválidos'
       } else if (!hasLength) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'Faltam digitos no seu CPF'
       }
 
