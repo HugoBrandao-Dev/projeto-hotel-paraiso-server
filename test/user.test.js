@@ -1613,6 +1613,7 @@ describe("Suite de testes das rotas User.", function() {
   /* ################## UPDATE ################## */
 
   describe("Testes de SUCESSO na atualizacao de dados.", function() {
+    let fixedCPF = genCPF()
     test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias atualizadas.", function() {
       let user = {
         id: "5da9ea674234635bdff45c02",
@@ -1688,7 +1689,7 @@ describe("Suite de testes das rotas User.", function() {
         state: "RJ",
         cep: "21051990",
         city: "Rio de Janeiro",
-        cpf: `${ genCPF() }`,
+        cpf: `${ fixedCPF }`,
         neighborhood: "Bairro: Março 29",
         road: "Rua 29 de março",
         house_number: "2300",
@@ -2029,6 +2030,22 @@ describe("Suite de testes das rotas User.", function() {
         id: "507f191e810c19729de860ea",
         name: "John Smith John",
         email: "john_sm@hotmail.com"
+      }
+      return request.put('/users').send(user)
+        .then(function(response) {
+          expect(response.statusCode).toEqual(200)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 200 para usuários que informa o mesmo CPF.", function() {
+      let user = {
+        id: "507f1f77bcf86cd799439011",
+        name: "Macunaíma Cruz",
+        email: "macuna_curz@hotmail.com",
+        cpf: `${ fixedCPF }`,
       }
       return request.put('/users').send(user)
         .then(function(response) {
