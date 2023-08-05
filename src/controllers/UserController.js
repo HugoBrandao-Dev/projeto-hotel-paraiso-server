@@ -268,6 +268,7 @@ class UserController {
       } = req.body
       let errorFields = []
       let fields = {}
+      let userRegistred = null
 
       let idResult = await Analyzer.analyzeUserID(id)
       if (idResult.hasError.value) {
@@ -286,6 +287,9 @@ class UserController {
         }
       } else {
         fields.id = id
+
+        // Busca pelo usuário que tem o mesmo ID informado.
+        userRegistred = await User.findOne(id)
       }
 
       /* ############ CAMPOS OBRIGATÓRIOS ############ */
@@ -339,9 +343,6 @@ class UserController {
         let emailResult = await Analyzer.analyzeUserEmail(email)
         if (emailResult.hasError.value) {
           if (emailResult.hasError.type == 4) {
-            
-            // Busca pelo usuário que tem o mesmo Email informado.
-            let userRegistred = await User.findByDoc({ email })
 
             // Verifica se o usuário que quer atualizar é o mesmo que já possui o Email.
             let isTheSameUser = userRegistred.id == id
