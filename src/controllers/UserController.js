@@ -388,8 +388,8 @@ class UserController {
         }
       }
 
-      if (country == 'BR' || userRegistred.country == 'BR') {
-        if (cpf) {
+      if (cpf) {
+        if (country == 'BR' || userRegistred.country == 'BR') {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
           if (cpfResult.hasError.value) {
             if (cpfResult.hasError.type == 4) {
@@ -405,15 +405,9 @@ class UserController {
           } else {
             fields.cpf = cpf
           }
-        }
-
-        if (cep) {
-          let cepResult = await Analyzer.analyzeUserCEP(cep)
-          if (cepResult.hasError.value) {
-            errorFields.push(cepResult.hasError.error)
-          } else {
-            fields.cep = cep
-          }
+        } else {
+          let countryResult = Analyzer.analyzeUserCountry('')
+          errorFields.push(countryResult.hasError.error)
         }
       }
 
