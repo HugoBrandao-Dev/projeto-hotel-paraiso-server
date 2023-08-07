@@ -82,7 +82,7 @@ class UserController {
             errorFields.push(cepResult)
           }
         } else {
-          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(countryCode, req.body.passportNumber)
+          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(req.body.passportNumber, countryCode)
           if (passportNumberResult.hasError.value) {
             errorFields.push(passportNumberResult)
           }
@@ -376,7 +376,7 @@ class UserController {
           /*
           } else {
             if (passportNumber) {
-              let passportNumberResult = await Analyzer.analyzeUserPassportNumber(country, passportNumber)
+              let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, country)
               if (passportNumberResult.hasError.value) {
                 errorFields.push(passportNumberResult.hasError.error)
               } else {
@@ -394,10 +394,10 @@ class UserController {
           if (cpfResult.hasError.value) {
             if (cpfResult.hasError.type == 4) {
 
-              // Verifica se o usuário que quer atualizar é o mesmo que já possui o Email.
+              // Verifica se o usuário que quer atualizar é o mesmo que já possui o CPF.
               let isTheSameUser = userRegistred.id == id
 
-              // Impede que o usuário atualize com um Email já cadastrado e que não pertença a ele.
+              // Impede que o usuário atualize com um CPF já cadastrado e que não pertença a ele.
               if (!isTheSameUser) {
                 errorFields.push(cpfResult.hasError.error)
               }

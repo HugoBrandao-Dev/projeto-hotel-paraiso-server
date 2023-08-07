@@ -332,7 +332,7 @@ class Analyzer {
       console.log(error)
     }
   }
-  static async analyzeUserPassportNumber(countryCode, passportNumber = '') {
+  static async analyzeUserPassportNumber(passportNumber = '', countryCode) {
     try {
       let result = { field: 'iptPassportNumber', hasError: { value: false, type: null, error: '' }}
 
