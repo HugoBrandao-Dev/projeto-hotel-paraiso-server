@@ -364,8 +364,7 @@ class UserController {
         } else {
           fields.phoneNumber = phoneNumber
         }
-      }
-      
+      }      
 
       if (country) {
         let countryResult = Analyzer.analyzeUserCountry(country)
@@ -402,8 +401,9 @@ class UserController {
       }
 
       if (passportNumber) {
-        if (country != 'BR' || userRegistred.country != 'BR') {
-          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, country)
+        if ((country && country != 'BR') || (userRegistred.country && userRegistred.country != 'BR')) {
+          let countryCode = country || userRegistred.country
+          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, countryCode)
           if (passportNumberResult.hasError.value) {
 
             // Type 4 indica que um usuário já está cadastrado com esse Número de Passaporte.
@@ -460,8 +460,7 @@ class UserController {
         } else {
           fields.road = road
         }
-      }
-      
+      }      
 
       if (house_number) {
         let houseNumberResult = Analyzer.analyzeUserHouseNumber(house_number)
@@ -470,8 +469,7 @@ class UserController {
         } else {
           fields.house_number = house_number
         }
-      }
-      
+      }      
 
       if (information) {
         let informationsResult = Analyzer.analyzeUserAdditionalInformation(information)
@@ -480,11 +478,10 @@ class UserController {
         } else {
           fields.information = information
         }
-      }
-      
+      }      
 
       if (errorFields.length) {
-        console.log(errorFields)
+        console.log(`[${ id }] - Foram encontrados ${ errorFields.length } erros.`)
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)
         res.json({ 
