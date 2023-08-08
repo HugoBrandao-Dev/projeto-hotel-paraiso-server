@@ -2076,6 +2076,26 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+
+    test("POST - Deve retornar 400, já que o usuário não mudou seu local de nascimento.", function() {
+      const user = {
+        id: "600f191e810c19829de900ea",
+        name: "Michael Ronald",
+        email: "mi_ronald@gmail.com",
+        cpf: `${ genCPF() }`
+      }
+      return request.put('/users').send(user)
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Message).toBe("O campo de País de Nascimento é obrigatório")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 
   /* ################## DELETE ################## */
