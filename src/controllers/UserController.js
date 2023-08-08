@@ -373,18 +373,6 @@ class UserController {
           errorFields.push(countryResult)
         } else {
           fields.country = country
-          /*
-          } else {
-            if (passportNumber) {
-              let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, country)
-              if (passportNumberResult.hasError.value) {
-                errorFields.push(passportNumberResult)
-              } else {
-                fields.passportNumber = passportNumber
-              }
-            }
-          }
-          */
         }
       }
 
@@ -392,6 +380,8 @@ class UserController {
         if (country == 'BR' || userRegistred.country == 'BR') {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
           if (cpfResult.hasError.value) {
+
+            // Type 4 indica que um usuário já está cadastrado com esse CPF.
             if (cpfResult.hasError.type == 4) {
 
               // Verifica se o usuário que quer atualizar é o mesmo que já possui o CPF.
@@ -404,6 +394,31 @@ class UserController {
             }
           } else {
             fields.cpf = cpf
+          }
+        } else {
+          let countryResult = Analyzer.analyzeUserCountry('')
+          errorFields.push(countryResult)
+        }
+      }
+
+      if (passportNumber) {
+        if (country != 'BR' || userRegistred.country != 'BR') {
+          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, country)
+          if (passportNumberResult.hasError.value) {
+
+            // Type 4 indica que um usuário já está cadastrado com esse Número de Passaporte.
+            if (passportNumberResult.hasError.type == 4) {
+
+              // Verifica se o usuário que quer atualizar é o mesmo que já possui o Número do Passaporte.
+              let isTheSameUser = userRegistred.id == id
+
+              // Impede que o usuário atualize com um Número do Passaporte já cadastrado e que não pertença a ele.
+              if (!isTheSameUser) {
+                errorFields.push(passportNumberResult)
+              }
+            }
+          } else {
+            fields.passportNumber = passportNumber
           }
         } else {
           let countryResult = Analyzer.analyzeUserCountry('')

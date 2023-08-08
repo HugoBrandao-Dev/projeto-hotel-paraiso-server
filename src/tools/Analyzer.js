@@ -346,7 +346,7 @@ class Analyzer {
       let user = await User.findByDoc({ passportNumber })
       if (user) {
         result.hasError.value = true
-        result.hasError.type = 2
+        result.hasError.type = 4
         result.hasError.error = 'Passport number already registred'
         return result
       }
