@@ -272,7 +272,7 @@ class UserController {
 
       let idResult = await Analyzer.analyzeUserID(id)
       if (idResult.hasError.value) {
-        errorFields.push(idResult.hasError.error)
+        errorFields.push(idResult)
         if (idResult.hasError.type == 3) {
           res.status(404)
           res.json({
@@ -296,7 +296,7 @@ class UserController {
 
       let nameResult = Analyzer.analyzeUserName(name)
       if (nameResult.hasError.value) {
-        errorFields.push(nameResult.hasError.error)
+        errorFields.push(nameResult)
       } else {
         fields.name = name
       }
@@ -304,7 +304,7 @@ class UserController {
       if (birthDate) {
         let birthDateResult = Analyzer.analyzeUserBirthDate(birthDate)
         if (birthDateResult.hasError.value) {
-          errorFields.push(birthDateResult.hasError.error)
+          errorFields.push(birthDateResult)
         } else {
           fields.birthDate = birthDate
         }
@@ -320,7 +320,7 @@ class UserController {
 
             // Impede que o usuário atualize com um Email já cadastrado e que não pertença a ele.
             if (!isTheSameUser) {
-              errorFields.push(emailResult.hasError.error)
+              errorFields.push(emailResult)
             }
           }
         } else {
@@ -333,7 +333,7 @@ class UserController {
       if (password) {
         let passwordResult = Analyzer.analyzeUserPassword(password)
         if (passwordResult.hasError.value) {
-          errorFields.push(passwordResult.hasError.error)
+          errorFields.push(passwordResult)
         } else {
           fields.password = password
         }
@@ -351,7 +351,7 @@ class UserController {
       if (phoneCode) {
         let phoneCodeResult = Analyzer.analyzeUserPhoneCode(phoneCode)
         if (phoneCodeResult.hasError.value) {
-          errorFields.push(phoneCodeResult.hasError.error)
+          errorFields.push(phoneCodeResult)
         } else {
           fields.phoneCode = phoneCode
         }
@@ -360,7 +360,7 @@ class UserController {
       if (phoneNumber) {
         let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(phoneCode, phoneNumber)
         if (phoneNumberResult.hasError.value) {
-          errorFields.push(phoneNumberResult.hasError.error)
+          errorFields.push(phoneNumberResult)
         } else {
           fields.phoneNumber = phoneNumber
         }
@@ -370,7 +370,7 @@ class UserController {
       if (country) {
         let countryResult = Analyzer.analyzeUserCountry(country)
         if (countryResult.hasError.value) {
-          errorFields.push(countryResult.hasError.error)
+          errorFields.push(countryResult)
         } else {
           fields.country = country
           /*
@@ -378,7 +378,7 @@ class UserController {
             if (passportNumber) {
               let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, country)
               if (passportNumberResult.hasError.value) {
-                errorFields.push(passportNumberResult.hasError.error)
+                errorFields.push(passportNumberResult)
               } else {
                 fields.passportNumber = passportNumber
               }
@@ -399,7 +399,7 @@ class UserController {
 
               // Impede que o usuário atualize com um CPF já cadastrado e que não pertença a ele.
               if (!isTheSameUser) {
-                errorFields.push(cpfResult.hasError.error)
+                errorFields.push(cpfResult)
               }
             }
           } else {
@@ -407,14 +407,14 @@ class UserController {
           }
         } else {
           let countryResult = Analyzer.analyzeUserCountry('')
-          errorFields.push(countryResult.hasError.error)
+          errorFields.push(countryResult)
         }
       }
 
       if (state) {
         let stateResult = await Analyzer.analyzeUserState(country, state)
         if (stateResult.hasError.value) {
-          errorFields.push(stateResult.hasError.error)
+          errorFields.push(stateResult)
         } else {
           fields.state = state
         }
@@ -423,7 +423,7 @@ class UserController {
       if (city) {
         let cityResult = await Analyzer.analyzeUserCity(country, state, city)
         if (cityResult.hasError.value) {
-          errorFields.push(cityResult.hasError.error)
+          errorFields.push(cityResult)
         } else {
           fields.city = city
         }
@@ -432,7 +432,7 @@ class UserController {
       if (neighborhood) {
         let neighborhoodResult = Analyzer.analyzeUserNeighborhood(neighborhood)
         if (neighborhoodResult.hasError.value) {
-          errorFields.push(neighborhoodResult.hasError.error)
+          errorFields.push(neighborhoodResult)
         } else {
           fields.neighborhood = neighborhood
         }
@@ -441,7 +441,7 @@ class UserController {
       if (road) {
         let roadResult = Analyzer.analyzeUserRoad(road)
         if (roadResult.hasError.value) {
-          errorFields.push(roadResult.hasError.error)
+          errorFields.push(roadResult)
         } else {
           fields.road = road
         }
@@ -451,7 +451,7 @@ class UserController {
       if (house_number) {
         let houseNumberResult = Analyzer.analyzeUserHouseNumber(house_number)
         if (houseNumberResult.hasError.value) {
-          errorFields.push(houseNumberResult.hasError.error)
+          errorFields.push(houseNumberResult)
         } else {
           fields.house_number = house_number
         }
