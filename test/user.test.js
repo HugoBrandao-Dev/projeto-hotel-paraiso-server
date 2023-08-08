@@ -1390,7 +1390,6 @@ describe("Suite de testes das rotas User.", function() {
         expect(city).toBeDefined()
         expect(city).toBe("New York City")
 
-        // Número do Passaporte é vazio, porque o cliente é Brasileiro.
         expect(passportNumber).toBeDefined()
         expect(passportNumber).toBe("303004786")
         
@@ -2046,6 +2045,22 @@ describe("Suite de testes das rotas User.", function() {
         name: "Macunaíma Cruz",
         email: "macuna_curz@hotmail.com",
         cpf: `${ fixedCPF }`,
+      }
+      return request.put('/users').send(user)
+        .then(function(response) {
+          expect(response.statusCode).toEqual(200)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 200 para usuários que informa o mesmo Número de Passaporte.", function() {
+      let user = {
+        id: "507f191e810c19729de860ea",
+        name: "John Smith John",
+        email: "john_sms@hotmail.com",
+        passportNumber: "303004786",
       }
       return request.put('/users').send(user)
         .then(function(response) {
