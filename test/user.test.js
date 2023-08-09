@@ -1353,104 +1353,115 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário estrangeiro.", function() {
-      return request.get('/users/507f191e810c19729de860ea')
-      .then(function(response) {
-        let { 
-          name,
-          email,
-          birthDate,
-          phoneCode,
-          phoneNumber,
-          country,
-          cep,
-          state,
-          city,
-          cpf,
-          passportNumber,
-          neighborhood,
-          road,
-          house_number,
-          information,
-          created,
-          updated
-        } = response.body
+      let user = { id: '507f191e810c19729de860ea' }
+      return request.get(`/users/${ user.id }`)
+        .then(function(response) {
+          let {
+            id,
+            name,
+            email,
+            birthDate,
+            phoneCode,
+            phoneNumber,
+            country,
+            cep,
+            state,
+            city,
+            cpf,
+            passportNumber,
+            neighborhood,
+            road,
+            house_number,
+            information,
+            created,
+            updated,
+            _links
+          } = response.body
 
-        expect(response.statusCode).toEqual(200)
+          expect(response.statusCode).toEqual(200)
 
-        // Nome
-        expect(name).toBeDefined()
-        expect(name).toBe("John Smith")
+          // ID
+          expect(id).toBeDefined()
+          expect(id).toBe(user.id)
 
-        // Email
-        expect(email).toBeDefined()
-        expect(email).toBe("john_sm@hotmail.com")
+          // Nome
+          expect(name).toBeDefined()
+          expect(name).toBe("John Smith")
 
-        // Data de nascimento
-        expect(birthDate).toBeDefined()
-        expect(birthDate).toBe("1970-06-11")
+          // Email
+          expect(email).toBeDefined()
+          expect(email).toBe("john_sm@hotmail.com")
 
-        // Código do país do telefone de contato
-        expect(phoneCode).toBeDefined()
-        expect(phoneCode).toBe("1")
+          // Data de nascimento
+          expect(birthDate).toBeDefined()
+          expect(birthDate).toBe("1970-06-11")
 
-        // Número de contato do cliente
-        expect(phoneNumber).toBeDefined()
-        expect(phoneNumber).toBe("2129981212")
+          // Código do país do telefone de contato
+          expect(phoneCode).toBeDefined()
+          expect(phoneCode).toBe("1")
 
-        // País de nascimento do cliente
-        expect(country).toBeDefined()
-        expect(country).toBe("US")
+          // Número de contato do cliente
+          expect(phoneNumber).toBeDefined()
+          expect(phoneNumber).toBe("2129981212")
 
-        // Estado de nascimento do cliente
-        expect(state).toBeDefined()
-        expect(state).toBe("NY")
+          // País de nascimento do cliente
+          expect(country).toBeDefined()
+          expect(country).toBe("US")
 
-        // Cidade de nascimento do cliente
-        expect(city).toBeDefined()
-        expect(city).toBe("New York City")
+          // Estado de nascimento do cliente
+          expect(state).toBeDefined()
+          expect(state).toBe("NY")
 
-        expect(passportNumber).toBeDefined()
-        expect(passportNumber).toBe("303004786")
-        
-        // Nome do bairro onde o cliente nasceu.
-        expect(neighborhood).toBeDefined()
-        expect(neighborhood).toBe("2 Broadway")
+          // Cidade de nascimento do cliente
+          expect(city).toBeDefined()
+          expect(city).toBe("New York City")
 
-        // Nome da rua onde o cliente nasceu.
-        expect(road).toBeDefined()
-        expect(road).toBe("13th Street")
+          expect(passportNumber).toBeDefined()
+          expect(passportNumber).toBe("303004786")
+          
+          // Nome do bairro onde o cliente nasceu.
+          expect(neighborhood).toBeDefined()
+          expect(neighborhood).toBe("2 Broadway")
 
-        // Número da casa onde o cliente nasceu.
-        expect(house_number).toBeDefined()
-        expect(house_number).toBe("10310")
+          // Nome da rua onde o cliente nasceu.
+          expect(road).toBeDefined()
+          expect(road).toBe("13th Street")
 
-        // Infomações adicionais do cliente.
-        expect(information).toBeDefined()
-        expect(information).toBe("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra congue elit non elementum. Praesent fringilla lectus interdum ipsum tempor, ut commodo urna blandit. Nunc sagittis vestibulum luctus. Duis eget arcu nisi. Donec lobortis tellus at porttitor mattis. In ornare ornare posuere. Nunc eu aliquam metus, in sodales tellus. Sed eu mi mi. Nullam varius sed massa interdum vulputate. Morbi sodales justo tellus, quis luctus lorem lacinia eu. Integer efficitur eu ante ac tempus. Phasellus tincidunt fermentum metus ac dignissim.")
+          // Número da casa onde o cliente nasceu.
+          expect(house_number).toBeDefined()
+          expect(house_number).toBe("10310")
 
-        expect(created).toBeDefined()
-        expect(created).toMatchObject({
-          "createdAt": "2021-05-102T11:43:42.300Z",
-          "createdBy": "5da9ea674234635bdff45c02"
+          // Infomações adicionais do cliente.
+          expect(information).toBeDefined()
+          expect(information).toBe("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra congue elit non elementum. Praesent fringilla lectus interdum ipsum tempor, ut commodo urna blandit. Nunc sagittis vestibulum luctus. Duis eget arcu nisi. Donec lobortis tellus at porttitor mattis. In ornare ornare posuere. Nunc eu aliquam metus, in sodales tellus. Sed eu mi mi. Nullam varius sed massa interdum vulputate. Morbi sodales justo tellus, quis luctus lorem lacinia eu. Integer efficitur eu ante ac tempus. Phasellus tincidunt fermentum metus ac dignissim.")
+
+          expect(created).toBeDefined()
+          expect(created).toMatchObject({
+            "createdAt": "2021-05-102T11:43:42.300Z",
+            "createdBy": "5da9ea674234635bdff45c02"
+          })
+
+          expect(updated).toBeDefined()
+          expect(updated).toMatchObject({
+            "updatedAt": "2022-11-12T14:25:49.045Z",
+            "updatedBy": "507f1f77bcf86cd799439011"
+          })
+
+          // Campos que podem ser undefined para estrangeiros
+          expect(cpf).toBeUndefined()
+          expect(cep).toBeUndefined()
+
+          // HATEOAS
+          expect(_links).toBeDefined()
+          expect(_links).toHaveLength(4)
         })
-
-        expect(updated).toBeDefined()
-        expect(updated).toMatchObject({
-          "updatedAt": "2022-11-12T14:25:49.045Z",
-          "updatedBy": "507f1f77bcf86cd799439011"
+        .catch(function(error) {
+          fail(error)
         })
-
-        // Campos que podem ser undefined para estrangeiros
-        expect(cpf).toBeUndefined()
-        expect(cep).toBeUndefined()
-      })
-      .catch(function(error) {
-        fail(error)
-      })
     })
 
+    /*
     test("GET - Deve retornar 200 para busca de informações obrigatórias de um usuario estrangeiro.", function() {
       return request.get('/users/600f191e810c19829de900ea')
       .then(function(response) {
