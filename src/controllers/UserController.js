@@ -1,6 +1,8 @@
 const Analyzer = require('../tools/Analyzer')
 const uuid = require('uuid')
 
+let baseURL = 'http://localhost:4000'
+
 // Models
 const User = require('../models/User')
 
@@ -198,6 +200,29 @@ class UserController {
       } else {
         let user = await User.findOne(req.params.id)
         if (user) {
+          let HATEOS = [
+            {
+              href: `${ baseURL }/users/${ req.params.id }`,
+              method: 'GET',
+              rel: 'self_user'
+            },
+            {
+              href: `${ baseURL }/users/${ req.params.id }`,
+              method: 'PUT',
+              rel: 'edit_user'
+            },
+            {
+              href: `${ baseURL }/users/${ req.params.id }`,
+              method: 'DELETE',
+              rel: 'delete_user'
+            },
+            {
+              href: `${ baseURL }/users`,
+              method: 'GET',
+              rel: 'user_list'
+            }
+          ]
+          user._links = HATEOS
           res.status(200)
           res.json(user)
         }
