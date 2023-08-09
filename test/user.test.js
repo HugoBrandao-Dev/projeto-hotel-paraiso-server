@@ -1573,26 +1573,36 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
 
-    /*
     test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
       return request.get('/users?offset=1&limit=3')
-      .then(function(response) {
-        expect(response.statusCode).toEqual(200)
-        expect(response.body.users.length).toEqual(2)
-        expect(response.body.users[0]).toMatchObject({
-          "email": "macuna_curz@hotmail.com",
-          "cpf": "22222222222"
+        .then(function(response) {
+          expect(response.statusCode).toEqual(200)
+          expect(response.body.users.length).toEqual(2)
+
+          expect(response.body.users[0]).toMatchObject({
+            "email": "macuna_curz@hotmail.com",
+            "cpf": "22222222222"
+          })
+
+          // HETEOAS
+          expect(response.body.users[0]._links).toBeDefined()
+          expect(response.body.users[0]._links).toHaveLength(3)
+
+          expect(response.body.users[1]).toMatchObject({
+            "email": "john_sm@hotmail.com",
+            "passportNumber": "303004786"
+          })
+
+          // HETEOAS
+          expect(response.body.users[1]._links).toBeDefined()
+          expect(response.body.users[1]._links).toHaveLength(3)
         })
-        expect(response.body.users[1]).toMatchObject({
-          "email": "john_sm@hotmail.com",
-          "passportNumber": "303004786"
+        .catch(function(error) {
+          fail(error)
         })
-      })
-      .catch(function(error) {
-        fail(error)
-      })
     })
 
+    /*
     test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
       return request.post('/users/search').send({
         cpf: '22222222222'
