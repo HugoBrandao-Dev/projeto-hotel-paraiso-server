@@ -2286,8 +2286,14 @@ describe("Suite de testes das rotas User.", function() {
   describe("Testes de FALHA na deleção de um usuário.", function() {
     test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
       return request.delete('/users/507f191e810c19729de86444')
-        .then(function(responseDelete) {
-          expect(responseDelete.statusCode).toEqual(404)
+        .then(function(response) {
+          expect(response.statusCode).toEqual(404)
+          expect(response.body.RestException.Code).toBe('3')
+          expect(response.body.RestException.Message).toBe('Nenhum usuário com o ID informado está cadastrado')
+          expect(response.body.RestException.Status).toBe('404')
+          expect(response.body.RestException.MoreInfo).toBe(`/docs/erros/3`)
+          expect(response.body.RestException.ErrorFields.field).toBe('id')
+          expect(response.body.RestException.ErrorFields.hasError.error).toBe('Nenhum usuário com o ID informado está cadastrado')
         })
         .catch(function(error) {
           fail(error)
