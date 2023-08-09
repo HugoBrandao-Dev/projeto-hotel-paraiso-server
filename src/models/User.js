@@ -91,8 +91,12 @@ class User {
   async delete(id) {
     try {
       let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == id)
-      let user = await UserCollection.users.data.splice(userIndex, 1)
-      return user
+      if (userIndex == -1) {
+        return 
+      } else {
+        let user = await UserCollection.users.data.splice(userIndex, 1)
+        return user
+      }
     } catch (error) {
       console.log(error)
       return []
