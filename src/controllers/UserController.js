@@ -418,6 +418,7 @@ class UserController {
               }
             }
           } else {
+            fields.cpf = ''
             fields.passportNumber = passportNumber
           }
         } else {
