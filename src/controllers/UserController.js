@@ -480,10 +480,10 @@ class UserController {
         } else {
           fields.information = information
         }
-      }      
+      }  
 
       if (errorFields.length) {
-        console.log(`[${ id }] - Foram encontrados ${ errorFields.length } erros.`)
+        // console.log(`[${ id }] - Foram encontrados ${ errorFields.length } erros.`)
         let messages = errorFields.map(item => item.hasError.error)
         res.status(400)
         res.json({ 
@@ -507,13 +507,45 @@ class UserController {
 
   async delete(req, res) {
     try {
-      let id = req.params.id
-      let user = await User.delete(id)
-      if (user)  {
-        res.status(200)
-        res.json({})
-      } else {
-        res.sendStatus(404)
+      let { id } = req.params
+      if (id) {
+        let idResult = await Analyzer.analyzeUserID(id)
+        idResult.id = id
+        if (idResult.hasError.value) {
+          switch (idResult.hasError.type) {
+            case 2:
+              res.status(400)
+              res.json({ 
+                RestException: {
+                  "Code": `${ idResult.hasError.type }`,
+                  "Message": `${ idResult.hasError.error }`,
+                  "Status": "400",
+                  "MoreInfo": `/docs/erros/${ idResult.hasError.type }`,
+                  "ErrorFields": idResult
+                }
+              })
+              break
+            case 3:
+              res.status(404)
+              res.json({ 
+                RestException: {
+                  "Code": `${ idResult.hasError.type }`,
+                  "Message": `${ idResult.hasError.error }`,
+                  "Status": "404",
+                  "MoreInfo": `/docs/erros/${ idResult.hasError.type }`,
+                  "ErrorFields": idResult
+                }
+              })
+              break
+          }
+          return
+        } else {
+          let user = await User.delete(id)
+          if (user)  {
+            res.status(200)
+            res.json({})
+          }
+        }
       }
     } catch (error) {
       throw new Error(error)
