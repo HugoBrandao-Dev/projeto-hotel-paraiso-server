@@ -2282,4 +2282,16 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
   })
+
+  describe("Testes de FALHA na deleção de um usuário.", function() {
+    test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
+      return request.delete('/users/507f191e810c19729de86444')
+        .then(function(responseDelete) {
+          expect(responseDelete.statusCode).toEqual(404)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+  })
 })
