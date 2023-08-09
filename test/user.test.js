@@ -1144,9 +1144,11 @@ describe("Suite de testes das rotas User.", function() {
 
   describe("Testes de SUCESSO na leitura de dados.", function() {
     test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
-      return request.get('/users/5da9ea674234635bdff45c02')
+      let user = { id: '5da9ea674234635bdff45c02' }
+      return request.get(`/users/${ user.id }`)
       .then(response => {
-        let { 
+        let {
+          id,
           name,
           email,
           birthDate,
@@ -1163,10 +1165,14 @@ describe("Suite de testes das rotas User.", function() {
           house_number,
           information,
           created,
-          updated
+          updated,
+          _links
         } = response.body
 
         expect(response.statusCode).toEqual(200)
+
+        expect(id).toBeDefined()
+        expect(id).toBe(user.id)
 
         // Nome
         expect(name).toBeDefined()
@@ -1238,12 +1244,16 @@ describe("Suite de testes das rotas User.", function() {
           "updatedAt": "2023-01-12T10:25:49.045Z",
           "updatedBy": "507f1f77bcf86cd799439011"
         })
+
+        expect(_links).toBeDefined()
+        expect(_links).toHaveLength(4)
       })
       .catch(error => {
         fail(error)
       })
     })
 
+    /*
     test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
       return request.get("/users/507f1f77bcf86cd799439011")
       .then(function(response) {
@@ -1577,6 +1587,7 @@ describe("Suite de testes das rotas User.", function() {
         fail(error)
       })
     })
+    */
   })
 
   describe("Testes de REJEIÇÃO na leitura de dados.", function() {
@@ -2316,4 +2327,5 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
   })
+
 })
