@@ -2138,6 +2138,74 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+
+    test("POST - Deve retornar 200 para o usuário estrangeiro que modifica seu local de nascimento e informa o CPF.", function() {
+      const fixedForeignCPF = genCPF()
+      let user = {
+        id: "507f191e810c19729de860ea",
+        name: "John Smith",
+        email: "john_sm@hotmail.com",
+        country: "BR",
+        state: "AM",
+        city: "Manaus",
+        cpf: fixedForeignCPF,
+      }
+      return request.put('/users').send(user)
+        .then(function(responsePUT) {
+          expect(responsePUT.statusCode).toEqual(200)
+          return request.get(`/users/${ user.id }`)
+            .then(function(responseGET) {
+              const {
+                id,
+                name,
+                email,
+                country,
+                state,
+                city,
+                cpf,
+                passportNumber
+              } = responseGET.body
+
+              // ID
+              expect(id).toBeDefined()
+              expect(id).toBe(user.id)
+
+              // Nome
+              expect(name).toBeDefined()
+              expect(name).toBe(user.name)
+
+              // Email
+              expect(email).toBeDefined()
+              expect(email).toBe(user.email)
+
+              // País de nascimento
+              expect(country).toBeDefined()
+              expect(country).toBe(user.country)
+
+              // Estado de nascimento
+              expect(state).toBeDefined()
+              expect(state).toBe(user.state)
+
+              // Cidade de nascimento
+              expect(city).toBeDefined()
+              expect(city).toBe(user.city)
+
+              // CPF
+              expect(cpf).toBeDefined()
+              expect(cpf).toBe(user.cpf)
+
+              // Número do passaporte
+              expect(passportNumber).toBeDefined()
+              expect(passportNumber).toBe('')
+            })
+            .catch(function(errorGET) {
+              fail(errorGET)
+            })
+        })
+        .catch(function(errorPUT) {
+          fail(errorPUT)
+        })
+    })
   })
 
   describe("Testes de FALHA na atualização de dados.", function() {
