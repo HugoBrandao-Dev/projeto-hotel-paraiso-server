@@ -244,6 +244,26 @@ class UserController {
         users = await User.findMany(skip, limit)
       } else {
         users = await User.findMany()
+        for (let user of users) {
+          let HATEOS = [
+            {
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'GET',
+              rel: 'self_user'
+            },
+            {
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'PUT',
+              rel: 'edit_user'
+            },
+            {
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'DELETE',
+              rel: 'delete_user'
+            }
+          ]
+          user._links = HATEOS
+        }
       }
       res.status(200)
       res.json({ users })
