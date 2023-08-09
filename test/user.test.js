@@ -2293,5 +2293,21 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+
+    test("DELETE - Deve retornar 400, uma vez que o ID tem uma estrutura inválida.", function() {
+      return request.delete('/users/507f191e810*c19729de8644-')
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe('2')
+          expect(response.body.RestException.Message).toBe('O parâmetro ID possui caracteres inválidos')
+          expect(response.body.RestException.Status).toBe('400')
+          expect(response.body.RestException.MoreInfo).toBe(`/docs/erros/2`)
+          expect(response.body.RestException.ErrorFields.field).toBe('id')
+          expect(response.body.RestException.ErrorFields.hasError.error).toBe('O parâmetro ID possui caracteres inválidos')
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 })
