@@ -1558,18 +1558,22 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("GET - Deve retornar uma lista de usuários.", function() {
       return request.get("/users")
       .then(function(response) {
         expect(response.statusCode).toEqual(200)
+
         expect(response.body.users).toBeDefined()
+
+        expect(response.body.users[0]._links).toBeDefined()
+        expect(response.body.users[0]._links).toHaveLength(3)
       })
       .catch(function(error) {
         fail(error)
       })
     })
 
+    /*
     test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
       return request.get('/users?offset=1&limit=3')
       .then(function(response) {
