@@ -233,7 +233,7 @@ class UserController {
     }
   }
 
-  async readMany(req, res) {
+  async list(req, res) {
     try {
       let users = []
 

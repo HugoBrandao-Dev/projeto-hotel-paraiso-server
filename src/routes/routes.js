@@ -14,7 +14,7 @@ router.get('/', HomeController.index)
 router.post('/users', UserController.create)
 
 // Read
-router.get('/users', UserController.readMany)
+router.get('/users', UserController.list)
 router.get('/users/:id', UserController.read)
 router.post('/users/search', UserController.readByDoc)
 
