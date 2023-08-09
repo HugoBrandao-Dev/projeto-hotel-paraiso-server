@@ -1461,93 +1461,104 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("GET - Deve retornar 200 para busca de informações obrigatórias de um usuario estrangeiro.", function() {
-      return request.get('/users/600f191e810c19829de900ea')
-      .then(function(response) {
-        let {
-          name,
-          email,
-          birthDate,
-          phoneCode,
-          phoneNumber,
-          country,
-          state,
-          city,
-          cpf,
-          passportNumber,
-          created,
-          updated,
-          neighborhood,
-          road,
-          house_number,
-          information
-        } = response.body
+      let user = { id: '600f191e810c19829de900ea' }
+      return request.get(`/users/${ user.id }`)
+        .then(function(response) {
+          let {
+            id,
+            name,
+            email,
+            birthDate,
+            phoneCode,
+            phoneNumber,
+            country,
+            state,
+            city,
+            cpf,
+            passportNumber,
+            created,
+            updated,
+            neighborhood,
+            road,
+            house_number,
+            information,
+            _links
+          } = response.body
 
-        expect(response.statusCode).toEqual(200)
+          expect(response.statusCode).toEqual(200)
 
-        // Nome do cliente
-        expect(name).toBeDefined()
-        expect(name).toBe("Michael Ronald")
+          // ID
+          expect(id).toBeDefined()
+          expect(id).toBe(user.id)
 
-        // Email do cliente
-        expect(email).toBeDefined()
-        expect(email).toBe("mi_ronald@gmail.com")
+          // Nome do cliente
+          expect(name).toBeDefined()
+          expect(name).toBe("Michael Ronald")
 
-        // Data de nascimento do cliente
-        expect(birthDate).toBeDefined()
-        expect(birthDate).toBe("1979-11-11")
+          // Email do cliente
+          expect(email).toBeDefined()
+          expect(email).toBe("mi_ronald@gmail.com")
 
-        // Código do telefone do cliente
-        expect(phoneCode).toBeDefined()
-        expect(phoneCode).toBe("1")
+          // Data de nascimento do cliente
+          expect(birthDate).toBeDefined()
+          expect(birthDate).toBe("1979-11-11")
 
-        // Número do telefone do cliente
-        expect(phoneNumber).toBeDefined()
-        expect(phoneNumber).toBe("8049981212")
+          // Código do telefone do cliente
+          expect(phoneCode).toBeDefined()
+          expect(phoneCode).toBe("1")
 
-        // País do cliente
-        expect(country).toBeDefined()
-        expect(country).toBe("US")
+          // Número do telefone do cliente
+          expect(phoneNumber).toBeDefined()
+          expect(phoneNumber).toBe("8049981212")
 
-        // Estado do cliente
-        expect(state).toBeDefined()
-        expect(state).toBe("VA")
+          // País do cliente
+          expect(country).toBeDefined()
+          expect(country).toBe("US")
 
-        // Cidade do cliente
-        expect(city).toBeDefined()
-        expect(city).toBe("Richmond")
+          // Estado do cliente
+          expect(state).toBeDefined()
+          expect(state).toBe("VA")
 
-        // Número do passaporte do cliente
-        expect(passportNumber).toBeDefined()
-        expect(passportNumber).toBe("431276122")
+          // Cidade do cliente
+          expect(city).toBeDefined()
+          expect(city).toBe("Richmond")
 
-        expect(created).toBeDefined()
-        expect(created).toMatchObject({
-          "createdAt": "2022-04-222T20:41:18.365Z",
-          "createdBy": "5da9ea674234635bdff45c02"
+          // Número do passaporte do cliente
+          expect(passportNumber).toBeDefined()
+          expect(passportNumber).toBe("431276122")
+
+          expect(created).toBeDefined()
+          expect(created).toMatchObject({
+            "createdAt": "2022-04-222T20:41:18.365Z",
+            "createdBy": "5da9ea674234635bdff45c02"
+          })
+
+          expect(updated).toBeDefined()
+          expect(updated).toMatchObject({
+            "updatedAt": "2023-02-12T16:06:21.145Z",
+            "updatedBy": "507f1f77bcf86cd799439011"
+          })
+
+          // Dado condicional
+          expect(cpf).toBeUndefined()
+
+          // Dados opcionais
+          expect(neighborhood).toBeUndefined()
+          expect(road).toBeUndefined()
+          expect(house_number).toBeUndefined()
+          expect(information).toBeUndefined()
+
+          // HATEOAS
+          expect(_links).toBeDefined()
+          expect(_links).toHaveLength(4)
         })
-
-        expect(updated).toBeDefined()
-        expect(updated).toMatchObject({
-          "updatedAt": "2023-02-12T16:06:21.145Z",
-          "updatedBy": "507f1f77bcf86cd799439011"
+        .catch(function(error) {
+          fail(error)
         })
-
-        // Dado condicional
-        expect(cpf).toBeUndefined()
-
-        // Dados opcionais
-        expect(neighborhood).toBeUndefined()
-        expect(road).toBeUndefined()
-        expect(house_number).toBeUndefined()
-        expect(information).toBeUndefined()
-      })
-      .catch(function(error) {
-        fail(error)
-      })
     })
 
+    /*
     test("GET - Deve retornar uma lista de usuários.", function() {
       return request.get("/users")
       .then(function(response) {
