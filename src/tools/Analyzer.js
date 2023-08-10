@@ -507,6 +507,19 @@ class Analyzer {
       console.log(error)
     }
   }
+
+  static analyzeUserDocs(search = {}) {
+    let result = { field: 'search', hasError: { value: false, type: null, error: '' }}
+
+    if (!Object.keys(search).length) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = 'Nenhum CPF ou Número de Passaporte informado'
+      return result
+    }
+
+    return result
+  }
 }
 
 module.exports = Analyzer
