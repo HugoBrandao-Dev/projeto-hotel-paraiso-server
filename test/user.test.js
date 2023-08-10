@@ -1621,23 +1621,24 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
       return request.post('/users/search').send({
         passportNumber: '303004786'
       })
-      .then(function(response) {
-        expect(response.statusCode).toEqual(200)
-        expect(response.body.user).toMatchObject({
-          "name": "John Smith",
-          "email": "john_sm@hotmail.com"
+        .then(function(response) {
+          expect(response.statusCode).toEqual(200)
+          expect(response.body.user).toMatchObject({
+            "name": "John Smith",
+            "email": "john_sm@hotmail.com"
+          })
+
+          expect(response.body.user._links).toBeDefined()
+          expect(response.body.user._links).toHaveLength(4)
         })
-      })
-      .catch(function(error) {
-        fail(error)
-      })
+        .catch(function(error) {
+          fail(error)
+        })
     })
-    */
   })
 
   describe("Testes de REJEIÇÃO na leitura de dados.", function() {
