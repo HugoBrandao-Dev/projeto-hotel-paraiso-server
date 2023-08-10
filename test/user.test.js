@@ -1697,7 +1697,7 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.statusCode).toEqual(400)
 
           expect(response.body.RestException.Code).toBe("2")
-          expect(response.body.RestException.Message).toBe("O campo de busca é inválido")
+          expect(response.body.RestException.Message).toBe("O campo a ser buscado é inválido")
           expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
         })

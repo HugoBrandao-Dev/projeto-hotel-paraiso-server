@@ -276,6 +276,7 @@ class UserController {
     }
   }
 
+  // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
   async readByDoc(req, res) {
     try {
       let type = req.body
