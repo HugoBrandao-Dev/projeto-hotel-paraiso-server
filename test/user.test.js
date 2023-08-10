@@ -1674,7 +1674,6 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-
     test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
       return request.post('/users/search').send({})
         .then(function(response) {
@@ -1684,6 +1683,23 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.body.RestException.Message).toBe("Nenhum CPF ou Número de Passaporte informado")
           expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/1`)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
+      return request.post('/users/search').send({
+        name: 'Tobias de Oliveira'
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+
+          expect(response.body.RestException.Code).toBe("2")
+          expect(response.body.RestException.Message).toBe("O campo de busca é inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
         })
         .catch(function(error) {
           fail(error)
