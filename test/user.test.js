@@ -1602,7 +1602,6 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
       return request.post('/users/search').send({
         cpf: '22222222222'
@@ -1613,12 +1612,16 @@ describe("Suite de testes das rotas User.", function() {
             "name": "Macunaíma Cruz",
             "email": "macuna_curz@hotmail.com"
           })
+
+          expect(response.body.user._links).toBeDefined()
+          expect(response.body.user._links).toHaveLength(4)
         })
         .catch(function(error) {
           fail(error)
         })
     })
 
+    /*
     test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
       return request.post('/users/search').send({
         passportNumber: '303004786'
