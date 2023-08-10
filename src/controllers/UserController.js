@@ -200,7 +200,7 @@ class UserController {
       } else {
         let user = await User.findOne(req.params.id)
         if (user) {
-          let HATEOS = [
+          let HATEOAS = [
             {
               href: `${ baseURL }/users/${ req.params.id }`,
               method: 'GET',
@@ -222,7 +222,7 @@ class UserController {
               rel: 'user_list'
             }
           ]
-          user._links = HATEOS
+          user._links = HATEOAS
           res.status(200)
           res.json(user)
         }
@@ -245,7 +245,7 @@ class UserController {
       } else {
         users = await User.findMany()
         for (let user of users) {
-          let HATEOS = [
+          let HATEOAS = [
             {
               href: `${ baseURL }/users/${ user.id }`,
               method: 'GET',
@@ -262,7 +262,7 @@ class UserController {
               rel: 'delete_user'
             }
           ]
-          user._links = HATEOS
+          user._links = HATEOAS
         }
       }
       res.status(200)
@@ -278,6 +278,30 @@ class UserController {
       let type = req.body
       let user = await User.findByDoc(type)
       if (user) {
+        let HATEOAS = [
+          {
+            href: `${ baseURL }/users/${ user.id }`,
+            method: 'GET',
+            rel: 'self_user'
+          },
+          {
+            href: `${ baseURL }/users/${ user.id }`,
+            method: 'PUT',
+            rel: 'edit_user'
+          },
+          {
+            href: `${ baseURL }/users/${ user.id }`,
+            method: 'DELETE',
+            rel: 'delete_user'
+          },
+          {
+            href: `${ baseURL }/users`,
+            method: 'GET',
+            rel: 'user_list'
+          }
+        ]
+
+        user._links = HATEOAS
         res.status(200)
         res.json({user})
       } else {
