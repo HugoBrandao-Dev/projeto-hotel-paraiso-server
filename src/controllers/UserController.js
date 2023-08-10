@@ -2,6 +2,9 @@ const Analyzer = require('../tools/Analyzer')
 const uuid = require('uuid')
 
 let baseURL = 'http://localhost:4000'
+const projectLinks = {
+  erros: 'https://projetohotelparaiso.dev/docs/erros'
+}
 
 // Models
 const User = require('../models/User')
@@ -276,6 +279,19 @@ class UserController {
   async readByDoc(req, res) {
     try {
       let type = req.body
+      let searchResult = Analyzer.analyzeUserDocs(type)
+      if (searchResult.hasError.value) {
+        res.status(400)
+        res.json({ 
+          RestException: {
+            "Code": `${ searchResult.hasError.type }`,
+            "Message": `${ searchResult.hasError.error }`,
+            "Status": "400",
+            "MoreInfo": `${ projectLinks.erros }/${ searchResult.hasError.type }`
+          }
+        })
+        return
+      }
       let user = await User.findByDoc(type)
       if (user) {
         let HATEOAS = [
