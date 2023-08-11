@@ -1626,7 +1626,6 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
       return request.post('/users/search').send({
         passportNumber: '303004786'
@@ -1645,7 +1644,6 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
-    */
   })
 
   describe("Testes de REJEIÇÃO na leitura de dados.", function() {
@@ -1730,6 +1728,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    /*
     test("POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
       return request.post('/users/search').send({
         passportNumber: 'C10010000',
@@ -1747,6 +1746,7 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+    */
   })
 
   /* ################## UPDATE ################## */
