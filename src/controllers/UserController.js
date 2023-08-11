@@ -279,11 +279,11 @@ class UserController {
   // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
   async readByDoc(req, res, next) {
     try {
-      let { cpf, passportNumber } = req.body
+      let { cpf, passportNumber, countryCode } = req.body
 
       let RestException = {}
 
-      if (cpf || passportNumber) {
+      if (cpf || (passportNumber && countryCode)) {
         if (cpf) {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
           if (cpfResult.hasError.value != 4) {
@@ -291,6 +291,20 @@ class UserController {
             RestException.Message = `${ cpfResult.hasError.error }`
             RestException.Status = '400'
             RestException.MoreInfo = `${ projectLinks.errors }/${ cpfResult.hasError.type }`
+
+            res.status(400)
+            res.json({ RestException })
+            return
+          }
+        }
+
+        if (passportNumber && countryCode) {
+          let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, countryCode)
+          if (passportNumberResult.hasError.value != 4) {
+            RestException.Code = `${ passportNumberResult.hasError.type }`
+            RestException.Message = `${ passportNumberResult.hasError.error }`
+            RestException.Status = '400'
+            RestException.MoreInfo = `${ projectLinks.errors }/${ passportNumberResult.hasError.type }`
 
             res.status(400)
             res.json({ RestException })
