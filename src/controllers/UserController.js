@@ -3,7 +3,7 @@ const uuid = require('uuid')
 
 let baseURL = 'http://localhost:4000'
 const projectLinks = {
-  erros: 'https://projetohotelparaiso.dev/docs/erros'
+  errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 
 // Models
@@ -277,9 +277,30 @@ class UserController {
   }
 
   // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
-  async readByDoc(req, res) {
+  async readByDoc(req, res, next) {
     try {
-      let type = req.body
+      let { cpf, passportNumber } = req.body
+
+      let RestException = {}
+
+      if (cpf || passportNumber) {
+        if (cpf) {
+          let cpfResult = await Analyzer.analyzeUserCPF(cpf)
+          if (cpfResult.hasError.value != 4) {
+            RestException.Code = `${ cpfResult.hasError.type }`
+            RestException.Message = `${ cpfResult.hasError.error }`
+            RestException.Status = '400'
+            RestException.MoreInfo = `${ projectLinks.errors }/${ cpfResult.hasError.type }`
+
+            res.status(400)
+            res.json({ RestException })
+            return
+          }
+        }
+      }
+
+      res.sendStatus(200)
+      /*
       let searchResult = Analyzer.analyzeUserDocs(type)
       if (searchResult.hasError.value) {
         res.status(400)
@@ -324,9 +345,9 @@ class UserController {
       } else {
         res.sendStatus(404)
       }
+      */
     } catch (error) {
-      throw new Error(error)
-      res.sendStatus(500)
+      next(error)
     }
   }
 
