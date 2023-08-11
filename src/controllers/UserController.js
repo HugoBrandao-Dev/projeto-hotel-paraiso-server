@@ -282,11 +282,12 @@ class UserController {
       let { cpf, passportNumber, countryCode } = req.body
 
       let RestException = {}
+      let type = {}
 
       if (cpf || (passportNumber && countryCode)) {
         if (cpf) {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
-          if (cpfResult.hasError.value != 4) {
+          if (cpfResult.hasError.type != 4) {
             RestException.Code = `${ cpfResult.hasError.type }`
             RestException.Message = `${ cpfResult.hasError.error }`
             RestException.Status = '400'
@@ -295,12 +296,14 @@ class UserController {
             res.status(400)
             res.json({ RestException })
             return
+          } else {
+            type.cpf = cpf
           }
         }
 
         if (passportNumber && countryCode) {
           let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, countryCode)
-          if (passportNumberResult.hasError.value != 4) {
+          if (passportNumberResult.hasError.type != 4) {
             RestException.Code = `${ passportNumberResult.hasError.type }`
             RestException.Message = `${ passportNumberResult.hasError.error }`
             RestException.Status = '400'
@@ -309,26 +312,14 @@ class UserController {
             res.status(400)
             res.json({ RestException })
             return
+          } else {
+            type.passportNumber = passportNumber
           }
         }
       }
 
-      res.sendStatus(200)
-      /*
-      let searchResult = Analyzer.analyzeUserDocs(type)
-      if (searchResult.hasError.value) {
-        res.status(400)
-        res.json({ 
-          RestException: {
-            "Code": `${ searchResult.hasError.type }`,
-            "Message": `${ searchResult.hasError.error }`,
-            "Status": "400",
-            "MoreInfo": `${ projectLinks.erros }/${ searchResult.hasError.type }`
-          }
-        })
-        return
-      }
       let user = await User.findByDoc(type)
+
       if (user) {
         let HATEOAS = [
           {
@@ -359,7 +350,6 @@ class UserController {
       } else {
         res.sendStatus(404)
       }
-      */
     } catch (error) {
       next(error)
     }
