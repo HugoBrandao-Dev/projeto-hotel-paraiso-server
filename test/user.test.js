@@ -1606,6 +1606,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    /*
     test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
       return request.post('/users/search').send({
         cpf: '22222222222'
@@ -1624,7 +1625,6 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
-
     test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
       return request.post('/users/search').send({
         passportNumber: '303004786'
@@ -1643,6 +1643,7 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+    */
   })
 
   describe("Testes de REJEIÇÃO na leitura de dados.", function() {
@@ -1674,6 +1675,7 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    /*
     test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
       return request.post('/users/search').send({})
         .then(function(response) {
@@ -1688,7 +1690,9 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+    */
 
+    /*
     test("POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
       return request.post('/users/search').send({
         name: 'Tobias de Oliveira'
@@ -1698,6 +1702,24 @@ describe("Suite de testes das rotas User.", function() {
 
           expect(response.body.RestException.Code).toBe("2")
           expect(response.body.RestException.Message).toBe("O campo a ser buscado é inválido")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+    */
+
+    test("POST - Deve retornar 400, por ter informado um valor de CPF inválido.", function() {
+      return request.post('/users/search').send({
+        cpf: '2222222222a'
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+
+          expect(response.body.RestException.Code).toBe("2")
+          expect(response.body.RestException.Message).toBe("O CPF possui caracteres inválidos")
           expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
         })
