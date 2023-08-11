@@ -1675,22 +1675,24 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
       return request.post('/users/search').send({})
         .then(function(response) {
           expect(response.statusCode).toEqual(400)
 
-          expect(response.body.RestException.Code).toBe("1")
+          expect(response.body.RestException.Code).toBe("2")
           expect(response.body.RestException.Message).toBe("Nenhum CPF ou Número de Passaporte informado")
           expect(response.body.RestException.Status).toBe("400")
-          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/1`)
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+          expect(response.body.RestException.ErrorField.field).toBe("iptDoc")
+          expect(response.body.RestException.ErrorField.hasError.value).toEqual(true)
+          expect(response.body.RestException.ErrorField.hasError.type).toEqual(2)
+          expect(response.body.RestException.ErrorField.hasError.error).toBe("Nenhum CPF ou Número de Passaporte informado")
         })
         .catch(function(error) {
           fail(error)
         })
     })
-    */
 
     /*
     test("POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
