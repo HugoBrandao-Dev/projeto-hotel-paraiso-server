@@ -316,6 +316,19 @@ class UserController {
             type.passportNumber = passportNumber
           }
         }
+      } else {
+        let docResult = Analyzer.analyzeUserDocs()
+        if (docResult.hasError.value) {
+          RestException.Code = `${ docResult.hasError.type }`
+          RestException.Message = `${ docResult.hasError.error }`
+          RestException.Status = '400'
+          RestException.MoreInfo = `${ projectLinks.errors }/${ docResult.hasError.type }`
+          RestException.ErrorField = docResult
+
+          res.status(400)
+          res.json({ RestException })
+          return
+        }
       }
 
       let user = await User.findByDoc(type)
