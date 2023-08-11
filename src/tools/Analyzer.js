@@ -332,7 +332,7 @@ class Analyzer {
       console.log(error)
     }
   }
-  static async analyzeUserPassportNumber(passportNumber = '', countryCode) {
+  static async analyzeUserPassportNumber(passportNumber = '', countryCode = '') {
     try {
       let result = { field: 'iptPassportNumber', hasError: { value: false, type: null, error: '' }}
 
@@ -343,20 +343,29 @@ class Analyzer {
         return result
       }
 
+      let hasValidChars = validator.isAlphanumeric(passportNumber)
+      if (!hasValidChars) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = 'It contains invalid caracters'
+        return result
+      }
+
+      if (countryCode) {
+        let isValid = validator.isPassportNumber(passportNumber, countryCode)
+        if (!isValid) {
+          result.hasError.value = true
+          result.hasError.type = 2
+          result.hasError.error = 'Invalid passport number'
+        }
+      }
+
       let user = await User.findByDoc({ passportNumber })
       if (user) {
         result.hasError.value = true
         result.hasError.type = 4
         result.hasError.error = 'Passport number already registred'
         return result
-      }
-
-      let isValid = validator.isPassportNumber(passportNumber, countryCode)
-
-      if (!isValid) {
-        result.hasError.value = true
-        result.hasError.type = 2
-        result.hasError.error = 'Invalid passport number'
       }
 
       return result
