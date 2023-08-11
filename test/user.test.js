@@ -1727,6 +1727,24 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
+
+    test("POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
+      return request.post('/users/search').send({
+        passportNumber: 'C10010000',
+        countryCode: 'US'
+      })
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+
+          expect(response.body.RestException.Code).toBe("2")
+          expect(response.body.RestException.Message).toBe("Invalid passport number")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
   })
 
   /* ################## UPDATE ################## */
