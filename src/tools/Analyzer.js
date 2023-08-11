@@ -517,32 +517,14 @@ class Analyzer {
     }
   }
 
-  static analyzeUserDocs(search = {}) {
-    let result = { field: 'search', hasError: { value: false, type: null, error: '' }}
+  static analyzeUserDocs(search = null) {
+    let result = { field: 'iptDoc', hasError: { value: false, type: null, error: '' }}
 
-    let validFields = ['cpf', 'passportNumber']
-
-    let searchKeys = Object.keys(search)
-
-    if (!searchKeys.length) {
+    if (!search) {
       result.hasError.value = true
-      result.hasError.type = 1
-      result.hasError.error = 'Nenhum CPF ou Número de Passaporte informado'
-      return result
-    } else {
-      let isOne = searchKeys.length == 1
-
-      // Captura o campo que será feita a busca.
-      let searchKey = Object.keys(search)[0]
-
-      let itsValidField = validator.isIn(searchKey, validFields)
-      if (!isOne || !itsValidField) {
-        result.hasError.value = true
-        result.hasError.type = 2
-        result.hasError.error = 'O campo a ser buscado é inválido'
-      }
+      result.hasError.type = 2
+      result.hasError.error = "Nenhum CPF ou Número de Passaporte informado"
     }
-
     return result
   }
 }
