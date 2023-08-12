@@ -1728,17 +1728,15 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
       return request.post('/users/search').send({
-        passportNumber: 'C10010000',
-        countryCode: 'US'
+        passportNumber: 'C100100--'
       })
         .then(function(response) {
           expect(response.statusCode).toEqual(400)
 
           expect(response.body.RestException.Code).toBe("2")
-          expect(response.body.RestException.Message).toBe("Invalid passport number")
+          expect(response.body.RestException.Message).toBe("Passport number contains invalid caracters")
           expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
         })
@@ -1746,7 +1744,6 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
-    */
   })
 
   /* ################## UPDATE ################## */

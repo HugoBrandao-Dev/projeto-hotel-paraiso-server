@@ -347,7 +347,7 @@ class Analyzer {
       if (!hasValidChars) {
         result.hasError.value = true
         result.hasError.type = 2
-        result.hasError.error = 'It contains invalid caracters'
+        result.hasError.error = 'Passport number contains invalid caracters'
         return result
       }
 
