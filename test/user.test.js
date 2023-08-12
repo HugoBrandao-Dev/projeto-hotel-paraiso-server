@@ -1694,7 +1694,6 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
-    /*
     test("POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
       return request.post('/users/search').send({
         name: 'Tobias de Oliveira'
@@ -1711,7 +1710,6 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
     })
-    */
 
     test("POST - Deve retornar 400, por ter informado um valor de CPF inválido.", function() {
       return request.post('/users/search').send({
