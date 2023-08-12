@@ -317,7 +317,8 @@ class UserController {
           }
         }
       } else {
-        let docResult = Analyzer.analyzeUserDocs()
+        let search = req.body
+        let docResult = Analyzer.analyzeUserDocs(search)
         if (docResult.hasError.value) {
           RestException.Code = `${ docResult.hasError.type }`
           RestException.Message = `${ docResult.hasError.error }`
