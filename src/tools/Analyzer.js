@@ -520,11 +520,32 @@ class Analyzer {
   static analyzeUserDocs(search = null) {
     let result = { field: 'iptDoc', hasError: { value: false, type: null, error: '' }}
 
-    if (!search) {
+    let validFields = ['cpf', 'passportNumber']
+    let fields = Object.keys(search)
+
+    if (!fields.length) {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "Nenhum CPF ou Número de Passaporte informado"
+      return result
     }
+
+    let hasInvalidField = false
+
+    for (let field of fields) {
+
+      // Se o campo informado estiver fora do array de campos permitidos, será considerado um campo inválido.
+      if (!validator.isIn(field, validFields)) {
+        hasInvalidField = true
+      }
+    }
+
+    if (hasInvalidField) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O campo a ser buscado é inválido"
+    }
+
     return result
   }
 }
