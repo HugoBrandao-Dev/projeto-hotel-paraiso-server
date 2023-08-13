@@ -548,6 +548,18 @@ class Analyzer {
 
     return result
   }
+
+  static analyzeApartmentFloor(floor = '') {
+    let result = { field: 'iptFloor', hasError: { value: false, type: null, error: '' }}
+
+    if (!floor && floor != '0') {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O campo de Piso do apartamento é obrigatório"
+    }
+
+    return result
+  }
 }
 
 module.exports = Analyzer
