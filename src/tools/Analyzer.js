@@ -556,6 +556,14 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O campo de Piso do apartamento é obrigatório"
+      return result
+    }
+
+    let isInt = validator.isInt(floor)
+    if (!isInt) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do campo do Piso do apartamento é inválido"
     }
 
     return result
