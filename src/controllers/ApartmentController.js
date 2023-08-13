@@ -51,6 +51,8 @@ class ApartmentController {
         })
         return
       }
+
+      res.sendStatus(201)
     } catch(error) {
       next(error)
     }
