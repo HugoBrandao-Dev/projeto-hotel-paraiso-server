@@ -113,6 +113,32 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+
+      test("/POST - Deve retornar 400, pelo valor do Número do apartamento ser inválido.", function() {
+
+        // O valor de Número do Apartamento deve ser NUMÉRICO.
+        return request.post('/apartments').send({
+          floor: "3",
+          number: "um",
+          status: "1",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12T11:49:04.421Z",
+          end: "2024-01-12T14:49:04.421Z"
+        })
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O valor do campo de Número do Apartamento é inválido")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptNumber')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Número do Apartamento é inválido')
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
   describe("READ", function() {
