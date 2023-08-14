@@ -21,6 +21,17 @@ class Apartment {
     }
   }
 
+  // Busca por um apartamento pelo seu Número
+  async findByNumber(number) {
+    try {
+      let apartment = await ApartmentCollection.apartments.data.find(ap => ap.number == number)
+      return apartment
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
   async edit(apartment) {
     try {
 
@@ -39,3 +50,5 @@ class Apartment {
     }
   }
 }
+
+module.exports = new Apartment()
