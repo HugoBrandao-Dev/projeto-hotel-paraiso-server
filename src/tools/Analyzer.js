@@ -559,11 +559,25 @@ class Analyzer {
       return result
     }
 
+    
     let isInt = validator.isInt(floor)
     if (!isInt) {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "O valor do campo do Piso do apartamento é inválido"
+      return result
+    } else {
+
+      // Os valor de min/max são os valores dos andares (floor).
+      let isValidRange = validator.isInt(floor, {
+        min: 0,
+        max: 77
+      })
+      if (!isValidRange) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = "O Piso informado não existe"
+      }
     }
 
     return result
