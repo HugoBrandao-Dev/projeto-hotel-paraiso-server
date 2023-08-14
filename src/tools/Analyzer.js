@@ -589,7 +589,14 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O campo Número do Apartamento é obrigatório"
-      // return result
+      return result
+    }
+
+    let isInt = validator.isInt(number)
+    if (!isInt) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do campo de Número do Apartamento é inválido"
     }
 
     return result
