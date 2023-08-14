@@ -24,6 +24,11 @@ class ApartmentController {
         errorFields.push(floorResult)
       }
 
+      const numberResult = Analyzer.analyzeApartmentNumber(number)
+      if (numberResult.hasError.value) {
+        errorFields.push(numberResult)
+      }
+
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
 
