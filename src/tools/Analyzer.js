@@ -9,6 +9,7 @@ const validator = require('validator')
 
 // Models
 const User = require('../models/User')
+const Apartment = require('../models/Apartment')
 
 class Analyzer {
   static analyzeUserName(name = '') {
@@ -582,24 +583,36 @@ class Analyzer {
     return result
   }
 
-  static analyzeApartmentNumber(number = '') {
-    let result = { field: 'iptNumber', hasError: { value: false, type: null, error: '' }}
+  static async analyzeApartmentNumber(number = '') {
+    try {
+      let result = { field: 'iptNumber', hasError: { value: false, type: null, error: '' }}
 
-    if (!number) {
-      result.hasError.value = true
-      result.hasError.type = 1
-      result.hasError.error = "O campo Número do Apartamento é obrigatório"
+      if (!number) {
+        result.hasError.value = true
+        result.hasError.type = 1
+        result.hasError.error = "O campo Número do Apartamento é obrigatório"
+        return result
+      }
+
+      let isInt = validator.isInt(number)
+      if (!isInt) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = "O valor do campo de Número do Apartamento é inválido"
+        return result
+      }
+
+      let apartment = await Apartment.findByNumber(number)
+      if (apartment) {
+        result.hasError.value = true
+        result.hasError.type = 4
+        result.hasError.error = "O Número do Apartamento já está cadastrado"
+      }
+
       return result
+    } catch (error) {
+      console.log(error)
     }
-
-    let isInt = validator.isInt(number)
-    if (!isInt) {
-      result.hasError.value = true
-      result.hasError.type = 2
-      result.hasError.error = "O valor do campo de Número do Apartamento é inválido"
-    }
-
-    return result
   }
 }
 

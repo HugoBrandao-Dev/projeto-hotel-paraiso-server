@@ -24,7 +24,7 @@ class ApartmentController {
         errorFields.push(floorResult)
       }
 
-      const numberResult = Analyzer.analyzeApartmentNumber(number)
+      const numberResult = await Analyzer.analyzeApartmentNumber(number)
       if (numberResult.hasError.value) {
         errorFields.push(numberResult)
       }
