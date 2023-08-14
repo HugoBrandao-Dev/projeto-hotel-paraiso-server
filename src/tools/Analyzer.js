@@ -558,7 +558,6 @@ class Analyzer {
       result.hasError.error = "O campo de Piso do apartamento é obrigatório"
       return result
     }
-
     
     let isInt = validator.isInt(floor)
     if (!isInt) {
@@ -578,6 +577,19 @@ class Analyzer {
         result.hasError.type = 2
         result.hasError.error = "O Piso informado não existe"
       }
+    }
+
+    return result
+  }
+
+  static analyzeApartmentNumber(number = '') {
+    let result = { field: 'iptNumber', hasError: { value: false, type: null, error: '' }}
+
+    if (!number) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O campo Número do Apartamento é obrigatório"
+      // return result
     }
 
     return result
