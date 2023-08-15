@@ -13,10 +13,7 @@ class ApartmentController {
       const {
         floor,
         number,
-        status,
-        user_id,
-        start,
-        end
+        rooms
       } = req.body
 
       const floorResult = Analyzer.analyzeApartmentFloor(floor)
@@ -27,6 +24,11 @@ class ApartmentController {
       const numberResult = await Analyzer.analyzeApartmentNumber(number)
       if (numberResult.hasError.value) {
         errorFields.push(numberResult)
+      }
+
+      const roomsResult = Analyzer.analyzeApartmentRooms(rooms)
+      if (roomsResult.hasError.value) {
+        errorFields.push(roomsResult)
       }
 
       if (errorFields.length) {
