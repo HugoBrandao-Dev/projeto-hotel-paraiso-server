@@ -618,11 +618,30 @@ class Analyzer {
   static analyzeApartmentRooms(rooms = []) {
     try {
       let result = { field: 'iptRooms', hasError: { value: false, type: null, error: '' }}
+      let acceptableChars = ' -\''
 
       if (!rooms.length) {
         result.hasError.value = true
         result.hasError.type = 1
         result.hasError.error = "O campo de Cômodos é obrigatório"
+        return result
+      }
+
+      for (let item of rooms) {
+
+        // Validação do nome do Cômodo
+        let isRoomAlphanumericEN_US = validator.isAlphanumeric(item.room, ['en-US'], {
+          ignore: acceptableChars
+        })
+        let isRoomAlphanumericPT_BR = validator.isAlphanumeric(item.room, ['pt-BR'], {
+          ignore: acceptableChars
+        })
+
+        if (!isRoomAlphanumericEN_US && !isRoomAlphanumericPT_BR) {
+          result.hasError.value = true
+          result.hasError.type = 2
+          result.hasError.error = `'${ item.room }' possui caracteres inválidos`
+        }
       }
 
       return result
