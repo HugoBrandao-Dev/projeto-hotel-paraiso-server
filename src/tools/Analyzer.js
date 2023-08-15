@@ -614,6 +614,22 @@ class Analyzer {
       console.log(error)
     }
   }
+
+  static analyzeApartmentRooms(rooms = []) {
+    try {
+      let result = { field: 'iptRooms', hasError: { value: false, type: null, error: '' }}
+
+      if (!rooms.length) {
+        result.hasError.value = true
+        result.hasError.type = 1
+        result.hasError.error = "O campo de Cômodos é obrigatório"
+      }
+
+      return result
+    } catch (error) {
+      console.log(error)
+    }
+  }
 }
 
 module.exports = Analyzer
