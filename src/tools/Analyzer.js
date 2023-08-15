@@ -619,6 +619,7 @@ class Analyzer {
     try {
       let result = { field: 'iptRooms', hasError: { value: false, type: null, error: '' }}
       let acceptableChars = ' -\''
+      let validFields = ['room', 'quantity']
 
       if (!rooms.length) {
         result.hasError.value = true
@@ -628,6 +629,17 @@ class Analyzer {
       }
 
       for (let item of rooms) {
+        let fields = Object.keys(item)
+        for (let field of fields) {
+          let isValidField = validator.isIn(field, validFields)
+
+          if (!isValidField) {
+            result.hasError.value = true
+            result.hasError.type = 2
+            result.hasError.error = "A lista de cômodos possui campos inválidos"
+            return result
+          }
+        }
 
         // Validação do nome do Cômodo
         let isRoomAlphanumericEN_US = validator.isAlphanumeric(item.room, ['en-US'], {
