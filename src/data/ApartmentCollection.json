@@ -7,24 +7,24 @@
         "number": "11",
         "rooms": [
           {
-            "room": "1",
+            "room": "sala de estar",
             "quantity": "1"
           },
           {
-            "room": "2",
+            "room": "cozinha",
             "quantity": "1"
           },
           {
-            "room": "3",
+            "room": "banheiro",
             "quantity": "1"
           },
           {
-            "room": "4",
+            "room": "quarto",
             "quantity": "1"
           }
         ],
         "reserve": {
-          "status": "1",
+          "status": "reservado",
           "user_id": "507f1f77bcf86cd799439011",
           "date": "2023-08-12T22:49:04.421Z",
           "start": "2023-11-12T11:49:04.421Z",
@@ -45,24 +45,24 @@
         "number": "12",
         "rooms": [
           {
-            "room": "1",
+            "room": "sala de estar",
             "quantity": "1"
           },
           {
-            "room": "2",
+            "room": "cozinha",
             "quantity": "1"
           },
           {
-            "room": "3",
+            "room": "banheiro",
             "quantity": "2"
           },
           {
-            "room": "4",
+            "room": "quarto",
             "quantity": "2"
           }
         ],
         "reserve": {
-          "status": "2",
+          "status": "ocupado",
           "user_id": "600f191e810c19829de900ea",
           "date": "2022-08-12T22:49:04.421Z",
           "start": "2022-11-12T01:49:04.421Z",
