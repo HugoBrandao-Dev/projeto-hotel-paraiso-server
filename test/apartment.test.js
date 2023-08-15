@@ -239,7 +239,33 @@ describe("Suite de testes das rotas de Apartment.", function() {
           .catch(function(error) {
             fail(error)
           })
-      })      
+      })
+
+      test("/POST - Deve retornar 400, pela ausência de um campo no cômodo do apartamento.", function() {
+        let apartment = {
+          floor: "3",
+          number: "10",
+          rooms: [
+            {
+              quantity: '1'
+            }
+          ]
+        }
+        return request.post('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe('Faltam campos em um dos cômodos informados')
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRooms')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('Faltam campos em um dos cômodos informados')
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
   describe("READ", function() {
