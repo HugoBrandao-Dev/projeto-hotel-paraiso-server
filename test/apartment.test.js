@@ -279,6 +279,33 @@ describe("Suite de testes das rotas de Apartment.", function() {
           number: "10",
           rooms: [
             {
+              room: '',
+              quantity: '1'
+            }
+          ]
+        }
+        return request.post('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe('Um dos campos dos comodos informados não possui valor')
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRooms')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('Um dos campos dos comodos informados não possui valor')
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("/POST - Deve retornar 400, pela presença de campos inválidos nos cômodos do apartamento.", function() {
+        let apartment = {
+          floor: "3",
+          number: "10",
+          rooms: [
+            {
               // Não é 'rooms' e sim 'room'
               rooms: 'sala de estar',
               quantity: '1'
@@ -353,6 +380,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+
+
     })
   })
   describe("READ", function() {
