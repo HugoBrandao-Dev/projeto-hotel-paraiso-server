@@ -640,7 +640,6 @@ class Analyzer {
         }
 
         for (let field of fields) {
-
           // Verifica se foi passado algum campo fora dos permitidos.
           let isValidField = validator.isIn(field, validFields)
 
@@ -649,6 +648,13 @@ class Analyzer {
             result.hasError.type = 2
             result.hasError.error = "A lista de cômodos possui campos inválidos"
             return result
+          } else {
+            if (!item[field]) {
+              result.hasError.value = true
+              result.hasError.type = 2
+              result.hasError.error = "Um dos campos dos comodos informados não possui valor"
+              return result
+            }
           }
         }
 
