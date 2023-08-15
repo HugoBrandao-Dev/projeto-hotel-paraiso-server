@@ -185,6 +185,33 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+
+      test("/POST - Deve retornar 400, pela ausência dos valores dos cômodos do apartamento.", function() {
+        let apartment = {
+          floor: "3",
+          number: "10",
+          rooms: [
+            {
+              room: 'sala de estar*',
+              quantity: '1'
+            }
+          ]
+        }
+        return request.post('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe(`'${ apartment.rooms[0].room }' possui caracteres inválidos`)
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRooms')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe(`'${ apartment.rooms[0].room }' possui caracteres inválidos`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
   describe("READ", function() {
