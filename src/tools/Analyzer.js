@@ -630,7 +630,18 @@ class Analyzer {
 
       for (let item of rooms) {
         let fields = Object.keys(item)
+
+        // Verifica se falta algum campo.
+        if (fields.length < 2) {
+          result.hasError.value = true
+          result.hasError.type = 2
+          result.hasError.error = "Faltam campos em um dos cômodos informados"
+          return result
+        }
+
         for (let field of fields) {
+
+          // Verifica se foi passado algum campo fora dos permitidos.
           let isValidField = validator.isIn(field, validFields)
 
           if (!isValidField) {
