@@ -713,6 +713,19 @@ class Analyzer {
       result.hasError.type = 2
       result.hasError.error = "O separador de decimal do valor da diária é inválido"
       return result
+    } else {
+      let separatorIndex = price.indexOf('.')
+      if (separatorIndex) {
+        let decimalLength = price.slice(separatorIndex).length
+
+        // Verifica de contém uma quantidade de casas decimal igual a 2.
+        if (separatorIndex && decimalLength > 2) {
+          result.hasError.value = true
+          result.hasError.type = 2
+          result.hasError.error = "A quantidade de casas decimais é inválida"
+          return result
+        }
+      }
     }
 
     let isCurrency = validator.isCurrency(price)
