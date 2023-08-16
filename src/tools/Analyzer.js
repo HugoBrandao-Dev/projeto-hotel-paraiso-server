@@ -707,6 +707,14 @@ class Analyzer {
       return result
     }
 
+    // Verifica se o separador de decimal é uma vírgula.
+    if (price.indexOf(',') != -1) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O separador de decimal do valor da diária é inválido"
+      return result
+    }
+
     let isCurrency = validator.isCurrency(price)
     if (!isCurrency) {
       result.hasError.value = true
