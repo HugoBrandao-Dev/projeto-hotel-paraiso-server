@@ -13,7 +13,8 @@ class ApartmentController {
       const {
         floor,
         number,
-        rooms
+        rooms,
+        daily_price
       } = req.body
 
       const floorResult = Analyzer.analyzeApartmentFloor(floor)
@@ -29,6 +30,11 @@ class ApartmentController {
       const roomsResult = Analyzer.analyzeApartmentRooms(rooms)
       if (roomsResult.hasError.value) {
         errorFields.push(roomsResult)
+      }
+
+      const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)
+      if (dailyPriceResult.hasError.value) {
+        errorFields.push(dailyPriceResult)
       }
 
       if (errorFields.length) {
