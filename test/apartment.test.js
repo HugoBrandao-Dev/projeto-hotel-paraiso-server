@@ -11,7 +11,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
   describe("CREATE", function() {
     describe("Testes de SUCESSO.", function() {})
     describe("Testes de FALHA.", function() {
-/*
+
       // Validação do Piso do apartamento.
       test("/POST - Deve retornar 400 pela ausência do campo de Piso (floor) do apartamento.", function() {
         let apartment = {
@@ -34,7 +34,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'quarto',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -73,7 +74,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'quarto',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
 
         // O valor de floor deve ser NUMÉRICO.
@@ -114,7 +116,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'quarto',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -154,7 +157,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'quarto',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -193,7 +197,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'quarto',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         // O valor de Número do Apartamento deve ser NUMÉRICO.
         return request.post('/apartments').send(apartment)
@@ -233,7 +238,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'quarto',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -256,7 +262,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
         return request.post('/apartments').send({
           floor: "3",
           number: "10",
-          rooms: []
+          rooms: [],
+          daily_price: '200'
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -282,7 +289,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: '',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -310,7 +318,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               rooms: 'sala de estar',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -337,7 +346,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'sala de estar*',
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -363,7 +373,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
             {
               quantity: '1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -390,7 +401,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'sala de estar',
               quantity: 'um'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -417,7 +429,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'cozinha',
               quantity: '-1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -444,7 +457,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               room: 'cozinha',
               quantity: '-1'
             }
-          ]
+          ],
+          daily_price: '200'
         }
         return request.post('/apartments').send(apartment)
           .then(function(response) {
@@ -461,8 +475,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
-      */
-      test("/POST - Deve retornar 400, pela ausência do valor da diária.", function() {
+
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
         let apartment = {
           floor: "3",
           number: "10",
