@@ -476,6 +476,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
 
+      // Validação da diária do apartamento.
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
         let apartment = {
           floor: "3",
@@ -510,6 +511,46 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/1`)
             expect(response.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
             expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Diária do Apartamento é obrigatório")
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
+        let apartment = {
+          floor: "3",
+          number: "10",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '-800'
+        }
+        return request.post('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O valor da diária é inválido")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O valor da diária é inválido")
           })
           .catch(function(error) {
             fail(error)
