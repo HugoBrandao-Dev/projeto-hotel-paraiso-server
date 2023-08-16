@@ -712,6 +712,16 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "O valor da diária contém caracteres inválidos"
+      return result
+    } else {
+      let isPositive = validator.isCurrency(price, {
+        allow_negatives: false
+      })
+      if (!isPositive) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = "O valor da diária é inválido"
+      }
     }
 
     return result
