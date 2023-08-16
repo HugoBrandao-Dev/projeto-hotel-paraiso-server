@@ -704,6 +704,14 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O campo de Diária do Apartamento é obrigatório"
+      return result
+    }
+
+    let isCurrency = validator.isCurrency(price)
+    if (!isCurrency) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor da diária contém caracteres inválidos"
     }
 
     return result
