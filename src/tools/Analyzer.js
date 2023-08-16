@@ -672,11 +672,21 @@ class Analyzer {
           result.hasError.error = `'${ item.room }' possui caracteres inválidos`
           return result
         } else {
-          let isValidInt = validator.isInt(item.quantity)
-          if (!isValidInt) {
+          let isInt = validator.isInt(item.quantity)
+          if (!isInt) {
             result.hasError.value = true
             result.hasError.type = 2
             result.hasError.error = `A quantidade de ${ item.room } possui caracteres inválidos`
+            return result
+          } else {
+            let isValidInt = validator.isInt(item.quantity, {
+              gt: 0
+            })
+            if (!isValidInt) {
+              result.hasError.value = true
+              result.hasError.type = 2
+              result.hasError.error = `A quantidade de ${ item.room } é inválida`
+            }
           }
         }
       }
