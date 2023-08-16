@@ -381,7 +381,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
 
-      test("/POST - Deve retornar 400, pela ausência de um campo no cômodo do apartamento.", function() {
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos na quantidade de um determinado comodo.", function() {
         let apartment = {
           floor: "3",
           number: "10",
@@ -402,6 +402,33 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
             expect(response.body.RestException.ErrorFields[0].field).toBe('iptRooms')
             expect(response.body.RestException.ErrorFields[0].hasError.error).toBe(`A quantidade de ${ apartment.rooms[0].room } possui caracteres inválidos`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("/POST - Deve retornar 400, pela ausência de um campo no cômodo do apartamento.", function() {
+        let apartment = {
+          floor: "3",
+          number: "10",
+          rooms: [
+            {
+              room: 'cozinha',
+              quantity: '-1'
+            }
+          ]
+        }
+        return request.post('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe(`A quantidade de ${ apartment.rooms[0].room } é inválida`)
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRooms')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe(`A quantidade de ${ apartment.rooms[0].room } é inválida`)
           })
           .catch(function(error) {
             fail(error)
