@@ -696,6 +696,18 @@ class Analyzer {
       console.log(error)
     }
   }
+
+  static analyzeApartmentDailyPrice(price = '') {
+    let result = { field: 'iptDailyPrice', hasError: { value: false, type: null, error: '' }}
+
+    if (!price) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O campo de Diária do Apartamento é obrigatório"
+    }
+
+    return result
+  }
 }
 
 module.exports = Analyzer
