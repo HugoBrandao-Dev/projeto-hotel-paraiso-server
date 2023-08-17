@@ -22,6 +22,16 @@ class Apartment {
     }
   }
 
+  async findMany() {
+    try {
+      let apartments = ApartmentCollection.apartments.data.map(apartment => apartment)
+      return apartments
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
   // Busca por um apartamento pelo seu Número
   async findByNumber(number) {
     try {
