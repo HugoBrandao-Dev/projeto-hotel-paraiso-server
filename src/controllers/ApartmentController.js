@@ -112,7 +112,11 @@ class ApartmentController {
 
   async list(req, res, next) {
     try {
-
+      let apartments = await Apartment.findMany()
+      if (apartments) {
+        res.status(200)
+        res.json({ apartments })
+      }
     } catch(error) {
       next(error)
     }
