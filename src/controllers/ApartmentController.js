@@ -6,6 +6,9 @@ const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 
+// Models
+const Apartment = require('../models/Apartment')
+
 class ApartmentController {
   async create(req, res, next) {
     try {
@@ -75,7 +78,7 @@ class ApartmentController {
     try {
       let id = req.params.id
 
-      let idResult = await Analyzer.analyzeID(id)
+      let idResult = await Analyzer.analyzeID(id, 'apartment')
       if (idResult.hasError.value) {
         let RestException = {
           Code: '',
@@ -96,8 +99,12 @@ class ApartmentController {
         RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
+        return
       }
-      res.sendStatus(200)
+      
+      let apartment = await Apartment.findOne(id)
+      res.status(200)
+      res.json(apartment)
     } catch(error) {
       next(error)
     }
