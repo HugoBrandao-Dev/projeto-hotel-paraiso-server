@@ -680,7 +680,23 @@ describe("Suite de testes das rotas de Apartment.", function() {
   })
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {})
-    describe("Testes de FALHA.", function() {})
+    describe("Testes de FALHA.", function() {
+
+      test("/GET - Deve retornar 400, já que o ID do apartamento não foi informado.", function() {
+        return request.get('/apartments/856377c88f8fd9fc65fd3ef*')
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O parâmetro ID possui caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/2`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+    })
   })
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {})
