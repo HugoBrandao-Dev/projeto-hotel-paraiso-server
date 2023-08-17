@@ -487,7 +487,7 @@ class Analyzer {
 
     return result
   }
-  static async analyzeUserID(id = '') {
+  static async analyzeID(id = '') {
     try {
       let acceptableChars = '-'
       let result = { field: 'id', hasError: { value: false, type: null, error: '' }}

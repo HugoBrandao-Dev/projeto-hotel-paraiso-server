@@ -179,7 +179,7 @@ class UserController {
 
   async read(req, res) {
     try {
-      let idResult = await Analyzer.analyzeUserID(req.params.id)
+      let idResult = await Analyzer.analyzeID(req.params.id)
 
       if (idResult.hasError.value) {
 
@@ -395,7 +395,7 @@ class UserController {
       let fields = {}
       let userRegistred = null
 
-      let idResult = await Analyzer.analyzeUserID(id)
+      let idResult = await Analyzer.analyzeID(id)
       if (idResult.hasError.value) {
         errorFields.push(idResult)
         if (idResult.hasError.type == 3) {
@@ -634,7 +634,7 @@ class UserController {
     try {
       let { id } = req.params
       if (id) {
-        let idResult = await Analyzer.analyzeUserID(id)
+        let idResult = await Analyzer.analyzeID(id)
         idResult.id = id
         if (idResult.hasError.value) {
           switch (idResult.hasError.type) {
