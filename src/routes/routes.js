@@ -30,4 +30,7 @@ router.delete('/users/:id', UserController.delete)
 // Create
 router.post('/apartments', ApartmentController.create)
 
+// Read
+router.get('/apartments/:id', ApartmentController.read)
+
 module.exports = router
