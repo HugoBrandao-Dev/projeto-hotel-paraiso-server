@@ -85,12 +85,15 @@ class ApartmentController {
         }
 
         switch (idResult.hasError.type) {
+          case 3:
+            RestException.Status = "404"
+            break
           default:
-            RestException.Code = `${ idResult.hasError.type }`
-            RestException.Message = `${ idResult.hasError.error }`
             RestException.Status = "400"
-            RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
         }
+        RestException.Code = `${ idResult.hasError.type }`
+        RestException.Message = `${ idResult.hasError.error }`
+        RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
       }
