@@ -679,9 +679,69 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
   })
   describe("READ", function() {
-    describe("Testes de SUCESSO.", function() {})
+    describe("Testes de SUCESSO.", function() {
+      test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", function() {
+        return request.get('/apartments/d9d62beecdde62af82efd82c')
+          .then(function(response) {
+            const {
+              id,
+              floor,
+              number,
+              rooms,
+              daily_price,
+              reserve,
+              created,
+              updated,
+            } = response.body
+
+            expect(response.statusCode).toEqual(200)
+
+            expect(id).toBe("d9d62beecdde62af82efd82c")
+            expect(floor).toBe("3")
+            expect(number).toBe("12")
+            expect(rooms).toHaveLength(4)
+            expect(rooms[0]).toMatchObject({
+              room: "sala de estar",
+              quantity: "1"
+            })
+            expect(rooms[1]).toMatchObject({
+              room: "cozinha",
+              quantity: "1"
+            })
+            expect(rooms[2]).toMatchObject({
+              room: "banheiro",
+              quantity: "2"
+            })
+            expect(rooms[3]).toMatchObject({
+              room: "quarto",
+              quantity: "2"
+            })
+            expect(daily_price).toEqual("500")
+            expect(reserve).toMatchObject({
+              status: "ocupado",
+              user_id: "600f191e810c19829de900ea",
+              date: "2022-08-12T22:49:04.421Z",
+              start: "2022-11-12T01:49:04.421Z",
+              end: "2023-01-12T19:49:04.421Z"
+            })
+            expect(created).toMatchObject({
+              createdAt: "2022-06-12T22:01:20.596Z",
+              createdBy: "5da9ea674234635bdff45c02"
+            })
+            expect(updated).toMatchObject({
+              updatedAt: "2023-01-12T10:25:49.045Z",
+              updatedBy: "507f1f77bcf86cd799439011"
+            })
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+    })
+
     describe("Testes de FALHA.", function() {
 
+      // Leituras individuais de apartamentos
       test("/GET - Deve retornar 400, já que o ID do apartamento não foi informado.", function() {
         return request.get('/apartments/856377c88f8fd9fc65fd3ef*')
           .then(function(response) {
@@ -703,7 +763,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(404)
 
             expect(response.body.RestException.Code).toBe("3")
-            expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
             expect(response.body.RestException.Status).toBe("404")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/3`)
           })
