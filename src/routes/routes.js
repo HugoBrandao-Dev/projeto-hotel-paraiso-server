@@ -32,5 +32,6 @@ router.post('/apartments', ApartmentController.create)
 
 // Read
 router.get('/apartments/:id', ApartmentController.read)
+router.get('/apartments', ApartmentController.list)
 
 module.exports = router
