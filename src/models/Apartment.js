@@ -14,7 +14,8 @@ class Apartment {
 
   async findOne(id) {
     try {
-
+      let apartment = await ApartmentCollection.apartments.data.find(ap => ap.id == id)
+      return apartment
     } catch (error) {
       console.log(error)
       return []
