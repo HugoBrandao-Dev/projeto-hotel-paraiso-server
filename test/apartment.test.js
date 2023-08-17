@@ -737,6 +737,19 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+
+      test("/GET - Deve retornar 200 e uma lista com 2 apartamentos", function() {
+        return request.get('/apartments')
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+
+            expect(response.body.apartments).toBeDefined()
+            expect(response.body.apartments).toHaveLength(2)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
 
     describe("Testes de FALHA.", function() {
