@@ -73,7 +73,28 @@ class ApartmentController {
 
   async read(req, res, next) {
     try {
+      let id = req.params.id
 
+      let idResult = await Analyzer.analyzeID(id)
+      if (idResult.hasError.value) {
+        let RestException = {
+          Code: '',
+          Message: '',
+          Status: '',
+          MoreInfo: ''
+        }
+
+        switch (idResult.hasError.type) {
+          default:
+            RestException.Code = `${ idResult.hasError.type }`
+            RestException.Message = `${ idResult.hasError.error }`
+            RestException.Status = "400"
+            RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
+        }
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
+      }
+      res.sendStatus(200)
     } catch(error) {
       next(error)
     }
