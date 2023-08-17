@@ -487,7 +487,7 @@ class Analyzer {
 
     return result
   }
-  static async analyzeID(id = '') {
+  static async analyzeID(id = '', resource = 'user') {
     try {
       let acceptableChars = '-'
       let result = { field: 'id', hasError: { value: false, type: null, error: '' }}
@@ -504,11 +504,22 @@ class Analyzer {
         result.hasError.error = 'O parâmetro ID possui caracteres inválidos'
         return result
       } else {
-        let user = await User.findOne(id)
-        if (!user) {
+        let registred = null
+        let msg = ''
+        switch(resource) {
+          case 'user':
+            registred = await User.findOne(id)
+            msg = 'Nenhum usuário com o ID informado está cadastrado'
+            break
+          case 'apartment':
+            registred = await Apartment.findOne(id)
+            msg = 'Nenhum apartamento com o ID informado está cadastrado'
+            break
+        }
+        if (!registred) {
           result.hasError.value = true
           result.hasError.type = 3
-          result.hasError.error = 'Nenhum usuário com o ID informado está cadastrado'
+          result.hasError.error = msg
         }
       }
 
