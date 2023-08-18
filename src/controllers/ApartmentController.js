@@ -103,6 +103,26 @@ class ApartmentController {
       }
       
       let apartment = await Apartment.findOne(id)
+      let HATEOAS = [
+        {
+          href: `${ baseURL }/apartments/${ req.params.id }`,
+          method: 'GET',
+          rel: 'self_apartment'
+        },
+        {
+          href: `${ baseURL }/apartments/${ req.params.id }`,
+          method: 'PUT',
+          rel: 'edit_apartment'
+        },
+        {
+          href: `${ baseURL }/apartments/${ req.params.id }`,
+          method: 'DELETE',
+          rel: 'delete_apartment'
+        }
+      ]
+
+      apartment._links = HATEOAS
+
       res.status(200)
       res.json(apartment)
     } catch(error) {
