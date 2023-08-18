@@ -2,10 +2,17 @@ let ApartmentCollection = require('../data/ApartmentCollection.json')
 let DateFormated = require('../tools/DateFormated')
 let uuid = require('uuid')
 
+// Gera um ID (hardcoded) em Hexadecimal
+function genID() {
+  return [...Array(24)].map(() => Math.floor(Math.random() * 24).toString(24)).join('')
+}
+
 class Apartment {
   async save(apartment) {
     try {
-
+      apartment.id = await genID()
+      await ApartmentCollection.apartments.data.push(apartment)
+      return
     } catch (error) {
       console.log(error)
       return
