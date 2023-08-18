@@ -821,6 +821,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(200)
 
             expect(response.body.apartments).toBeDefined()
+            expect(response.body.apartments[0]).toBeDefined()
+            expect(response.body.apartments[0]._links).toHaveLength(3)
           })
           .catch(function(error) {
             fail(error)
