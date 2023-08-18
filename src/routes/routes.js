@@ -34,4 +34,7 @@ router.post('/apartments', ApartmentController.create)
 router.get('/apartments/:id', ApartmentController.read)
 router.get('/apartments', ApartmentController.list)
 
+// Update
+router.put('/apartments', ApartmentController.update)
+
 module.exports = router
