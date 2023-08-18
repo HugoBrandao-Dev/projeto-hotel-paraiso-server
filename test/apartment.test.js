@@ -888,6 +888,22 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+
+      test("/PUT - Deve retornar 404, uma vez que o ID informado não pertence a um apartamento.", function() {
+        let apartment = { id: 'ljb9kf3d5a65f17ljf2i0kc7' }
+        return request.put('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(404)
+
+            expect(response.body.RestException.Code).toBe("3")
+            expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(response.body.RestException.Status).toBe("404")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/3`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
   describe("DELETE", function() {
