@@ -3,6 +3,7 @@ const supertest = require('supertest')
 
 const request = supertest(app)
 
+let baseURL = 'http://localhost:4000'
 const projectLinks = {
   erros: 'https://projetohotelparaiso.dev/docs/erros'
 }
@@ -692,31 +693,51 @@ describe("Suite de testes das rotas de Apartment.", function() {
               reserve,
               created,
               updated,
+              _links
             } = response.body
 
             expect(response.statusCode).toEqual(200)
 
+            expect(id).toBeDefined()
             expect(id).toBe("d9d62beecdde62af82efd82c")
+
+            expect(floor).toBeDefined()
             expect(floor).toBe("3")
+
+            expect(number).toBeDefined()
             expect(number).toBe("12")
+
+            expect(rooms).toBeDefined()
             expect(rooms).toHaveLength(4)
+
+            expect(rooms[0]).toBeDefined()
             expect(rooms[0]).toMatchObject({
               room: "sala de estar",
               quantity: "1"
             })
+
+            expect(rooms[1]).toBeDefined()
             expect(rooms[1]).toMatchObject({
               room: "cozinha",
               quantity: "1"
             })
+
+            expect(rooms[2]).toBeDefined()
             expect(rooms[2]).toMatchObject({
               room: "banheiro",
               quantity: "2"
             })
+
+            expect(rooms[3]).toBeDefined()
             expect(rooms[3]).toMatchObject({
               room: "quarto",
               quantity: "2"
             })
+
+            expect(daily_price).toBeDefined()
             expect(daily_price).toEqual("500")
+
+            expect(reserve).toBeDefined()
             expect(reserve).toMatchObject({
               status: "ocupado",
               user_id: "600f191e810c19829de900ea",
@@ -724,13 +745,35 @@ describe("Suite de testes das rotas de Apartment.", function() {
               start: "2022-11-12T01:49:04.421Z",
               end: "2023-01-12T19:49:04.421Z"
             })
+
+            expect(created).toBeDefined()
             expect(created).toMatchObject({
               createdAt: "2022-06-12T22:01:20.596Z",
               createdBy: "5da9ea674234635bdff45c02"
             })
+
+            expect(updated).toBeDefined()
             expect(updated).toMatchObject({
               updatedAt: "2023-01-12T10:25:49.045Z",
               updatedBy: "507f1f77bcf86cd799439011"
+            })
+
+            expect(_links).toBeDefined()
+            expect(_links).toHaveLength(3)
+            expect(_links[0]).toMatchObject({
+              href: `${ baseURL }/apartments/${ id }`,
+              method: 'GET',
+              rel: 'self_apartment'
+            })
+            expect(_links[1]).toMatchObject({
+              href: `${ baseURL }/apartments/${ id }`,
+              method: 'PUT',
+              rel: 'edit_apartment'
+            })
+            expect(_links[2]).toMatchObject({
+              href: `${ baseURL }/apartments/${ id }`,
+              method: 'DELETE',
+              rel: 'delete_apartment'
             })
           })
           .catch(function(error) {
