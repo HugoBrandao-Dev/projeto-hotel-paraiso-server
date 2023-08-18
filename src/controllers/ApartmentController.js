@@ -125,6 +125,11 @@ class ApartmentController {
           href: `${ baseURL }/apartments/${ req.params.id }`,
           method: 'DELETE',
           rel: 'delete_apartment'
+        },
+        {
+          href: `${ baseURL }/apartments`,
+          method: 'GET',
+          rel: 'apartment_list'
         }
       ]
 
@@ -157,7 +162,7 @@ class ApartmentController {
               href: `${ baseURL }/apartments/${ apartment.id }`,
               method: 'DELETE',
               rel: 'delete_apartment'
-            }
+            },
           ]
           apartment._links = HATEOAS
         }
