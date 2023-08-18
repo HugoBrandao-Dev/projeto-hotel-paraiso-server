@@ -68,6 +68,13 @@ class ApartmentController {
         return
       }
 
+      let apartment = {}
+      apartment.floor = floor
+      apartment.number = number
+      apartment.rooms = rooms
+      apartment.daily_price = daily_price
+      
+      await Apartment.save(apartment)
       res.sendStatus(201)
     } catch(error) {
       next(error)
