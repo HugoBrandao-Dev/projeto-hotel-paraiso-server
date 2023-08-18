@@ -141,6 +141,26 @@ class ApartmentController {
     try {
       let apartments = await Apartment.findMany()
       if (apartments) {
+        for (let apartment of apartments) {
+          let HATEOAS = [
+            {
+              href: `${ baseURL }/apartments/${ apartment.id }`,
+              method: 'GET',
+              rel: 'self_apartment'
+            },
+            {
+              href: `${ baseURL }/apartments/${ apartment.id }`,
+              method: 'PUT',
+              rel: 'edit_apartment'
+            },
+            {
+              href: `${ baseURL }/apartments/${ apartment.id }`,
+              method: 'DELETE',
+              rel: 'delete_apartment'
+            }
+          ]
+          apartment._links = HATEOAS
+        }
         res.status(200)
         res.json({ apartments })
       }
