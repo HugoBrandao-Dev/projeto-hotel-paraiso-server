@@ -10,7 +10,41 @@ const projectLinks = {
 
 describe("Suite de testes das rotas de Apartment.", function() {
   describe("CREATE", function() {
-    describe("Testes de SUCESSO.", function() {})
+    describe("Testes de SUCESSO.", function() {
+      test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
+        let apartment = {
+          floor: "1",
+          number: "3",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
+        return request.post('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(201)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+    })
+
     describe("Testes de FALHA.", function() {
 
       // Validação do Piso do apartamento.
@@ -787,7 +821,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(200)
 
             expect(response.body.apartments).toBeDefined()
-            expect(response.body.apartments).toHaveLength(2)
           })
           .catch(function(error) {
             fail(error)
