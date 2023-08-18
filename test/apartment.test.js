@@ -716,7 +716,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", function() {
-        return request.get('/apartments/d9d62beecdde62af82efd82c')
+        let apartment = { id: 'd9d62beecdde62af82efd82c' }
+        return request.get(`/apartments/${ apartment.id }`)
           .then(function(response) {
             const {
               id,
@@ -733,7 +734,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(200)
 
             expect(id).toBeDefined()
-            expect(id).toBe("d9d62beecdde62af82efd82c")
+            expect(id).toBe(apartment.id)
 
             expect(floor).toBeDefined()
             expect(floor).toBe("3")
@@ -793,7 +794,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             })
 
             expect(_links).toBeDefined()
-            expect(_links).toHaveLength(3)
+            expect(_links).toHaveLength(4)
             expect(_links[0]).toMatchObject({
               href: `${ baseURL }/apartments/${ id }`,
               method: 'GET',
@@ -808,6 +809,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
               href: `${ baseURL }/apartments/${ id }`,
               method: 'DELETE',
               rel: 'delete_apartment'
+            })
+            expect(_links[3]).toMatchObject({
+              href: `${ baseURL }/apartments`,
+              method: 'GET',
+              rel: 'apartment_list'
             })
           })
           .catch(function(error) {
