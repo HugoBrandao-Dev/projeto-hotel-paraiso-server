@@ -177,7 +177,11 @@ class ApartmentController {
   async update(req, res, next) {
     try {
       const {
-        id
+        id,
+        floor,
+        number,
+        rooms,
+        daily_price
       } = req.body
 
       let errorFields = []
@@ -186,6 +190,27 @@ class ApartmentController {
       if (idResult.hasError.value) {
         errorFields.push(idResult)
       }
+
+      const floorResult = Analyzer.analyzeApartmentFloor(floor)
+      if (floorResult.hasError.value) {
+        errorFields.push(floorResult)
+      }
+
+      const numberResult = await Analyzer.analyzeApartmentNumber(number)
+      if (numberResult.hasError.value) {
+        errorFields.push(numberResult)
+      }
+
+      const roomsResult = Analyzer.analyzeApartmentRooms(rooms)
+      if (roomsResult.hasError.value) {
+        errorFields.push(roomsResult)
+      }
+
+      const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)
+      if (dailyPriceResult.hasError.value) {
+        errorFields.push(dailyPriceResult)
+      }
+
 
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
