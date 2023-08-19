@@ -874,7 +874,30 @@ describe("Suite de testes das rotas de Apartment.", function() {
     describe("Testes de SUCESSO.", function() {})
     describe("Testes de FALHA.", function() {
       test("/PUT - Deve retornar 400, uma vez que o ID informado é inválido.", function() {
-        let apartment = { id: 'ljb9kf3d5a65f17ljf2i0kc*' }
+        let apartment = { 
+          id: 'ljb9kf3d5a65f17ljf2i0kc*',
+          floor: "3",
+          number: "9",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
         return request.put('/apartments').send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -890,7 +913,30 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
       test("/PUT - Deve retornar 404, uma vez que o ID informado não pertence a um apartamento.", function() {
-        let apartment = { id: 'ljb9kf3d5a65f17ljf2i0kc7' }
+        let apartment = { 
+          id: 'ljb9kf3d5a65f17ljf2i0kc7',
+          floor: "3",
+          number: "9",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
         return request.put('/apartments').send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
