@@ -52,7 +52,14 @@ class Apartment {
 
   async edit(apartment) {
     try {
-
+      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(doc => doc.id == apartment.id)
+      let infos = Object.keys(apartment)
+      for (let info of infos) {
+        if (info != 'id') {
+          ApartmentCollection.apartments.data[apartmentIndex][info] = apartment[info]
+        }
+      }
+      return
     } catch (error) {
       console.log(error)
       return
