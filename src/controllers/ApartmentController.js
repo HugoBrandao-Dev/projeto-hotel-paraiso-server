@@ -182,7 +182,7 @@ class ApartmentController {
 
       let errorFields = []
 
-      const idResult = await Analyzer.analyzeID(id)
+      const idResult = await Analyzer.analyzeID(id, 'apartment')
       if (idResult.hasError.value) {
         errorFields.push(idResult)
       }

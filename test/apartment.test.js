@@ -896,7 +896,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(404)
 
             expect(response.body.RestException.Code).toBe("3")
-            expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
             expect(response.body.RestException.Status).toBe("404")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/3`)
           })
