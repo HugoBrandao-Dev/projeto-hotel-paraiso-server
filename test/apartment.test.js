@@ -871,7 +871,103 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
   })
   describe("UPDATE", function() {
-    describe("Testes de SUCESSO.", function() {})
+    describe("Testes de SUCESSO.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização das informações de uma apartamento.", function() {
+
+        let apartment = {
+          id: "d9d62beecdde62af82efd82c",
+          floor: "3",
+          number: "7",
+          rooms: [
+            {
+              room: "sala de estar",
+              quantity: "1"
+            },
+            {
+              room: "cozinha",
+              quantity: "1"
+            },
+            {
+              room: "banheiro",
+              quantity: "1"
+            },
+            {
+              room: "quarto",
+              quantity: "1"
+            }
+          ],
+          daily_price: "400",
+        }
+
+        return request.put('/apartments').send(apartment)
+          .then(function(responsePUT) {
+            if (responsePUT.body.RestException) {
+              console.log(responsePUT.body.RestException)
+            }
+
+            expect(responsePUT.statusCode).toEqual(200)
+
+            return request.get(`/apartments/${ apartment.id }`)
+              .then(function(responseGET) {
+                const {
+                  id,
+                  floor,
+                  number,
+                  rooms,
+                  updated,
+                  _links
+                } = responseGET.body
+
+                expect(id).toBeDefined()
+                expect(id).toBe(apartment.id)
+
+                expect(floor).toBeDefined()
+                expect(floor).toBe("3")
+
+                expect(number).toBeDefined()
+                expect(number).toBe("7")
+
+                expect(rooms).toBeDefined()
+                expect(rooms).toHaveLength(4)
+
+                expect(updated).toBeDefined()
+                expect(updated).toMatchObject({
+                  updatedAt: expect.any(String),
+                  updatedBy: expect.any(String)
+                })
+
+                expect(_links).toBeDefined()
+                expect(_links).toHaveLength(4)
+                expect(_links[0]).toMatchObject({
+                  href: `${ baseURL }/apartments/${ id }`,
+                  method: 'GET',
+                  rel: 'self_apartment'
+                })
+                expect(_links[1]).toMatchObject({
+                  href: `${ baseURL }/apartments/${ id }`,
+                  method: 'PUT',
+                  rel: 'edit_apartment'
+                })
+                expect(_links[2]).toMatchObject({
+                  href: `${ baseURL }/apartments/${ id }`,
+                  method: 'DELETE',
+                  rel: 'delete_apartment'
+                })
+                expect(_links[3]).toMatchObject({
+                  href: `${ baseURL }/apartments`,
+                  method: 'GET',
+                  rel: 'apartment_list'
+                })
+              })
+              .catch(function(errorGET) {
+                fail(errorGET)
+              })
+          })
+          .catch(function(errorPUT) {
+            fail(errorPUT)
+          })
+      })
+    })
     describe("Testes de FALHA.", function() {
       test("/PUT - Deve retornar 400, uma vez que o ID informado é inválido.", function() {
         let apartment = { 
