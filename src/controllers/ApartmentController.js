@@ -183,7 +183,7 @@ class ApartmentController {
         rooms,
         daily_price
       } = req.body
-
+      
       let errorFields = []
 
       const idResult = await Analyzer.analyzeID(id, 'apartment')
@@ -210,7 +210,6 @@ class ApartmentController {
       if (dailyPriceResult.hasError.value) {
         errorFields.push(dailyPriceResult)
       }
-
 
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
@@ -239,6 +238,17 @@ class ApartmentController {
         })
         return
       }
+
+      let apartment = {}
+      apartment.id = id
+      apartment.floor = floor
+      apartment.number = number
+      apartment.rooms = rooms
+      apartment.daily_price = daily_price
+
+      await Apartment.edit(apartment)
+      res.status(200)
+      res.json({})
     } catch(error) {
       next(error)
     }
