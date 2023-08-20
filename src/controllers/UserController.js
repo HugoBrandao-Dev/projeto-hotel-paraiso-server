@@ -509,7 +509,7 @@ class UserController {
             if (cpfResult.hasError.type == 4) {
 
               // Verifica se o usuário que quer atualizar é o mesmo que já possui o CPF.
-              let isTheSameUser = userRegistred.id == id
+              let isTheSameUser = userRegistred.cpf == cpf
 
               // Impede que o usuário atualize com um CPF já cadastrado e que não pertença a ele.
               if (!isTheSameUser) {
@@ -608,15 +608,27 @@ class UserController {
       }  
 
       if (errorFields.length) {
-        // console.log(`[${ id }] - Foram encontrados ${ errorFields.length } erros.`)
+        let codes = errorFields.map(item => item.hasError.type)
+
+        // Cria um array contendo os Status codes dos erros encontrados.
+        let status = codes.map(code => {
+          switch(code) {
+            case 3:
+              return '404'
+              break
+            default:
+              return '400'
+          }
+        })
         let messages = errorFields.map(item => item.hasError.error)
+        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
         res.status(400)
         res.json({ 
           RestException: {
-            "Code": "1",
+            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
             "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": "400",
-            "MoreInfo": "/docs/erros/1",
+            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
             "ErrorFields": errorFields
           }
         })
