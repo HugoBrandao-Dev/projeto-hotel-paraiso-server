@@ -1105,7 +1105,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
       test("/PUT - Deve retornar 404, uma vez que o ID informado não pertence a um apartamento.", function() {
-        let apartment = { 
+        let apartment = {
           id: 'ljb9kf3d5a65f17ljf2i0kc7',
           floor: "3",
           number: "9",
@@ -1137,6 +1137,45 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
             expect(response.body.RestException.Status).toBe("404")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/3`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("/PUT - Deve retornar 400, já que o número informado já está cadastrado e NÃO pertence ao apartamento que está sendo atualizado.", function() {
+        let apartment = {
+          id: 'd9d62beecdde62af82efd82c',
+          floor: "3",
+          number: "11",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
+        return request.put('/apartments').send(apartment)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("4")
+            expect(response.body.RestException.Message).toBe("O Número do Apartamento já está cadastrado")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/4`)
           })
           .catch(function(error) {
             fail(error)
