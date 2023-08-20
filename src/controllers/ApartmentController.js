@@ -191,7 +191,7 @@ class ApartmentController {
         errorFields.push(idResult)
       }
 
-      let apartmentRegistred = await Apartment.findOne(id)
+      let apartmentRegistred = await Apartment.findByNumber(number)
 
       const floorResult = Analyzer.analyzeApartmentFloor(floor)
       if (floorResult.hasError.value) {
@@ -205,7 +205,7 @@ class ApartmentController {
         if (numberResult.hasError.type == 4) {
 
           // Verifica se o número do apartamento já pertence a ele próprio.
-          let isTheSameApartment = apartmentRegistred.id = id
+          let isTheSameApartment = apartmentRegistred.id == id
 
           if (!isTheSameApartment) {
             errorFields.push(numberResult)
