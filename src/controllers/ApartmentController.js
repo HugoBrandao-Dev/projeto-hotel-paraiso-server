@@ -183,13 +183,15 @@ class ApartmentController {
         rooms,
         daily_price
       } = req.body
-      
+
       let errorFields = []
 
       const idResult = await Analyzer.analyzeID(id, 'apartment')
       if (idResult.hasError.value) {
         errorFields.push(idResult)
       }
+
+      let apartmentRegistred = await Apartment.findOne(id)
 
       const floorResult = Analyzer.analyzeApartmentFloor(floor)
       if (floorResult.hasError.value) {
@@ -198,7 +200,17 @@ class ApartmentController {
 
       const numberResult = await Analyzer.analyzeApartmentNumber(number)
       if (numberResult.hasError.value) {
-        errorFields.push(numberResult)
+
+        // Verifica se está tentando atualizar com um número de apartamento que já está cadastrado.
+        if (numberResult.hasError.type == 4) {
+
+          // Verifica se o número do apartamento já pertence a ele próprio.
+          let isTheSameApartment = apartmentRegistred.id = id
+
+          if (!isTheSameApartment) {
+            errorFields.push(numberResult)
+          }
+        }
       }
 
       const roomsResult = Analyzer.analyzeApartmentRooms(rooms)
