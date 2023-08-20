@@ -67,7 +67,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
-        result.hasError.email = 2
+        result.hasError.type = 2
         result.hasError.error = 'O campo Email possui caracteres inválidos'
       }
       return result
@@ -166,7 +166,7 @@ class Analyzer {
     })
     if (!itsValid) {
       result.hasError.value = true
-      result.hasError.type = 2
+      result.hasError.type = 1
       result.hasError.error = 'O valor de Role é de uma função inexistente'
     }
 
@@ -376,7 +376,7 @@ class Analyzer {
   }
   static async analyzeUserCEP(cep = '') {
     try {
-      let result = { field: 'iptCEP', hasError: { value: false, error: '' }}
+      let result = { field: 'iptCEP', hasError: { value: false, type: null, error: '' }}
 
       if (cep) {
         let hasLength = validator.isLength(cep, {
@@ -389,11 +389,13 @@ class Analyzer {
 
         if (!hasLength) {
           result.hasError.value = true
+          result.hasError.type = 2
           result.hasError.error = 'Faltam números no CEP informado'
           return result
         } 
         if (!isNumeric) {
           result.hasError.value = true
+          result.hasError.type = 2
           result.hasError.error = 'O campo de CEP possui caracteres inválidos'
           return result
         }
@@ -401,6 +403,7 @@ class Analyzer {
         let response = await axios.get(`https://viacep.com.br/ws/${ cep }/json/`)
         if (response.data.erro) {
           result.hasError.value = true
+          result.hasError.type = 2
           result.hasError.error = 'O CEP informado não existe'
         }
       }
@@ -412,7 +415,7 @@ class Analyzer {
   }
   static analyzeUserNeighborhood(neighborhood = '') {
     let acceptableChars = ' \':,.'
-    let result = { field: 'iptNeighborhood', hasError: { value: false, error: '' }}
+    let result = { field: 'iptNeighborhood', hasError: { value: false, type: null, error: '' }}
 
     if (neighborhood) {
       let itsValidPT_BR = validator.isAlphanumeric(neighborhood, ['pt-BR'], {
@@ -424,6 +427,7 @@ class Analyzer {
 
       if (!itsValidPT_BR && !itsValidEN_US) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'O campo de Bairro possui caracteres inválidos'
       }
     }
@@ -452,7 +456,7 @@ class Analyzer {
     return result
   }
   static analyzeUserHouseNumber(number = '') {
-    let result = { field: 'iptHouseNumber', hasError: { value: false, error: '' }}
+    let result = { field: 'iptHouseNumber', hasError: { value: false, type: null, error: '' }}
 
     if (number) {
       let isValid = validator.isNumeric(number, {
@@ -461,6 +465,7 @@ class Analyzer {
 
       if (!isValid) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'O campo de Número da Casa possui caracteres inválidos'
       }
     }
@@ -469,7 +474,7 @@ class Analyzer {
   }
   static analyzeUserAdditionalInformation(information = '') {
     let acceptableChars = ' \n\',.:$-()'
-    let result = { field: 'iptAdditionalInformation', hasError: { value: false, error: '' }}
+    let result = { field: 'iptAdditionalInformation', hasError: { value: false, type: null, error: '' }}
 
     if (information) {
       let itsValidPT_BR = validator.isAlphanumeric(information, ['pt-BR'], {
@@ -481,6 +486,7 @@ class Analyzer {
 
       if (!itsValidPT_BR && !itsValidEN_US) {
         result.hasError.value = true
+        result.hasError.type = 2
         result.hasError.error = 'O campo de Informações Adicionais possui caracteres invalidos'
       }
     }
@@ -537,7 +543,7 @@ class Analyzer {
 
     if (!fields.length) {
       result.hasError.value = true
-      result.hasError.type = 2
+      result.hasError.type = 1
       result.hasError.error = "Nenhum CPF ou Número de Passaporte informado"
       return result
     }
