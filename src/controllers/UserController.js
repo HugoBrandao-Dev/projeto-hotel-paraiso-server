@@ -117,14 +117,27 @@ class UserController {
       }
 
       if (errorFields.length) {
+        let codes = errorFields.map(item => item.hasError.type)
+
+        // Cria um array contendo os Status codes dos erros encontrados.
+        let status = codes.map(code => {
+          switch(code) {
+            case 3:
+              return '404'
+              break
+            default:
+              return '400'
+          }
+        })
         let messages = errorFields.map(item => item.hasError.error)
+        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
         res.status(400)
         res.json({ 
           RestException: {
-            "Code": "1",
+            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
             "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": "400",
-            "MoreInfo": "/docs/erros/1",
+            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
             "ErrorFields": errorFields
           }
         })
@@ -187,7 +200,7 @@ class UserController {
           Code: `${ idResult.hasError.type }`,
           Message: idResult.hasError.error,
           Status: null,
-          MoreInfo: `/docs/erros/${ idResult.hasError.type }`
+          MoreInfo: `${ projectLinks.errors }/${ idResult.hasError.type }`
         }
 
         switch (idResult.hasError.type) {
@@ -405,7 +418,7 @@ class UserController {
               "Code": "3",
               "Message": idResult.hasError.error,
               "Status": "404",
-              "MoreInfo": "/docs/erros/3"
+              "MoreInfo": `${ projectLinks.errors }/3`
             }
           })
           return
@@ -657,7 +670,7 @@ class UserController {
                   "Code": `${ idResult.hasError.type }`,
                   "Message": `${ idResult.hasError.error }`,
                   "Status": "400",
-                  "MoreInfo": `/docs/erros/${ idResult.hasError.type }`,
+                  "MoreInfo": `${ projectLinks.errors }/${ idResult.hasError.type }`,
                   "ErrorFields": idResult
                 }
               })
@@ -669,7 +682,7 @@ class UserController {
                   "Code": `${ idResult.hasError.type }`,
                   "Message": `${ idResult.hasError.error }`,
                   "Status": "404",
-                  "MoreInfo": `/docs/erros/${ idResult.hasError.type }`,
+                  "MoreInfo": `${ projectLinks.errors }/${ idResult.hasError.type }`,
                   "ErrorFields": idResult
                 }
               })
