@@ -30,6 +30,7 @@ const projectLinks = {
 }
 
 describe("Suite de testes das rotas User.", function() {
+  let fixedCPF = genCPF()
 
   /* ################## CREATE ################## */
 
@@ -1749,7 +1750,6 @@ describe("Suite de testes das rotas User.", function() {
   /* ################## UPDATE ################## */
 
   describe("Testes de SUCESSO na atualizacao de dados.", function() {
-    let fixedCPF = genCPF()
     test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias atualizadas.", function() {
       let user = {
         id: "5da9ea674234635bdff45c02",
@@ -2378,7 +2378,7 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.body.RestException.Code).toBe("1")
           expect(response.body.RestException.Message).toBe("O campo de País de Nascimento é obrigatório")
           expect(response.body.RestException.Status).toBe("400")
-          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/1`)
         })
         .catch(function(error) {
           fail(error)
@@ -2398,7 +2398,31 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.body.RestException.Code).toBe("1")
           expect(response.body.RestException.Message).toBe("O campo de País de Nascimento é obrigatório")
           expect(response.body.RestException.Status).toBe("400")
-          expect(response.body.RestException.MoreInfo).toBe("/docs/erros/1")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/1`)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, já que o número do CPF já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+      const user = {
+        id: "5da9ea674234635bdff45c02",
+        name: "Jeremias de Oliveira",
+        email: "jere_oliveira@yahoo.com",
+        country: "BR",
+        state: "PA",
+        city: "Belém",
+        cpf: fixedCPF
+      }
+      return request.put('/users').send(user)
+        .then(function(response) {
+          console.log(response.body.RestException)
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("4")
+          expect(response.body.RestException.Message).toBe("O CPF informado já está cadastrado")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.erros }/4`)
         })
         .catch(function(error) {
           fail(error)
