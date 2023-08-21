@@ -38,6 +38,6 @@ router.get('/apartments', ApartmentController.list)
 router.put('/apartments', ApartmentController.update)
 
 // Delete
-router.delete('/apartments/:id', ApartmentController.delete)
+router.delete('/apartments/:id', ApartmentController.remove)
 
 module.exports = router

@@ -280,24 +280,28 @@ class ApartmentController {
     }
   }
 
-  async delete(req, res, next) {
+  async remove(req, res, next) {
     try {
       let id = req.params.id
 
       let RestException = {}
 
-      let idResult = await Analyzer.analyzeID(id)
+      let idResult = await Analyzer.analyzeID(id, 'apartment')
       if (idResult.hasError.value) {
         if (idResult.hasError.type != 4) {
           switch (idResult.hasError.type) {
             case 2:
-              RestException.Code = `${ idResult.hasError.type }`
-              RestException.Message = idResult.hasError.error
               RestException.Status = "400"
-              RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
               break
+            default:
+              RestException.Status = "404"
           }
+
+          RestException.Code = `${ idResult.hasError.type }`
+          RestException.Message = idResult.hasError.error
+          RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
         }
+
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
         return
