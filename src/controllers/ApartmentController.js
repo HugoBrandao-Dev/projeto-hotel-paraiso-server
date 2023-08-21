@@ -307,6 +307,7 @@ class ApartmentController {
         return
       }
 
+      await Apartment.delete(id)
       res.sendStatus(200)
     } catch(error) {
       next(error)
