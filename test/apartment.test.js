@@ -1237,7 +1237,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
   })
   describe("DELETE", function() {
-    describe("Testes de SUCESSO.", function() {})
+    describe("Testes de SUCESSO.", function() {
+      test("Deve retornar 200, na delecao de um apartamento.", function() {
+        return request.delete('/apartments/856377c88f8fd9fc65fd3ef5')
+          .then(function(responseDELETE) {
+            expect(responseDELETE.statusCode).toEqual(200)
+
+            return request.get('/apartments/856377c88f8fd9fc65fd3ef5')
+              .then(function(responseGET) {
+                expect(responseGET.statusCode).toEqual(404)
+
+                expect(responseGET.body.RestException.Code).toBe("3")
+                expect(responseGET.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+                expect(responseGET.body.RestException.Status).toBe("404")
+                expect(responseGET.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+              })
+              .catch(function(errorGET) {
+                fail(errorGET)
+              })
+          })
+          .catch(function(errorDELETE) {
+            fail(errorDELETE)
+          })
+      })
+    })
+
     describe("Testes de FALHA.", function() {
       test("/DELETE - Deve retornar 400, já que o ID possui caracteres inválidos.", function() {
         return request.delete('/apartments/856377c88f8fd9fc65fd3e*5')
