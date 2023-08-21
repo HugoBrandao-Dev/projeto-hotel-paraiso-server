@@ -185,44 +185,65 @@ class ApartmentController {
       } = req.body
 
       let errorFields = []
+      let apartment = {}
 
-      const idResult = await Analyzer.analyzeID(id, 'apartment')
-      if (idResult.hasError.value) {
-        errorFields.push(idResult)
+      if (id) {
+        const idResult = await Analyzer.analyzeID(id, 'apartment')
+        if (idResult.hasError.value) {
+          errorFields.push(idResult)
+        } else {
+          apartment.id = id
+        }
       }
 
       let apartmentRegistred = await Apartment.findByNumber(number)
 
-      const floorResult = Analyzer.analyzeApartmentFloor(floor)
-      if (floorResult.hasError.value) {
-        errorFields.push(floorResult)
-      }
-
-      const numberResult = await Analyzer.analyzeApartmentNumber(number)
-      if (numberResult.hasError.value) {
-
-        // Verifica se está tentando atualizar com um número de apartamento que já está cadastrado.
-        if (numberResult.hasError.type == 4) {
-
-          // Verifica se o número do apartamento já pertence a ele próprio.
-          let isTheSameApartment = apartmentRegistred.id == id
-
-          if (!isTheSameApartment) {
-            errorFields.push(numberResult)
-          }
+      if (floor) {
+        const floorResult = Analyzer.analyzeApartmentFloor(floor)
+        if (floorResult.hasError.value) {
+          errorFields.push(floorResult)
+        } else {
+          apartment.floor = floor
         }
       }
+      
+      if (number) {
+        const numberResult = await Analyzer.analyzeApartmentNumber(number)
+        if (numberResult.hasError.value) {
 
-      const roomsResult = Analyzer.analyzeApartmentRooms(rooms)
-      if (roomsResult.hasError.value) {
-        errorFields.push(roomsResult)
+          // Verifica se está tentando atualizar com um número de apartamento que já está cadastrado.
+          if (numberResult.hasError.type == 4) {
+
+            // Verifica se o número do apartamento já pertence a ele próprio.
+            let isTheSameApartment = apartmentRegistred.id == id
+
+            if (!isTheSameApartment) {
+              errorFields.push(numberResult)
+            }
+          }
+        } else {
+          apartment.number = number
+        }
       }
-
-      const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)
-      if (dailyPriceResult.hasError.value) {
-        errorFields.push(dailyPriceResult)
+      
+      if (rooms) {
+        const roomsResult = Analyzer.analyzeApartmentRooms(rooms)
+        if (roomsResult.hasError.value) {
+          errorFields.push(roomsResult)
+        } else {
+          apartment.rooms = rooms
+        }
       }
-
+      
+      if (daily_price) {
+        const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)
+        if (dailyPriceResult.hasError.value) {
+          errorFields.push(dailyPriceResult)
+        } else {
+          apartment.daily_price = daily_price        
+        }
+      }
+      
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
 
@@ -250,13 +271,6 @@ class ApartmentController {
         })
         return
       }
-
-      let apartment = {}
-      apartment.id = id
-      apartment.floor = floor
-      apartment.number = number
-      apartment.rooms = rooms
-      apartment.daily_price = daily_price
 
       await Apartment.edit(apartment)
       res.status(200)
