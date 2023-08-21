@@ -23,7 +23,7 @@ router.post('/users/search', UserController.readByDoc)
 router.put('/users', UserController.update)
 
 // Delete
-router.delete('/users/:id', UserController.delete)
+router.delete('/users/:id', UserController.remove)
 
 /* ########### APARTMENT ########### */
 

@@ -655,7 +655,7 @@ class UserController {
     }
   }
 
-  async delete(req, res) {
+  async remove(req, res) {
     try {
       let { id } = req.params
       if (id) {
