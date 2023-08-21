@@ -37,4 +37,7 @@ router.get('/apartments', ApartmentController.list)
 // Update
 router.put('/apartments', ApartmentController.update)
 
+// Delete
+router.delete('/apartments/:id', ApartmentController.delete)
+
 module.exports = router
