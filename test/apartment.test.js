@@ -1063,6 +1063,59 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(errorPUT)
           })
       })
+
+      test("/PUT - Deve retornar 200, para sucesso na atualização parcial das informações de um apartamento.", function() {
+
+        let apartment = {
+          id: "856377c88f8fd9fc65fd3ef5",
+          rooms: [
+            {
+              room: "sala de estar",
+              quantity: "1"
+            },
+            {
+              room: "cozinha",
+              quantity: "1"
+            },
+            {
+              room: "banheiro",
+              quantity: "2"
+            },
+            {
+              room: "quarto",
+              quantity: "3"
+            }
+          ],
+          daily_price: "1000",
+        }
+
+        return request.put('/apartments').send(apartment)
+          .then(function(responsePUT) {
+            if (responsePUT.body.RestException) {
+              console.log(responsePUT.body.RestException)
+            }
+            expect(responsePUT.statusCode).toEqual(200)
+
+            return request.get(`/apartments/${ apartment.id }`)
+              .then(function(responseGET) {
+                expect(responseGET.body.rooms[2]).toMatchObject({
+                  room: "banheiro",
+                  quantity: "2"
+                })
+                expect(responseGET.body.rooms[3]).toMatchObject({
+                  room: "quarto",
+                  quantity: "3"
+                })
+                expect(responseGET.body.daily_price).toBe('1000')
+              })
+              .catch(function(errorGET) {
+                fail(errorGET)
+              })
+          })
+          .catch(function(errorPUT) {
+            fail(errorPUT)
+          })
+      })
     })
     describe("Testes de FALHA.", function() {
       test("/PUT - Deve retornar 400, uma vez que o ID informado é inválido.", function() {
