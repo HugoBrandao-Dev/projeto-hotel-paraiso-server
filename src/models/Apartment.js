@@ -68,7 +68,13 @@ class Apartment {
 
   async delete(id) {
     try {
-
+      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == id)
+      if (apartmentIndex == -1) {
+        return 
+      } else {
+        let apartment = await ApartmentCollection.apartments.data.splice(apartmentIndex, 1)
+        return apartment
+      }
     } catch (error) {
       console.log(error)
       return
