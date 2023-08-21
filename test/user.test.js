@@ -2405,6 +2405,25 @@ describe("Suite de testes das rotas User.", function() {
         })
     })
 
+    test("POST - Deve retornar 400, já que o email informado já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+      const user = {
+        id: "507f191e810c19729de860ea",
+        name: "Tobias de Oliveira",
+        email: "macuna_curz@hotmail.com"
+      }
+      return request.put('/users').send(user)
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("4")
+          expect(response.body.RestException.Message).toBe("O Email informado já foi cadastrado anteriormente")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
     test("POST - Deve retornar 400, já que o número do CPF já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
       const user = {
         id: "5da9ea674234635bdff45c02",

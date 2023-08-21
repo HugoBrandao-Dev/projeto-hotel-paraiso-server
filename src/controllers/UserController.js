@@ -454,7 +454,7 @@ class UserController {
           if (emailResult.hasError.type == 4) {
 
             // Verifica se o usuário que quer atualizar é o mesmo que já possui o Email.
-            let isTheSameUser = userRegistred.id == id
+            let isTheSameUser = userRegistred.email == email
 
             // Impede que o usuário atualize com um Email já cadastrado e que não pertença a ele.
             if (!isTheSameUser) {
