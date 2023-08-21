@@ -549,7 +549,7 @@ class UserController {
             if (passportNumberResult.hasError.type == 4) {
 
               // Verifica se o usuário que quer atualizar é o mesmo que já possui o Número do Passaporte.
-              let isTheSameUser = userRegistred.id == id
+              let isTheSameUser = userRegistred.passportNumber == passportNumber
 
               // Impede que o usuário atualize com um Número do Passaporte já cadastrado e que não pertença a ele.
               if (!isTheSameUser) {

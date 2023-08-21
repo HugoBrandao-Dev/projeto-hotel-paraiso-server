@@ -31,6 +31,7 @@ const projectLinks = {
 
 describe("Suite de testes das rotas User.", function() {
   let fixedCPF = genCPF()
+  let fixedPassportNumber = genPassportNumber()
 
   /* ################## CREATE ################## */
 
@@ -2193,7 +2194,6 @@ describe("Suite de testes das rotas User.", function() {
     })
 
     test("POST - Deve retornar 200 para o usuário Brasileiro que modifica seu local de nascimento e informa o Número do Passaporte.", function() {
-      const fixedPassportNumber = genPassportNumber()
       let user = {
         id: "5da9ea674234635bdff45c02",
         name: "Jeremias de Oliveira",
@@ -2420,6 +2420,29 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.statusCode).toEqual(400)
           expect(response.body.RestException.Code).toBe("4")
           expect(response.body.RestException.Message).toBe("O CPF informado já está cadastrado")
+          expect(response.body.RestException.Status).toBe("400")
+          expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+
+    test("POST - Deve retornar 400, já que o Número do Passaporte já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+      const user = {
+        id: "507f191e810c19729de860ea",
+        name: "John Smith",
+        email: "john_sm@hotmail.com",
+        country: "US",
+        state: "NY",
+        city: "New York City",
+        passportNumber: fixedPassportNumber
+      }
+      return request.put('/users').send(user)
+        .then(function(response) {
+          expect(response.statusCode).toEqual(400)
+          expect(response.body.RestException.Code).toBe("4")
+          expect(response.body.RestException.Message).toBe("Passport number already registred")
           expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
         })
