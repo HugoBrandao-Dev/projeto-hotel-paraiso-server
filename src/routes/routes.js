@@ -6,6 +6,7 @@ const router = express.Router()
 const HomeController = require('../controllers/HomeController')
 const UserController = require('../controllers/UserController')
 const ApartmentController = require('../controllers/ApartmentController')
+const ReserveController = require('../controllers/ReserveController')
 
 router.get('/', HomeController.index)
 
@@ -39,5 +40,10 @@ router.put('/apartments', ApartmentController.update)
 
 // Delete
 router.delete('/apartments/:id', ApartmentController.remove)
+
+/* ########### RESERVE ########### */
+
+// Update
+router.put('/reserves', ReserveController.update)
 
 module.exports = router
