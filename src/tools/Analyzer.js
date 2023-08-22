@@ -498,6 +498,13 @@ class Analyzer {
       let acceptableChars = '-'
       let result = { field: 'id', hasError: { value: false, type: null, error: '' }}
 
+      if (!id && resource == 'apartment') {
+        result.hasError.value = true
+        result.hasError.type = 1
+        result.hasError.error = 'O ID do apartamento é obrigatório'
+        return result
+      }
+
       let itsAlphanumeric = validator.isAlphanumeric(id, ['en-US'], {
         ignore: acceptableChars
       })
