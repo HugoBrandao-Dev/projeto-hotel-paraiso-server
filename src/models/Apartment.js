@@ -14,11 +14,19 @@ class Apartment {
     try {
       apartment.id = await genID()
 
+      apartment.reserve = {
+        status: "livre",
+        user_id: "",
+        date: "",
+        start: "",
+        end: ""
+      }
+
       apartment.created = {
         createdAt: date.getDateTime(),
         createdBy: genID()
       }
-
+      
       await ApartmentCollection.apartments.data.push(apartment)
       return
     } catch (error) {
