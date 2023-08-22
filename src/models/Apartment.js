@@ -7,11 +7,11 @@ function genID() {
   return [...Array(24)].map(() => Math.floor(Math.random() * 24).toString(24)).join('')
 }
 
+const date = new DateFormated('mongodb')
+
 class Apartment {
   async save(apartment) {
     try {
-      let date = new DateFormated('mongodb')
-
       apartment.id = await genID()
 
       apartment.created = {
@@ -60,6 +60,11 @@ class Apartment {
 
   async edit(apartment) {
     try {
+      apartment.updated = {
+        updatedAt: date.getDateTime(),
+        updatedBy: genID()
+      }
+
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(doc => doc.id == apartment.id)
       let infos = Object.keys(apartment)
       for (let info of infos) {
