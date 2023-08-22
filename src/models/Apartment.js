@@ -10,7 +10,15 @@ function genID() {
 class Apartment {
   async save(apartment) {
     try {
+      let date = new DateFormated('mongodb')
+
       apartment.id = await genID()
+
+      apartment.created = {
+        createdAt: date.getDateTime(),
+        createdBy: genID()
+      }
+
       await ApartmentCollection.apartments.data.push(apartment)
       return
     } catch (error) {
