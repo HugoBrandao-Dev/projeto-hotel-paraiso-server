@@ -35,6 +35,11 @@ class ReserveController {
         errorFields.push(apartmentIDResult)
       }
 
+      let statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
+      if (statusResult.hasError.value) {
+        errorFields.push(statusResult)
+      }
+
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
 
