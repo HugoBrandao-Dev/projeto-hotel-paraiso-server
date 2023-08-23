@@ -40,6 +40,11 @@ class ReserveController {
         errorFields.push(statusResult)
       }
 
+      let clientResult = await Analyzer.analyzeID(user_id)
+      if (clientResult.hasError.value) {
+        errorFields.push(clientResult)
+      }
+
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
 
