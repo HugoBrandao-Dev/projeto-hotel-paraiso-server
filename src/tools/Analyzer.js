@@ -797,11 +797,21 @@ class Analyzer {
         return result
       }
 
-      const isValid = validator.isIn(status, acceptableValues)
+      let isValid = validator.isIn(status, acceptableValues)
       if (!isValid) {
         result.hasError.value = true
         result.hasError.type = 2
         result.hasError.error = "O valor do campo de Status é inválido"
+        return result
+      }
+
+      let apartment = await Apartment.findOne(apartment_id)
+      if (apartment) {
+        if (apartment.reserve.status != 'livre') {
+          result.hasError.value = true
+          result.hasError.type = 4
+          result.hasError.error = "O apartamento escolhido já está Reservado, Ocupado ou Indisponível"
+        }
       }
 
       return result
