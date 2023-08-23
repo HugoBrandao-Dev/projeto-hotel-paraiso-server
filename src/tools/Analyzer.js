@@ -38,6 +38,7 @@ class Analyzer {
     }
     return result
   }
+
   static async analyzeUserEmail(email = '') {
     try {
       let acceptableChars = '@_.'
@@ -75,6 +76,7 @@ class Analyzer {
       console.log(error)
     }
   }
+
   static analyzeUserBirthDate(date = '') {
     let minAgeToRegister = 18
     let result = { field: 'iptBirthDate', hasError: { value: false, type: null, error: '' }}
@@ -120,6 +122,7 @@ class Analyzer {
     }
     return result
   }
+
   static analyzeUserPassword(password = '') {
     let result = { field: 'iptPassword', hasError: { value: false, type: null, error: '' }}
 
@@ -238,6 +241,7 @@ class Analyzer {
 
     return result
   }
+
   static async analyzeUserState(country, state = '') {
     try {
       let result = { field: 'iptState', hasError: { value: false, type: null, error: '' }}
@@ -264,6 +268,7 @@ class Analyzer {
       console.log(error)
     }
   }
+
   static async analyzeUserCity(country, state, city = '') {
     try {
       let result = { field: 'iptCity', hasError: { value: false, type: null, error: '' }}
@@ -290,6 +295,7 @@ class Analyzer {
       console.log(error)
     }
   }
+
   static async analyzeUserCPF(cpf = '') {
     try {
       let result = { field: 'iptCPF', hasError: { value: false, type: null, error: '' }}
@@ -333,6 +339,7 @@ class Analyzer {
       console.log(error)
     }
   }
+
   static async analyzeUserPassportNumber(passportNumber = '', countryCode = '') {
     try {
       let result = { field: 'iptPassportNumber', hasError: { value: false, type: null, error: '' }}
@@ -374,6 +381,7 @@ class Analyzer {
       console.log(error)
     }
   }
+
   static async analyzeUserCEP(cep = '') {
     try {
       let result = { field: 'iptCEP', hasError: { value: false, type: null, error: '' }}
@@ -413,6 +421,7 @@ class Analyzer {
       console.log(error)
     }
   }
+
   static analyzeUserNeighborhood(neighborhood = '') {
     let acceptableChars = ' \':,.'
     let result = { field: 'iptNeighborhood', hasError: { value: false, type: null, error: '' }}
@@ -434,6 +443,7 @@ class Analyzer {
 
     return result
   }
+
   static analyzeUserRoad(road = '') {
     let acceptableChars = ' \':,.'
     let result = { field: 'iptRoad', hasError: { value: false, type: null, error: '' }}
@@ -455,6 +465,7 @@ class Analyzer {
 
     return result
   }
+
   static analyzeUserHouseNumber(number = '') {
     let result = { field: 'iptHouseNumber', hasError: { value: false, type: null, error: '' }}
 
@@ -472,6 +483,7 @@ class Analyzer {
 
     return result
   }
+
   static analyzeUserAdditionalInformation(information = '') {
     let acceptableChars = ' \n\',.:$-()'
     let result = { field: 'iptAdditionalInformation', hasError: { value: false, type: null, error: '' }}
@@ -493,6 +505,7 @@ class Analyzer {
 
     return result
   }
+
   static async analyzeID(id = '', resource = 'user') {
     try {
       let acceptableChars = '-'
@@ -770,6 +783,22 @@ class Analyzer {
     }
 
     return result
+  }
+
+  static async analyzeApartmentStatus(status = '', apartment_id = '') {
+    try {
+      let result = { field: 'iptStatus', hasError: { value: false, type: null, error: '' }}
+
+      if (!status) {
+        result.hasError.value = true
+        result.hasError.type = 1
+        result.hasError.error = "O campo de Status é obrigatório"
+      }
+
+      return result
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
