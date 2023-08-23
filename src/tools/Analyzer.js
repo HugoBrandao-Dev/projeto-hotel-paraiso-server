@@ -511,10 +511,17 @@ class Analyzer {
       let acceptableChars = '-'
       let result = { field: 'id', hasError: { value: false, type: null, error: '' }}
 
-      if (!id && resource == 'apartment') {
+      if (!id) {
+        let error = ''
+        if (resource == 'user') {
+          result.field = 'iptClient'
+          error = 'O ID do cliente/usuário é obrigatório'
+        } else {
+          error = 'O ID do apartamento é obrigatório'
+        }
         result.hasError.value = true
         result.hasError.type = 1
-        result.hasError.error = 'O ID do apartamento é obrigatório'
+        result.hasError.error = error
         return result
       }
 
