@@ -1654,7 +1654,7 @@ describe("Suite de testes das rotas User.", function() {
         .then(response => {
           expect(response.statusCode).toEqual(400)
           expect(response.body.RestException.Code).toBe("2")
-          expect(response.body.RestException.Message).toBe("O parâmetro ID possui caracteres inválidos")
+          expect(response.body.RestException.Message).toBe("O ID do cliente/usuário contém caracteres inválidos")
           expect(response.body.RestException.Status).toBe("400")
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
         })
@@ -2494,7 +2494,7 @@ describe("Suite de testes das rotas User.", function() {
           expect(response.body.RestException.Message).toBe('Nenhum usuário com o ID informado está cadastrado')
           expect(response.body.RestException.Status).toBe('404')
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
-          expect(response.body.RestException.ErrorFields.field).toBe('id')
+          expect(response.body.RestException.ErrorFields.field).toBe('iptClient')
           expect(response.body.RestException.ErrorFields.hasError.error).toBe('Nenhum usuário com o ID informado está cadastrado')
         })
         .catch(function(error) {
@@ -2507,11 +2507,11 @@ describe("Suite de testes das rotas User.", function() {
         .then(function(response) {
           expect(response.statusCode).toEqual(400)
           expect(response.body.RestException.Code).toBe('2')
-          expect(response.body.RestException.Message).toBe('O parâmetro ID possui caracteres inválidos')
+          expect(response.body.RestException.Message).toBe('O ID do cliente/usuário contém caracteres inválidos')
           expect(response.body.RestException.Status).toBe('400')
           expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-          expect(response.body.RestException.ErrorFields.field).toBe('id')
-          expect(response.body.RestException.ErrorFields.hasError.error).toBe('O parâmetro ID possui caracteres inválidos')
+          expect(response.body.RestException.ErrorFields.field).toBe('iptClient')
+          expect(response.body.RestException.ErrorFields.hasError.error).toBe('O ID do cliente/usuário contém caracteres inválidos')
         })
         .catch(function(error) {
           fail(error)
