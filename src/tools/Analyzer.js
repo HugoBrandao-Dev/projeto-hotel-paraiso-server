@@ -788,11 +788,20 @@ class Analyzer {
   static async analyzeApartmentStatus(status = '', apartment_id = '') {
     try {
       let result = { field: 'iptStatus', hasError: { value: false, type: null, error: '' }}
+      let acceptableValues = ['livre', 'reservado', 'ocupado', 'indisponível']
 
       if (!status) {
         result.hasError.value = true
         result.hasError.type = 1
         result.hasError.error = "O campo de Status é obrigatório"
+        return result
+      }
+
+      const isValid = validator.isIn(status, acceptableValues)
+      if (!isValid) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = "O valor do campo de Status é inválido"
       }
 
       return result
