@@ -511,6 +511,8 @@ class Analyzer {
       let acceptableChars = '-'
       let result = { field: 'id', hasError: { value: false, type: null, error: '' }}
 
+      result.field = resource == 'user' ? 'iptClient' : 'id'
+
       if (!id) {
         let error = ''
         if (resource == 'user') {
@@ -534,7 +536,7 @@ class Analyzer {
       if (!itsAlphanumeric && !itsHexadecimal) {
         result.hasError.value = true
         result.hasError.type = 2
-        result.hasError.error = 'O parâmetro ID possui caracteres inválidos'
+        result.hasError.error = resource == 'user' ? 'O ID do cliente/usuário contém caracteres inválidos' : 'O parâmetro ID possui caracteres inválidos'
         return result
       } else {
         let registred = null
