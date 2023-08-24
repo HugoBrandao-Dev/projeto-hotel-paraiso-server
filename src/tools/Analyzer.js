@@ -836,6 +836,14 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O campo de Data de Início da reserva é obrigatório"
+      return result
+    }
+
+    let isDate = validator.isDate(date)
+    if (!isDate) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O campo de Data de Início da reserva possui caracteres inválidos"
     }
 
     return result
