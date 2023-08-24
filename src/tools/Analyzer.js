@@ -858,6 +858,19 @@ class Analyzer {
 
     return result
   }
+
+  static analyzeReserveEndDate(date = '') {
+    let result = { field: 'iptEndDate', hasError: { value: false, type: null, error: '' }}
+    
+    if (!date) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O campo de Data de Fim da reserva é obrigatório"
+      return result
+    }
+
+    return result
+  }
 }
 
 module.exports = Analyzer
