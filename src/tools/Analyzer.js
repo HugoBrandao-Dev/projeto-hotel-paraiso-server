@@ -828,6 +828,18 @@ class Analyzer {
       console.log(error)
     }
   }
+
+  static analyzeReserveStartDate(date = '') {
+    let result = { field: 'iptStartDate', hasError: { value: false, type: null, error: '' }}
+    
+    if (!date) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O campo de Data de Início da reserva é obrigatório"
+    }
+
+    return result
+  }
 }
 
 module.exports = Analyzer
