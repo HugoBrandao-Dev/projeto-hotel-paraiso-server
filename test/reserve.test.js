@@ -12,6 +12,8 @@ describe("Suite de teste para as Reservas.", function() {
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {})
     describe("Testes de FALHA.", function() {
+
+      // Falhas no ID do apartamento escolhido.
       test("/PUT - Deve retornar 400, por não conter o ID do apartamento a ser reservado.", function() {
         let reserve = {
           apartment_id: "",
@@ -60,6 +62,7 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
+      // Falhas no Status da reserva.
       test("/PUT - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {
         let reserve = {
           apartment_id: "856377c88f8fd9fc65fd3ef5",
@@ -132,6 +135,7 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
+      // Falhas no ID do cliente.
       test("/PUT - Deve retornar 400, já que não foi informado o cliente que ocupará o apartamento.", function() {
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
@@ -204,6 +208,7 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
+      // Falhas na Data de Início da reserva.
       test("/PUT - Deve retornar 400, devido a ausência da Data de Início da reserva.", function() {
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
@@ -275,6 +280,7 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
+      // Falhas na Data de Fim da reserva.
       test("/PUT - Deve retornar 400, devido a ausência da Data de Fim da reserva.", function() {
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
@@ -292,6 +298,30 @@ describe("Suite de teste para as Reservas.", function() {
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
             expect(response.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
             expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Fim da reserva é obrigatório")
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("/PUT - Deve retornar 400, devido a presença de caracteres inválidos na Data de Fim da reserva.", function() {
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "reservado",
+          user_id: "600f191e810c19829de900ea",
+          start: "2023-12-02",
+          end: "2024-01-*2"
+        }
+        return request.put('/reserves').send(reserve)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O campo de Data de Fim da reserva possui caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Fim da reserva possui caracteres inválidos")
           })
           .catch(function(error) {
             fail(error)
