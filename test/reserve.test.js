@@ -186,6 +186,31 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
+
+      test("/PUT - Deve retornar 404, já que ID do cliente não foi encontrado.", function() {
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "reservado",
+          user_id: "6kde3ibi8a1d4187c1ji73bj",
+          date: "2023-08-12T22:49:04.421Z",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+        return request.put('/reserves').send(reserve)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(404)
+
+            expect(response.body.RestException.Code).toBe("3")
+            expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(response.body.RestException.Status).toBe("404")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptClient')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("Nenhum usuário com o ID informado está cadastrado")
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
 })

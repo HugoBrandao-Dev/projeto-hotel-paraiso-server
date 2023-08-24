@@ -60,7 +60,7 @@ class ReserveController {
         })
         let messages = errorFields.map(item => item.hasError.error)
         let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(400)
+        res.status(parseInt(status))
         res.json({ 
           RestException: {
             "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
