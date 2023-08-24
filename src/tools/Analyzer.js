@@ -6,6 +6,7 @@ const axios_countryStateCity = axios.create({
   }
 })
 const validator = require('validator')
+const DateFormated = require('./DateFormated')
 
 // Models
 const User = require('../models/User')
@@ -844,6 +845,15 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "O campo de Data de Início da reserva possui caracteres inválidos"
+      return result
+    }
+
+    let dateNow = new DateFormated()
+    let isBefore = validator.isBefore(date, dateNow.getDate())
+    if (isBefore) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "A Data de Início escolhida é inválida"
     }
 
     return result
