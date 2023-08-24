@@ -45,6 +45,11 @@ class ReserveController {
         errorFields.push(clientResult)
       }
 
+      let startDateResult = Analyzer.analyzeReserveStartDate(start)
+      if (startDateResult.hasError.value) {
+        errorFields.push(startDateResult)
+      }
+
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
 
