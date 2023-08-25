@@ -117,6 +117,45 @@
             "updatedAt": "2023-01-12T10:25:49.045Z",
             "updatedBy": "507f1f77bcf86cd799439011"
         }
+      },
+      {
+        "id": "27ibm1he7gl4ei9i7jcacbl6",
+        "floor": "1",
+        "number": "1",
+        "rooms": [
+          {
+            "room": "sala de estar",
+            "quantity": "1"
+          },
+          {
+            "room": "cozinha",
+            "quantity": "1"
+          },
+          {
+            "room": "banheiro",
+            "quantity": "1"
+          },
+          {
+            "room": "quarto",
+            "quantity": "1"
+          }
+        ],
+        "daily_price": "250",
+        "reserve": {
+          "status": "livre",
+          "user_id": "",
+          "date": "",
+          "start": "",
+          "end": ""
+        },
+        "created": {
+            "createdAt": "2022-06-12T22:01:20.596Z",
+            "createdBy": "5da9ea674234635bdff45c02"
+        },
+        "updated": {
+            "updatedAt": "2023-01-12T10:25:49.045Z",
+            "updatedBy": "507f1f77bcf86cd799439011"
+        }
       }
     ]
   }

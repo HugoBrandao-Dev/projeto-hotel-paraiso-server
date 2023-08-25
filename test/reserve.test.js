@@ -10,7 +10,57 @@ const projectLinks = {
 
 describe("Suite de teste para as Reservas.", function() {
   describe("UPDATE", function() {
-    describe("Testes de SUCESSO.", function() {})
+    describe("Testes de SUCESSO.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva.", function() {
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "reservado",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-12-01",
+          end: "2024-01-30"
+        }
+
+        return request.put('/reserves').send(reserve)
+          .then(function(responsePUT) {
+            expect(responsePUT.statusCode).toEqual(200)
+
+            return request.get(`/apartments/${ reserve.apartment_id }`)
+              .then(function(responseGET) {
+                expect(responseGET.statusCode).toEqual(200)
+
+                const {
+                  status,
+                  date,
+                  user_id,
+                  start,
+                  end
+                } = responseGET.body.reserve
+
+                expect(status).toBeDefined()
+                expect(status).toBe("reservado")
+
+                expect(date).toBeDefined()
+
+                expect(user_id).toBeDefined()
+                expect(user_id).toBe("507f1f77bcf86cd799439011")
+
+                expect(start).toBeDefined()
+                expect(start).toBe("2023-12-01")
+
+                expect(end).toBeDefined()
+                expect(end).toBe("2024-01-30")
+
+              })
+              .catch(function(errorGET) {
+                fail(errorGET)
+              })
+          })
+          .catch(function(errorPUT) {
+            fail(errorPUT)
+          })
+      })
+    })
+
     describe("Testes de FALHA.", function() {
 
       // Falhas no ID do apartamento escolhido.
