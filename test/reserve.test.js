@@ -327,6 +327,30 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
+
+      test("/PUT - Deve retornar 400, por ter informado uma Data de Fim anterior a Data de Início da reserva.", function() {
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "reservado",
+          user_id: "600f191e810c19829de900ea",
+          start: "2023-12-02",
+          end: "2023-12-01"
+        }
+        return request.put('/reserves').send(reserve)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("A Data de Fim escolhida é inválida")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Fim escolhida é inválida")
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
 })
