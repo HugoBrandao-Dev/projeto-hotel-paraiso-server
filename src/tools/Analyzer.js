@@ -859,7 +859,7 @@ class Analyzer {
     return result
   }
 
-  static analyzeReserveEndDate(date = '') {
+  static analyzeReserveEndDate(date = '', start = '') {
     let result = { field: 'iptEndDate', hasError: { value: false, type: null, error: '' }}
     
     if (!date) {
@@ -874,6 +874,14 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "O campo de Data de Fim da reserva possui caracteres inválidos"
+    }
+
+    // Verifica se a Data de Fim informada é anterior a Data de Início.
+    let isBefore = validator.isBefore(date, start)
+    if (isBefore) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "A Data de Fim escolhida é inválida"
     }
 
     return result
