@@ -6,7 +6,7 @@ const projectLinks = {
 }
 
 // Models
-const Apartment = require('../models/Apartment')
+const Reserve = require('../models/Reserve')
 
 class ReserveController {
   async list(req, res, next) {
@@ -55,7 +55,6 @@ class ReserveController {
         }
       }
 
-
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
 
@@ -84,6 +83,15 @@ class ReserveController {
         return
       }
 
+      let reserve = {}
+      reserve.apartment_id = apartment_id
+      reserve.status = status
+      reserve.user_id = user_id
+      reserve.date = date
+      reserve.start = start
+      reserve.end = end
+
+      await Reserve.edit(reserve)
       res.sendStatus(200)
     } catch (error) {
       next(error)
