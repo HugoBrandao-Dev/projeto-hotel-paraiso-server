@@ -36,7 +36,6 @@ class ReserveController {
       }
 
       let reserve = await Reserve.findOne(id)
-      reserve.apartment_id = id
       let HATEOAS = [
         {
           href: `${ baseURL }/reserves/${ id }`,
@@ -69,7 +68,37 @@ class ReserveController {
 
   async list(req, res, next) {
     try {
+      let reserves = await Reserve.findMany()
 
+      for (let reserve of reserves) {
+        let HATEOAS = [
+          {
+            href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+            method: 'GET',
+            rel: 'self_reserve'
+          },
+          {
+            href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+            method: 'PUT',
+            rel: 'edit_reserve'
+          },
+          {
+            href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+            method: 'DELETE',
+            rel: 'delete_reserve'
+          },
+          {
+            href: `${ baseURL }/reserves`,
+            method: 'GET',
+            rel: 'reserve_list'
+          }
+        ]
+
+        reserve._links = HATEOAS
+      }
+
+      res.status(200)
+      res.json({ reserves })
     } catch (error) {
       next(error)
     }
