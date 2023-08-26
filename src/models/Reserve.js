@@ -16,14 +16,28 @@ class Reserve {
     }
   }
 
-  async findMany() {
+  async findMany(status = '') {
     try {
-      let reserves = await ApartmentCollection.apartments.data.map(apto => {
-        return {
-          apartment_id: apto.id,
-          ...apto.reserve
-        }
-      })
+      let reserves = null
+      if (status) {
+
+        // Faz a buscas por reservas tenham um status igual ao informado.
+        let reservesWithStatus = await ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == status)
+
+        reserves = await reservesWithStatus.map(apto => {
+          return {
+            apartment_id: apto.id,
+            ...apto.reserve
+          }
+        })
+      } else {
+        reserves = await ApartmentCollection.apartments.data.map(apto => {
+          return {
+            apartment_id: apto.id,
+            ...apto.reserve
+          }
+        })
+      }
 
       return reserves
     } catch (error) {
