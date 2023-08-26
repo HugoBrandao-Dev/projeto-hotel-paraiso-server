@@ -130,11 +130,11 @@ describe("Suite de teste para as Reservas.", function() {
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento é obrigatório")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
             expect(response.body.RestException.ErrorFields[0].field).toBe('iptApartment')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento contém caracteres inválidos')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento é obrigatório')
           })
           .catch(function(error) {
             fail(error)
@@ -154,11 +154,11 @@ describe("Suite de teste para as Reservas.", function() {
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O parâmetro ID possui caracteres inválidos")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('id')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O parâmetro ID possui caracteres inválidos')
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento contém caracteres inválidos')
           })
           .catch(function(error) {
             fail(error)
