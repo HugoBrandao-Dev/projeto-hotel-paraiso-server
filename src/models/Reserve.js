@@ -8,7 +8,24 @@ class Reserve {
     try {
       let apartment = await ApartmentCollection.apartments.data.find(apto => apto.id == id)
       let reserve = apartment.reserve
+      reserve.apartment_id = id
       return reserve
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
+  async findMany() {
+    try {
+      let reserves = await ApartmentCollection.apartments.data.map(apto => {
+        return {
+          apartment_id: apto.id,
+          ...apto.reserve
+        }
+      })
+
+      return reserves
     } catch (error) {
       console.log(error)
       return []
