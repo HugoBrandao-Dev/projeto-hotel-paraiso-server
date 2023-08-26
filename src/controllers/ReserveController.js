@@ -36,7 +36,30 @@ class ReserveController {
       }
 
       let reserve = await Reserve.findOne(id)
-
+      reserve.apartment_id = id
+      let HATEOAS = [
+        {
+          href: `${ baseURL }/reserves/${ id }`,
+          method: 'GET',
+          rel: 'self_reserve'
+        },
+        {
+          href: `${ baseURL }/reserves/${ id }`,
+          method: 'PUT',
+          rel: 'edit_reserve'
+        },
+        {
+          href: `${ baseURL }/reserves/${ id }`,
+          method: 'DELETE',
+          rel: 'delete_reserve'
+        },
+        {
+          href: `${ baseURL }/reserves`,
+          method: 'GET',
+          rel: 'reserve_list'
+        }
+      ]
+      reserve._links = HATEOAS
       res.status(200)
       res.json(reserve)
     } catch (error) {

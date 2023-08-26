@@ -6,7 +6,7 @@ const date = new DateFormated('mongodb')
 class Reserve {
   async findOne(id) {
     try {
-      let apartment = ApartmentCollection.apartments.data.find(apto => apto.id == id)
+      let apartment = await ApartmentCollection.apartments.data.find(apto => apto.id == id)
       let reserve = apartment.reserve
       return reserve
     } catch (error) {
