@@ -25,10 +25,25 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
+
+      test("/GET - Deve retornar 400, pelo ID do apartamento não pertencer a um apartamento.", function() {
+        return request.get('/reserves/856377c88f8fd9fc65fd6666')
+          .then(function(response) {
+            expect(response.statusCode).toEqual(404)
+            
+            expect(response.body.RestException.Code).toBe("3")
+            expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(response.body.RestException.Status).toBe("404")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
     /*
     test("/GET - Faz a busca de uma reserva, baseada no ID do apartamento.", function() {
-      return request.get('/reservas/856377c88f8fd9fc65fd3ef5')
+      return request.get('/reserves/856377c88f8fd9fc65fd3ef5')
         .then(function(response) {
           expect(response.statusCode).toEqual(200)
 
