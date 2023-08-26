@@ -45,6 +45,7 @@ router.delete('/apartments/:id', ApartmentController.remove)
 
 // Read
 router.get('/reserves/:id', ReserveController.read)
+router.get('/reserves', ReserveController.list)
 
 // Update
 router.put('/reserves', ReserveController.update)
