@@ -68,7 +68,14 @@ class ReserveController {
 
   async list(req, res, next) {
     try {
-      let reserves = await Reserve.findMany()
+      let reserves = null
+
+      if (req.query.status) {
+        let status = req.query.status
+        reserves = await Reserve.findMany(status)
+      } else {
+        reserves = await Reserve.findMany()
+      }
 
       for (let reserve of reserves) {
         let HATEOAS = [
