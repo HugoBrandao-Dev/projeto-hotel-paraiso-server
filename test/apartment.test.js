@@ -777,8 +777,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
               status: "ocupado",
               user_id: "600f191e810c19829de900ea",
               date: "2022-08-12T22:49:04.421Z",
-              start: "2022-11-12T01:49:04.421Z",
-              end: "2023-01-12T19:49:04.421Z"
+              start: "2022-11-12",
+              end: "2023-01-12"
             })
 
             expect(created).toBeDefined()
@@ -845,7 +845,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O parâmetro ID possui caracteres inválidos")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
           })
@@ -1148,7 +1148,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O parâmetro ID possui caracteres inválidos")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
           })
@@ -1269,7 +1269,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O parâmetro ID possui caracteres inválidos")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
           })
