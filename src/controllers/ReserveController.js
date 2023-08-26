@@ -33,6 +33,7 @@ class ReserveController {
 
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
+        return
       }
 
       let reserve = await Reserve.findOne(id)
