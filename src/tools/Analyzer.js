@@ -510,9 +510,7 @@ class Analyzer {
   static async analyzeID(id = '', resource = 'user') {
     try {
       let acceptableChars = '-'
-      let result = { field: 'id', hasError: { value: false, type: null, error: '' }}
-
-      result.field = resource == 'user' ? 'iptClient' : 'id'
+      let result = { field: '', hasError: { value: false, type: null, error: '' }}
 
       if (!id) {
         let error = ''
@@ -520,6 +518,7 @@ class Analyzer {
           result.field = 'iptClient'
           error = 'O ID do cliente/usuário é obrigatório'
         } else {
+          result.field = 'iptApartment'
           error = 'O ID do apartamento é obrigatório'
         }
         result.hasError.value = true
@@ -537,7 +536,7 @@ class Analyzer {
       if (!itsAlphanumeric && !itsHexadecimal) {
         result.hasError.value = true
         result.hasError.type = 2
-        result.hasError.error = resource == 'user' ? 'O ID do cliente/usuário contém caracteres inválidos' : 'O parâmetro ID possui caracteres inválidos'
+        result.hasError.error = resource == 'user' ? 'O ID do cliente/usuário contém caracteres inválidos' : 'O ID do apartamento contém caracteres inválidos'
         return result
       } else {
         let registred = null
