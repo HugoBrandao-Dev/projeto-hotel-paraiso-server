@@ -11,7 +11,9 @@ const Reserve = require('../models/Reserve')
 class ReserveController {
   async read(req, res, next) {
     try {
-      let idResult = await Analyzer.analyzeID(req.params.id, 'apartment')
+      const { id } = req.params
+
+      let idResult = await Analyzer.analyzeID(id, 'apartment')
 
       if (idResult.hasError.value) {
         let RestException = {
@@ -32,6 +34,11 @@ class ReserveController {
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
       }
+
+      let reserve = await Reserve.findOne(id)
+
+      res.status(200)
+      res.json(reserve)
     } catch (error) {
       next(error)
     }
