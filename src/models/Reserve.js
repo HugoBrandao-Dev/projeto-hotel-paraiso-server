@@ -4,6 +4,17 @@ let DateFormated = require('../tools/DateFormated')
 const date = new DateFormated('mongodb')
 
 class Reserve {
+  async findOne(id) {
+    try {
+      let apartment = ApartmentCollection.apartments.data.find(apto => apto.id == id)
+      let reserve = apartment.reserve
+      return reserve
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
   async edit(reserve) {
     try {
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == reserve.apartment_id)
