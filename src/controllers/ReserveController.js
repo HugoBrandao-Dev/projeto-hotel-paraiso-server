@@ -9,6 +9,34 @@ const projectLinks = {
 const Reserve = require('../models/Reserve')
 
 class ReserveController {
+  async read(req, res, next) {
+    try {
+      let idResult = await Analyzer.analyzeID(req.params.id, 'apartment')
+
+      if (idResult.hasError.value) {
+        let RestException = {
+          Code: `${ idResult.hasError.type }`,
+          Message: idResult.hasError.error,
+          Status: null,
+          MoreInfo: `${ projectLinks.errors }/${ idResult.hasError.type }`
+        }
+
+        switch (idResult.hasError.type) {
+          case 3:
+            RestException.Status = '404'
+            break
+          default:
+            RestException.Status = '400'
+        }
+
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
   async list(req, res, next) {
     try {
 
