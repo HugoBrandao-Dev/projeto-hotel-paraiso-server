@@ -11,38 +11,66 @@ const projectLinks = {
 describe("Suite de teste para as Reservas.", function() {
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
-      test("/GET - Faz a busca de uma reserva, baseada no ID do apartamento.", function() {
-      return request.get('/reserves/856377c88f8fd9fc65fd3ef5')
-        .then(function(response) {
-          expect(response.statusCode).toEqual(200)
 
-          const {
-            status,
-            user_id,
-            date,
-            start,
-            end
-          } = response.body
-          
-          expect(status).toBeDefined()
-          expect(status).toBe("reservado")
-          
-          expect(user_id).toBeDefined()
-          expect(user_id).toBe("507f1f77bcf86cd799439011")
-          
-          expect(date).toBeDefined()
-          expect(date).toBe("2023-08-12T22:49:04.421Z")
-          
-          expect(start).toBeDefined()
-          expect(start).toBe("2023-11-12")
-          
-          expect(end).toBeDefined()
-          expect(end).toBe("2024-01-12")
-        })
-        .catch(function(error) {
-          fail(error)
-        })
-    })
+      // Busca por uma única reserva, baseada no ID do apartamento.
+      test("/GET - Faz a busca de uma reserva, baseada no ID do apartamento.", function() {
+        const apartment = { id: '856377c88f8fd9fc65fd3ef5' }
+        return request.get(`/reserves/${ apartment.id }`)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+
+            const {
+              apartment_id,
+              status,
+              user_id,
+              date,
+              start,
+              end,
+              _links
+            } = response.body
+
+            expect(apartment_id).toBeDefined()
+            expect(apartment_id).toBe(apartment.id)
+            
+            expect(status).toBeDefined()
+            expect(status).toBe("reservado")
+            
+            expect(user_id).toBeDefined()
+            expect(user_id).toBe("507f1f77bcf86cd799439011")
+            
+            expect(date).toBeDefined()
+            expect(date).toBe("2023-08-12T22:49:04.421Z")
+            
+            expect(start).toBeDefined()
+            expect(start).toBe("2023-11-12")
+            
+            expect(_links).toBeDefined()
+            expect(_links).toHaveLength(4)
+            expect(_links[0]).toMatchObject({
+              href: `${ baseURL }/reserves/${ apartment.id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(_links[1]).toMatchObject({
+              href: `${ baseURL }/reserves/${ apartment.id }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(_links[2]).toMatchObject({
+              href: `${ baseURL }/reserves/${ apartment.id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(_links[3]).toMatchObject({
+              href: `${ baseURL }/reserves`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
 
     describe("Testes de FALHA.", function() {
