@@ -9,6 +9,59 @@ const projectLinks = {
 }
 
 describe("Suite de teste para as Reservas.", function() {
+  describe("READ", function() {
+    describe("Testes de FALHA.", function() {
+      test("/GET - Deve retornar 400, pelo ID do apartamento conter caracteres inválidos.", function() {
+        return request.get('/reserves/856377c88f8fd9fc65fd3e*5')
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+            
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+    })
+    /*
+    test("/GET - Faz a busca de uma reserva, baseada no ID do apartamento.", function() {
+      return request.get('/reservas/856377c88f8fd9fc65fd3ef5')
+        .then(function(response) {
+          expect(response.statusCode).toEqual(200)
+
+          const {
+            status,
+            user_id,
+            date,
+            start,
+            end
+          } = response.body.reserve
+          
+          expect(status).toBeDefined()
+          expect(status).toBe("reservado")
+          
+          expect(user_id).toBeDefined()
+          expect(user_id).toBe("507f1f77bcf86cd799439011")
+          
+          expect(date).toBeDefined()
+          expect(date).toBe("2023-08-12T22:49:04.421Z")
+          
+          expect(start).toBeDefined()
+          expect(start).toBe("2023-11-12")
+          
+          expect(end).toBeDefined()
+          expect(end).toBe("2024-01-12")
+        })
+        .catch(function(error) {
+          fail(error)
+        })
+    })
+    */
+  })
+
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {
       test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva.", function() {
@@ -77,11 +130,11 @@ describe("Suite de teste para as Reservas.", function() {
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O ID do apartamento é obrigatório")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('id')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento é obrigatório')
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento contém caracteres inválidos')
           })
           .catch(function(error) {
             fail(error)
