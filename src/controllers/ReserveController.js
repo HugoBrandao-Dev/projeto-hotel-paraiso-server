@@ -192,6 +192,40 @@ class ReserveController {
       next(error)
     }
   }
+
+  async remove(req, res, next) {
+    try {
+      let RestException = {}
+
+      let id = req.params.id
+
+      let idResult = await Analyzer.analyzeID(id, 'apartment')
+      if (idResult.hasError.value) {
+        if (idResult.hasError.type != 4) {
+          switch (idResult.hasError.type) {
+            case 2:
+              RestException.Status = "400"
+              break
+            default:
+              RestException.Status = "404"
+          }
+
+          RestException.Code = `${ idResult.hasError.type }`
+          RestException.Message = idResult.hasError.error
+          RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
+        }
+
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
+        return
+      }
+
+      // await Apartment.delete(id)
+      res.sendStatus(200)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = new ReserveController()
