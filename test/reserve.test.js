@@ -88,6 +88,8 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
+
+      // Busca reservas que possuem um determinado Status.
       test("/GET - Deve retornar 200, na listagem de reservas LIVRES.", function() {
         return request.get('/reserves?status=livre')
           .then(function(response) {
@@ -103,7 +105,7 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
-      test("/GET - Deve retornar 200, na listagem de reservas.", function() {
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS.", function() {
         return request.get('/reserves')
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
@@ -118,14 +120,14 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
-      test("/GET - Deve retornar 200, na listagem de reservas RESERVADO.", function() {
-        return request.get('/reserves?status=reservado')
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO.", function() {
+        return request.get('/reserves?status=ocupado')
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
             for (let reserve of response.body.reserves) {
               expect(reserve).toBeDefined()
-              expect(reserve.status).toBe('reservado')
+              expect(reserve.status).toBe('ocupado')
             }
           })
           .catch(function(error) {
