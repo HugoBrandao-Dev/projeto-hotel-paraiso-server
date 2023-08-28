@@ -50,4 +50,7 @@ router.get('/reserves', ReserveController.list)
 // Update
 router.put('/reserves', ReserveController.update)
 
+// Delete
+router.delete('/reserves/:id', ReserveController.remove)
+
 module.exports = router
