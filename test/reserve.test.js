@@ -134,6 +134,21 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
+
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas INDISPONÍVEL.", function() {
+        return request.get('/reserves?status=indisponível')
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+
+            for (let reserve of response.body.reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('indisponível')
+            }
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
 
     describe("Testes de FALHA.", function() {
