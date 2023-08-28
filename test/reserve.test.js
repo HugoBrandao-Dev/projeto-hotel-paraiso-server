@@ -578,4 +578,30 @@ describe("Suite de teste para as Reservas.", function() {
       })
     })
   })
+
+  // A Deletação/Cancelamento de uma reserva se baseia no ID do apartamento.
+  describe("DELETE", function() {
+    describe("Teste de SUCESSO.", function() {
+
+    })
+
+    describe("Teste de FALHA.", function() {
+      test("/DELETE - Deve retornar 400, já que o ID do apartamento é inválido.", function() {
+        const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
+
+        return request.delete(`/reserves/${ apartment.id }`)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+    })
+  })
 })
