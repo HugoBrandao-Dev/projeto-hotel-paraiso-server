@@ -907,6 +907,29 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(responsePUT.statusCode).toEqual(200)
 
+            expect(responsePUT.body._links).toBeDefined()
+            expect(responsePUT.body._links).toHaveLength(4)
+            expect(responsePUT.body._links[0]).toMatchObject({
+              href: `${ baseURL }/apartments/${ apartment.id }`,
+              method: 'GET',
+              rel: 'self_apartment'
+            })
+            expect(responsePUT.body._links[1]).toMatchObject({
+              href: `${ baseURL }/apartments/${ apartment.id }`,
+              method: 'PUT',
+              rel: 'edit_apartment'
+            })
+            expect(responsePUT.body._links[2]).toMatchObject({
+              href: `${ baseURL }/apartments/${ apartment.id }`,
+              method: 'DELETE',
+              rel: 'delete_apartment'
+            })
+            expect(responsePUT.body._links[3]).toMatchObject({
+              href: `${ baseURL }/apartments`,
+              method: 'GET',
+              rel: 'apartment_list'
+            })
+
             return request.get(`/apartments/${ apartment.id }`)
               .then(function(responseGET) {
                 const {
