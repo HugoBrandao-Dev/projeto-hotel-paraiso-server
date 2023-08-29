@@ -220,7 +220,7 @@ class ReserveController {
         return
       }
 
-      // await Apartment.delete(id)
+      await Reserve.delete(id)
       res.sendStatus(200)
     } catch (error) {
       next(error)
