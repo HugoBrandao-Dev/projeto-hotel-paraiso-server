@@ -582,7 +582,33 @@ describe("Suite de teste para as Reservas.", function() {
   // A Deletação/Cancelamento de uma reserva se baseia no ID do apartamento.
   describe("DELETE", function() {
     describe("Teste de SUCESSO.", function() {
+      test("/DELETE - Deve retornar 200, para cancelamento/deleção da reserva.", function() {
+        const apartment = { id: 'f5gee7kf7l3dl2950gbn3ckf' }
 
+        return request.delete(`/reserves/${ apartment.id }`)
+          .then(function(responseDELETE) {
+            expect(responseDELETE.statusCode).toEqual(200)
+
+            return request.get(`/reserves/${ apartment.id }`)
+              .then(function(responseGET) {
+                expect(responseGET.statusCode).toEqual(200)
+                expect(responseGET.body).toMatchObject({
+                  apartment_id: apartment.id,
+                  status: 'livre',
+                  user_id: '',
+                  date: '',
+                  start: '',
+                  end: ''
+                })
+              })
+              .catch(function(errorGET) {
+                fail(errorGET)
+              })
+          })
+          .catch(function(errorDELETE) {
+            fail(errorDELETE)
+          })
+      })
     })
 
     describe("Teste de FALHA.", function() {
