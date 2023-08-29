@@ -647,8 +647,33 @@ class UserController {
         })
         return
       }
+
+      let HATEOAS = [
+        {
+          href: `${ baseURL }/users/${ fields.id }`,
+          method: 'GET',
+          rel: 'self_user'
+        },
+        {
+          href: `${ baseURL }/users/${ fields.id }`,
+          method: 'PUT',
+          rel: 'edit_user'
+        },
+        {
+          href: `${ baseURL }/users/${ fields.id }`,
+          method: 'DELETE',
+          rel: 'delete_user'
+        },
+        {
+          href: `${ baseURL }/users`,
+          method: 'GET',
+          rel: 'user_list'
+        }
+      ]
+
       await User.edit(fields)
-      res.sendStatus(200)
+      res.status(200)
+      res.json({ _links: HATEOAS })
     } catch (error) {
       throw new Error(error)
       res.sendStatus(500)
