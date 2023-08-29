@@ -272,9 +272,32 @@ class ApartmentController {
         return
       }
 
+      let HATEOAS = [
+        {
+          href: `${ baseURL }/apartments/${ id }`,
+          method: 'GET',
+          rel: 'self_apartment'
+        },
+        {
+          href: `${ baseURL }/apartments/${ id }`,
+          method: 'PUT',
+          rel: 'edit_apartment'
+        },
+        {
+          href: `${ baseURL }/apartments/${ id }`,
+          method: 'DELETE',
+          rel: 'delete_apartment'
+        },
+        {
+          href: `${ baseURL }/apartments`,
+          method: 'GET',
+          rel: 'apartment_list'
+        }
+      ]
+
       await Apartment.edit(apartment)
       res.status(200)
-      res.json({})
+      res.json({ _links: HATEOAS })
     } catch(error) {
       next(error)
     }
