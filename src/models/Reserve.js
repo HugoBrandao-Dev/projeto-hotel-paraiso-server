@@ -48,6 +48,8 @@ class Reserve {
 
   async edit(reserve) {
     try {
+
+      // Encontra o index do apartamento que tenha o ID igual ao passado dentro do reserve.
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == reserve.apartment_id)
       let infos = Object.keys(reserve)
       for (let info of infos) {
@@ -60,6 +62,25 @@ class Reserve {
     } catch (error) {
       console.log(error)
       return []
+    }
+  }
+
+  async delete(id) {
+    try {
+
+      // Encontra o index do apartamento que tenha o ID igual ao passado para o método.
+      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == id)
+
+      ApartmentCollection.apartments.data[apartmentIndex].reserve = {
+        "status": "livre",
+        "user_id": "",
+        "date": "",
+        "start": "",
+        "end": ""
+      }
+    } catch (error) {
+      console.log(error)
+      return
     }
   }
 }
