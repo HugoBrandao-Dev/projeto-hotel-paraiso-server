@@ -199,6 +199,29 @@ describe("Suite de teste para as Reservas.", function() {
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
+            expect(responsePUT.body._links).toBeDefined()
+            expect(responsePUT.body._links).toHaveLength(4)
+            expect(responsePUT.body._links[0]).toMatchObject({
+              href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responsePUT.body._links[1]).toMatchObject({
+              href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responsePUT.body._links[2]).toMatchObject({
+              href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responsePUT.body._links[3]).toMatchObject({
+              href: `${ baseURL }/reserves`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
             return request.get(`/apartments/${ reserve.apartment_id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
