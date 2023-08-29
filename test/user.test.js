@@ -1837,7 +1837,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
       
-      test("POST - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
+      test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
         let user = {
           id: "507f1f77bcf86cd799439011",
           name: "Macunaíma Cruz",
@@ -1859,8 +1859,32 @@ describe("Suite de testes das rotas User.", function() {
 
         }
         return request.put('/users').send(user)
-          .then(function(responsePOST) {
-            expect(responsePOST.statusCode).toEqual(200)
+          .then(function(responsePUT) {
+            expect(responsePUT.statusCode).toEqual(200)
+
+            expect(responsePUT.body._links).toBeDefined()
+            expect(responsePUT.body._links).toHaveLength(4)
+            expect(responsePUT.body._links[0]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'GET',
+              rel: 'self_user'
+            })
+            expect(responsePUT.body._links[1]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'PUT',
+              rel: 'edit_user'
+            })
+            expect(responsePUT.body._links[2]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'DELETE',
+              rel: 'delete_user'
+            })
+            expect(responsePUT.body._links[3]).toMatchObject({
+              href: `${ baseURL }/users`,
+              method: 'GET',
+              rel: 'user_list'
+            })
+            
             return request.get(`/users/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
