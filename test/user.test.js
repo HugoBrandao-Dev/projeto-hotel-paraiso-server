@@ -2256,7 +2256,7 @@ describe("Suite de testes das rotas User.", function() {
               method: 'GET',
               rel: 'user_list'
             })
-            
+
             return request.get(`/users/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
@@ -2279,15 +2279,38 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 200 para usuários Brasileiro que querem atualizar somente o Nome e Senha.", function() {
+      test("PUT - Deve retornar 200 para usuários Brasileiro que querem atualizar somente o Nome e Senha.", function() {
         let user = {
           id: "5da9ea674234635bdff45c02",
           name: "Josias de Oliveira",
           password: "@JosiaS&654975@"
         }
         return request.put('/users').send(user)
-          .then(function(responsePOST) {
-            expect(responsePOST.statusCode).toEqual(200)
+          .then(function(responsePUT) {
+            expect(responsePUT.statusCode).toEqual(200)
+
+            expect(responsePUT.body._links).toBeDefined()
+            expect(responsePUT.body._links).toHaveLength(4)
+            expect(responsePUT.body._links[0]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'GET',
+              rel: 'self_user'
+            })
+            expect(responsePUT.body._links[1]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'PUT',
+              rel: 'edit_user'
+            })
+            expect(responsePUT.body._links[2]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'DELETE',
+              rel: 'delete_user'
+            })
+            expect(responsePUT.body._links[3]).toMatchObject({
+              href: `${ baseURL }/users`,
+              method: 'GET',
+              rel: 'user_list'
+            })
             return request.get(`/users/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
