@@ -23,7 +23,9 @@ class UserController {
 
       let emailResult = await Analyzer.analyzeUserEmail(req.body.email)
       if (emailResult.hasError.value) {
-        errorFields.push(emailResult)
+        if (emailResult.hasError.type != 3) {
+          errorFields.push(emailResult)
+        }
       }
 
       let birthDateResult = Analyzer.analyzeUserBirthDate(req.body.birthDate)
@@ -451,7 +453,7 @@ class UserController {
       if (email) {
         let emailResult = await Analyzer.analyzeUserEmail(email)
         if (emailResult.hasError.value) {
-          if (emailResult.hasError.type == 4) {
+          if (emailResult.hasError.type != 3) {
 
             // Verifica se o usuário que quer atualizar é o mesmo que já possui o Email.
             let isTheSameUser = userRegistred.email == email
@@ -460,12 +462,12 @@ class UserController {
             if (!isTheSameUser) {
               errorFields.push(emailResult)
             }
+          } else {
+            fields.email = email
           }
         } else {
           fields.email = email
         }
-      } else {
-        fields.email = email
       }
 
       if (password) {
