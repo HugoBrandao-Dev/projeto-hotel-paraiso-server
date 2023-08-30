@@ -2415,7 +2415,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 200 para usuários que informa o mesmo CPF.", function() {
+      test("PUT - Deve retornar 200 para usuários que informa o mesmo CPF.", function() {
         let user = {
           id: "507f1f77bcf86cd799439011",
           name: "Macunaíma Cruz",
@@ -2425,6 +2425,29 @@ describe("Suite de testes das rotas User.", function() {
         return request.put('/users').send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
+
+            expect(response.body._links).toBeDefined()
+            expect(response.body._links).toHaveLength(4)
+            expect(response.body._links[0]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'GET',
+              rel: 'self_user'
+            })
+            expect(response.body._links[1]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'PUT',
+              rel: 'edit_user'
+            })
+            expect(response.body._links[2]).toMatchObject({
+              href: `${ baseURL }/users/${ user.id }`,
+              method: 'DELETE',
+              rel: 'delete_user'
+            })
+            expect(response.body._links[3]).toMatchObject({
+              href: `${ baseURL }/users`,
+              method: 'GET',
+              rel: 'user_list'
+            })
           })
           .catch(function(error) {
             fail(error)
