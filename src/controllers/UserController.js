@@ -735,17 +735,36 @@ class UserController {
       const { email, password } = req.body
 
       let errorFields = []
+      let user = null
 
       let emailResult = await Analyzer.analyzeUserEmail(email)
       if (emailResult.hasError.value) {
         if (emailResult.hasError.type != 4) {
           errorFields.push(emailResult)
+        } else {
+
+          // Só haverá usuário se não tiver encontrado nada de errado com o Email.
+          user = await User.findByDoc({ email })
         }
       }
 
       let passwordResult = Analyzer.analyzeUserPassword(password)
       if (passwordResult.hasError.value) {
         errorFields.push(passwordResult)
+      } else {
+
+        if (user) {
+          if (password != user.password) {
+            errorFields.push({
+              field: 'iptPassword',
+              hasError: {
+                value: true,
+                type: 2,
+                error: 'A senha informada é inválida'
+              }
+            })
+          }
+        }
       }
 
       if (errorFields.length) {
