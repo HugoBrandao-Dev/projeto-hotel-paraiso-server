@@ -19,6 +19,7 @@ router.post('/users', UserController.create)
 router.get('/users', UserController.list)
 router.get('/users/:id', UserController.read)
 router.post('/users/search', UserController.readByDoc)
+router.post('/login', UserController.login)
 
 // Update
 router.put('/users', UserController.update)
