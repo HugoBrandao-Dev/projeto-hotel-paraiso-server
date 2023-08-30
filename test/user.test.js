@@ -1747,6 +1747,29 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
+      // Testes no Login
+      test("POST - Deve retornar 400, por não ter informado o Email para Login.", function() {
+
+        const user = {
+          password: "@TobiaS&591022@",
+        }
+
+        return request.post('/login').send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("1")
+            expect(response.body.RestException.Message).toBe("O campo Email é obrigatório")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo Email é obrigatório')
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
 
@@ -2849,9 +2872,4 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-
-  /* ################## DELETE ################## */
-
-  
-
 })
