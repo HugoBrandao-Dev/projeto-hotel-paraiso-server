@@ -1774,7 +1774,8 @@ describe("Suite de testes das rotas User.", function() {
       test("POST - Deve retornar 404, por ter informado um Email, para Login, que não foi cadastrado anteriormente.", function() {
 
         const user = {
-          email: "tobia@gmail.com"
+          email: "tobia@gmail.com",
+          password: "@TobiaS&591022@"
         }
 
         return request.post('/login').send(user)
@@ -1787,6 +1788,28 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
             expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
             expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O Email informado não está cadastrado")
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("POST - Deve retornar 400, por não ter informado uma senha para Login.", function() {
+
+        const user = {
+          email: "tobias@gmail.com"
+        }
+
+        return request.post('/login').send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("1")
+            expect(response.body.RestException.Message).toBe("O campo de Senha é obrigatório")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassword')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Senha é obrigatório")
           })
           .catch(function(error) {
             fail(error)
@@ -2894,4 +2917,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
+
 })
