@@ -59,6 +59,10 @@ class Analyzer {
         result.hasError.type = 4
         result.hasError.error = 'O Email informado já foi cadastrado anteriormente'
         return result
+      } else {
+        result.hasError.value = true
+        result.hasError.type = 3
+        result.hasError.error = 'O Email informado não está cadastrado'
       }
 
       let hasCharsValid = validator.isAlphanumeric(email, ['en-US'], {
