@@ -1770,6 +1770,28 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
+      test("POST - Deve retornar 404, por ter informado um Email, para Login, que não foi cadastrado anteriormente.", function() {
+
+        const user = {
+          email: "tobia@gmail.com"
+        }
+
+        return request.post('/login').send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(404)
+
+            expect(response.body.RestException.Code).toBe("3")
+            expect(response.body.RestException.Message).toBe("O Email informado não está cadastrado")
+            expect(response.body.RestException.Status).toBe("404")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptEmail')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O Email informado não está cadastrado")
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
 
