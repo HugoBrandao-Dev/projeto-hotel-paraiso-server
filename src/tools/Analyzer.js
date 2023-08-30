@@ -128,25 +128,41 @@ class Analyzer {
     return result
   }
 
-  static analyzeUserPassword(password = '') {
-    let result = { field: 'iptPassword', hasError: { value: false, type: null, error: '' }}
+  static async analyzeUserPassword(password = '', checkEquality = { isToCheck: false, email: '' }) {
+    try {
+      let result = { field: 'iptPassword', hasError: { value: false, type: null, error: '' }}
 
-    if (!password) {
-      result.hasError.value = true
-      result.hasError.type = 1
-      result.hasError.error = 'O campo de Senha é obrigatório'
+      if (!password) {
+        result.hasError.value = true
+        result.hasError.type = 1
+        result.hasError.error = 'O campo de Senha é obrigatório'
+        return result
+      }
+
+      if (checkEquality.isToCheck) {
+        let user = await User.findByDoc({ email: checkEquality.email })
+        const isEqual = validator.equals(password, user.password)
+        if (!isEqual) {
+          result.hasError.value = true
+          result.hasError.type = 2
+          result.hasError.error = 'A senha informada é inválida'
+          return result
+        }
+      }
+
+      let isValid = validator.isStrongPassword(password)
+
+      if (!isValid) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = 'A senha é muito fraca'
+      }
+
       return result
+    } catch (error) {
+      console.log(error)
     }
-
-    let isValid = validator.isStrongPassword(password)
-
-    if (!isValid) {
-      result.hasError.value = true
-      result.hasError.type = 2
-      result.hasError.error = 'A senha é muito fraca'
-    }
-
-    return result
+    
   }
 
   static analyzeUserRole(role = '') {

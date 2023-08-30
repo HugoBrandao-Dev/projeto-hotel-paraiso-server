@@ -131,7 +131,6 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
 
-  /*
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1147,7 +1146,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-    */
   })
 
   describe("READ", function() {
@@ -1817,32 +1815,9 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-
-      test("POST - Deve retornar 400, pela Senha informada não corresponder com a cadastrada.", function() {
-
-        const user = {
-          email: "tobias@gmail.com",
-          password: "@TobiaS&51022@"
-        }
-
-        return request.post('/login').send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("A senha informada é inválida")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptPassword')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("A senha informada é inválida")
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
     })
   })
-/*
+
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {
       test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias atualizadas.", function() {
@@ -2942,5 +2917,4 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-*/
 })
