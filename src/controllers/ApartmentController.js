@@ -75,7 +75,33 @@ class ApartmentController {
       apartment.daily_price = daily_price
       
       await Apartment.save(apartment)
-      res.sendStatus(201)
+      const savedApartment = await Apartment.findByNumber(number)
+
+      let HATEOAS = [
+        {
+          href: `${ baseURL }/users/${ savedApartment.id }`,
+          method: 'GET',
+          rel: 'self_user'
+        },
+        {
+          href: `${ baseURL }/users/${ savedApartment.id }`,
+          method: 'PUT',
+          rel: 'edit_user'
+        },
+        {
+          href: `${ baseURL }/users/${ savedApartment.id }`,
+          method: 'DELETE',
+          rel: 'delete_user'
+        },
+        {
+          href: `${ baseURL }/users`,
+          method: 'GET',
+          rel: 'user_list'
+        }
+      ]
+
+      res.status(201)
+      res.json({ _links: HATEOAS })
     } catch(error) {
       next(error)
     }
