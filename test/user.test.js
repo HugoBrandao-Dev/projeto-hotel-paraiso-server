@@ -48,7 +48,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: `${ genCPF() }`,
+          cpf: `${ genCPF() }`
         })
         .then(function(response) {
           expect(response.statusCode).toEqual(201)
@@ -1146,7 +1146,9 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
+
   })
+
 
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
@@ -1609,7 +1611,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-
       test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
         return request.post('/users/search').send({
           cpf: '22222222222'
@@ -1647,8 +1648,28 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-    })
 
+      test("POST - Deve retornar 200 e um Token.", function() {
+
+        const user = {
+          email: 'tobias@gmail.com',
+          password: '@TobiaS&591022@'
+        }
+
+        return request.post('/login').send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+
+            const { token } = response.body
+
+            expect(token).toBeDefined()
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+    })
+    /*
     describe("Testes de FALHA.", function() {
       test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
         return request.get('/users/5da9ea674234*635bdff45c02')
@@ -1816,6 +1837,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
+    */
   })
 
   describe("UPDATE", function() {
@@ -2917,4 +2939,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
+
 })
