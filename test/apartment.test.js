@@ -38,6 +38,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
         return request.post('/apartments').send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(201)
+
+            expect(response.body._links).toBeDefined()
+            expect(response.body._links).toHaveLength(4)
           })
           .catch(function(error) {
             fail(error)
@@ -713,6 +716,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
     })
   })
+
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", function() {
@@ -870,6 +874,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
     })
   })
+
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {
       test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento.", function() {
@@ -1259,6 +1264,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
     })
   })
+
   describe("DELETE", function() {
     describe("Testes de SUCESSO.", function() {
       test("Deve retornar 200, na delecao de um apartamento.", function() {
