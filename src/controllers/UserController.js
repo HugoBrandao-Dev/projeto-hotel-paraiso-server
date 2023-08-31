@@ -781,7 +781,16 @@ class UserController {
         return
       }
 
-      res.sendStatus(200)
+      const user = await User.findByDoc({ email })
+      const token = jwt.sign({
+        id: user.id,
+        email: user.email,
+        role: user.role
+      }, secret, {
+        expiresIn: '24h'
+      })
+      res.status(200)
+      res.json({ token })
     } catch (error) {
       next(error)
     }
