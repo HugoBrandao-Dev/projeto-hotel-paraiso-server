@@ -1164,7 +1164,7 @@ describe("Suite de testes das rotas User.", function() {
     })
     */
   })
-  /*
+
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
@@ -2953,5 +2953,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-  */
+
 })
