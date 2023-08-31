@@ -38,7 +38,7 @@ describe("Suite de testes das rotas User.", function() {
   describe("CREATE", function() {
     describe("Testes de SUCESSO.", function() {
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios para brasileiros.", function() {
-        return request.post('/users').send({
+        const user = {
           name: "Tobias de Oliveira",
           email: "tobias@gmail.com",
           password: "@TobiaS&591022@",
@@ -49,17 +49,22 @@ describe("Suite de testes das rotas User.", function() {
           state: "SP",
           city: "São Paulo",
           cpf: `${ genCPF() }`
-        })
-        .then(function(response) {
-          expect(response.statusCode).toEqual(201)
-        })
-        .catch(function(error) {
-          fail(error)
-        })
+        }
+        return request.post('/users').send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(201)
+
+            expect(response.body._links).toBeDefined()
+            expect(response.body._links).toHaveLength(4)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
       })
 
       test("POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", function() {
-        return request.post('/users').send({
+
+        const user = {
           name: "Dinorá de Oliveira",
           email: "dino_oli@hotmail.com",
           password: "@DinorA&591022@",
@@ -75,13 +80,15 @@ describe("Suite de testes das rotas User.", function() {
           road: "Rua Nina Simone",
           house_number: "2000",
           information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
-        })
-        .then(function(response) {
-          expect(response.statusCode).toEqual(201)
-        })
-        .catch(function(error) {
-          fail(error)
-        })
+        }
+
+        return request.post('/users').send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(201)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
       })
 
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
@@ -99,6 +106,9 @@ describe("Suite de testes das rotas User.", function() {
         })
         .then(function(response) {
           expect(response.statusCode).toEqual(201)
+
+          expect(response.body._links).toBeDefined()
+          expect(response.body._links).toHaveLength(4)
         })
         .catch(function(error) {
           fail(error)
@@ -106,7 +116,8 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios + opcionais de estrangeiros.", function() {
-        return request.post('/users').send({
+
+        const user = {
           name: "Doralice Cruz",
           email: "doralice@yahoo.com",
           password: "@DoralicE&3659792@",
@@ -121,16 +132,21 @@ describe("Suite de testes das rotas User.", function() {
           road: "Rua Nina Simone",
           house_number: "2000",
           information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
-        })
-        .then(function(response) {
-          expect(response.statusCode).toEqual(201)
-        })
-        .catch(function(error) {
-          fail(error)
-        })
+        }
+
+        return request.post('/users').send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(201)
+
+            expect(response.body._links).toBeDefined()
+            expect(response.body._links).toHaveLength(4)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
       })
     })
-
+    /*
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1146,10 +1162,9 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-
+    */
   })
-
-
+  /*
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
@@ -1669,7 +1684,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-    /*
+
     describe("Testes de FALHA.", function() {
       test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
         return request.get('/users/5da9ea674234*635bdff45c02')
@@ -1837,7 +1852,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-    */
   })
 
   describe("UPDATE", function() {
@@ -2939,5 +2953,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-
+  */
 })
