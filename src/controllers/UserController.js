@@ -1,10 +1,13 @@
 const Analyzer = require('../tools/Analyzer')
 const uuid = require('uuid')
+const jwt = require('jsonwebtoken')
 
 let baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
+
+const secret = 'k372gkhcfmhg6l9nj19i51ng'
 
 // Models
 const User = require('../models/User')
