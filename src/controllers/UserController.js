@@ -186,12 +186,36 @@ class UserController {
         }
 
         await User.save(user)
+        const savedUser = await User.findByDoc({ email: req.body.email })
+
+        let HATEOAS = [
+            {
+              href: `${ baseURL }/users/${ savedUser.id }`,
+              method: 'GET',
+              rel: 'self_user'
+            },
+            {
+              href: `${ baseURL }/users/${ savedUser.id }`,
+              method: 'PUT',
+              rel: 'edit_user'
+            },
+            {
+              href: `${ baseURL }/users/${ savedUser.id }`,
+              method: 'DELETE',
+              rel: 'delete_user'
+            },
+            {
+              href: `${ baseURL }/users`,
+              method: 'GET',
+              rel: 'user_list'
+            }
+          ]
+
         res.status(201)
-        res.json({ msg: 'Cadastrado com sucesso!'})
+        res.json({ _links: HATEOAS })
       }
     } catch (error) {
-      throw new Error(error)
-      res.statusCode(500)
+      next(error)
     }
   }
 
