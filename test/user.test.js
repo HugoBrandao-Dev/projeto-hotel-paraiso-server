@@ -146,7 +146,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-    /*
+
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1162,7 +1162,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-    */
+
   })
 
   describe("READ", function() {
