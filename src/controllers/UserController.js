@@ -1,6 +1,7 @@
 const Analyzer = require('../tools/Analyzer')
 const uuid = require('uuid')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 let baseURL = 'http://localhost:4000'
 const projectLinks = {
@@ -150,11 +151,14 @@ class UserController {
       } else {
         let user = {}
 
+        let salt = bcrypt.genSaltSync(5)
+        let hash = bcrypt.hashSync(req.body.password, salt)
+
         // OBRIGATÓRIOS
         user.id = uuid.v4()
         user.name = req.body.name
         user.email = req.body.email
-        user.password = req.body.password
+        user.password = hash
         user.role = req.body.role
         user.phoneCode = req.body.phoneCode
         user.phoneNumber = req.body.phoneNumber
