@@ -1,3 +1,6 @@
+const validator = require('validator')
+const DateFormated = require('./DateFormated')
+const bcrypt = require('bcryptjs')
 const axios = require('axios')
 const axios_countryStateCity = axios.create({
   baseURL: 'https://api.countrystatecity.in/v1',
@@ -5,8 +8,6 @@ const axios_countryStateCity = axios.create({
     'X-CSCAPI-KEY': 'UlRPNjR3OGhQOGhiRmloR0FWaDNwSGY2VzZIWlRKRzBNZDN5WUdPdQ=='
   }
 })
-const validator = require('validator')
-const DateFormated = require('./DateFormated')
 
 // Models
 const User = require('../models/User')
@@ -141,7 +142,7 @@ class Analyzer {
 
       if (checkEquality.isToCheck) {
         let user = await User.findByDoc({ email: checkEquality.email })
-        const isEqual = validator.equals(password, user.password)
+        let isEqual = bcrypt.compareSync(password, user.password)
         if (!isEqual) {
           result.hasError.value = true
           result.hasError.type = 2
