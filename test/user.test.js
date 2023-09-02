@@ -5,6 +5,15 @@ const validator = require('validator')
 const request = supertest(app)
 
 let baseURL = 'http://localhost:4000'
+let endpoints = {
+  toCreate: '/users',
+  toRead: '/users',
+  toSearch: '/users/search',
+  toUpdate: '/users',
+  toDelete: '/users',
+  toList: '/users',
+  toLogin: '/login'
+}
 
 function genCPF() {
   let cpf = ''
@@ -50,7 +59,7 @@ describe("Suite de testes das rotas User.", function() {
           city: "São Paulo",
           cpf: `${ genCPF() }`
         }
-        return request.post('/users').send(user)
+        return request.post(endpoints.toCreate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(201)
 
@@ -82,7 +91,7 @@ describe("Suite de testes das rotas User.", function() {
           information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
         }
 
-        return request.post('/users').send(user)
+        return request.post(endpoints.toCreate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(201)
           })
@@ -92,7 +101,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Josias Cruz",
           email: "josias_cruz@hotmail.com",
           password: "@JosiaS&3659792@",
@@ -134,7 +143,7 @@ describe("Suite de testes das rotas User.", function() {
           information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
         }
 
-        return request.post('/users').send(user)
+        return request.post(endpoints.toCreate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(201)
 
@@ -150,7 +159,7 @@ describe("Suite de testes das rotas User.", function() {
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -179,7 +188,7 @@ describe("Suite de testes das rotas User.", function() {
       test("POST - Deve retornar 400, devido a presença de elementos inválidos do nome do User.", function() {
 
         // O "O" de "Oliveira", na verdade é um 0 (zero).
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de 0liveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -207,7 +216,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes no EMAIL
       test("POST - Deve retornar 400, pela ausência do email do User.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "",
           password: "@TobiaS&591022@",
@@ -234,7 +243,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido a presença de elementos inválidos no email do User.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias($)@gmail.com",
           password: "@TobiaS&591022@",
@@ -261,7 +270,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, por passar um email já cadastrado.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@gmail.com",
           password: "@TobiaS&591022@",
@@ -289,7 +298,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes na DATA DE NASCIMENTO/IDADE
       test("POST - Deve retornar 400, pela ausência da data de nascimento do User.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -316,7 +325,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, por ter informado uma data de nascimento inválida.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -343,7 +352,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, pela idade do usuário ser menor que 18 anos.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -371,7 +380,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes na SENHA
       test("POST - Deve retornar 400, pela ausência da senha do usuário.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "",
@@ -398,7 +407,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido a senha informada ser muito fraca.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@tobias&7qer5464@",
@@ -426,7 +435,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes na FUNÇÃO DA CONTA QUE ESTÁ SENDO CRIADA (role)
       test("POST - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&7qer5464@",
@@ -454,7 +463,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao valor da função (role) ser de uma função inexistente.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&7qer5464@",
@@ -483,7 +492,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes no CÓDIGO DO TELEFONE/TELEFONE
       test("POST - Deve retornar 400, pela ausência do código do telefone.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -510,7 +519,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao código de telefone informado ser invalido.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -537,7 +546,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, pela ausência do telefone do usuario.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -564,7 +573,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao número de telefone do usuário ser inválido.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -592,7 +601,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes no PAÍS DE NASCIMENTO
       test("POST - Deve retornar 400, pela ausência do país de nascimento do usuário.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -619,7 +628,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao ISO do pais de nascimento do usuário ser inválido.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -647,7 +656,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes no ESTADO DE NASCIMENTO
       test("POST - Deve retornar 400, pela ausência do estado de nascimento do usuário.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -674,7 +683,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao nome/sigla do estado de nascimento ser inválido.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -702,7 +711,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes na CIDADE DE NASCIMENTO
       test("POST - Deve retornar 400, pela ausência do nome da cidade de nascimento do usuário.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -729,7 +738,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao nome da cidade de nascimento do usuário ser inválido.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -757,7 +766,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes no CPF (para Brasileiros)
       test("POST - Deve retornar 400, pela ausência do CPF do usuário nascido no Brasil.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -784,7 +793,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao valor do CPF do usuário ser inválido.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -811,7 +820,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao valor do CPF do usuário estar faltando dígitos.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -838,7 +847,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao CPF informado já estar sido cadastrado.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -866,7 +875,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes no NÚMERO DE PASSAPORTE (para estrangeiros)
       test("POST - Deve retornar 400, devido a ausência do número do passaporte de um usuário estrangeiro.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -893,7 +902,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, uma vez que o número do passaporte do usuario estrangeiro está errado.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -920,7 +929,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, uma vez que o número do passaporte do usuário estrangeiro já foi registrado anteriormente.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -948,7 +957,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Testes no CEP
       test("POST - Deve retornar 400, uma vez que o número do CEP não existe.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -976,7 +985,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, uma vez que o falta número do CEP informado.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -1004,7 +1013,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido ao número de CEP possuir caractere inválido.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&6554987@",
@@ -1033,7 +1042,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Teste no NOME DO BAIRRO
       test("POST - Deve retornar 400, devido a presença de caracteres inválidos no nome do bairro.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -1065,7 +1074,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, devido a presença de caracteres inválidos no nome da rua.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -1098,7 +1107,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Teste no NÚMERO DA CASA
       test("POST - Deve retornar 400, devido a presença de caracteres inválidos no numero da casa do usuario.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -1131,7 +1140,7 @@ describe("Suite de testes das rotas User.", function() {
 
       // Teste nas INFORMAÇÕES ADICIONAIS
       test("POST - Deve retornar 400, devido a presença de caracteres inválidos nas informações adicionais do usuario.", function() {
-        return request.post('/users').send({
+        return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
           password: "@TobiaS&591022@",
@@ -1162,14 +1171,13 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-
   })
 
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
         let user = { id: '5da9ea674234635bdff45c02' }
-        return request.get(`/users/${ user.id }`)
+        return request.get(`${ endpoints.toRead }/${ user.id }`)
         .then(response => {
           let {
             id,
@@ -1279,7 +1287,7 @@ describe("Suite de testes das rotas User.", function() {
 
       test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
         let user = { id: '507f1f77bcf86cd799439011' }
-        return request.get(`/users/${ user.id }`)
+        return request.get(`${ endpoints.toRead }/${ user.id }`)
           .then(function(response) {
             let {
               id,
@@ -1379,7 +1387,7 @@ describe("Suite de testes das rotas User.", function() {
 
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário estrangeiro.", function() {
         let user = { id: '507f191e810c19729de860ea' }
-        return request.get(`/users/${ user.id }`)
+        return request.get(`${ endpoints.toRead }/${ user.id }`)
           .then(function(response) {
             let {
               id,
@@ -1487,7 +1495,7 @@ describe("Suite de testes das rotas User.", function() {
 
       test("GET - Deve retornar 200 para busca de informações obrigatórias de um usuario estrangeiro.", function() {
         let user = { id: '600f191e810c19829de900ea' }
-        return request.get(`/users/${ user.id }`)
+        return request.get(`${ endpoints.toRead }/${ user.id }`)
           .then(function(response) {
             let {
               id,
@@ -1598,7 +1606,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
-        return request.get('/users?offset=1&limit=3')
+        return request.get(`${ endpoints.toList }?offset=1&limit=3`)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
             expect(response.body.users.length).toEqual(2)
@@ -1627,7 +1635,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
-        return request.post('/users/search').send({
+        return request.post(endpoints.toSearch).send({
           cpf: '22222222222'
         })
           .then(function(response) {
@@ -1646,7 +1654,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
-        return request.post('/users/search').send({
+        return request.post(endpoints.toSearch).send({
           passportNumber: '303004786'
         })
           .then(function(response) {
@@ -1671,7 +1679,7 @@ describe("Suite de testes das rotas User.", function() {
           password: '@TobiaS&591022@'
         }
 
-        return request.post('/login').send(user)
+        return request.post(endpoints.toLogin).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -1687,7 +1695,7 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de FALHA.", function() {
       test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
-        return request.get('/users/5da9ea674234*635bdff45c02')
+        return request.get(`${ endpoints.toRead }/5da9ea674234*635bdff45c02`)
           .then(response => {
             expect(response.statusCode).toEqual(400)
             expect(response.body.RestException.Code).toBe("2")
@@ -1701,7 +1709,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("GET - Deve retornar 404, devido ao número de ID não corresponder a nenhum usuário.", function() {
-        return request.get('/users/5da9ea674234635bdff00000')
+        return request.get(`${ endpoints.toRead }/5da9ea674234635bdff00000`)
           .then(response => {
             expect(response.statusCode).toEqual(404)
             expect(response.body.RestException.Code).toBe("3")
@@ -1715,7 +1723,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
-        return request.post('/users/search').send({})
+        return request.post(endpoints.toSearch).send({})
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1734,7 +1742,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
-        return request.post('/users/search').send({
+        return request.post(endpoints.toSearch).send({
           name: 'Tobias de Oliveira'
         })
           .then(function(response) {
@@ -1751,7 +1759,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, por ter informado um valor de CPF inválido.", function() {
-        return request.post('/users/search').send({
+        return request.post(endpoints.toSearch).send({
           cpf: '2222222222a'
         })
           .then(function(response) {
@@ -1768,7 +1776,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
-        return request.post('/users/search').send({
+        return request.post(endpoints.toSearch).send({
           passportNumber: 'C100100--'
         })
           .then(function(response) {
@@ -1791,7 +1799,7 @@ describe("Suite de testes das rotas User.", function() {
           password: "@TobiaS&591022@",
         }
 
-        return request.post('/login').send(user)
+        return request.post(endpoints.toLogin).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1814,7 +1822,7 @@ describe("Suite de testes das rotas User.", function() {
           password: "@TobiaS&591022@"
         }
 
-        return request.post('/login').send(user)
+        return request.post(endpoints.toLogin).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 
@@ -1836,7 +1844,7 @@ describe("Suite de testes das rotas User.", function() {
           email: "tobias@gmail.com"
         }
 
-        return request.post('/login').send(user)
+        return request.post(endpoints.toLogin).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1871,7 +1879,7 @@ describe("Suite de testes das rotas User.", function() {
           city: "Rio de Janeiro",
           cpf: `${ genCPF() }`,
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -1898,7 +1906,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'user_list'
             })
 
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -1962,7 +1970,7 @@ describe("Suite de testes das rotas User.", function() {
           information: "Vivamus vitae turpis fermentum, scelerisque neque eget, aliquet nibh. In consequat, urna quis rhoncus fringilla, elit nisi tincidunt metus, a tempus nibh turpis vel orci. Sed a tellus ac odio viverra blandit. Aenean neque odio, vulputate eget quam eu, commodo aliquam sem. Integer efficitur magna vel aliquam luctus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer mollis tempor libero, a gravida orci suscipit eu. Morbi cursus odio in tempus tincidunt. Nulla facilisi."
 
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -1989,7 +1997,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'user_list'
             })
 
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -2058,7 +2066,7 @@ describe("Suite de testes das rotas User.", function() {
           state: "SP",
           city: "São Paulo"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2085,7 +2093,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'user_list'
             })
 
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -2139,7 +2147,7 @@ describe("Suite de testes das rotas User.", function() {
           phoneNumber: "11984222222",
           birthDate: "1970-06-11"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
         .then(function(responsePUT) {
           expect(responsePUT.statusCode).toEqual(200)
 
@@ -2166,7 +2174,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'user_list'
             })
 
-          return request.get(`/users/${ user.id }`)
+          return request.get(`${ endpoints.toRead }/${ user.id }`)
             .then(function(responseGET) {
               expect(responseGET.statusCode).toEqual(200)
 
@@ -2210,7 +2218,7 @@ describe("Suite de testes das rotas User.", function() {
           phoneCode: "55",
           phoneNumber: "11984222222"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2237,7 +2245,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'user_list'
             })
 
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -2275,7 +2283,7 @@ describe("Suite de testes das rotas User.", function() {
           password: "@JosiaS&654975@",
           role: '1'
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2302,7 +2310,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'user_list'
             })
 
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -2334,7 +2342,7 @@ describe("Suite de testes das rotas User.", function() {
           password: "@JosiaS&654975@",
           role: '1'
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2361,7 +2369,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'user_list'
             })
 
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -2389,7 +2397,7 @@ describe("Suite de testes das rotas User.", function() {
           name: "Josias de Oliveira",
           password: "@JosiaS&654975@"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2415,7 +2423,7 @@ describe("Suite de testes das rotas User.", function() {
               method: 'GET',
               rel: 'user_list'
             })
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -2439,7 +2447,7 @@ describe("Suite de testes das rotas User.", function() {
           id: "5da9ea674234635bdff45c02",
           name: "Josias de Oliveira Cruz"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2465,7 +2473,7 @@ describe("Suite de testes das rotas User.", function() {
               method: 'GET',
               rel: 'user_list'
             })
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -2487,7 +2495,7 @@ describe("Suite de testes das rotas User.", function() {
           name: "John Smith John",
           email: "john_sm@hotmail.com"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -2526,7 +2534,7 @@ describe("Suite de testes das rotas User.", function() {
           email: "macuna_curz@hotmail.com",
           cpf: `${ fixedCPF }`,
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -2568,7 +2576,7 @@ describe("Suite de testes das rotas User.", function() {
           city: "Saint Paul",
           passportNumber: fixedPassportNumber,
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2594,7 +2602,7 @@ describe("Suite de testes das rotas User.", function() {
               method: 'GET',
               rel: 'user_list'
             })
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 const {
                   id,
@@ -2655,7 +2663,7 @@ describe("Suite de testes das rotas User.", function() {
           email: "john_sms@hotmail.com",
           passportNumber: "303004786",
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -2698,7 +2706,7 @@ describe("Suite de testes das rotas User.", function() {
           city: "Manaus",
           cpf: fixedForeignCPF,
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -2724,7 +2732,7 @@ describe("Suite de testes das rotas User.", function() {
               method: 'GET',
               rel: 'user_list'
             })
-            return request.get(`/users/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`)
               .then(function(responseGET) {
                 const {
                   id,
@@ -2786,7 +2794,7 @@ describe("Suite de testes das rotas User.", function() {
           name: "Tobias de Oliveira",
           email: "tobias_atualizado@hotmail.com"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
             expect(response.body.RestException.Code).toBe("3")
@@ -2806,7 +2814,7 @@ describe("Suite de testes das rotas User.", function() {
           email: "mi_ronald@gmail.com",
           cpf: `${ genCPF() }`
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
             expect(response.body.RestException.Code).toBe("1")
@@ -2826,7 +2834,7 @@ describe("Suite de testes das rotas User.", function() {
           email: "macuna_curz@hotmail.com",
           passportNumber: `${ genPassportNumber() }`
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
             expect(response.body.RestException.Code).toBe("1")
@@ -2845,7 +2853,7 @@ describe("Suite de testes das rotas User.", function() {
           name: "Tobias de Oliveira",
           email: "macuna_curz@hotmail.com"
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
             expect(response.body.RestException.Code).toBe("4")
@@ -2868,7 +2876,7 @@ describe("Suite de testes das rotas User.", function() {
           city: "Belém",
           cpf: fixedCPF
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
             expect(response.body.RestException.Code).toBe("4")
@@ -2891,7 +2899,7 @@ describe("Suite de testes das rotas User.", function() {
           city: "New York City",
           passportNumber: fixedPassportNumber
         }
-        return request.put('/users').send(user)
+        return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
             expect(response.body.RestException.Code).toBe("4")
@@ -2909,7 +2917,7 @@ describe("Suite de testes das rotas User.", function() {
   describe("DELETE", function() {
     describe("Testes de SUCESSO.", function() {
       test("DELETE - Deve retornar 200.", function() {
-        return request.delete('/users/507f191e810c19729de860ea')
+        return request.delete(`${ endpoints.toDelete }/507f191e810c19729de860ea`)
           .then(function(responseDelete) {
             expect(responseDelete.statusCode).toEqual(200)
           })
@@ -2921,7 +2929,7 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de FALHA.", function() {
       test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
-        return request.delete('/users/507f191e810c19729de86444')
+        return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
             expect(response.body.RestException.Code).toBe('3')
@@ -2937,7 +2945,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("DELETE - Deve retornar 400, uma vez que o ID tem uma estrutura inválida.", function() {
-        return request.delete('/users/507f191e810*c19729de8644-')
+        return request.delete(`${ endpoints.toDelete }/91e810*c19729de8644-`)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
             expect(response.body.RestException.Code).toBe('2')
