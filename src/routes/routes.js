@@ -13,19 +13,19 @@ router.get('/', HomeController.index)
 /* ########### USER ########### */
 
 // Create
-router.post('/users', UserController.create)
+router.post('/user', UserController.create)
 
 // Read
 router.get('/users', UserController.list)
-router.get('/users/:id', UserController.read)
-router.post('/users/search', UserController.readByDoc)
+router.get('/user/:id', UserController.read)
+router.post('/user/search', UserController.readByDoc)
 router.post('/login', UserController.login)
 
 // Update
-router.put('/users', UserController.update)
+router.put('/user', UserController.update)
 
 // Delete
-router.delete('/users/:id', UserController.remove)
+router.delete('/user/:id', UserController.remove)
 
 /* ########### APARTMENT ########### */
 

@@ -6,11 +6,11 @@ const request = supertest(app)
 
 let baseURL = 'http://localhost:4000'
 let endpoints = {
-  toCreate: '/users',
-  toRead: '/users',
-  toSearch: '/users/search',
-  toUpdate: '/users',
-  toDelete: '/users',
+  toCreate: '/user',
+  toRead: '/user',
+  toSearch: '/user/search',
+  toUpdate: '/user',
+  toDelete: '/user',
   toList: '/users',
   toLogin: '/login'
 }
