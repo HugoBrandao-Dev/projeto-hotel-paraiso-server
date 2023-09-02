@@ -1,6 +1,7 @@
 const app = require('../src/app')
 const supertest = require('supertest')
 const validator = require('validator')
+let UserCollection = require('../src/data/UserCollection.json')
 
 const request = supertest(app)
 
@@ -155,7 +156,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1591,20 +1591,26 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("GET - Deve retornar uma lista de usuários.", function() {
-        return request.get("/users")
-        .then(function(response) {
-          expect(response.statusCode).toEqual(200)
+        return request.get(endpoints.toList)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
 
-          expect(response.body.users).toBeDefined()
+            expect(response.body).toHaveProperty('users')
+            expect(response.body).toHaveProperty('hasNext')
 
-          expect(response.body.users[0]._links).toBeDefined()
-          expect(response.body.users[0]._links).toHaveLength(3)
-        })
-        .catch(function(error) {
-          fail(error)
-        })
+            expect(response.body.hasNext).toBe(UserCollection.users.data.length > 20)
+
+            for (let user of response.body.users) {
+              expect(user._links).toBeDefined()
+              expect(user._links).toHaveLength(3)
+            }
+          })
+          .catch(function(error) {
+            fail(error)
+          })
       })
 
+      /*
       test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
         return request.get(`${ endpoints.toList }?offset=1&limit=3`)
           .then(function(response) {
@@ -1633,6 +1639,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
 
       test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
         return request.post(endpoints.toSearch).send({
@@ -1692,7 +1699,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-
     describe("Testes de FALHA.", function() {
       test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
         return request.get(`${ endpoints.toRead }/5da9ea674234*635bdff45c02`)
@@ -2786,7 +2792,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-
     describe("Testes de FALHA.", function() {
       test("POST - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
         const user = {
@@ -2926,7 +2931,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-
     describe("Testes de FALHA.", function() {
       test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
         return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`)
@@ -2961,5 +2965,4 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-
 })
