@@ -282,17 +282,23 @@ class UserController {
     }
   }
 
-  async list(req, res) {
+  async list(req, res, next) {
     try {
+      let hasNext = false
       let users = []
 
-      // No mongodb, skip = offset
-      if ((req.query.offset || req.query.offset == 0) && req.query.limit) {
-        let skip = req.query.offset
-        let limit = req.query.limit
-        users = await User.findMany(skip, limit)
-      } else {
-        users = await User.findMany()
+      // Skip é equivalente ao offset, no mongodb.
+      let skip = req.params.offset || 0
+
+      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
+      let limit = req.params.limit || 20
+
+      // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
+      users = await User.findMany(skip, limit + 1)
+
+      if (users.length) {
+        hasNext = users.length > (limit - skip)
+
         for (let user of users) {
           let HATEOAS = [
             {
@@ -313,12 +319,12 @@ class UserController {
           ]
           user._links = HATEOAS
         }
-      }
-      res.status(200)
-      res.json({ users })
+
+        res.status(200)
+        res.json({ users, hasNext })
+      }      
     } catch (error) {
-      throw new Error(error)
-      res.sendStatus(500)
+      next(error)
     }
   }
 
