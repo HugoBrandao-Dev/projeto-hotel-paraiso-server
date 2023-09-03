@@ -239,7 +239,7 @@ describe("Suite de teste para as Reservas.", function() {
                   user_id,
                   start,
                   end
-                } = responseGET.body.reserve
+                } = responseGET.body
 
                 expect(status).toBeDefined()
                 expect(status).toBe("reservado")
