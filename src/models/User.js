@@ -36,15 +36,8 @@ class User {
 
   async findMany(skip = null, limit = null) {
     try {
-      if (skip) {
-        if (limit) {
-          return await UserCollection.users.data.slice(skip, limit)
-        } else {
-          let userLength = await UserCollection.users.data.length
-          return await UserCollection.users.data.slice(skip, userLength)
-        }
-      }
-      return await UserCollection.users.data
+      const user = await UserCollection.users.data.slice(skip, limit)
+      return user 
     } catch (error) {
       console.log(error)
       return []
