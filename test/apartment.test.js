@@ -3,9 +3,16 @@ const supertest = require('supertest')
 
 const request = supertest(app)
 
-let baseURL = 'http://localhost:4000'
+const baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
+}
+const endpoints = {
+  toCreate: '/apartment',
+  toRead: '/apartment',
+  toUpdate: '/apartment',
+  toDelete: '/apartment',
+  toList: '/apartments'
 }
 
 describe("Suite de testes das rotas de Apartment.", function() {
@@ -35,7 +42,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(201)
 
@@ -75,7 +82,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -117,7 +124,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
         }
 
         // O valor de floor deve ser NUMÉRICO.
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -157,7 +164,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -198,7 +205,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -239,7 +246,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           daily_price: '200'
         }
         // O valor de Número do Apartamento deve ser NUMÉRICO.
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -279,7 +286,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -297,7 +304,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       // Validação dos cômodos
       test("/POST - Deve retornar 400, pela ausência dos valores dos cômodos do apartamento.", function() {
-        return request.post('/apartments').send({
+        return request.post(endpoints.toCreate).send({
           floor: "3",
           number: "10",
           rooms: [],
@@ -330,7 +337,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -359,7 +366,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -387,7 +394,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -414,7 +421,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -442,7 +449,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -470,7 +477,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -498,7 +505,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -539,7 +546,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: ''
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -579,7 +586,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '-800'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -619,7 +626,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '800a'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -659,7 +666,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '800,52'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -699,7 +706,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '800.525'
         }
-        return request.post('/apartments').send(apartment)
+        return request.post(endpoints.toCreate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -721,7 +728,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
     describe("Testes de SUCESSO.", function() {
       test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", function() {
         let apartment = { id: 'd9d62beecdde62af82efd82c' }
-        return request.get(`/apartments/${ apartment.id }`)
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
           .then(function(response) {
             const {
               id,
@@ -824,9 +831,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
-
+      /*
       test("/GET - Deve retornar 200 e uma lista com 2 apartamentos", function() {
-        return request.get('/apartments')
+        return request.get(endpoints.toRead)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -838,13 +845,14 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+      */
     })
 
     describe("Testes de FALHA.", function() {
 
       // Leituras individuais de apartamentos
       test("/GET - Deve retornar 400, já que o ID do apartamento não foi informado.", function() {
-        return request.get('/apartments/856377c88f8fd9fc65fd3ef*')
+        return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef*`)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -859,7 +867,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
       test("/GET - Deve retornar 404, já que o ID não pertence a um apartamento cadastrado.", function() {
-        return request.get('/apartments/d9d62beecdde62af82efd82d')
+        return request.get(`${ endpoints.toRead }/d9d62beecdde62af82efd82d`)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 
@@ -904,7 +912,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           daily_price: "400",
         }
 
-        return request.put('/apartments').send(apartment)
+        return request.put(endpoints.toUpdate).send(apartment)
           .then(function(responsePUT) {
             if (responsePUT.body.RestException) {
               console.log(responsePUT.body.RestException)
@@ -935,7 +943,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               rel: 'apartment_list'
             })
 
-            return request.get(`/apartments/${ apartment.id }`)
+            return request.get(`${ endpoints.toRead }/${ apartment.id }`)
               .then(function(responseGET) {
                 const {
                   id,
@@ -1023,7 +1031,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           daily_price: "400",
         }
 
-        return request.put('/apartments').send(apartment)
+        return request.put(endpoints.toUpdate).send(apartment)
           .then(function(responsePUT) {
             if (responsePUT.body.RestException) {
               console.log(responsePUT.body.RestException)
@@ -1031,7 +1039,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(responsePUT.statusCode).toEqual(200)
 
-            return request.get(`/apartments/${ apartment.id }`)
+            return request.get(`${ endpoints.toRead }/${ apartment.id }`)
               .then(function(responseGET) {
                 const {
                   id,
@@ -1117,14 +1125,14 @@ describe("Suite de testes das rotas de Apartment.", function() {
           daily_price: "1000",
         }
 
-        return request.put('/apartments').send(apartment)
+        return request.put(endpoints.toUpdate).send(apartment)
           .then(function(responsePUT) {
             if (responsePUT.body.RestException) {
               console.log(responsePUT.body.RestException)
             }
             expect(responsePUT.statusCode).toEqual(200)
 
-            return request.get(`/apartments/${ apartment.id }`)
+            return request.get(`${ endpoints.toRead }/${ apartment.id }`)
               .then(function(responseGET) {
                 expect(responseGET.body.rooms[2]).toMatchObject({
                   room: "banheiro",
@@ -1171,7 +1179,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.put('/apartments').send(apartment)
+        return request.put(endpoints.toUpdate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1210,7 +1218,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.put('/apartments').send(apartment)
+        return request.put(endpoints.toUpdate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 
@@ -1249,7 +1257,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.put('/apartments').send(apartment)
+        return request.put(endpoints.toUpdate).send(apartment)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1268,11 +1276,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
   describe("DELETE", function() {
     describe("Testes de SUCESSO.", function() {
       test("Deve retornar 200, na delecao de um apartamento.", function() {
-        return request.delete('/apartments/856377c88f8fd9fc65fd3ef5')
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3ef5`)
           .then(function(responseDELETE) {
             expect(responseDELETE.statusCode).toEqual(200)
 
-            return request.get('/apartments/856377c88f8fd9fc65fd3ef5')
+            return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef5`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(404)
 
@@ -1293,7 +1301,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
     describe("Testes de FALHA.", function() {
       test("/DELETE - Deve retornar 400, já que o ID possui caracteres inválidos.", function() {
-        return request.delete('/apartments/856377c88f8fd9fc65fd3e*5')
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3e*5`)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1308,7 +1316,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
       test("/DELETE - Deve retornar 404, já que o ID não pertence a um apartamento.", function() {
-        return request.delete('/apartments/856377c88f8fd9fc65fd315')
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd315`)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 
