@@ -7,6 +7,13 @@ let baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
+const endpoints = {
+  toCreate: '/reserve',
+  toRead: '/reserve',
+  toUpdate: '/reserve',
+  toDelete: '/reserve',
+  toList: '/reserves'
+}
 
 describe("Suite de teste para as Reservas.", function() {
   describe("READ", function() {
@@ -15,7 +22,7 @@ describe("Suite de teste para as Reservas.", function() {
       // Busca por uma única reserva, baseada no ID do apartamento.
       test("/GET - Faz a busca de uma reserva, baseada no ID do apartamento.", function() {
         const apartment = { id: '856377c88f8fd9fc65fd3ef5' }
-        return request.get(`/reserves/${ apartment.id }`)
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -74,7 +81,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       // Busca várias reservas.
       test("/GET - Deve retornar 200, na listagem de reservas.", function() {
-        return request.get('/reserves')
+        return request.get(endpoints.toList)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -91,7 +98,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       // Busca reservas que possuem um determinado Status.
       test("/GET - Deve retornar 200, na listagem de reservas LIVRES.", function() {
-        return request.get('/reserves?status=livre')
+        return request.get(`${ endpoints.toList }?status=livre`)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -106,7 +113,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS.", function() {
-        return request.get('/reserves')
+        return request.get(endpoints.toList)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -121,7 +128,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO.", function() {
-        return request.get('/reserves?status=ocupado')
+        return request.get(`${ endpoints.toList }?status=ocupado`)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -136,7 +143,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas INDISPONÍVEL.", function() {
-        return request.get('/reserves?status=indisponível')
+        return request.get(`${ endpoints.toList }?status=indisponível`)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -153,7 +160,7 @@ describe("Suite de teste para as Reservas.", function() {
 
     describe("Testes de FALHA.", function() {
       test("/GET - Deve retornar 400, pelo ID do apartamento conter caracteres inválidos.", function() {
-        return request.get('/reserves/856377c88f8fd9fc65fd3e*5')
+        return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3e*5`)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
             
@@ -168,7 +175,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       test("/GET - Deve retornar 400, pelo ID do apartamento não pertencer a um apartamento.", function() {
-        return request.get('/reserves/856377c88f8fd9fc65fd6666')
+        return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd6666`)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
             
@@ -195,7 +202,7 @@ describe("Suite de teste para as Reservas.", function() {
           end: "2024-01-30"
         }
 
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(responsePUT) {
             expect(responsePUT.statusCode).toEqual(200)
 
@@ -222,7 +229,7 @@ describe("Suite de teste para as Reservas.", function() {
               rel: 'reserve_list'
             })
 
-            return request.get(`/apartments/${ reserve.apartment_id }`)
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
 
@@ -270,7 +277,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -294,7 +301,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -319,7 +326,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -343,7 +350,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -367,7 +374,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -392,7 +399,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -416,7 +423,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -440,7 +447,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-11-12",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 
@@ -464,7 +471,7 @@ describe("Suite de teste para as Reservas.", function() {
           user_id: "600f191e810c19829de900ea",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -488,7 +495,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-12-*2",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -512,7 +519,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-08-02",
           end: "2024-01-12"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -536,7 +543,7 @@ describe("Suite de teste para as Reservas.", function() {
           user_id: "600f191e810c19829de900ea",
           start: "2023-12-01"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -560,7 +567,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-12-02",
           end: "2024-01-*2"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -584,7 +591,7 @@ describe("Suite de teste para as Reservas.", function() {
           start: "2023-12-02",
           end: "2023-12-01"
         }
-        return request.put('/reserves').send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -608,11 +615,11 @@ describe("Suite de teste para as Reservas.", function() {
       test("/DELETE - Deve retornar 200, para cancelamento/deleção da reserva.", function() {
         const apartment = { id: 'f5gee7kf7l3dl2950gbn3ckf' }
 
-        return request.delete(`/reserves/${ apartment.id }`)
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
           .then(function(responseDELETE) {
             expect(responseDELETE.statusCode).toEqual(200)
 
-            return request.get(`/reserves/${ apartment.id }`)
+            return request.get(`${ endpoints.toRead }/${ apartment.id }`)
               .then(function(responseGET) {
                 expect(responseGET.statusCode).toEqual(200)
                 expect(responseGET.body).toMatchObject({
@@ -638,7 +645,7 @@ describe("Suite de teste para as Reservas.", function() {
       test("/DELETE - Deve retornar 400, já que o ID do apartamento é inválido.", function() {
         const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
 
-        return request.delete(`/reserves/${ apartment.id }`)
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -655,7 +662,7 @@ describe("Suite de teste para as Reservas.", function() {
       test("/DELETE - Deve retornar 404, já que o ID informado não corresponde a um apartamento cadastrado.", function() {
         const apartment = { id: '27ibm1he7gl4ei9i7jcaccc' }
 
-        return request.delete(`/reserves/${ apartment.id }`)
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 
