@@ -30,17 +30,17 @@ router.delete('/user/:id', UserController.remove)
 /* ########### APARTMENT ########### */
 
 // Create
-router.post('/apartments', ApartmentController.create)
+router.post('/apartment', ApartmentController.create)
 
 // Read
-router.get('/apartments/:id', ApartmentController.read)
+router.get('/apartment/:id', ApartmentController.read)
 router.get('/apartments', ApartmentController.list)
 
 // Update
-router.put('/apartments', ApartmentController.update)
+router.put('/apartment', ApartmentController.update)
 
 // Delete
-router.delete('/apartments/:id', ApartmentController.remove)
+router.delete('/apartment/:id', ApartmentController.remove)
 
 /* ########### RESERVE ########### */
 
