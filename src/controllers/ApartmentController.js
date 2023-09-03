@@ -170,31 +170,48 @@ class ApartmentController {
 
   async list(req, res, next) {
     try {
-      let apartments = await Apartment.findMany()
-      if (apartments) {
+      let hasNext = false
+      let apartments = []
+
+      // Skip é equivalente ao offset, no mongodb.
+      let skip = req.query.offset ? parseInt(req.query.offset) : 0
+
+      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
+      let limit = req.query.limit ? parseInt(req.query.limit) : 20
+
+      // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
+      apartments = await Apartment.findMany(skip, limit + 1)
+
+      if (apartments.length) {
+        hasNext = apartments.length > (limit - skip)
+
+        // Retira o dado extra para cálculo do hasNext.
+        apartments.pop()
+
         for (let apartment of apartments) {
           let HATEOAS = [
             {
-              href: `${ baseURL }/apartments/${ apartment.id }`,
+              href: `${ baseURL }/apartment/${ apartment.id }`,
               method: 'GET',
               rel: 'self_apartment'
             },
             {
-              href: `${ baseURL }/apartments/${ apartment.id }`,
+              href: `${ baseURL }/apartment/${ apartment.id }`,
               method: 'PUT',
               rel: 'edit_apartment'
             },
             {
-              href: `${ baseURL }/apartments/${ apartment.id }`,
+              href: `${ baseURL }/apartment/${ apartment.id }`,
               method: 'DELETE',
               rel: 'delete_apartment'
-            },
+            }
           ]
           apartment._links = HATEOAS
         }
+
         res.status(200)
-        res.json({ apartments })
-      }
+        res.json({ apartments, hasNext })
+      }     
     } catch(error) {
       next(error)
     }
