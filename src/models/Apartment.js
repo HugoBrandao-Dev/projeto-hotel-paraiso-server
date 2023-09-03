@@ -45,9 +45,9 @@ class Apartment {
     }
   }
 
-  async findMany() {
+  async findMany(skip = 0, limit = 20) {
     try {
-      let apartments = ApartmentCollection.apartments.data.map(apartment => apartment)
+      let apartments = await ApartmentCollection.apartments.data.slice(skip, limit)
       return apartments
     } catch (error) {
       console.log(error)
