@@ -45,13 +45,13 @@ router.delete('/apartment/:id', ApartmentController.remove)
 /* ########### RESERVE ########### */
 
 // Read
-router.get('/reserves/:id', ReserveController.read)
+router.get('/reserve/:id', ReserveController.read)
 router.get('/reserves', ReserveController.list)
 
 // Update
-router.put('/reserves', ReserveController.update)
+router.put('/reserve', ReserveController.update)
 
 // Delete
-router.delete('/reserves/:id', ReserveController.remove)
+router.delete('/reserve/:id', ReserveController.remove)
 
 module.exports = router
