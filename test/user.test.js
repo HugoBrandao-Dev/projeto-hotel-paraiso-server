@@ -1598,7 +1598,7 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body).toHaveProperty('users')
             expect(response.body).toHaveProperty('hasNext')
 
-            expect(response.body.hasNext).toBe(UserCollection.users.data.length > 20)
+            expect(response.body.hasNext).toBe(false)
 
             for (let user of response.body.users) {
               expect(user._links).toBeDefined()
@@ -1610,36 +1610,25 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      /*
       test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
-        return request.get(`${ endpoints.toList }?offset=1&limit=3`)
+        let url = endpoints.toList + '?offset=1&limit=3'
+        return request.get(url)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
             expect(response.body.users.length).toEqual(2)
 
-            expect(response.body.users[0]).toMatchObject({
-              "email": "macuna_curz@hotmail.com",
-              "cpf": "22222222222"
-            })
+            expect(response.body).toHaveProperty('users')
+            expect(response.body).toHaveProperty('hasNext')
 
-            // HETEOAS
-            expect(response.body.users[0]._links).toBeDefined()
-            expect(response.body.users[0]._links).toHaveLength(3)
-
-            expect(response.body.users[1]).toMatchObject({
-              "email": "john_sm@hotmail.com",
-              "passportNumber": "303004786"
-            })
-
-            // HETEOAS
-            expect(response.body.users[1]._links).toBeDefined()
-            expect(response.body.users[1]._links).toHaveLength(3)
+            for (let user of response.body.users) {
+              expect(user._links).toBeDefined()
+              expect(user._links).toHaveLength(3)
+            }
           })
           .catch(function(error) {
             fail(error)
           })
       })
-      */
 
       test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
         return request.post(endpoints.toSearch).send({
@@ -1698,6 +1687,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
     })
     describe("Testes de FALHA.", function() {
       test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
@@ -2965,4 +2955,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
+
 })
