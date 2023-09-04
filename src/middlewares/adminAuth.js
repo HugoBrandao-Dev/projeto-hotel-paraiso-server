@@ -18,6 +18,21 @@ function adminAuth(req, res, next) {
 
     if (decoded.role > 0) {
       next()
+    } else {
+      if (req.params.id) {
+        if (req.params.id != decoded.id) {
+          let RestException = {
+            Code: '5',
+            Message: 'O usuário não tem autorização para visualizar as informações de outros usuários',
+            Status: '401',
+            MoreInfo: `${ projectLinks.errors }/5`
+          }
+          res.status(parseInt(RestException.Status))
+          res.json({ RestException })
+        } else {
+          next()
+        }
+      }
     }
   } else {
 
