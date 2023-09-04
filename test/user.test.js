@@ -67,7 +67,6 @@ beforeAll(() => {
 
       request.post(endpoints.toLogin).send(login)
         .then(function(responseLogin) {
-          console.log(responseLogin.body.token)
           tokens.admin = `Bearer ${ responseLogin.body.token }`
         })
         .catch(function(errorLogin) {
@@ -143,7 +142,7 @@ describe("Suite de testes das rotas User.", function() {
         const user = {
           name: "Doralice Cruz",
           email: "doralice@yahoo.com",
-          password: "@DoralicE&3659792@",
+          password: "oiqwuerowq#&134890OIU@",
           phoneCode: "1",
           phoneNumber: "2129981212",
           birthDate: "1998-04-09",
@@ -1219,7 +1218,7 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-/*
+
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
@@ -1734,7 +1733,6 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-
     })
     describe("Testes de FALHA.", function() {
       test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
@@ -1902,9 +1900,39 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
+      test("POST - Deve retornar 401, por estar tentando acessar as informações de outro Usuário.", function() {
+        let login = {
+          email: "doralice@yahoo.com",
+          password: "oiqwuerowq#&134890OIU@"
+        }
+
+        return request.post(endpoints.toLogin).send(login)
+          .then(function(responseLogin) {
+
+            expect(responseLogin.statusCode).toEqual(200)
+
+            const token = responseLogin.body.token
+
+            return request.get(`${ endpoints.toRead }/507f1f77bcf86cd799439011`).set('Authorization', `Bearer ${ token }`)
+              .then(function(responseRead) {
+                expect(responseRead.statusCode).toEqual(401)
+                expect(responseRead.body.RestException.Code).toBe('5')
+                expect(responseRead.body.RestException.Message).toBe('O usuário não tem autorização para visualizar as informações de outros usuários')
+                expect(responseRead.body.RestException.Status).toBe('401')
+                expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+          })
+          .catch(function(errorLogin) {
+            fail(errorLogin)
+          })
+      })
     })
   })
-
+/*
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {
       test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias atualizadas.", function() {
