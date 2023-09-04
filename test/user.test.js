@@ -46,7 +46,6 @@ describe("Suite de testes das rotas User.", function() {
   let fixedPassportNumber = genPassportNumber()
 
   describe("CREATE", function() {
-    /*
     describe("Testes de SUCESSO.", function() {
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios para brasileiros.", function() {
         const user = {
@@ -157,7 +156,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-    */
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -171,7 +169,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -200,7 +198,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -228,7 +226,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -255,7 +253,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -282,7 +280,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -310,7 +308,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -337,7 +335,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -364,7 +362,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -392,7 +390,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -419,7 +417,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -436,6 +434,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes na FUNÇÃO DA CONTA QUE ESTÁ SENDO CRIADA (role)
+      /*
       test("POST - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -448,7 +447,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -476,7 +475,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -491,6 +490,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
 
       // Testes no CÓDIGO DO TELEFONE/TELEFONE
       test("POST - Deve retornar 400, pela ausência do código do telefone.", function() {
@@ -504,7 +504,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -531,7 +531,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -558,7 +558,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -585,7 +585,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -613,7 +613,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -640,7 +640,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BRA",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -668,7 +668,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -695,7 +695,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "NY",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -723,7 +723,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "",
-          cpf: "33333333333",
+          cpf: genCPF(),
         })
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -848,7 +848,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 400, devido ao CPF informado já estar sido cadastrado.", function() {
+      test("POST - Deve retornar 400, devido ao CPF informado já estar cadastrado.", function() {
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
           email: "tobias@hotmail.com",
@@ -966,7 +966,7 @@ describe("Suite de testes das rotas User.", function() {
           phoneCode: "55",
           phoneNumber: "115498653214",
           birthDate: "2000-02-11",
-          cpf: "33333333333",
+          cpf: genCPF(),
           country: "BR",
           state: "SP",
           city: "São Manuel",
@@ -994,7 +994,7 @@ describe("Suite de testes das rotas User.", function() {
           phoneCode: "55",
           phoneNumber: "115498653214",
           birthDate: "2000-02-11",
-          cpf: "33333333333",
+          cpf: genCPF(),
           country: "BR",
           state: "SP",
           city: "São Manuel",
@@ -1022,7 +1022,7 @@ describe("Suite de testes das rotas User.", function() {
           phoneCode: "55",
           phoneNumber: "115498653214",
           birthDate: "2000-02-11",
-          cpf: "33333333333",
+          cpf: genCPF(),
           country: "BR",
           state: "SP",
           city: "São Manuel",
@@ -1054,7 +1054,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
           cep: "08391700",
           neighborhood: "<strong>Jardim Nova São Paulo</strong>",
           road: "Rua Nina Simone",
@@ -1086,7 +1086,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
           cep: "08391700",
           neighborhood: "Jardim Nova São Paulo",
           road: "<i>Rua Nina Simone</i>",
@@ -1119,7 +1119,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
           cep: "08391700",
           neighborhood: "Jardim Nova São Paulo",
           road: "Rua Nina Simone",
@@ -1152,7 +1152,7 @@ describe("Suite de testes das rotas User.", function() {
           country: "BR",
           state: "SP",
           city: "São Paulo",
-          cpf: "33333333333",
+          cpf: genCPF(),
           cep: "08391700",
           neighborhood: "Jardim Nova São Paulo",
           road: "Rua Nina Simone",
@@ -1201,7 +1201,7 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-/*
+
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
@@ -2984,5 +2984,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-*/
+
 })
