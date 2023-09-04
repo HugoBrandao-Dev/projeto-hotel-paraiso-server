@@ -183,10 +183,11 @@ class Analyzer {
     0 - cliente
     1 - funcionário
     2 - gerente
-    3 - dono / admin
+    3 - dono
+    4 - admin
     */
     let itsValid = validator.isInt(role, {
-      max: 3,
+      max: 4,
       min: 0
     })
     if (!itsValid) {
