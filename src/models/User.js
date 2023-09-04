@@ -59,6 +59,16 @@ class User {
     }
   }
 
+  async findByRole(role) {
+    try {
+      let users = await UserCollection.users.data.filter(user => user.role == role)
+      return users
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+  }
+
   async edit(user) {
     try {
       const date = new DateFormated('mongodb')
