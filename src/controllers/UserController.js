@@ -7,8 +7,14 @@ let baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
-
 const secret = 'k372gkhcfmhg6l9nj19i51ng'
+const roles = {
+  cliente: 0,
+  funcionário: 1,
+  gerente: 2,
+  proprietário: 3,
+  admin: 4
+}
 
 // Models
 const User = require('../models/User')
@@ -38,10 +44,18 @@ class UserController {
       }
 
       // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
-      let role = req.body.role == undefined ? '0' : req.body.role
-      let roleResult = Analyzer.analyzeUserRole(role)
-      if (roleResult.hasError.value) {
-        errorFields.push(roleResult)
+      let role = null
+      if (req.body.role) {
+        let roleResult = Analyzer.analyzeUserRole(role)
+        if (roleResult.hasError.value) {
+          errorFields.push(roleResult)
+        }
+      } else {
+        // Busca por usuários com privilégio de Admin.
+        let adminUsers = await User.findByRole(roles.admin)
+
+        // Verifica se há algum usuário Admin cadastrado.
+        role = adminUsers.length > 0 ? '0' : '4'
       }
 
       let passwordResult = await Analyzer.analyzeUserPassword(req.body.password)
@@ -159,7 +173,7 @@ class UserController {
         user.name = req.body.name
         user.email = req.body.email
         user.password = hash
-        user.role = req.body.role
+        user.role = role
         user.phoneCode = req.body.phoneCode
         user.phoneNumber = req.body.phoneNumber
         user.birthDate = req.body.birthDate
