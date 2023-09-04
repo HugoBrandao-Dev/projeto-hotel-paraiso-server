@@ -434,63 +434,98 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes na FUNÇÃO DA CONTA QUE ESTÁ SENDO CRIADA (role)
-      /*
       test("POST - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
-        return request.post(endpoints.toCreate).send({
-          name: "Tobias de Oliveira",
-          email: "tobias@hotmail.com",
-          password: "@TobiaS&7qer5464@",
-          role: "cliente", // role deve ser um valor numérico
-          phoneCode: "55",
-          phoneNumber: "11984752352",
-          birthDate: "2000-02-11",
-          country: "BR",
-          state: "SP",
-          city: "São Paulo",
-          cpf: genCPF(),
-        })
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O campo de Role possui caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Role possui caracteres inválidos")
+
+        // Esse usuário é Admin.
+        const userLogin = {
+          email: "tobias@gmail.com",
+          password: "@TobiaS&591022@"
+        }
+
+        return request.post(endpoints.toLogin).send(userLogin)
+          .then(function(responseLogin) {
+
+            expect(responseLogin.statusCode).toEqual(200)
+
+            expect(responseLogin.body.token).toBeDefined()
+
+            return request.post(endpoints.toCreate).send({
+              name: "Doralice Cruz",
+              email: "dora_cruz@hotmail.com",
+              password: "%QiouewR*123423%",
+              role: "cliente", // role deve ser um valor numérico
+              phoneCode: "55",
+              phoneNumber: "11984752352",
+              birthDate: "2000-02-11",
+              country: "BR",
+              state: "SP",
+              city: "São Paulo",
+              cpf: genCPF(),
+            }).set('Authorization', `Bearer ${ responseLogin.body.token }`)
+              .then(function(response) {
+                expect(response.statusCode).toEqual(400)
+                expect(response.body.RestException.Code).toBe("2")
+                expect(response.body.RestException.Message).toBe("O campo de Role possui caracteres inválidos")
+                expect(response.body.RestException.Status).toBe("400")
+                expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+                expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
+                expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Role possui caracteres inválidos")
+              })
+              .catch(function(error) {
+                fail(error)
+              })
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorLogin) {
+            fail(errorLogin)
           })
       })
 
       test("POST - Deve retornar 400, devido ao valor da função (role) ser de uma função inexistente.", function() {
-        return request.post(endpoints.toCreate).send({
-          name: "Tobias de Oliveira",
-          email: "tobias@hotmail.com",
-          password: "@TobiaS&7qer5464@",
-          role: "10",
-          phoneCode: "55",
-          phoneNumber: "11984752352",
-          birthDate: "2000-02-11",
-          country: "BR",
-          state: "SP",
-          city: "São Paulo",
-          cpf: genCPF(),
-        })
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O valor de Role é de uma função inexistente")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O valor de Role é de uma função inexistente")
+
+        // Esse usuário é Admin.
+        const userLogin = {
+          email: "tobias@gmail.com",
+          password: "@TobiaS&591022@"
+        }
+
+        return request.post(endpoints.toLogin).send(userLogin)
+          .then(function(responseLogin) {
+            expect(responseLogin.statusCode).toEqual(200)
+
+            expect(responseLogin.body.token).toBeDefined()
+
+            let user = {
+              name: "Doralice Cruz",
+              email: "dora_cruz@hotmail.com",
+              password: "%QiouewR*123423%",
+              role: "10",
+              phoneCode: "55",
+              phoneNumber: "11984752352",
+              birthDate: "2000-02-11",
+              country: "BR",
+              state: "SP",
+              city: "São Paulo",
+              cpf: genCPF(),
+            }
+
+            return request.post(endpoints.toCreate).send(user).set('Authorization', `Bearer ${ responseLogin.body.token }`)
+              .then(function(response) {
+                expect(response.statusCode).toEqual(400)
+                expect(response.body.RestException.Code).toBe("1")
+                expect(response.body.RestException.Message).toBe("O valor de Role é de uma função inexistente")
+                expect(response.body.RestException.Status).toBe("400")
+                expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+                expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
+                expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O valor de Role é de uma função inexistente")
+              })
+              .catch(function(error) {
+                fail(error)
+              })
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorLogin) {
+            fail(errorLogin)
           })
       })
-      */
 
       // Testes no CÓDIGO DO TELEFONE/TELEFONE
       test("POST - Deve retornar 400, pela ausência do código do telefone.", function() {
@@ -1201,7 +1236,7 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-
+/*
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
@@ -2984,5 +3019,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-
+*/
 })

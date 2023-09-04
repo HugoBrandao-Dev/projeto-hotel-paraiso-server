@@ -10,7 +10,15 @@ function adminAuth(req, res, next) {
   const authToken = req.headers['authorization']
 
   if (authToken) {
-    
+
+    // Pega somente o token, excluindo o 'Bearer'.
+    const token = authToken.split(' ')[1]
+
+    const decoded = jwt.verify(token, secret)
+
+    if (decoded.role > 0) {
+      next()
+    }
   } else {
 
     // Verifica se um CLIENTE COMUM que está tentando alterar a Função.

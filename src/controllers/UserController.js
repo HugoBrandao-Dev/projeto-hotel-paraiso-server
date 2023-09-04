@@ -46,11 +46,14 @@ class UserController {
       // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
       let role = null
       if (req.body.role) {
-        let roleResult = Analyzer.analyzeUserRole(role)
+        let roleResult = Analyzer.analyzeUserRole(req.body.role)
         if (roleResult.hasError.value) {
           errorFields.push(roleResult)
+        } else {
+          role = req.body.role
         }
       } else {
+        
         // Busca por usuários com privilégio de Admin.
         let adminUsers = await User.findByRole(roles.admin)
 
