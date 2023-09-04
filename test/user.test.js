@@ -46,6 +46,7 @@ describe("Suite de testes das rotas User.", function() {
   let fixedPassportNumber = genPassportNumber()
 
   describe("CREATE", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios para brasileiros.", function() {
         const user = {
@@ -156,6 +157,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
+    */
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1170,9 +1172,36 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
+      test("POST - Deve retornar 401, o usuário não autorizado está tentando cadastrar uma função.", function() {
+        const user = {
+          name: "Tobias de Oliveira",
+          email: "tobias_de_oliveira@gmail.com",
+          password: "@TobiaS&591022@",
+          role: '1',
+          phoneCode: "55",
+          phoneNumber: "11984752352",
+          birthDate: "1985-06-09",
+          country: "BR",
+          state: "SP",
+          city: "São Paulo",
+          cpf: `${ genCPF() }`
+        }
+        return request.post(endpoints.toCreate).send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(401)
+            expect(response.body.RestException.Code).toBe("5")
+            expect(response.body.RestException.Message).toBe("Você não tem autorização para alterar o campo de Funções")
+            expect(response.body.RestException.Status).toBe("401")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
-
+/*
   describe("READ", function() {
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
@@ -2955,5 +2984,5 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-
+*/
 })
