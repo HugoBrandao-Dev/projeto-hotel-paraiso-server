@@ -14,7 +14,7 @@ router.get('/', HomeController.index)
 /* ########### USER ########### */
 
 // Create
-router.post('/user', AdminAuth, UserController.create)
+router.post('/user', UserController.create)
 
 // Read
 router.get('/user/:id', AdminAuth, UserController.read)
