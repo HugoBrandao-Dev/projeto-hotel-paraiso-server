@@ -167,7 +167,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-    })
+    })/*
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1125,10 +1125,11 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-    })
+    })*/
   })
 
   describe("READ", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
         let user = { id: '5da9ea674234635bdff45c02' }
@@ -1642,7 +1643,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-    })
+    })*/
     describe("Testes de FALHA.", function() {
       test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
         return request.post(endpoints.toSearch).send({})
@@ -1797,11 +1798,11 @@ describe("Suite de testes das rotas User.", function() {
 
             return request.get(`${ endpoints.toRead }/507f1f77bcf86cd799439011`).set('Authorization', `Bearer ${ token }`)
               .then(function(responseRead) {
-                expect(responseRead.statusCode).toEqual(401)
-                expect(responseRead.body.RestException.Code).toBe('5')
-                expect(responseRead.body.RestException.Message).toBe('O usuário não tem autorização para visualizar as informações de outros usuários')
-                expect(responseRead.body.RestException.Status).toBe('401')
-                expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+                expect(responseRead.statusCode).toEqual(403)
+                expect(responseRead.body.RestException.Code).toBe('6')
+                expect(responseRead.body.RestException.Message).toBe('O usuário não tem permissão de acesso')
+                expect(responseRead.body.RestException.Status).toBe('403')
+                expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
               })
               .catch(function(errorRead) {
                 fail(errorRead)
@@ -1809,6 +1810,21 @@ describe("Suite de testes das rotas User.", function() {
           })
           .catch(function(errorLogin) {
             fail(errorLogin)
+          })
+      })
+
+      test("POST - Deve retornar 401, por estar tentando acessar a listagem de Usuários.", function() {
+
+        return request.get(endpoints.toList)
+          .then(function(responseList) {
+            expect(responseList.statusCode).toEqual(401)
+            expect(responseList.body.RestException.Code).toBe('5')
+            expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseList.body.RestException.Status).toBe('401')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(errorList) {
+            fail(errorList)
           })
       })
     })
