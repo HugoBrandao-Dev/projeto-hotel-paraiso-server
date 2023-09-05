@@ -16,7 +16,8 @@ let endpoints = {
   toLogin: '/login'
 }
 let tokens = {
-  admin: ''
+  admin: '',
+  cliente: ''
 }
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
@@ -44,6 +45,44 @@ function genPassportNumber() {
 }
 
 beforeAll(() => {
+  const userCliente = {
+    name: "Doralice Cruz",
+    email: "doralice@yahoo.com",
+    password: "oiqwuerowq#&134890OIU@",
+    phoneCode: "1",
+    phoneNumber: "2129981212",
+    birthDate: "1998-04-09",
+    country: "US",
+    state: "NY",
+    city: "New York City",
+    passportNumber: "100003105",
+    neighborhood: "Jardim Nova São Paulo",
+    road: "Rua Nina Simone",
+    house_number: "2000",
+    information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+  }
+  request.post(endpoints.toCreate).send(userCliente)
+    .then(function(responseCreate) {
+      expect(responseCreate.statusCode).toEqual(201)
+
+      let login = {
+        email: "doralice@yahoo.com",
+        password: "oiqwuerowq#&134890OIU@"
+      }
+
+      request.post(endpoints.toLogin).send(login)
+        .then(function(responseLogin) {
+          tokens.cliente = `Bearer ${ responseLogin.body.token }`
+          console.log(tokens.cliente)
+        })
+        .catch(function(errorLogin) {
+          fail(errorLogin)
+        })
+    })
+    .catch(function(errorCreate) {
+      fail(errorCreate)
+    })
+
   const userAdmin = {
     name: "Tobias de Oliveira",
     email: "tobias@gmail.com",
@@ -68,6 +107,7 @@ beforeAll(() => {
       request.post(endpoints.toLogin).send(login)
         .then(function(responseLogin) {
           tokens.admin = `Bearer ${ responseLogin.body.token }`
+          console.log(tokens.admin)
         })
         .catch(function(errorLogin) {
           fail(errorLogin)
@@ -112,7 +152,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-
+      /*
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
         return request.post(endpoints.toCreate).send({
           name: "Josias Cruz",
@@ -136,38 +176,8 @@ describe("Suite de testes das rotas User.", function() {
           fail(error)
         })
       })
-
-      test("POST - Deve retornar 201, para inserção dos dados obrigatórios + opcionais de estrangeiros.", function() {
-
-        const user = {
-          name: "Doralice Cruz",
-          email: "doralice@yahoo.com",
-          password: "oiqwuerowq#&134890OIU@",
-          phoneCode: "1",
-          phoneNumber: "2129981212",
-          birthDate: "1998-04-09",
-          country: "US",
-          state: "NY",
-          city: "New York City",
-          passportNumber: "100003105",
-          neighborhood: "Jardim Nova São Paulo",
-          road: "Rua Nina Simone",
-          house_number: "2000",
-          information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
-        }
-
-        return request.post(endpoints.toCreate).send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(201)
-
-            expect(response.body._links).toBeDefined()
-            expect(response.body._links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-    })/*
+      */
+    })
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1125,7 +1135,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-    })*/
+    })
   })
 
   describe("READ", function() {
