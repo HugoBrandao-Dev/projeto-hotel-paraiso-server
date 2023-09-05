@@ -18,7 +18,7 @@ router.post('/user', UserController.create)
 
 // Read
 router.get('/user/:id', AdminAuth, UserController.read)
-router.get('/users', UserController.list)
+router.get('/users', AdminAuth, UserController.list)
 router.post('/user/search', UserController.readByDoc)
 router.post('/login', UserController.login)
 
