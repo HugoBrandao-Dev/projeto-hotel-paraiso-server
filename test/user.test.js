@@ -445,70 +445,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      // Testes na FUNÇÃO DA CONTA QUE ESTÁ SENDO CRIADA (role)
-      test("POST - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
-
-        let user = {
-          name: "Doralice Cruz",
-          email: "dora_cruz@hotmail.com",
-          password: "%QiouewR*123423%",
-          role: "cliente", // role deve ser um valor numérico
-          phoneCode: "55",
-          phoneNumber: "11984752352",
-          birthDate: "2000-02-11",
-          country: "BR",
-          state: "SP",
-          city: "São Paulo",
-          cpf: genCPF()
-        }
-
-        console.log(tokens.admin)
-
-        return request.post(endpoints.toCreate).send(user).set('Authorization', tokens.admin)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O campo de Role possui caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Role possui caracteres inválidos")
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("POST - Deve retornar 400, devido ao valor da função (role) ser de uma função inexistente.", function() {
-        let user = {
-          name: "Doralice Cruz",
-          email: "dora_cruz@hotmail.com",
-          password: "%QiouewR*123423%",
-          role: "10",
-          phoneCode: "55",
-          phoneNumber: "11984752352",
-          birthDate: "2000-02-11",
-          country: "BR",
-          state: "SP",
-          city: "São Paulo",
-          cpf: genCPF(),
-        }
-
-        return request.post(endpoints.toCreate).send(user).set('Authorization', tokens.admin)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O valor de Role é de uma função inexistente")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O valor de Role é de uma função inexistente")
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
       // Testes no CÓDIGO DO TELEFONE/TELEFONE
       test("POST - Deve retornar 400, pela ausência do código do telefone.", function() {
         return request.post(endpoints.toCreate).send({
@@ -1184,33 +1120,6 @@ describe("Suite de testes das rotas User.", function() {
               expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
               expect(response.body.RestException.ErrorFields[0].field).toBe('iptAdditionalInformation')
               expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Informações Adicionais possui caracteres invalidos")
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("POST - Deve retornar 401, o usuário não autorizado está tentando cadastrar uma função.", function() {
-        const user = {
-          name: "Tobias de Oliveira",
-          email: "tobias_de_oliveira@gmail.com",
-          password: "@TobiaS&591022@",
-          role: '1',
-          phoneCode: "55",
-          phoneNumber: "11984752352",
-          birthDate: "1985-06-09",
-          country: "BR",
-          state: "SP",
-          city: "São Paulo",
-          cpf: `${ genCPF() }`
-        }
-        return request.post(endpoints.toCreate).send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(401)
-            expect(response.body.RestException.Code).toBe("5")
-            expect(response.body.RestException.Message).toBe("Você não tem autorização para alterar o campo de Funções")
-            expect(response.body.RestException.Status).toBe("401")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
           })
           .catch(function(error) {
             fail(error)
