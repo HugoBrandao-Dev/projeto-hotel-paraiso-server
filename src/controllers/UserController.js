@@ -158,6 +158,7 @@ class UserController {
         user.name = req.body.name
         user.email = req.body.email
         user.password = hash
+        user.role = '0' // A conta será do tipo cliente.
         user.phoneCode = req.body.phoneCode
         user.phoneNumber = req.body.phoneNumber
         user.birthDate = req.body.birthDate
