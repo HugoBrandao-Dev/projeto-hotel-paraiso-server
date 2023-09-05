@@ -153,6 +153,12 @@ class UserController {
         let salt = bcrypt.genSaltSync(5)
         let hash = bcrypt.hashSync(req.body.password, salt)
 
+        // Busca por usuários com privilégio de Admin.
+        const adminUsers = await User.findByRole(roles.admin)
+
+        // Se não houver admin, será criado um, caso contrário será criado uma conta de cliente.
+        const role = adminUsers.length > 0 ? '0' : '4'
+
         // OBRIGATÓRIOS
         user.id = uuid.v4()
         user.name = req.body.name
