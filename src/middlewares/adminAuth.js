@@ -22,10 +22,10 @@ function adminAuth(req, res, next) {
       if (req.params.id) {
         if (req.params.id != decoded.id) {
           let RestException = {
-            Code: '5',
-            Message: 'O usuário não tem autorização para visualizar as informações de outros usuários',
-            Status: '401',
-            MoreInfo: `${ projectLinks.errors }/5`
+            Code: '6',
+            Message: 'O usuário não tem permissão de acesso',
+            Status: '403',
+            MoreInfo: `${ projectLinks.errors }/6`
           }
           res.status(parseInt(RestException.Status))
           res.json({ RestException })
@@ -35,20 +35,14 @@ function adminAuth(req, res, next) {
       }
     }
   } else {
-
-    // Verifica se um CLIENTE COMUM que está tentando alterar a Função.
-    if (req.body.role) {
-      let RestException = {
-        Code: '5',
-        Message: 'Você não tem autorização para alterar o campo de Funções',
-        Status: '401',
-        MoreInfo: `${ projectLinks.errors }/5`
-      }
-      res.status(parseInt(RestException.Status))
-      res.json({ RestException })
-    } else {
-      next()
+    let RestException = {
+      Code: '5',
+      Message: 'O usuário não está autorizado',
+      Status: '401',
+      MoreInfo: `${ projectLinks.errors }/5`
     }
+    res.status(parseInt(RestException.Status))
+    res.json({ RestException })
   }
 }
 
