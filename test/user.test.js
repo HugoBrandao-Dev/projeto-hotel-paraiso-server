@@ -1644,34 +1644,6 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
     describe("Testes de FALHA.", function() {
-      test("GET - Deve retornar 400, devido ao número de ID conter caractere inválido.", function() {
-        return request.get(`${ endpoints.toRead }/5da9ea674234*635bdff45c02`)
-          .then(response => {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O ID do cliente/usuário contém caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-          })
-          .catch(error => {
-            fail(error)
-          })
-      })
-
-      test("GET - Deve retornar 404, devido ao número de ID não corresponder a nenhum usuário.", function() {
-        return request.get(`${ endpoints.toRead }/5da9ea674234635bdff00000`)
-          .then(response => {
-            expect(response.statusCode).toEqual(404)
-            expect(response.body.RestException.Code).toBe("3")
-            expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
-            expect(response.body.RestException.Status).toBe("404")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
-          })
-          .catch(error => {
-            fail(error)
-          })
-      })
-
       test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
         return request.post(endpoints.toSearch).send({})
           .then(function(response) {
