@@ -14,26 +14,30 @@ function adminAuth(req, res, next) {
     // Pega somente o token, excluindo o 'Bearer'.
     const token = authToken.split(' ')[1]
 
-    const decoded = jwt.verify(token, secret)
-
-    if (decoded.role > 0) {
-      next()
-    } else {
-      if (req.params.id) {
-        if (req.params.id != decoded.id) {
-          let RestException = {
-            Code: '6',
-            Message: 'O usuário não tem permissão de acesso',
-            Status: '403',
-            MoreInfo: `${ projectLinks.errors }/6`
-          }
-          res.status(parseInt(RestException.Status))
-          res.json({ RestException })
-        } else {
+    jwt.verify(token, secret, function(error, decoded) {
+      if (error) {
+        console.log(error)
+      } else {
+        if (decoded.role > 0) {
           next()
+        } else {
+          if (req.params.id) {
+            if (req.params.id != decoded.id) {
+              let RestException = {
+                Code: '6',
+                Message: 'O usuário não tem permissão de acesso',
+                Status: '403',
+                MoreInfo: `${ projectLinks.errors }/6`
+              }
+              res.status(parseInt(RestException.Status))
+              res.json({ RestException })
+            } else {
+              next()
+            }
+          }
         }
       }
-    }
+    })
   } else {
     let RestException = {
       Code: '5',
