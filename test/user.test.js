@@ -133,9 +133,9 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-      /*
       test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
-        return request.post(endpoints.toCreate).send({
+
+        const user = {
           name: "Josias Cruz",
           email: "josias_cruz@hotmail.com",
           password: "@JosiaS&3659792@",
@@ -145,19 +145,21 @@ describe("Suite de testes das rotas User.", function() {
           country: "US",
           state: "NY",
           city: "New York City",
-          passportNumber: "100003106",
-        })
+          passportNumber: Generator.genPassportNumber(),
+        }
+
+        return request.post(endpoints.toCreate).send(user)
         .then(function(response) {
           expect(response.statusCode).toEqual(201)
 
           expect(response.body._links).toBeDefined()
-          expect(response.body._links).toHaveLength(4)
+          expect(response.body._links).toHaveLength(3)
         })
         .catch(function(error) {
           fail(error)
         })
       })
-      */
+
     })
     describe("Testes de FALHA.", function() {
       // Testes no NOME
