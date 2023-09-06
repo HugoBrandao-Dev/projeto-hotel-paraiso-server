@@ -1,5 +1,5 @@
 const Analyzer = require('../tools/Analyzer')
-const uuid = require('uuid')
+const Generator = require('../tools/Generator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
@@ -160,7 +160,7 @@ class UserController {
         const role = adminUsers.length > 0 ? '0' : '4'
 
         // OBRIGATÓRIOS
-        user.id = await uuid.v4()
+        user.id = await Generator.genID()
         user.name = req.body.name
         user.email = req.body.email
         user.password = hash
