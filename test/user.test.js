@@ -1738,32 +1738,16 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("POST - Deve retornar 401, por estar tentando acessar as informações de outro Usuário.", function() {
-        let login = {
-          email: "doralice@yahoo.com",
-          password: "oiqwuerowq#&134890OIU@"
-        }
-
-        return request.post(endpoints.toLogin).send(login)
-          .then(function(responseLogin) {
-
-            expect(responseLogin.statusCode).toEqual(200)
-
-            const token = responseLogin.body.token
-
-            return request.get(`${ endpoints.toRead }/507f1f77bcf86cd799439011`).set('Authorization', `Bearer ${ token }`)
-              .then(function(responseRead) {
-                expect(responseRead.statusCode).toEqual(403)
-                expect(responseRead.body.RestException.Code).toBe('6')
-                expect(responseRead.body.RestException.Message).toBe('O usuário não tem permissão de acesso')
-                expect(responseRead.body.RestException.Status).toBe('403')
-                expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
+        return request.get(`${ endpoints.toRead }/507f1f77bcf86cd799439011`).set('Authorization', tokens.cliente)
+          .then(function(responseRead) {
+            expect(responseRead.statusCode).toEqual(403)
+            expect(responseRead.body.RestException.Code).toBe('6')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não tem permissão de acesso')
+            expect(responseRead.body.RestException.Status).toBe('403')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
           })
-          .catch(function(errorLogin) {
-            fail(errorLogin)
+          .catch(function(errorRead) {
+            fail(errorRead)
           })
       })
 
