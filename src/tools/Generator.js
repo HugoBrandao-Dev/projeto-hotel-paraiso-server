@@ -6,6 +6,15 @@ class Generator {
       console.log(error)
     }
   }
+
+  static genCPF() {
+    let cpf = ''
+      for (let v = 1; v <= 11; v++) {
+        let num = Math.floor(Math.random() * 10)
+        cpf += num
+      }
+    return cpf
+  }
 }
 
 module.exports = Generator
