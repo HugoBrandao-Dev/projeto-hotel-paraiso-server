@@ -27,18 +27,6 @@ const projectLinks = {
 
 jest.setTimeout(10000)
 
-function genPassportNumber() {
-  let found = false
-  while (!found) {
-    let num = `${ Math.floor(Math.random() * ((499999999 + 1) - 300000000)) + 300000000 }`
-    let isValid = validator.isPassportNumber(num, 'US')
-    if (isValid) {
-      found = true
-      return num
-    }
-  }
-}
-
 beforeAll(() => {
   const userCliente = {
     name: "Doralice Cruz",
@@ -113,7 +101,7 @@ beforeAll(() => {
 
 describe("Suite de testes das rotas User.", function() {
   let fixedCPF = Generator.genCPF()
-  let fixedPassportNumber = genPassportNumber()
+  let fixedPassportNumber = Generator.genPassportNumber()
 
   describe("CREATE", function() {
     describe("Testes de SUCESSO.", function() {
@@ -2732,7 +2720,7 @@ describe("Suite de testes das rotas User.", function() {
           id: "507f1f77bcf86cd799439011",
           name: "Macunaíma Cruz",
           email: "macuna_curz@hotmail.com",
-          passportNumber: `${ genPassportNumber() }`
+          passportNumber: `${ Generator.genPassportNumber() }`
         }
         return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
