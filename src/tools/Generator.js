@@ -1,5 +1,7 @@
 const validator = require('validator')
 
+const baseURL = 'http://localhost:4000'
+
 class Generator {
   static async genID() {
     try {
@@ -28,6 +30,36 @@ class Generator {
         return num
       }
     }
+  }
+
+  static genHATEOAS(id, plural, singular, toAdmin = false) {
+    let HATEOAS = [
+      {
+        href: `${ baseURL }/${ singular }/${ id }`,
+        method: 'GET',
+        rel: 'self_user'
+      },
+      {
+        href: `${ baseURL }/${ singular }/${ id }`,
+        method: 'PUT',
+        rel: 'edit_user'
+      },
+      {
+        href: `${ baseURL }/${ singular }/${ id }`,
+        method: 'DELETE',
+        rel: 'delete_user'
+      },
+    ]
+
+    if (toAdmin) {
+      HATEOAS.push({
+        href: `${ baseURL }/${ plural }`,
+        method: 'GET',
+        rel: 'user_list'
+      })
+    }
+
+    return HATEOAS
   }
 }
 
