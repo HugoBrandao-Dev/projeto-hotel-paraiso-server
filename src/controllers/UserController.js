@@ -160,11 +160,11 @@ class UserController {
         const role = adminUsers.length > 0 ? '0' : '4'
 
         // OBRIGATÓRIOS
-        user.id = uuid.v4()
+        user.id = await uuid.v4()
         user.name = req.body.name
         user.email = req.body.email
         user.password = hash
-        user.role = '0' // A conta será do tipo cliente.
+        user.role = role
         user.phoneCode = req.body.phoneCode
         user.phoneNumber = req.body.phoneNumber
         user.birthDate = req.body.birthDate
@@ -276,6 +276,12 @@ class UserController {
               rel: 'user_list'
             }
           ]
+
+          // Delete a informação da Função da conta para usuário CLIENTE.
+          if (user.role == 0) {
+            delete user.role
+          }
+
           user._links = HATEOAS
           res.status(200)
           res.json(user)
@@ -824,15 +830,40 @@ class UserController {
       }
 
       const user = await User.findByDoc({ email })
-      const token = jwt.sign({
+      const token = await jwt.sign({
         id: user.id,
         email: user.email,
         role: user.role
       }, secret, {
         expiresIn: '24h'
       })
+
+      let response = { token }
+
+      if (user.role == 0) {
+        let HATEOAS = [
+          {
+            href: `${ baseURL }/user/${ user.id }`,
+            method: 'GET',
+            rel: 'self_user'
+          },
+          {
+            href: `${ baseURL }/user/${ user.id }`,
+            method: 'PUT',
+            rel: 'edit_user'
+          },
+          {
+            href: `${ baseURL }/user/${ user.id }`,
+            method: 'DELETE',
+            rel: 'delete_user'
+          }
+        ]
+
+        response._links = HATEOAS
+      }
+
       res.status(200)
-      res.json({ token })
+      res.json(response)
     } catch (error) {
       next(error)
     }
