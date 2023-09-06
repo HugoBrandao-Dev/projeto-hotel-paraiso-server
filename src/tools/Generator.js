@@ -1,3 +1,5 @@
+const validator = require('validator')
+
 class Generator {
   static async genID() {
     try {
@@ -14,6 +16,18 @@ class Generator {
         cpf += num
       }
     return cpf
+  }
+
+  static genPassportNumber() {
+    let found = false
+    while (!found) {
+      let num = `${ Math.floor(Math.random() * ((499999999 + 1) - 300000000)) + 300000000 }`
+      let isValid = validator.isPassportNumber(num, 'US')
+      if (isValid) {
+        found = true
+        return num
+      }
+    }
   }
 }
 
