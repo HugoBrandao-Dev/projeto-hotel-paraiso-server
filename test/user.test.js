@@ -73,7 +73,6 @@ beforeAll(() => {
       request.post(endpoints.toLogin).send(login)
         .then(function(responseLogin) {
           tokens.cliente = `Bearer ${ responseLogin.body.token }`
-          console.log(tokens.cliente)
         })
         .catch(function(errorLogin) {
           fail(errorLogin)
@@ -107,7 +106,6 @@ beforeAll(() => {
       request.post(endpoints.toLogin).send(login)
         .then(function(responseLogin) {
           tokens.admin = `Bearer ${ responseLogin.body.token }`
-          console.log(tokens.admin)
         })
         .catch(function(errorLogin) {
           fail(errorLogin)
@@ -129,7 +127,7 @@ describe("Suite de testes das rotas User.", function() {
         const user = {
           name: "Dinorá de Oliveira",
           email: "dino_oli@hotmail.com",
-          password: "@DinorA&591022@",
+          password: "@QowierU12873094&28374@",
           phoneCode: "55",
           phoneNumber: "11999847523",
           birthDate: "1985-06-09",
@@ -1139,118 +1137,63 @@ describe("Suite de testes das rotas User.", function() {
   })
 
   describe("READ", function() {
-    /*
+    
     describe("Testes de SUCESSO.", function() {
-      test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário Brasileiro.", function() {
-        let user = { id: '5da9ea674234635bdff45c02' }
-        return request.get(`${ endpoints.toRead }/${ user.id }`)
-        .then(response => {
-          let {
-            id,
-            name,
-            email,
-            birthDate,
-            phoneCode,
-            phoneNumber,
-            country,
-            cep,
-            state,
-            city,
-            cpf,
-            passportNumber,
-            neighborhood,
-            road,
-            house_number,
-            information,
-            created,
-            updated,
-            _links
-          } = response.body
+      test("GET - Deve retornar 200 para usuário que buscam suas próprias informações.", function() {
 
-          expect(response.statusCode).toEqual(200)
+        let login = {
+          email: "dino_oli@hotmail.com",
+          password: "@QowierU12873094&28374@"
+        }
 
-          expect(id).toBeDefined()
-          expect(id).toBe(user.id)
+        return request.post(endpoints.toLogin).send(login)
+          .then(function(responseLogin) {
 
-          // Nome
-          expect(name).toBeDefined()
-          expect(name).toBe("Jeremias de Oliveira")
+            expect(responseLogin.statusCode).toEqual(200)
 
-          // Email
-          expect(email).toBeDefined()
-          expect(email).toBe("jere_oliveira@yahoo.com")
+            let { _links } = responseLogin.body
+            
+            let user_id = _links[0].href.split('/').pop()
 
-          // Data de nascimento
-          expect(birthDate).toBeDefined()
-          expect(birthDate).toBe("1999-08-03")
+            return request.get(`${ endpoints.toRead }/${ user_id }`).set('Authorization', `Bearer ${ responseLogin.body.token }`)
+              .then(response => {
 
-          // CEP do cliente
-          expect(cep).toBeDefined()
-          expect(cep).toBe("08391700")
+                expect(response.statusCode).toEqual(200)
 
-          // Código do país do telefone de contato
-          expect(phoneCode).toBeDefined()
-          expect(phoneCode).toBe("55")
+                expect(response.body).toMatchObject({
+                  name: "Dinorá de Oliveira",
+                  email: "dino_oli@hotmail.com",
+                  phoneCode: "55",
+                  phoneNumber: "11999847523",
+                  birthDate: "1985-06-09",
+                  country: "BR",
+                  state: "SP",
+                  city: "São Paulo",
+                  cep: "08391700",
+                  neighborhood: "Jardim Nova São Paulo",
+                  road: "Rua Nina Simone",
+                  house_number: "2000",
+                  information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+                })
 
-          // Número de contato do cliente
-          expect(phoneNumber).toBeDefined()
-          expect(phoneNumber).toBe("11984755654")
+                expect(response.body.role).toBeUndefined()
+                expect(response.body.password).toBeUndefined()
 
-          // País de nascimento do cliente
-          expect(country).toBeDefined()
-          expect(country).toBe("BR")
+                expect(response.body.created).toBeDefined()
+                expect(response.body.updated).toBeDefined()
 
-          // Estado de nascimento do cliente
-          expect(state).toBeDefined()
-          expect(state).toBe("SP")
-
-          // Cidade de nascimento do cliente
-          expect(city).toBeDefined()
-          expect(city).toBe("São Paulo")
-
-          // CPF do cliente
-          expect(cpf).toBeDefined()
-          expect(cpf).toBe("11111111111")
-
-          // Número do Passaporte é vazio, porque o cliente é Brasileiro.
-          expect(passportNumber).toBe("")
-          
-          // Nome do bairro onde o cliente nasceu.
-          expect(neighborhood).toBeDefined()
-          expect(neighborhood).toBe("Jardim Nova São Paulo")
-
-          // Nome da rua onde o cliente nasceu.
-          expect(road).toBeDefined()
-          expect(road).toBe("Rua Nina Simone")
-
-          // Número da casa onde o cliente nasceu.
-          expect(house_number).toBeDefined()
-          expect(house_number).toBe("2000")
-
-          // Infomações adicionais do cliente.
-          expect(information).toBeDefined()
-          expect(information).toBe("Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique.")
-
-          expect(created).toBeDefined()
-          expect(created).toMatchObject({
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+                expect(response.body._links).toBeDefined()
+                expect(response.body._links).toHaveLength(4)
+              })
+              .catch(error => {
+                fail(error)
+              })
           })
-
-          expect(updated).toBeDefined()
-          expect(updated).toMatchObject({
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          .catch(function(errorLogin) {
+            fail(errorLogin)
           })
-
-          expect(_links).toBeDefined()
-          expect(_links).toHaveLength(4)
-        })
-        .catch(error => {
-          fail(error)
-        })
       })
-
+      /*
       test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
         let user = { id: '507f1f77bcf86cd799439011' }
         return request.get(`${ endpoints.toRead }/${ user.id }`)
@@ -1653,7 +1596,8 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-    })*/
+      */
+    })
     describe("Testes de FALHA.", function() {
       test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
         return request.post(endpoints.toSearch).send({})
