@@ -27,6 +27,7 @@ class User {
   async findOne(id) {
     try {
       const user = await UserCollection.users.data.find(doc => doc.id == id )
+      delete user.password
       return user
     } catch (error) {
       console.log(error)
