@@ -232,35 +232,12 @@ class UserController {
       } else {
         let user = await User.findOne(req.params.id)
         if (user) {
-          let HATEOAS = [
-            {
-              href: `${ baseURL }/users/${ req.params.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            },
-            {
-              href: `${ baseURL }/users/${ req.params.id }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            },
-            {
-              href: `${ baseURL }/users/${ req.params.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            },
-            {
-              href: `${ baseURL }/users`,
-              method: 'GET',
-              rel: 'user_list'
-            }
-          ]
-
           // Delete a informação da Função da conta para usuário CLIENTE.
           if (user.role == 0) {
             delete user.role
           }
 
-          user._links = HATEOAS
+          user._links = Generator.genHATEOAS(user.id, 'users', 'user', user.role > 0)
           res.status(200)
           res.json(user)
         }
