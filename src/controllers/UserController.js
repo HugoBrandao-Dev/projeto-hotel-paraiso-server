@@ -3,7 +3,6 @@ const Generator = require('../tools/Generator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
-let baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
@@ -197,28 +196,7 @@ class UserController {
         await User.save(user)
         const savedUser = await User.findByDoc({ email: req.body.email })
 
-        let HATEOAS = [
-            {
-              href: `${ baseURL }/users/${ savedUser.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            },
-            {
-              href: `${ baseURL }/users/${ savedUser.id }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            },
-            {
-              href: `${ baseURL }/users/${ savedUser.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            },
-            {
-              href: `${ baseURL }/users`,
-              method: 'GET',
-              rel: 'user_list'
-            }
-          ]
+        let HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', true)
 
         res.status(201)
         res.json({ _links: HATEOAS })
