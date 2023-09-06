@@ -1166,7 +1166,7 @@ describe("Suite de testes das rotas User.", function() {
                 expect(response.body.updated).toBeDefined()
 
                 expect(response.body._links).toBeDefined()
-                expect(response.body._links).toHaveLength(4)
+                expect(response.body._links).toHaveLength(3)
               })
               .catch(error => {
                 fail(error)

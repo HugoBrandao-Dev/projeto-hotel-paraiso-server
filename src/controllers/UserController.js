@@ -785,40 +785,24 @@ class UserController {
       }
 
       const user = await User.findByDoc({ email })
-      const token = await jwt.sign({
+      jwt.sign({
         id: user.id,
         email: user.email,
         role: user.role
       }, secret, {
         expiresIn: '24h'
+      }, function(error, token) {
+        if (error) {
+          console.log(error)
+        } else {
+          let response = { token }
+
+          response._links = Generator.genHATEOAS(user.id, 'users', 'user', user.role > 0)
+
+          res.status(200)
+          res.json(response)
+        }
       })
-
-      let response = { token }
-
-      if (user.role == 0) {
-        let HATEOAS = [
-          {
-            href: `${ baseURL }/user/${ user.id }`,
-            method: 'GET',
-            rel: 'self_user'
-          },
-          {
-            href: `${ baseURL }/user/${ user.id }`,
-            method: 'PUT',
-            rel: 'edit_user'
-          },
-          {
-            href: `${ baseURL }/user/${ user.id }`,
-            method: 'DELETE',
-            rel: 'delete_user'
-          }
-        ]
-
-        response._links = HATEOAS
-      }
-
-      res.status(200)
-      res.json(response)
     } catch (error) {
       next(error)
     }
