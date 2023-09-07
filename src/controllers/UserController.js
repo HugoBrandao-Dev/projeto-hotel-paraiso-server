@@ -196,7 +196,7 @@ class UserController {
         await User.save(user)
         const savedUser = await User.findByDoc({ email: req.body.email })
 
-        let HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', true)
+        let HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', savedUser.role > 0)
 
         res.status(201)
         res.json({ _links: HATEOAS })
@@ -232,11 +232,6 @@ class UserController {
       } else {
         let user = await User.findOne(req.params.id)
         if (user) {
-          // Delete a informação da Função da conta para usuário CLIENTE.
-          if (user.role == 0) {
-            delete user.role
-          }
-
           user._links = Generator.genHATEOAS(user.id, 'users', 'user', user.role > 0)
           res.status(200)
           res.json(user)
