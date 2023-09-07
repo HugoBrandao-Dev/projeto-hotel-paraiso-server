@@ -28,6 +28,39 @@ const projectLinks = {
 jest.setTimeout(10000)
 
 beforeAll(() => {
+  const userAdmin = {
+    name: "Tobias de Oliveira",
+    email: "tobias@gmail.com",
+    password: "@TobiaS&591022@",
+    phoneCode: "55",
+    phoneNumber: "11984752352",
+    birthDate: "1985-06-09",
+    country: "BR",
+    state: "SP",
+    city: "São Paulo",
+    cpf: `${ Generator.genCPF() }`
+  }
+  request.post(endpoints.toCreate).send(userAdmin)
+    .then(function(responseCreate) {
+      expect(responseCreate.statusCode).toEqual(201)
+
+      let login = {
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@"
+      }
+
+      request.post(endpoints.toLogin).send(login)
+        .then(function(responseLogin) {
+          tokens.admin = `Bearer ${ responseLogin.body.token }`
+        })
+        .catch(function(errorLogin) {
+          fail(errorLogin)
+        })
+    })
+    .catch(function(errorCreate) {
+      fail(errorCreate)
+    })
+  
   const userCliente = {
     name: "Doralice Cruz",
     email: "doralice@yahoo.com",
@@ -56,39 +89,6 @@ beforeAll(() => {
       request.post(endpoints.toLogin).send(login)
         .then(function(responseLogin) {
           tokens.cliente = `Bearer ${ responseLogin.body.token }`
-        })
-        .catch(function(errorLogin) {
-          fail(errorLogin)
-        })
-    })
-    .catch(function(errorCreate) {
-      fail(errorCreate)
-    })
-
-  const userAdmin = {
-    name: "Tobias de Oliveira",
-    email: "tobias@gmail.com",
-    password: "@TobiaS&591022@",
-    phoneCode: "55",
-    phoneNumber: "11984752352",
-    birthDate: "1985-06-09",
-    country: "BR",
-    state: "SP",
-    city: "São Paulo",
-    cpf: `${ Generator.genCPF() }`
-  }
-  request.post(endpoints.toCreate).send(userAdmin)
-    .then(function(responseCreate) {
-      expect(responseCreate.statusCode).toEqual(201)
-
-      let login = {
-        email: "tobias@gmail.com",
-        password: "@TobiaS&591022@"
-      }
-
-      request.post(endpoints.toLogin).send(login)
-        .then(function(responseLogin) {
-          tokens.admin = `Bearer ${ responseLogin.body.token }`
         })
         .catch(function(errorLogin) {
           fail(errorLogin)
@@ -1725,6 +1725,7 @@ describe("Suite de testes das rotas User.", function() {
       test("POST - Deve retornar 401, por estar tentando acessar as informações de outro Usuário.", function() {
         return request.get(`${ endpoints.toRead }/507f1f77bcf86cd799439011`).set('Authorization', tokens.cliente)
           .then(function(responseRead) {
+            console.log(responseRead.body)
             expect(responseRead.statusCode).toEqual(403)
             expect(responseRead.body.RestException.Code).toBe('6')
             expect(responseRead.body.RestException.Message).toBe('O usuário não tem permissão de acesso')
