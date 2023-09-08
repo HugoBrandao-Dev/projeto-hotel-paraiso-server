@@ -1173,7 +1173,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("GET - Deve retornar uma lista de usuários.", function() {
+      test("GET - Deve retornar 200 e uma lista de usuários.", function() {
         return request.get(endpoints.toList).set('Authorization', tokens.admin)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
@@ -1183,6 +1183,26 @@ describe("Suite de testes das rotas User.", function() {
 
             // A quantidade PADRÃO de itens a serem exibidos por página é 20.
             expect(response.body.hasNext).toBe(false)
+
+            for (let user of response.body.users) {
+              expect(user._links).toBeDefined()
+              expect(user._links).toHaveLength(3)
+            }
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
+        let url = endpoints.toList + '?offset=1&limit=3'
+        return request.get(url).set('Authorization', tokens.admin)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+            expect(response.body.users.length).toEqual(2)
+
+            expect(response.body).toHaveProperty('users')
+            expect(response.body).toHaveProperty('hasNext')
 
             for (let user of response.body.users) {
               expect(user._links).toBeDefined()
@@ -1494,26 +1514,6 @@ describe("Suite de testes das rotas User.", function() {
             // HATEOAS
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
-        let url = endpoints.toList + '?offset=1&limit=3'
-        return request.get(url)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-            expect(response.body.users.length).toEqual(2)
-
-            expect(response.body).toHaveProperty('users')
-            expect(response.body).toHaveProperty('hasNext')
-
-            for (let user of response.body.users) {
-              expect(user._links).toBeDefined()
-              expect(user._links).toHaveLength(3)
-            }
           })
           .catch(function(error) {
             fail(error)
