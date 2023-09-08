@@ -1716,7 +1716,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 401, por estar tentando acessar a listagem de Usuários.", function() {
+      test("POST - Deve retornar 401, por tentar acessar a listagem de Usuários sem estar AUTORIZADO.", function() {
 
         return request.get(endpoints.toList)
           .then(function(responseList) {
@@ -1725,6 +1725,21 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
             expect(responseList.body.RestException.Status).toBe('401')
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+      })
+
+      test("POST - Deve retornar 403, por tentar acessar a listagem de Usuários sem estar AUTENTICADO.", function() {
+
+        return request.get(endpoints.toList).set('Authorization', tokens.cliente)
+          .then(function(responseList) {
+            expect(responseList.statusCode).toEqual(403)
+            expect(responseList.body.RestException.Code).toBe('6')
+            expect(responseList.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseList.body.RestException.Status).toBe('403')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
           })
           .catch(function(errorList) {
             fail(errorList)
