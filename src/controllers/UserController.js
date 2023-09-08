@@ -352,30 +352,7 @@ class UserController {
       let user = await User.findByDoc(type)
 
       if (user) {
-        let HATEOAS = [
-          {
-            href: `${ baseURL }/users/${ user.id }`,
-            method: 'GET',
-            rel: 'self_user'
-          },
-          {
-            href: `${ baseURL }/users/${ user.id }`,
-            method: 'PUT',
-            rel: 'edit_user'
-          },
-          {
-            href: `${ baseURL }/users/${ user.id }`,
-            method: 'DELETE',
-            rel: 'delete_user'
-          },
-          {
-            href: `${ baseURL }/users`,
-            method: 'GET',
-            rel: 'user_list'
-          }
-        ]
-
-        user._links = HATEOAS
+        user._links = await Generator.genHATEOAS(user.id, 'users', 'user', true)
         res.status(200)
         res.json({user})
       } else {
