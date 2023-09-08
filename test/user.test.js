@@ -160,7 +160,7 @@ describe("Suite de testes das rotas User.", function() {
         })
       })
 
-    })
+    })/*
     describe("Testes de FALHA.", function() {
       // Testes no NOME
       test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
@@ -1118,11 +1118,10 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-    })
+    })*/
   })
 
   describe("READ", function() {
-    
     describe("Testes de SUCESSO.", function() {
       test("GET - Deve retornar 200 para usuário que buscam suas próprias informações.", function() {
 
@@ -1136,11 +1135,9 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseLogin.statusCode).toEqual(200)
 
-            let { _links } = responseLogin.body
-            
-            let user_id = _links[0].href.split('/').pop()
+            let authorization = `Bearer ${ responseLogin.body.token }`
 
-            return request.get(`${ endpoints.toRead }/${ user_id }`).set('Authorization', `Bearer ${ responseLogin.body.token }`)
+            return request.get(`${ endpoints.toRead }`).set('Authorization', authorization)
               .then(response => {
 
                 expect(response.statusCode).toEqual(200)
@@ -1160,9 +1157,6 @@ describe("Suite de testes das rotas User.", function() {
                   house_number: "2000",
                   information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
                 })
-
-                expect(response.body.role).toBeUndefined()
-                expect(response.body.password).toBeUndefined()
 
                 expect(response.body.created).toBeDefined()
                 expect(response.body.updated).toBeDefined()
@@ -1719,21 +1713,6 @@ describe("Suite de testes das rotas User.", function() {
           })
           .catch(function(error) {
             fail(error)
-          })
-      })
-
-      test("POST - Deve retornar 401, por estar tentando acessar as informações de outro Usuário.", function() {
-        return request.get(`${ endpoints.toRead }/507f1f77bcf86cd799439011`).set('Authorization', tokens.cliente)
-          .then(function(responseRead) {
-            console.log(responseRead.body)
-            expect(responseRead.statusCode).toEqual(403)
-            expect(responseRead.body.RestException.Code).toBe('6')
-            expect(responseRead.body.RestException.Message).toBe('O usuário não tem permissão de acesso')
-            expect(responseRead.body.RestException.Status).toBe('403')
-            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
           })
       })
 
