@@ -6,7 +6,7 @@ const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 
-function adminAuth(req, res, next) {
+function authorization(req, res, next) {
   const authToken = req.headers['authorization']
 
   if (authToken) {
@@ -16,26 +16,17 @@ function adminAuth(req, res, next) {
 
     jwt.verify(token, secret, function(error, decoded) {
       if (error) {
+        let RestException = {
+          Code: '5',
+          Message: 'O Token é inválido',
+          Status: '401',
+          MoreInfo: `${ projectLinks.errors }/5`
+        }
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         console.log(error)
       } else {
-        if (decoded.role > 0) {
-          next()
-        } else {
-          if (req.params.id) {
-            if (req.params.id != decoded.id) {
-              let RestException = {
-                Code: '6',
-                Message: 'O usuário não tem permissão de acesso',
-                Status: '403',
-                MoreInfo: `${ projectLinks.errors }/6`
-              }
-              res.status(parseInt(RestException.Status))
-              res.json({ RestException })
-            } else {
-              next()
-            }
-          }
-        }
+        next()
       }
     })
   } else {
@@ -50,4 +41,4 @@ function adminAuth(req, res, next) {
   }
 }
 
-module.exports = adminAuth
+module.exports = authorization
