@@ -3,10 +3,14 @@ const Generator = require('../tools/Generator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
+// Models
+const User = require('../models/User')
+
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 const secret = 'k372gkhcfmhg6l9nj19i51ng'
+
 const roles = {
   cliente: 0,
   funcionário: 1,
@@ -15,8 +19,19 @@ const roles = {
   admin: 4
 }
 
-// Models
-const User = require('../models/User')
+function getDecodedToken(bearerToken) {
+  let token = bearerToken.split(' ')[1]
+  let decodedToken = null
+  jwt.verify(token, secret, function(error, decoded) {
+    if (error) {
+      console.log(error)
+      return ''
+    } else {
+      decodedToken = decoded
+    }
+  })
+  return decodedToken
+}
 
 class UserController {
   async create(req, res, next) {
@@ -208,7 +223,8 @@ class UserController {
 
   async read(req, res) {
     try {
-      let idResult = await Analyzer.analyzeID(req.params.id)
+      const { id, role } = getDecodedToken(req.headers['authorization'])
+      let idResult = await Analyzer.analyzeID(id)
 
       if (idResult.hasError.value) {
 
@@ -230,9 +246,11 @@ class UserController {
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
       } else {
-        let user = await User.findOne(req.params.id)
+        let user = await User.findOne(id)
         if (user) {
-          user._links = Generator.genHATEOAS(user.id, 'users', 'user', user.role > 0)
+
+          // Role é baseado na Função da pessoa logada (dona do token)
+          user._links = await Generator.genHATEOAS(user.id, 'users', 'user', role > 0)
           res.status(200)
           res.json(user)
         }
