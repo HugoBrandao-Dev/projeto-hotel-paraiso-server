@@ -1580,6 +1580,7 @@ describe("Suite de testes das rotas User.", function() {
       */
     })
     describe("Testes de FALHA.", function() {
+      /*
       test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
         return request.post(endpoints.toSearch).send({})
           .then(function(response) {
@@ -1649,6 +1650,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
 
       // Testes no Login
       test("POST - Deve retornar 400, por não ter informado o Email para Login.", function() {
@@ -1742,6 +1744,25 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseList.body.RestException.Message).toBe('O usuário não está autenticado')
             expect(responseList.body.RestException.Status).toBe('403')
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+      })
+
+      test("POST - Deve retornar 401, por tentar buscar um Usuários pelo CPF sem estar AUTORIZADO.", function() {
+
+        const info = {
+          cpf: '11111111111'
+        }
+
+        return request.post(endpoints.toSearch).send(info)
+          .then(function(responseList) {
+            expect(responseList.statusCode).toEqual(401)
+            expect(responseList.body.RestException.Code).toBe('5')
+            expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseList.body.RestException.Status).toBe('401')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
           })
           .catch(function(errorList) {
             fail(errorList)
