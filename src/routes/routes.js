@@ -7,7 +7,7 @@ const HomeController = require('../controllers/HomeController')
 const UserController = require('../controllers/UserController')
 const ApartmentController = require('../controllers/ApartmentController')
 const ReserveController = require('../controllers/ReserveController')
-const AdminAuth = require('../middlewares/adminAuth')
+const authorization = require('../middlewares/authorization')
 
 router.get('/', HomeController.index)
 
@@ -17,8 +17,8 @@ router.get('/', HomeController.index)
 router.post('/user', UserController.create)
 
 // Read
-router.get('/user/:id', AdminAuth, UserController.read)
-router.get('/users', AdminAuth, UserController.list)
+router.get('/user', authorization, UserController.read)
+router.get('/users', authorization, UserController.list)
 router.post('/user/search', UserController.readByDoc)
 router.post('/login', UserController.login)
 
