@@ -282,24 +282,7 @@ class UserController {
         users.pop()
 
         for (let user of users) {
-          let HATEOAS = [
-            {
-              href: `${ baseURL }/users/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            },
-            {
-              href: `${ baseURL }/users/${ user.id }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            },
-            {
-              href: `${ baseURL }/users/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            }
-          ]
-          user._links = HATEOAS
+          user._links = await Generator.genHATEOAS(user.id, 'users', 'user')
         }
 
         res.status(200)
