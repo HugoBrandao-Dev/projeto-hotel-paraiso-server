@@ -1172,6 +1172,28 @@ describe("Suite de testes das rotas User.", function() {
             fail(errorLogin)
           })
       })
+
+      test("GET - Deve retornar uma lista de usuários.", function() {
+        return request.get(endpoints.toList).set('Authorization', tokens.admin)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+
+            expect(response.body).toHaveProperty('users')
+            expect(response.body).toHaveProperty('hasNext')
+
+            // A quantidade PADRÃO de itens a serem exibidos por página é 20.
+            expect(response.body.hasNext).toBe(false)
+
+            for (let user of response.body.users) {
+              expect(user._links).toBeDefined()
+              expect(user._links).toHaveLength(3)
+            }
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
       /*
       test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
         let user = { id: '507f1f77bcf86cd799439011' }
@@ -1472,26 +1494,6 @@ describe("Suite de testes das rotas User.", function() {
             // HATEOAS
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("GET - Deve retornar uma lista de usuários.", function() {
-        return request.get(endpoints.toList)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-
-            expect(response.body).toHaveProperty('users')
-            expect(response.body).toHaveProperty('hasNext')
-
-            expect(response.body.hasNext).toBe(false)
-
-            for (let user of response.body.users) {
-              expect(user._links).toBeDefined()
-              expect(user._links).toHaveLength(3)
-            }
           })
           .catch(function(error) {
             fail(error)
