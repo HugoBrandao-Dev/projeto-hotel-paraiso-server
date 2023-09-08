@@ -1768,6 +1768,25 @@ describe("Suite de testes das rotas User.", function() {
             fail(errorList)
           })
       })
+
+      test("POST - Deve retornar 403, por tentar buscar um Usuários pelo CPF sem estar AUTENTICADO.", function() {
+
+        const info = {
+          cpf: '11111111111'
+        }
+
+        return request.post(endpoints.toSearch).send(info).set('Authorization', tokens.cliente)
+          .then(function(responseList) {
+            expect(responseList.statusCode).toEqual(403)
+            expect(responseList.body.RestException.Code).toBe('6')
+            expect(responseList.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseList.body.RestException.Status).toBe('403')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+      })
     })
   })
 /*
