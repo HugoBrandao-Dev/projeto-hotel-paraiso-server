@@ -27,76 +27,75 @@ const projectLinks = {
 
 jest.setTimeout(10000)
 
-beforeAll(() => {
-  const userAdmin = {
-    name: "Tobias de Oliveira",
-    email: "tobias@gmail.com",
-    password: "@TobiaS&591022@",
-    phoneCode: "55",
-    phoneNumber: "11984752352",
-    birthDate: "1985-06-09",
-    country: "BR",
-    state: "SP",
-    city: "São Paulo",
-    cpf: `${ Generator.genCPF() }`
+function register(user) {
+  return new Promise((resolve, reject) => {
+    request.post(endpoints.toCreate).send(user)
+      .then(() => {
+        let login = {
+          email: user.email,
+          password: user.password
+        }
+        resolve(login)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+function login(login) {
+  return new Promise((resolve, reject) => {
+    request.post(endpoints.toLogin).send(login)
+      .then((response) => {
+        let { token } = response.body
+        resolve(token)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+beforeAll(async () => {
+  try {
+    const userAdmin = {
+      name: "Tobias de Oliveira",
+      email: "tobias@gmail.com",
+      password: "@TobiaS&591022@",
+      phoneCode: "55",
+      phoneNumber: "11984752352",
+      birthDate: "1985-06-09",
+      country: "BR",
+      state: "SP",
+      city: "São Paulo",
+      cpf: `${ Generator.genCPF() }`
+    }
+    let adminLogin = await register(userAdmin)
+    tokenAdmin = await login(adminLogin)
+    tokens.admin = `Bearer ${ tokenAdmin }`
+    
+    const userCliente = {
+      name: "Doralice Cruz",
+      email: "doralice@yahoo.com",
+      password: "oiqwuerowq#&134890OIU@",
+      phoneCode: "1",
+      phoneNumber: "2129981212",
+      birthDate: "1998-04-09",
+      country: "US",
+      state: "NY",
+      city: "New York City",
+      passportNumber: "100003105",
+      neighborhood: "Jardim Nova São Paulo",
+      road: "Rua Nina Simone",
+      house_number: "2000",
+      information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+    }
+    let clienteLogin = await register(userCliente)
+    tokenCliente = await login(clienteLogin)
+    tokens.cliente = `Bearer ${ tokenCliente }`
+  } catch (error) {
+    console.log(error)
   }
-  request.post(endpoints.toCreate).send(userAdmin)
-    .then(function(responseCreate) {
-      expect(responseCreate.statusCode).toEqual(201)
-
-      let login = {
-        email: "tobias@gmail.com",
-        password: "@TobiaS&591022@"
-      }
-
-      request.post(endpoints.toLogin).send(login)
-        .then(function(responseLogin) {
-          tokens.admin = `Bearer ${ responseLogin.body.token }`
-        })
-        .catch(function(errorLogin) {
-          fail(errorLogin)
-        })
-    })
-    .catch(function(errorCreate) {
-      fail(errorCreate)
-    })
-  
-  const userCliente = {
-    name: "Doralice Cruz",
-    email: "doralice@yahoo.com",
-    password: "oiqwuerowq#&134890OIU@",
-    phoneCode: "1",
-    phoneNumber: "2129981212",
-    birthDate: "1998-04-09",
-    country: "US",
-    state: "NY",
-    city: "New York City",
-    passportNumber: "100003105",
-    neighborhood: "Jardim Nova São Paulo",
-    road: "Rua Nina Simone",
-    house_number: "2000",
-    information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
-  }
-  request.post(endpoints.toCreate).send(userCliente)
-    .then(function(responseCreate) {
-      expect(responseCreate.statusCode).toEqual(201)
-
-      let login = {
-        email: "doralice@yahoo.com",
-        password: "oiqwuerowq#&134890OIU@"
-      }
-
-      request.post(endpoints.toLogin).send(login)
-        .then(function(responseLogin) {
-          tokens.cliente = `Bearer ${ responseLogin.body.token }`
-        })
-        .catch(function(errorLogin) {
-          fail(errorLogin)
-        })
-    })
-    .catch(function(errorCreate) {
-      fail(errorCreate)
-    })
 })
 
 describe("Suite de testes das rotas User.", function() {
