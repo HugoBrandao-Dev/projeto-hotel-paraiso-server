@@ -27,12 +27,6 @@ class User {
   async findOne(id) {
     try {
       const user = await UserCollection.users.data.find(doc => doc.id == id )
-      delete user.password
-      
-      // Delete a informação da Função da conta para usuário CLIENTE.
-      if (user.role == 0) {
-        delete user.role
-      }
 
       return user
     } catch (error) {
