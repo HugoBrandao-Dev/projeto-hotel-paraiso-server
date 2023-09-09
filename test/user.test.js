@@ -1788,8 +1788,9 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-/*
+
   describe("UPDATE", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
       test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias atualizadas.", function() {
         let user = {
@@ -2713,7 +2714,9 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
+    */
     describe("Testes de FALHA.", function() {
+      /*
       test("POST - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
         const user = {
           id: "5da9ea674234635bdff45d22",
@@ -2837,9 +2840,33 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
+
+      test("POST - Deve retornar 401, já que o usuário NÃO está AUTORIZADO.", function() {
+        const user = {
+          id: "507f191e810c19729de860ea",
+          name: "John Smith",
+          email: "john_sm@hotmail.com",
+          country: "US",
+          state: "NY",
+          city: "New York City",
+          passportNumber: fixedPassportNumber
+        }
+        return request.put(endpoints.toUpdate).send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(401)
+            expect(response.body.RestException.Code).toBe('5')
+            expect(response.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(response.body.RestException.Status).toBe('401')
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
-
+/*
   describe("DELETE", function() {
     describe("Testes de SUCESSO.", function() {
       test("DELETE - Deve retornar 200.", function() {
