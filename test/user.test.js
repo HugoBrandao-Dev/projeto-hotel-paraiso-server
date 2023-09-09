@@ -1695,6 +1695,24 @@ describe("Suite de testes das rotas User.", function() {
       })
       */
 
+      test("Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
+
+        let user = { id: '5da9ea674234635bdff4+-!7' }
+
+        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O ID do cliente/usuário contém caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
       // Testes no Login
       test("POST - Deve retornar 400, por não ter informado o Email para Login.", function() {
 
@@ -1763,6 +1781,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
+      // Testes de Listagem
       test("POST - Deve retornar 401, por tentar acessar a listagem de Usuários sem estar AUTORIZADO.", function() {
 
         return request.get(endpoints.toList)
