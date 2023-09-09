@@ -24,7 +24,7 @@ router.post('/user/search', authorization, authentication, UserController.readBy
 router.post('/login', UserController.login)
 
 // Update
-router.put('/user', authorization, UserController.update)
+router.put('/user', authorization, authentication, UserController.update)
 
 // Delete
 router.delete('/user/:id', UserController.remove)
