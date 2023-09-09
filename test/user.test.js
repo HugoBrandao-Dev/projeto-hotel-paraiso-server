@@ -2864,6 +2864,29 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
+      test("POST - Deve retornar 403, já que o usuário NÃO está AUTENTICADO.", function() {
+        const user = {
+          id: "507f191e810c19729de860ea",
+          name: "John Smith",
+          email: "john_sm@hotmail.com",
+          country: "US",
+          state: "NY",
+          city: "New York City",
+          passportNumber: fixedPassportNumber
+        }
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', tokens.cliente)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(403)
+            expect(response.body.RestException.Code).toBe('6')
+            expect(response.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(response.body.RestException.Status).toBe('403')
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
     })
   })
 /*
