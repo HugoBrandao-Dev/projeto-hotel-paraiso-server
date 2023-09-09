@@ -261,6 +261,18 @@ class UserController {
     }
   }
 
+  // Esta rota é utilizada para visualização de informações do cliente pelo lado de um Funcionário++
+  async view(req, res, next) {
+    try {
+      let id = req.params.id
+
+      res.status(200)
+      res.json({ id })
+    } catch (error) {
+      next(error)
+    }
+  }
+
   async list(req, res, next) {
     try {
       let hasNext = false
