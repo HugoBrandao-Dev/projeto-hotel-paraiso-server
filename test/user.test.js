@@ -1695,6 +1695,7 @@ describe("Suite de testes das rotas User.", function() {
       })
       */
 
+      // Teste na visualização das infos do cliente pelo lado do funcionário++.
       test("Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
 
         let user = { id: '5da9ea674234635bdff4+-!7' }
@@ -1707,6 +1708,24 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body.RestException.Message).toBe("O ID do cliente/usuário contém caracteres inválidos")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("Deve retornar 404, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
+
+        let user = { id: '507f1f77bcf86cd799431111' }
+
+        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(404)
+
+            expect(response.body.RestException.Code).toBe("3")
+            expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(response.body.RestException.Status).toBe("404")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
           })
           .catch(function(error) {
             fail(error)
