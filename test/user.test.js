@@ -11,6 +11,7 @@ let baseURL = 'http://localhost:4000'
 let endpoints = {
   toCreate: '/user',
   toRead: '/user',
+  toView: '/user',
   toSearch: '/user/search',
   toUpdate: '/user',
   toDelete: '/user',
@@ -1790,6 +1791,20 @@ describe("Suite de testes das rotas User.", function() {
           })
           .catch(function(errorList) {
             fail(errorList)
+          })
+      })
+
+      test("Deve retornar 401, para visualizaçao das informações de um cliente, não estar AUTORIZADO", function() {
+        return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(401)
+            expect(response.body.RestException.Code).toBe('5')
+            expect(response.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(response.body.RestException.Status).toBe('401')
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(error) {
+            fail(error)
           })
       })
     })
