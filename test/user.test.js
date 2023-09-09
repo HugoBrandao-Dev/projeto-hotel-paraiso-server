@@ -1259,6 +1259,42 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
+      test("Deve retornar 200, e as informações do usuário que corresponda ao ID informado.", function() {
+
+        let user = { id: '5da9ea674234635bdff45c02' }
+
+        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+
+            expect(response.body).toMatchObject({
+              name: "Jeremias de Oliveira",
+              email: "jere_oliveira@yahoo.com",
+              password: "oiwquro9237894883",
+              role: "2",
+              phoneCode: "55",
+              phoneNumber: "11984755654",
+              birthDate: "1999-08-03",
+              country: "BR",
+              state: "SP",
+              cep: "08391700",
+              city: "São Paulo",
+              cpf: "11111111111",
+              passportNumber: "",
+              neighborhood: "Jardim Nova São Paulo",
+              road: "Rua Nina Simone",
+              house_number: "2000",
+              information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+            })
+
+            expect(response.body.created).toBeDefined()
+            expect(response.body.updated).toBeDefined()
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
       /*
       test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
         let user = { id: '507f1f77bcf86cd799439011' }
