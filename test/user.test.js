@@ -1213,6 +1213,50 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
+      test("POST - Deve retornar 200 e o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
+
+        const info = {
+          cpf: '22222222222'
+        }
+
+        return request.post(endpoints.toSearch).send(info).set('Authorization', tokens.admin)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+            expect(response.body.user).toMatchObject({
+              "name": "Macunaíma Cruz",
+              "email": "macuna_curz@hotmail.com"
+            })
+
+            expect(response.body.user._links).toBeDefined()
+            expect(response.body.user._links).toHaveLength(4)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
+
+        const info = {
+          passportNumber: '303004786'
+        }
+        
+        return request.post(endpoints.toSearch).send(info).set('Authorization', tokens.admin)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(200)
+            expect(response.body.user).toMatchObject({
+              "name": "John Smith",
+              "email": "john_sm@hotmail.com"
+            })
+
+            expect(response.body.user._links).toBeDefined()
+            expect(response.body.user._links).toHaveLength(4)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
       /*
       test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
         let user = { id: '507f1f77bcf86cd799439011' }
@@ -1513,44 +1557,6 @@ describe("Suite de testes das rotas User.", function() {
             // HATEOAS
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("POST - Deve retornar o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
-        return request.post(endpoints.toSearch).send({
-          cpf: '22222222222'
-        })
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-            expect(response.body.user).toMatchObject({
-              "name": "Macunaíma Cruz",
-              "email": "macuna_curz@hotmail.com"
-            })
-
-            expect(response.body.user._links).toBeDefined()
-            expect(response.body.user._links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("POST - Deve retornar o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
-        return request.post(endpoints.toSearch).send({
-          passportNumber: '303004786'
-        })
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-            expect(response.body.user).toMatchObject({
-              "name": "John Smith",
-              "email": "john_sm@hotmail.com"
-            })
-
-            expect(response.body.user._links).toBeDefined()
-            expect(response.body.user._links).toHaveLength(4)
           })
           .catch(function(error) {
             fail(error)
