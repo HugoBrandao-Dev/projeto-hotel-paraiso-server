@@ -26,6 +26,7 @@ const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 
+// Aumenta o tempo máximo para resposta - o padrão é 5000ms.
 jest.setTimeout(10000)
 
 function register(user) {
@@ -1794,7 +1795,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("Deve retornar 401, para visualizaçao das informações de um cliente, não estar AUTORIZADO", function() {
+      test("Deve retornar 401, para visualização das informações de um cliente, não estar AUTORIZADO", function() {
         return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`)
           .then(function(response) {
             expect(response.statusCode).toEqual(401)
@@ -1802,6 +1803,20 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body.RestException.Message).toBe('O usuário não está autorizado')
             expect(response.body.RestException.Status).toBe('401')
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("Deve retornar 403, para visualização das informações de um cliente, não estar AUTENTICADO", function() {
+        return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`).set('Authorization', tokens.cliente)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(403)
+            expect(response.body.RestException.Code).toBe('6')
+            expect(response.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(response.body.RestException.Status).toBe('403')
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
           })
           .catch(function(error) {
             fail(error)
