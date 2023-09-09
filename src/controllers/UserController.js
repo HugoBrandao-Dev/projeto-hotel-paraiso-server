@@ -266,8 +266,10 @@ class UserController {
     try {
       let id = req.params.id
 
+      const user = await User.findOne(id)
+
       res.status(200)
-      res.json({ id })
+      res.json(user)
     } catch (error) {
       next(error)
     }
