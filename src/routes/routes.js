@@ -19,6 +19,10 @@ router.post('/user', UserController.create)
 
 // Read
 router.get('/user', authorization, UserController.read)
+
+// Esta rota é utilizada para visualização de informações do cliente pelo lado de um Funcionário++
+router.get('/user/:id', authorization, UserController.view)
+
 router.get('/users', authorization, authentication, UserController.list)
 router.post('/user/search', authorization, authentication, UserController.readByDoc)
 router.post('/login', UserController.login)
