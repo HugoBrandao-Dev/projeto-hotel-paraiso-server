@@ -266,6 +266,24 @@ class UserController {
     try {
       let id = req.params.id
 
+      let RestException = {}
+
+      const idResult = await Analyzer.analyzeID(id)
+      if (idResult.hasError.value) {
+        RestException.Code = `${ idResult.hasError.type }`
+        RestException.Message = `${ idResult.hasError.error }`
+        RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
+
+        switch (idResult.hasError.type) {
+          case 2:
+            RestException.Status = '400'
+            break
+        }
+
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
+      }
+
       const user = await User.findOne(id)
 
       res.status(200)
