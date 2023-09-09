@@ -278,6 +278,9 @@ class UserController {
           case 2:
             RestException.Status = '400'
             break
+          case 3:
+            RestException.Status = '404'
+            break
         }
 
         res.status(parseInt(RestException.Status))
