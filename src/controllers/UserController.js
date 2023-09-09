@@ -365,6 +365,8 @@ class UserController {
 
   async update(req, res, next) {
     try {
+      const { role: roleToken } = getDecodedToken(req.headers['authorization'])
+
       const { 
         id,
         name,
@@ -454,7 +456,11 @@ class UserController {
         if (passwordResult.hasError.value) {
           errorFields.push(passwordResult)
         } else {
-          fields.password = password
+
+          let salt = bcrypt.genSaltSync(5)
+          let hash = bcrypt.hashSync(req.body.password, salt)
+
+          fields.password = hash
         }
       }
 
@@ -629,7 +635,7 @@ class UserController {
         return
       }
 
-      let HATEOAS = Generator.genHATEOAS()
+      let HATEOAS = Generator.genHATEOAS(fields.id, 'users', 'user', roleToken > 0)
 
       await User.edit(fields)
       res.status(200)
