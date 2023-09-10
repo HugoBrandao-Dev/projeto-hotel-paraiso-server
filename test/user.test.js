@@ -1900,92 +1900,70 @@ describe("Suite de testes das rotas User.", function() {
   })
 
   describe("UPDATE", function() {
-    /*
     describe("Testes de SUCESSO.", function() {
-      test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias atualizadas.", function() {
-        let user = {
-          id: "5da9ea674234635bdff45c02",
-          name: "Josias Cruz",
-          email: "jo_cruz@gmail.com",
-          password: "@JosiaS&654975@",
-          role: '0',
-          phoneCode: "55",
-          phoneNumber: "11984222222",
-          birthDate: "1985-06-09",
-          country: "BR",
-          state: "RJ",
-          city: "Rio de Janeiro",
-          cpf: `${ Generator.genCPF() }`,
+      test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações atualizadas.", function() {
+
+        const login = {
+          email: "doralice@yahoo.com",
+          password: "oiqwuerowq#&134890OIU@",
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(responsePUT) {
-            expect(responsePUT.statusCode).toEqual(200)
 
-            expect(responsePUT.body._links).toBeDefined()
-            expect(responsePUT.body._links).toHaveLength(4)
-            expect(responsePUT.body._links[0]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responsePUT.body._links[1]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responsePUT.body._links[2]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responsePUT.body._links[3]).toMatchObject({
-              href: `${ baseURL }/users`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+        // Antes de fazer a atualização, é feito o Login.
+        return request.post(`${ endpoints.toLogin }`).send(login)
+          .then(function(responseLogin) {
+            expect(responseLogin.statusCode).toEqual(200)
 
-            return request.get(`${ endpoints.toRead }/${ user.id }`)
-              .then(function(responseGET) {
-                expect(responseGET.statusCode).toEqual(200)
+            let user = {
+              id: responseLogin.body._links[0].href.split('/').pop(),
+              email: "doralice@gmail.com",
+              phoneNumber: "2129982222",
+              country: "US",
+              state: "OH",
+              city: "Columbus"
+            }
 
-                expect(responseGET.body.name).toBeDefined()
-                expect(responseGET.body.name).toBe(user.name)
+            // Envia o token do login para a rota de atualização, junto com as informações.
+            return request.put(endpoints.toUpdate).send(user).set('Authorization', `Bearer ${ responseLogin.body.token }`)
+              .then(function(responseUpdate) {
+                expect(responseUpdate.statusCode).toEqual(200)
 
-                expect(responseGET.body.email).toBeDefined()
-                expect(responseGET.body.email).toBe(user.email)
+                expect(responseUpdate.body._links).toBeDefined()
+                expect(responseUpdate.body._links).toHaveLength(3)
 
-                expect(responseGET.body.role).toBeDefined()
-                expect(responseGET.body.role).toBe(user.role)
+                // Utilizando o ADMIN para verificar se as informações foram atualizadas.
+                return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+                  .then(function(responseView) {
+                    expect(responseView.statusCode).toEqual(200)
 
-                expect(responseGET.body.phoneCode).toBeDefined()
-                expect(responseGET.body.phoneCode).toBe(user.phoneCode)
+                    const {
+                      id,
+                      email,
+                      phoneNumber,
+                      country,
+                      state,
+                      city
+                    } = responseView.body
 
-                expect(responseGET.body.phoneNumber).toBeDefined()
-                expect(responseGET.body.phoneNumber).toBe(user.phoneNumber)
-
-                expect(responseGET.body.birthDate).toBeDefined()
-                expect(responseGET.body.birthDate).toBe(user.birthDate)
-
-                expect(responseGET.body.country).toBeDefined()
-                expect(responseGET.body.country).toBe(user.country)
-
-                expect(responseGET.body.state).toBeDefined()
-                expect(responseGET.body.state).toBe(user.state)
-
-                expect(responseGET.body.city).toBeDefined()
-                expect(responseGET.body.city).toBe(user.city)
-
-                expect(responseGET.body.cpf).toBeDefined()
-                expect(responseGET.body.cpf).toBe(user.cpf)
+                    expect(id).toBe(user.id)
+                    expect(email).toBe(user.email)
+                    expect(phoneNumber).toBe(user.phoneNumber)
+                    expect(country).toBe(user.country)
+                    expect(state).toBe(user.state)
+                    expect(city).toBe(user.city)
+                  })
+                  .catch(function(errorGET) {
+                    fail(errorGET)
+                  })
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(errorPOST) {
+                fail(errorPOST)
               })
           })
-          .catch(function(errorPOST) {
-            fail(errorPOST)
+          .catch(function(errorLogin) {
+            fail(errorLogin)
           })
       })
+      /*
       
       test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
         let user = {
@@ -2823,8 +2801,8 @@ describe("Suite de testes das rotas User.", function() {
             fail(errorPUT)
           })
       })
+      */
     })
-    */
     describe("Testes de FALHA.", function() {
       /*
       test("POST - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
@@ -2969,29 +2947,6 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body.RestException.Message).toBe('O usuário não está autorizado')
             expect(response.body.RestException.Status).toBe('401')
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("POST - Deve retornar 403, já que o usuário NÃO está AUTENTICADO.", function() {
-        const user = {
-          id: "507f191e810c19729de860ea",
-          name: "John Smith",
-          email: "john_sm@hotmail.com",
-          country: "US",
-          state: "NY",
-          city: "New York City",
-          passportNumber: fixedPassportNumber
-        }
-        return request.put(endpoints.toUpdate).send(user).set('Authorization', tokens.cliente)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(403)
-            expect(response.body.RestException.Code).toBe('6')
-            expect(response.body.RestException.Message).toBe('O usuário não está autenticado')
-            expect(response.body.RestException.Status).toBe('403')
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
           })
           .catch(function(error) {
             fail(error)
