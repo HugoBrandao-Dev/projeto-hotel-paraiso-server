@@ -15,15 +15,43 @@ function authentication(req, res, next) {
       if (error) {
         console.log(error)
       } else {
+
         if (decoded.role == 0) {
-          let RestException = {
-            Code: '6',
-            Message: 'O usuário não está autenticado',
-            Status: '403',
-            MoreInfo: `${ projectLinks.errors }/6`
+
+          // Para caso de atualização de informações.
+          if (req.method === 'PUT') {
+
+            // Verifica se é o próprio usuário que está atualizando suas informações.
+            if (decoded.id === req.body.id) {
+
+              // Verifica se o mesmo está tentando modificar a sua Função (não pode).
+              if (req.body.role >= 0) {
+                let RestException = {
+                  Code: '6',
+                  Message: 'O usuário não está autenticado',
+                  Status: '403',
+                  MoreInfo: `${ projectLinks.errors }/6`
+                }
+                res.status(parseInt(RestException.Status))
+                res.json({ RestException })
+              } else {
+                next()
+              }
+            } else {
+              next()
+            }
+          } else {
+            let RestException = {
+              Code: '6',
+              Message: 'O usuário não está autenticado',
+              Status: '403',
+              MoreInfo: `${ projectLinks.errors }/6`
+            }
+
+            res.status(parseInt(RestException.Status))
+            res.json({ RestException }) 
           }
-          res.status(parseInt(RestException.Status))
-          res.json({ RestException })
+          
         } else {
           next()
         }
