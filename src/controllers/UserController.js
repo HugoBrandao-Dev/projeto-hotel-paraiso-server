@@ -452,7 +452,9 @@ class UserController {
 
       let nameResult = Analyzer.analyzeUserName(name)
       if (nameResult.hasError.value) {
-        errorFields.push(nameResult)
+        if (nameResult.hasError.type != 1) {
+          errorFields.push(nameResult)
+        }
       } else {
         fields.name = name
       }
@@ -460,7 +462,9 @@ class UserController {
       if (birthDate) {
         let birthDateResult = Analyzer.analyzeUserBirthDate(birthDate)
         if (birthDateResult.hasError.value) {
-          errorFields.push(birthDateResult)
+          if (birthDateResult.hasError.type != 1) {
+            errorFields.push(birthDateResult)
+          }
         } else {
           fields.birthDate = birthDate
         }
@@ -469,7 +473,7 @@ class UserController {
       if (email) {
         let emailResult = await Analyzer.analyzeUserEmail(email)
         if (emailResult.hasError.value) {
-          if (emailResult.hasError.type != 3) {
+          if (emailResult.hasError.type != 3 && emailResult.hasError.type != 1) {
 
             // Verifica se o usuário que quer atualizar é o mesmo que já possui o Email.
             let isTheSameUser = userRegistred.email == email
@@ -489,7 +493,9 @@ class UserController {
       if (password) {
         let passwordResult = await Analyzer.analyzeUserPassword(password)
         if (passwordResult.hasError.value) {
-          errorFields.push(passwordResult)
+          if (passwordResult.hasError.type != 1) {
+            errorFields.push(passwordResult)
+          }
         } else {
 
           let salt = bcrypt.genSaltSync(5)
@@ -503,7 +509,9 @@ class UserController {
       let roleValue = role == undefined ? '0' : role
       let roleResult = Analyzer.analyzeUserRole(roleValue)
       if (roleResult.hasError.value) {
-        errorFields.push(roleResult)
+        if (roleResult.hasError.type != 1) {
+          errorFields.push(roleResult)
+        }
       } else {
         fields.role = role
       }
@@ -511,7 +519,9 @@ class UserController {
       if (phoneCode) {
         let phoneCodeResult = Analyzer.analyzeUserPhoneCode(phoneCode)
         if (phoneCodeResult.hasError.value) {
-          errorFields.push(phoneCodeResult)
+          if (phoneCodeResult.hasError.type != 1) {
+            errorFields.push(phoneCodeResult)
+          }
         } else {
           fields.phoneCode = phoneCode
         }
@@ -520,7 +530,9 @@ class UserController {
       if (phoneNumber) {
         let phoneNumberResult = Analyzer.analyzeUserPhoneNumber(phoneCode, phoneNumber)
         if (phoneNumberResult.hasError.value) {
-          errorFields.push(phoneNumberResult)
+          if (phoneNumberResult.hasError.type != 1) {
+            errorFields.push(phoneNumberResult)
+          }
         } else {
           fields.phoneNumber = phoneNumber
         }
@@ -529,7 +541,9 @@ class UserController {
       if (country) {
         let countryResult = Analyzer.analyzeUserCountry(country)
         if (countryResult.hasError.value) {
-          errorFields.push(countryResult)
+          if (countryResult.hasError.type != 1) {
+            errorFields.push(countryResult)
+          }
         } else {
           fields.country = country
         }
@@ -541,7 +555,7 @@ class UserController {
           if (cpfResult.hasError.value) {
 
             // Type 4 indica que um usuário já está cadastrado com esse CPF.
-            if (cpfResult.hasError.type == 4) {
+            if (cpfResult.hasError.type == 4 && cpfResult.hasError.type != 1) {
 
               // Verifica se o usuário que quer atualizar é o mesmo que já possui o CPF.
               let isTheSameUser = userRegistred.cpf == cpf
@@ -568,7 +582,7 @@ class UserController {
           if (passportNumberResult.hasError.value) {
 
             // Type 4 indica que um usuário já está cadastrado com esse Número de Passaporte.
-            if (passportNumberResult.hasError.type == 4) {
+            if (passportNumberResult.hasError.type == 4 && passportNumberResult.hasError.type != 1) {
 
               // Verifica se o usuário que quer atualizar é o mesmo que já possui o Número do Passaporte.
               let isTheSameUser = userRegistred.passportNumber == passportNumber
@@ -591,7 +605,9 @@ class UserController {
       if (state) {
         let stateResult = await Analyzer.analyzeUserState(country, state)
         if (stateResult.hasError.value) {
-          errorFields.push(stateResult)
+          if (stateResult.hasError.type != 1) {
+            errorFields.push(stateResult)
+          }
         } else {
           fields.state = state
         }
@@ -600,7 +616,9 @@ class UserController {
       if (city) {
         let cityResult = await Analyzer.analyzeUserCity(country, state, city)
         if (cityResult.hasError.value) {
-          errorFields.push(cityResult)
+          if (cityResult.hasError.type != 1) {
+            errorFields.push(cityResult)
+          }
         } else {
           fields.city = city
         }
@@ -609,7 +627,9 @@ class UserController {
       if (neighborhood) {
         let neighborhoodResult = Analyzer.analyzeUserNeighborhood(neighborhood)
         if (neighborhoodResult.hasError.value) {
-          errorFields.push(neighborhoodResult)
+          if (neighborhoodResult.hasError.type != 1) {
+            errorFields.push(neighborhoodResult)
+          }
         } else {
           fields.neighborhood = neighborhood
         }
@@ -618,7 +638,9 @@ class UserController {
       if (road) {
         let roadResult = Analyzer.analyzeUserRoad(road)
         if (roadResult.hasError.value) {
-          errorFields.push(roadResult)
+          if (roadResult.hasError.type != 1) {
+            errorFields.push(roadResult)
+          }
         } else {
           fields.road = road
         }
@@ -627,7 +649,9 @@ class UserController {
       if (house_number) {
         let houseNumberResult = Analyzer.analyzeUserHouseNumber(house_number)
         if (houseNumberResult.hasError.value) {
-          errorFields.push(houseNumberResult)
+          if (houseNumberResult.hasError.type != 1) {
+            errorFields.push(houseNumberResult)
+          }
         } else {
           fields.house_number = house_number
         }
@@ -636,7 +660,9 @@ class UserController {
       if (information) {
         let informationsResult = Analyzer.analyzeUserAdditionalInformation(information)
         if (informationsResult.hasError.value) {
-          errorFields.push(informationsResult.hasError.error)
+          if (informationsResult.hasError.type != 1) {
+            errorFields.push(informationsResult)
+          }
         } else {
           fields.information = information
         }
