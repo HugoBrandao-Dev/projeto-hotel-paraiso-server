@@ -2970,7 +2970,7 @@ describe("Suite de testes das rotas User.", function() {
   describe("DELETE", function() {
     
     describe("Testes de SUCESSO.", function() {
-      test("DELETE - Deve retornar 200.", function() {
+      test("DELETE - Deve retornar 200, para um cliente que deleta a própria conta.", function() {
 
         let login = {
           email: "josias_cruz@hotmail.com",
@@ -2993,6 +2993,36 @@ describe("Suite de testes das rotas User.", function() {
             let id = _links[0].href.split('/').pop()
 
             return request.delete(`${ endpoints.toDelete }/${ id }`).set('Authorization', `Bearer ${ token }`)
+              .then(function(responseDelete) {
+                expect(responseDelete.statusCode).toEqual(200)
+              })
+              .catch(function(error) {
+                fail(error)
+              })
+          })
+          .catch(function(errorLogin) {
+            fail(errorLogin)
+          })
+      })
+
+      test("DELETE - Deve retornar 200, para um funcionário++ que deleta a conta do cliente.", function() {
+
+        let login = {
+          email: "tobias@gmail.com",
+          password: "@TobiaS&591022@"
+        }
+
+        return request.post(endpoints.toLogin).send(login)
+          .then(function(responseLogin) {
+
+            expect(responseLogin.statusCode).toEqual(200)
+
+            expect(responseLogin.body.token).toBeDefined()
+
+            expect(responseLogin.body._links).toBeDefined()
+            expect(responseLogin.body._links).toHaveLength(4)
+
+            return request.delete(`${ endpoints.toDelete }/600f191e810c19829de900ea`).set('Authorization', `Bearer ${ responseLogin.body.token }`)
               .then(function(responseDelete) {
                 expect(responseDelete.statusCode).toEqual(200)
               })
