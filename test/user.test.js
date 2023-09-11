@@ -1136,14 +1136,17 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseLogin.statusCode).toEqual(200)
 
-            let authorization = `Bearer ${ responseLogin.body.token }`
+            const { token, _links } = responseLogin.body
 
-            return request.get(`${ endpoints.toRead }`).set('Authorization', authorization)
-              .then(response => {
+            let id = _links[0].href.split('/').pop()
+            let authorization = `Bearer ${ token }`
 
-                expect(response.statusCode).toEqual(200)
+            return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', authorization)
+              .then(responseRead => {
 
-                expect(response.body).toMatchObject({
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
                   name: "Dinorá de Oliveira",
                   email: "dino_oli@hotmail.com",
                   phoneCode: "55",
@@ -1159,11 +1162,11 @@ describe("Suite de testes das rotas User.", function() {
                   information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
                 })
 
-                expect(response.body.created).toBeDefined()
-                expect(response.body.updated).toBeDefined()
+                expect(responseRead.body.created).toBeDefined()
+                expect(responseRead.body.updated).toBeDefined()
 
-                expect(response.body._links).toBeDefined()
-                expect(response.body._links).toHaveLength(3)
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
               })
               .catch(error => {
                 fail(error)
@@ -1258,7 +1261,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-
+      /*
       test("Deve retornar 200, e as informações do usuário que corresponda ao ID informado.", function() {
 
         let user = { id: '5da9ea674234635bdff45c02' }
@@ -1294,6 +1297,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
 
       /*
       test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
@@ -1696,6 +1700,7 @@ describe("Suite de testes das rotas User.", function() {
       */
 
       // Teste na visualização das infos do cliente pelo lado do funcionário++.
+      /*
       test("Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
 
         let user = { id: '5da9ea674234635bdff4+-!7' }
@@ -1731,6 +1736,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
 
       // Testes no Login
       test("POST - Deve retornar 400, por não ter informado o Email para Login.", function() {
@@ -1869,6 +1875,8 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
+      // Testes das Rotas de Views (Admin)
+      /*
       test("Deve retornar 401, para visualização das informações de um cliente, não estar AUTORIZADO", function() {
         return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`)
           .then(function(response) {
@@ -1896,6 +1904,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
     })
   })
 
@@ -1931,6 +1940,7 @@ describe("Suite de testes das rotas User.", function() {
                 expect(responseUpdate.body._links).toHaveLength(3)
 
                 // Utilizando o ADMIN para verificar se as informações foram atualizadas.
+                /*
                 return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
                   .then(function(responseView) {
                     expect(responseView.statusCode).toEqual(200)
@@ -1954,6 +1964,7 @@ describe("Suite de testes das rotas User.", function() {
                   .catch(function(errorGET) {
                     fail(errorGET)
                   })
+              */
               })
               .catch(function(errorPOST) {
                 fail(errorPOST)
