@@ -52,7 +52,21 @@ function authentication(req, res, next) {
               }
 
               res.status(parseInt(RestException.Status))
-              res.json({ RestException }) 
+              res.json({ RestException })
+            }
+          } else if (req.method === 'DELETE') {
+            if (decoded.id === req.params.id) {
+              next()
+            } else {
+              let RestException = {
+                Code: '6',
+                Message: 'O usuário não está autenticado',
+                Status: '403',
+                MoreInfo: `${ projectLinks.errors }/6`
+              }
+
+              res.status(parseInt(RestException.Status))
+              res.json({ RestException })
             }
           } else {
             let RestException = {
@@ -63,7 +77,7 @@ function authentication(req, res, next) {
             }
 
             res.status(parseInt(RestException.Status))
-            res.json({ RestException }) 
+            res.json({ RestException })
           }
           
         } else {
