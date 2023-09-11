@@ -2990,6 +2990,24 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseDelete.body.RestException.Message).toBe('O usuário não está autorizado')
             expect(responseDelete.body.RestException.Status).toBe('401')
             expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+            
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("DELETE - Deve retornar 403, já que ninguém está logado.", function() {
+        return request.delete(`${ endpoints.toDelete }/02n07j2d1hf5a2f26djjj92a`).set('Authorization', tokens.cliente)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(403)
+
+            expect(responseDelete.body.RestException.Code).toBe('6')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseDelete.body.RestException.Status).toBe('403')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
           })
           .catch(function(error) {
             fail(error)
