@@ -223,7 +223,8 @@ class UserController {
 
   async read(req, res) {
     try {
-      const { id, role } = getDecodedToken(req.headers['authorization'])
+      let id = req.params.id
+      const { role } = getDecodedToken(req.headers['authorization'])
       let idResult = await Analyzer.analyzeID(id)
 
       if (idResult.hasError.value) {
