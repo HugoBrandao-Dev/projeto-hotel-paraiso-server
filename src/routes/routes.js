@@ -18,10 +18,10 @@ router.get('/', HomeController.index)
 router.post('/user', UserController.create)
 
 // Read
-router.get('/user', authorization, UserController.read)
+router.get('/user/:id', authorization, authentication, UserController.read)
 
 // Esta rota é utilizada para visualização de informações do cliente pelo lado de um Funcionário++
-router.get('/user/:id', authorization, authentication, UserController.view)
+// router.get('/user/:id', authorization, authentication, UserController.view)
 
 router.get('/users', authorization, authentication, UserController.list)
 router.post('/user/search', authorization, authentication, UserController.readByDoc)
