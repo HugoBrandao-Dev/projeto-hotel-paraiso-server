@@ -31,7 +31,7 @@ router.post('/login', UserController.login)
 router.put('/user', authorization, authentication, UserController.update)
 
 // Delete
-router.delete('/user/:id', authorization, UserController.remove)
+router.delete('/user/:id', authorization, authentication, UserController.remove)
 
 /* ########### APARTMENT ########### */
 
