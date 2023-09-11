@@ -139,7 +139,7 @@ describe("Suite de testes das rotas User.", function() {
         const user = {
           name: "Josias Cruz",
           email: "josias_cruz@hotmail.com",
-          password: "@JosiaS&3659792@",
+          password: "&iOupQwer238974!2",
           phoneCode: "1",
           phoneNumber: "2129981212",
           birthDate: "1999-01-09",
@@ -1138,7 +1138,9 @@ describe("Suite de testes das rotas User.", function() {
 
             const { token, _links } = responseLogin.body
 
+            // Pega o ID do usuário que fez login.
             let id = _links[0].href.split('/').pop()
+
             let authorization = `Bearer ${ token }`
 
             return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', authorization)
@@ -2966,19 +2968,44 @@ describe("Suite de testes das rotas User.", function() {
     })
   })
   describe("DELETE", function() {
-    /*
+    
     describe("Testes de SUCESSO.", function() {
       test("DELETE - Deve retornar 200.", function() {
-        return request.delete(`${ endpoints.toDelete }/507f191e810c19729de860ea`)
-          .then(function(responseDelete) {
-            expect(responseDelete.statusCode).toEqual(200)
+
+        let login = {
+          email: "josias_cruz@hotmail.com",
+          password: "&iOupQwer238974!2",
+        }
+
+        return request.post(endpoints.toLogin).send(login)
+          .then(function(responseLogin) {
+
+            expect(responseLogin.statusCode).toEqual(200)
+
+            expect(responseLogin.body.token).toBeDefined()
+
+            expect(responseLogin.body._links).toBeDefined()
+            expect(responseLogin.body._links).toHaveLength(3)
+
+            let { _links, token } = responseLogin.body
+
+            // Pega o ID do usuário que fez login.
+            let id = _links[0].href.split('/').pop()
+
+            return request.delete(`${ endpoints.toDelete }/${ id }`).set('Authorization', `Bearer ${ token }`)
+              .then(function(responseDelete) {
+                expect(responseDelete.statusCode).toEqual(200)
+              })
+              .catch(function(error) {
+                fail(error)
+              })
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorLogin) {
+            fail(errorLogin)
           })
       })
     })
-    */
+    
     describe("Testes de FALHA.", function() {
       test("DELETE - Deve retornar 401, já que ninguém está logado.", function() {
         return request.delete(`${ endpoints.toDelete }/d9d62beecdde62af82efd82c`)
