@@ -2965,8 +2965,8 @@ describe("Suite de testes das rotas User.", function() {
       })
     })
   })
-/*
   describe("DELETE", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
       test("DELETE - Deve retornar 200.", function() {
         return request.delete(`${ endpoints.toDelete }/507f191e810c19729de860ea`)
@@ -2978,7 +2978,25 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
+    */
     describe("Testes de FALHA.", function() {
+      test("DELETE - Deve retornar 401, já que ninguém está logado.", function() {
+        return request.delete(`${ endpoints.toDelete }/d9d62beecdde62af82efd82c`)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(401)
+
+            expect(responseDelete.body.RestException.Code).toBe('5')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseDelete.body.RestException.Status).toBe('401')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      /*
       test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
         return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`)
           .then(function(response) {
@@ -3010,7 +3028,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+      */
     })
   })
-*/
 })
