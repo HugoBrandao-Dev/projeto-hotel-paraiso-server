@@ -6,6 +6,41 @@ const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 
+// Verifica se a conta tem permissão de realizar uma determinada ação.
+function isActionAllowed(decodedToken, method, paramID = '', bodyRole = 0) {
+  const upperMethod = method.toUpperCase()
+  let allowed = true
+
+  switch (decodedToken.role) {
+    case '0':
+      switch (upperMethod) {
+        case 'POST':
+          allowed = false
+          break
+        case 'GET':
+          if (!paramID || paramID !== decodedToken.id) {
+            allowed = false
+          }
+          break
+        case 'PUT':
+          if (decodedToken.id === paramID) {
+            if (bodyRole) {
+              allowed = false
+            }
+          }
+          break
+        case 'DELETE':
+          if (!paramID || decodedToken.id !== paramID) {
+            allowed = false
+          }
+          break
+      }
+      break
+  }
+
+  return allowed
+}
+
 function authentication(req, res, next) {
   try {
     const authToken = req.headers['authorization']
@@ -16,72 +51,18 @@ function authentication(req, res, next) {
         console.log(error)
       } else {
 
-        if (decoded.role == 0) {
-
-          // Para caso de atualização de informações.
-          if (req.method === 'PUT') {
-
-            // Verifica se é o próprio usuário que está atualizando suas informações.
-            if (decoded.id === req.body.id) {
-
-              // Verifica se o mesmo está tentando modificar a sua Função (não pode).
-              if (req.body.role >= 0) {
-                let RestException = {
-                  Code: '6',
-                  Message: 'O usuário não está autenticado',
-                  Status: '403',
-                  MoreInfo: `${ projectLinks.errors }/6`
-                }
-                res.status(parseInt(RestException.Status))
-                res.json({ RestException })
-              } else {
-                next()
-              }
-            } else {
-              next()
-            }
-          } else if (req.method === 'GET') {
-            if (decoded.id === req.params.id) {
-              next()
-            } else {
-              let RestException = {
-                Code: '6',
-                Message: 'O usuário não está autenticado',
-                Status: '403',
-                MoreInfo: `${ projectLinks.errors }/6`
-              }
-
-              res.status(parseInt(RestException.Status))
-              res.json({ RestException })
-            }
-          } else if (req.method === 'DELETE') {
-            if (decoded.id === req.params.id) {
-              next()
-            } else {
-              let RestException = {
-                Code: '6',
-                Message: 'O usuário não está autenticado',
-                Status: '403',
-                MoreInfo: `${ projectLinks.errors }/6`
-              }
-
-              res.status(parseInt(RestException.Status))
-              res.json({ RestException })
-            }
-          } else {
-            let RestException = {
-              Code: '6',
-              Message: 'O usuário não está autenticado',
-              Status: '403',
-              MoreInfo: `${ projectLinks.errors }/6`
-            }
-
-            res.status(parseInt(RestException.Status))
-            res.json({ RestException })
-          }
-          
-        } else {
+        if (isActionAllowed(decoded, req.method, req.params.id, req.body.role)) {
           next()
+        } else {
+          let RestException = {
+            Code: '6',
+            Message: 'O usuário não está autenticado',
+            Status: '403',
+            MoreInfo: `${ projectLinks.errors }/6`
+          }
+
+          res.status(parseInt(RestException.Status))
+          res.json({ RestException })
         }
       }
     })
