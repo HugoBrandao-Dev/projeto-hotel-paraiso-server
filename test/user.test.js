@@ -21,6 +21,7 @@ let endpoints = {
 
 let accounts = {
   admin: { id: '', token: '' },
+  gerente: { id: '', token: '' },
   funcionario: { id: '', token: '' },
   cliente: { id: '', token: ''  }
 }
@@ -30,7 +31,7 @@ const projectLinks = {
 }
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
-jest.setTimeout(10000)
+jest.setTimeout(15000)
 
 function register(user) {
   return new Promise((resolve, reject) => {
@@ -112,8 +113,8 @@ beforeAll(async () => {
       phoneNumber: "2129980000",
       birthDate: "1985-10-29",
       country: "BR",
-      state: "MS",
-      city: "Ponta Porã",
+      state: "CE",
+      city: "Fortaleza",
       cpf: Generator.genCPF()
     }
     let funcionarioLogin = await register(userFuncionario)
@@ -121,6 +122,23 @@ beforeAll(async () => {
     accounts.funcionario.id = tokenFuncionario.id
     accounts.funcionario.token = `Bearer ${ tokenFuncionario.token }`
 
+    const userGerente = {
+      name: "Ana de Oliveira",
+      email: "ana_oli@outlook.com",
+      password: "&QoiWeroW$92381749&",
+      phoneCode: "1",
+      phoneNumber: "2129980000",
+      birthDate: "2000-01-02",
+      country: "BR",
+      state: "CE",
+      city: "Fortaleza",
+      cpf: Generator.genCPF()
+    }
+    let gerenteLogin = await register(userGerente)
+    tokenGerente = await login(gerenteLogin)
+    accounts.gerente.id = tokenGerente.id
+    accounts.gerente.token = `Bearer ${ tokenGerente.token }`
+    console.log(accounts.gerente)
   } catch (error) {
     console.log(error)
   }
@@ -2014,7 +2032,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 200 para cliente que tenha sua Função alterada para funcionário pelo Admin.", function() {
+      test("PUT - Deve retornar 200 para cliente que tenha sua Função alterada para funcionário pelo Admin.", function() {
 
         let user = {
           id: '600f191e810c19829de900ea',
@@ -2050,8 +2068,44 @@ describe("Suite de testes das rotas User.", function() {
           })
 
       })
+
+      test("PUT - Deve retornar 200 para cliente que tenha sua Função alterada para gerente pelo Admin.", function() {
+
+        let user = {
+          id: accounts.gerente.id,
+          role: '2'
+        }
+
+        return request.put(`${ endpoints.toUpdate }`).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+
+            return request.get(`${ endpoints.toRead }/${ accounts.gerente.id }`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  id: accounts.gerente.id,
+                  role: user.role
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })      
       /*
-      
       test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
         let user = {
           id: "507f1f77bcf86cd799439011",
