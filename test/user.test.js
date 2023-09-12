@@ -2965,8 +2965,63 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
+      test("POST - Deve retornar 403, já que o cliente NÃO está AUTENTICADO a mudar sua própria função.", function() {
+
+        let login = {
+          email: "dino_oli@hotmail.com",
+          password: "@QowierU12873094&28374@",
+        }
+
+        return request.post(endpoints.toLogin).send(login)
+          .then(function(responseLogin) {
+
+            expect(responseLogin.statusCode).toEqual(200)
+
+            expect(responseLogin.body.token).toBeDefined()
+            
+            expect(responseLogin.body._links).toBeDefined()
+            expect(responseLogin.body._links).toHaveLength(3)
+
+
+            let { _links, token } = responseLogin.body
+
+            // Pega o ID do usuário logado.
+            let id = _links[0].href.split('/').pop()
+
+            const user = {
+              id: id,
+              name: "Dino Oli",
+              email: "dino_oli@hotmail.com",
+              password: "@QowierU12873094&28374@",
+              role: "1",
+              country: "US",
+              state: "NY",
+              city: "New York City",
+              passportNumber: Generator.genPassportNumber()
+            }
+
+            return request.put(endpoints.toUpdate).send(user).set("Authorization", `Bearer ${ token }`)
+              .then(function(responseUpdate) {
+
+                expect(responseUpdate.statusCode).toEqual(403)
+
+                expect(responseUpdate.body.RestException.Code).toBe('6')
+                expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+                expect(responseUpdate.body.RestException.Status).toBe('403')
+                expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+              })
+              .catch(function(errorUpdate) {
+                fail(errorUpdate)
+              })
+          })
+          .catch(function(errorLogin) {
+            fail(errorLogin)
+          })
+      })
     })
   })
+
   describe("DELETE", function() {
     
     describe("Testes de SUCESSO.", function() {
@@ -3105,5 +3160,6 @@ describe("Suite de testes das rotas User.", function() {
       })
       */
     })
+
   })
 })
