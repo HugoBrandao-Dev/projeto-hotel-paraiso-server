@@ -20,6 +20,7 @@ let endpoints = {
 }
 let tokens = {
   admin: '',
+  funcionario: '',
   cliente: ''
 }
 const projectLinks = {
@@ -95,6 +96,22 @@ beforeAll(async () => {
     let clienteLogin = await register(userCliente)
     tokenCliente = await login(clienteLogin)
     tokens.cliente = `Bearer ${ tokenCliente }`
+
+    const userFuncionario = {
+      name: "Alan de Jesus",
+      email: "alan_jesus@hotmail.com",
+      password: "ksDOiu239847#@$qwER",
+      phoneCode: "1",
+      phoneNumber: "2129980000",
+      birthDate: "1985-10-29",
+      country: "BR",
+      state: "MS",
+      city: "Ponta Porã",
+      passportNumber: Generator.genPassportNumber()
+    }
+    let funcionarioLogin = await register(userFuncionario)
+    tokenFuncionario = await login(funcionarioLogin)
+    tokens.funcionario = `Bearer ${ tokenFuncionario }`
   } catch (error) {
     console.log(error)
   }
