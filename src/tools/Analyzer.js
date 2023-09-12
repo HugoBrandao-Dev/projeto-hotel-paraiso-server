@@ -192,7 +192,7 @@ class Analyzer {
     })
     if (!itsValid) {
       result.hasError.value = true
-      result.hasError.type = 1
+      result.hasError.type = 2
       result.hasError.error = 'O valor de Role é de uma função inexistente'
     }
 
