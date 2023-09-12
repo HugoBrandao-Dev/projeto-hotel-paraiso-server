@@ -18,11 +18,13 @@ let endpoints = {
   toList: '/users',
   toLogin: '/login'
 }
-let tokens = {
-  admin: '',
-  funcionario: '',
-  cliente: ''
+
+let accounts = {
+  admin: { id: '', token: '' },
+  funcionario: { id: '', token: '' },
+  cliente: { id: '', token: ''  }
 }
+
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
@@ -50,8 +52,11 @@ function login(login) {
   return new Promise((resolve, reject) => {
     request.post(endpoints.toLogin).send(login)
       .then((response) => {
-        let { token } = response.body
-        resolve(token)
+        let { token, _links } = response.body
+
+        let id = _links[0].href.split('/').pop()
+
+        resolve({ id, token })
       })
       .catch(error => {
         reject(error)
@@ -75,7 +80,8 @@ beforeAll(async () => {
     }
     let adminLogin = await register(userAdmin)
     tokenAdmin = await login(adminLogin)
-    tokens.admin = `Bearer ${ tokenAdmin }`
+    accounts.admin.id = tokenAdmin.id
+    accounts.admin.token = `Bearer ${ tokenAdmin.token }`
     
     const userCliente = {
       name: "Doralice Cruz",
@@ -95,7 +101,8 @@ beforeAll(async () => {
     }
     let clienteLogin = await register(userCliente)
     tokenCliente = await login(clienteLogin)
-    tokens.cliente = `Bearer ${ tokenCliente }`
+    accounts.cliente.id = tokenCliente.id
+    accounts.cliente.token = `Bearer ${ tokenCliente.token }`
 
     const userFuncionario = {
       name: "Alan de Jesus",
@@ -107,11 +114,13 @@ beforeAll(async () => {
       country: "BR",
       state: "MS",
       city: "Ponta Porã",
-      passportNumber: Generator.genPassportNumber()
+      cpf: Generator.genCPF()
     }
     let funcionarioLogin = await register(userFuncionario)
     tokenFuncionario = await login(funcionarioLogin)
-    tokens.funcionario = `Bearer ${ tokenFuncionario }`
+    accounts.funcionario.id = tokenFuncionario.id
+    accounts.funcionario.token = `Bearer ${ tokenFuncionario.token }`
+
   } catch (error) {
     console.log(error)
   }
@@ -1197,7 +1206,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("GET - Deve retornar 200 e uma lista de usuários.", function() {
-        return request.get(endpoints.toList).set('Authorization', tokens.admin)
+        return request.get(endpoints.toList).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -1219,7 +1228,7 @@ describe("Suite de testes das rotas User.", function() {
 
       test("GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
         let url = endpoints.toList + '?offset=1&limit=3'
-        return request.get(url).set('Authorization', tokens.admin)
+        return request.get(url).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
             expect(response.body.users.length).toEqual(2)
@@ -1243,7 +1252,7 @@ describe("Suite de testes das rotas User.", function() {
           cpf: '22222222222'
         }
 
-        return request.post(endpoints.toSearch).send(info).set('Authorization', tokens.admin)
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
             expect(response.body.user).toMatchObject({
@@ -1265,7 +1274,7 @@ describe("Suite de testes das rotas User.", function() {
           passportNumber: '303004786'
         }
         
-        return request.post(endpoints.toSearch).send(info).set('Authorization', tokens.admin)
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
             expect(response.body.user).toMatchObject({
@@ -1285,7 +1294,7 @@ describe("Suite de testes das rotas User.", function() {
 
         let user = { id: '5da9ea674234635bdff45c02' }
 
-        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
 
@@ -1724,7 +1733,7 @@ describe("Suite de testes das rotas User.", function() {
 
         let user = { id: '5da9ea674234635bdff4+-!7' }
 
-        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1742,7 +1751,7 @@ describe("Suite de testes das rotas User.", function() {
 
         let user = { id: '507f1f77bcf86cd799431111' }
 
-        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 
@@ -1843,7 +1852,7 @@ describe("Suite de testes das rotas User.", function() {
 
       test("POST - Deve retornar 403, por tentar acessar a listagem de Usuários sem estar AUTENTICADO.", function() {
 
-        return request.get(endpoints.toList).set('Authorization', tokens.cliente)
+        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
             expect(responseList.statusCode).toEqual(403)
             expect(responseList.body.RestException.Code).toBe('6')
@@ -1881,7 +1890,7 @@ describe("Suite de testes das rotas User.", function() {
           cpf: '11111111111'
         }
 
-        return request.post(endpoints.toSearch).send(info).set('Authorization', tokens.cliente)
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
             expect(responseList.statusCode).toEqual(403)
             expect(responseList.body.RestException.Code).toBe('6')
@@ -1911,7 +1920,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("Deve retornar 403, para visualização das informações de um cliente, não estar AUTENTICADO", function() {
-        return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`).set('Authorization', tokens.cliente)
+        return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`).set('Authorization', accounts.cliente.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(403)
             expect(response.body.RestException.Code).toBe('6')
@@ -1970,7 +1979,7 @@ describe("Suite de testes das rotas User.", function() {
 
                 // Utilizando o ADMIN para verificar se as informações foram atualizadas.
                 /*
-                return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', tokens.admin)
+                return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
                   .then(function(responseView) {
                     expect(responseView.statusCode).toEqual(200)
 
@@ -3138,7 +3147,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       test("DELETE - Deve retornar 403, já que ninguém está logado.", function() {
-        return request.delete(`${ endpoints.toDelete }/02n07j2d1hf5a2f26djjj92a`).set('Authorization', tokens.cliente)
+        return request.delete(`${ endpoints.toDelete }/02n07j2d1hf5a2f26djjj92a`).set('Authorization', accounts.cliente.token)
           .then(function(responseDelete) {
 
             expect(responseDelete.statusCode).toEqual(403)
