@@ -2891,6 +2891,143 @@ describe("Suite de testes das rotas User.", function() {
       */
     })
     describe("Testes de FALHA.", function() {
+      test("PUT - Deve retornar 401, já que o usuário NÃO está AUTORIZADO.", function() {
+
+        const user = {
+          id: "507f191e810c19729de860ea",
+          name: "John Smith",
+          email: "john_sm@hotmail.com",
+          country: "US",
+          state: "NY",
+          city: "New York City",
+          passportNumber: fixedPassportNumber
+        }
+        return request.put(endpoints.toUpdate).send(user)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(401)
+            expect(response.body.RestException.Code).toBe('5')
+            expect(response.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(response.body.RestException.Status).toBe('401')
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
+
+      test("PUT - Deve retornar 403, já que o cliente NÃO está AUTENTICADO a mudar sua própria função.", function() {
+
+        let login = {
+          email: "dino_oli@hotmail.com",
+          password: "@QowierU12873094&28374@",
+        }
+
+        return request.post(endpoints.toLogin).send(login)
+          .then(function(responseLogin) {
+
+            expect(responseLogin.statusCode).toEqual(200)
+
+            expect(responseLogin.body.token).toBeDefined()
+            
+            expect(responseLogin.body._links).toBeDefined()
+            expect(responseLogin.body._links).toHaveLength(3)
+
+
+            let { _links, token } = responseLogin.body
+
+            // Pega o ID do usuário logado.
+            let id = _links[0].href.split('/').pop()
+
+            const user = {
+              id: id,
+              name: "Dino Oli",
+              email: "dino_oli@hotmail.com",
+              password: "@QowierU12873094&28374@",
+              role: "1",
+              country: "US",
+              state: "NY",
+              city: "New York City",
+              passportNumber: Generator.genPassportNumber()
+            }
+
+            return request.put(endpoints.toUpdate).send(user).set("Authorization", `Bearer ${ token }`)
+              .then(function(responseUpdate) {
+
+                expect(responseUpdate.statusCode).toEqual(403)
+
+                expect(responseUpdate.body.RestException.Code).toBe('6')
+                expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+                expect(responseUpdate.body.RestException.Status).toBe('403')
+                expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+              })
+              .catch(function(errorUpdate) {
+                fail(errorUpdate)
+              })
+          })
+          .catch(function(errorLogin) {
+            fail(errorLogin)
+          })
+
+      })
+
+      test("PUT - Deve retornar 403, já que o funcionário não pode alterar a Função de uma conta (nenhuma conta)", function() {
+
+        let user = {
+          id: accounts.cliente.id,
+          role: '1'
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      // Testes na FUNÇÃO DA CONTA QUE ESTÁ SENDO CRIADA (role)
+      test("PUT - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
+
+        let user = {
+          id: accounts.cliente.id,
+          name: "Doralice Cruz",
+          email: "dora_cruz@hotmail.com",
+          password: "%QiouewR*123423%",
+          role: "cliente", // role deve ser um valor numérico
+          phoneCode: "55",
+          phoneNumber: "11984752352",
+          birthDate: "2000-02-11",
+          country: "BR",
+          state: "SP",
+          city: "São Paulo",
+          cpf: Generator.genCPF()
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.admin.token)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O campo de Role possui caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Role possui caracteres inválidos")
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
       /*
       test("POST - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
         const user = {
@@ -3016,107 +3153,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
       */
-
-      test("POST - Deve retornar 401, já que o usuário NÃO está AUTORIZADO.", function() {
-        const user = {
-          id: "507f191e810c19729de860ea",
-          name: "John Smith",
-          email: "john_sm@hotmail.com",
-          country: "US",
-          state: "NY",
-          city: "New York City",
-          passportNumber: fixedPassportNumber
-        }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(401)
-            expect(response.body.RestException.Code).toBe('5')
-            expect(response.body.RestException.Message).toBe('O usuário não está autorizado')
-            expect(response.body.RestException.Status).toBe('401')
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("POST - Deve retornar 403, já que o cliente NÃO está AUTENTICADO a mudar sua própria função.", function() {
-
-        let login = {
-          email: "dino_oli@hotmail.com",
-          password: "@QowierU12873094&28374@",
-        }
-
-        return request.post(endpoints.toLogin).send(login)
-          .then(function(responseLogin) {
-
-            expect(responseLogin.statusCode).toEqual(200)
-
-            expect(responseLogin.body.token).toBeDefined()
-            
-            expect(responseLogin.body._links).toBeDefined()
-            expect(responseLogin.body._links).toHaveLength(3)
-
-
-            let { _links, token } = responseLogin.body
-
-            // Pega o ID do usuário logado.
-            let id = _links[0].href.split('/').pop()
-
-            const user = {
-              id: id,
-              name: "Dino Oli",
-              email: "dino_oli@hotmail.com",
-              password: "@QowierU12873094&28374@",
-              role: "1",
-              country: "US",
-              state: "NY",
-              city: "New York City",
-              passportNumber: Generator.genPassportNumber()
-            }
-
-            return request.put(endpoints.toUpdate).send(user).set("Authorization", `Bearer ${ token }`)
-              .then(function(responseUpdate) {
-
-                expect(responseUpdate.statusCode).toEqual(403)
-
-                expect(responseUpdate.body.RestException.Code).toBe('6')
-                expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
-                expect(responseUpdate.body.RestException.Status).toBe('403')
-                expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
-              })
-              .catch(function(errorUpdate) {
-                fail(errorUpdate)
-              })
-          })
-          .catch(function(errorLogin) {
-            fail(errorLogin)
-          })
-      })
-
-      test("POST - Deve retornar 403, já que o funcionário não pode alterar a Função de uma conta (nenhuma conta)", function() {
-
-        let user = {
-          id: accounts.cliente.id,
-          role: '1'
-        }
-
-        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(403)
-
-            expect(responseUpdate.body.RestException.Code).toBe('6')
-            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
-            expect(responseUpdate.body.RestException.Status).toBe('403')
-            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
-
-      })
     })
   })
 
