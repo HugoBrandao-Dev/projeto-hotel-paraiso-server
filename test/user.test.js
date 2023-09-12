@@ -1290,42 +1290,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 200 para cliente que tenha sua Função alterada para funcionário pelo Admin.", function() {
-
-        let user = {
-          id: '600f191e810c19829de900ea',
-          role: '1'
-        }
-
-        return request.put(`${ endpoints.toUpdate }`).send(user).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-
-            return request.get(`${ endpoints.toRead }/600f191e810c19829de900ea`).set('Authorization', accounts.admin.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                expect(responseRead.body).toMatchObject({
-                  id: '600f191e810c19829de900ea',
-                  role: user.role
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
-
-      })
       /*
       test("Deve retornar 200, e as informações do usuário que corresponda ao ID informado.", function() {
 
@@ -2048,6 +2012,43 @@ describe("Suite de testes das rotas User.", function() {
           .catch(function(errorLogin) {
             fail(errorLogin)
           })
+      })
+
+      test("POST - Deve retornar 200 para cliente que tenha sua Função alterada para funcionário pelo Admin.", function() {
+
+        let user = {
+          id: '600f191e810c19829de900ea',
+          role: '1'
+        }
+
+        return request.put(`${ endpoints.toUpdate }`).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+
+            return request.get(`${ endpoints.toRead }/600f191e810c19829de900ea`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  id: '600f191e810c19829de900ea',
+                  role: user.role
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
       })
       /*
       
@@ -3091,6 +3092,30 @@ describe("Suite de testes das rotas User.", function() {
           .catch(function(errorLogin) {
             fail(errorLogin)
           })
+      })
+
+      test("POST - Deve retornar 403, já que o funcionário não pode alterar a Função de uma conta (nenhuma conta)", function() {
+
+        let user = {
+          id: accounts.cliente.id,
+          role: '1'
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
       })
     })
   })
