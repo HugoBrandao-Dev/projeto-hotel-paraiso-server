@@ -1289,6 +1289,43 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
+
+      test("POST - Deve retornar 200 para cliente que tenha sua Função alterada para funcionário pelo Admin.", function() {
+
+        let user = {
+          id: '600f191e810c19829de900ea',
+          role: '1'
+        }
+
+        return request.put(`${ endpoints.toUpdate }`).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+
+            return request.get(`${ endpoints.toRead }/600f191e810c19829de900ea`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  id: '600f191e810c19829de900ea',
+                  role: user.role
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
       /*
       test("Deve retornar 200, e as informações do usuário que corresponda ao ID informado.", function() {
 
