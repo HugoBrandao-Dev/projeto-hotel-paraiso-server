@@ -138,7 +138,6 @@ beforeAll(async () => {
     tokenGerente = await login(gerenteLogin)
     accounts.gerente.id = tokenGerente.id
     accounts.gerente.token = `Bearer ${ tokenGerente.token }`
-    console.log(accounts.gerente)
   } catch (error) {
     console.log(error)
   }
@@ -3033,6 +3032,30 @@ describe("Suite de testes das rotas User.", function() {
         }
 
         return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("PUT - Deve retornar 403, já que o Gerente NÃO tem autenticação alterar a conta do cliente para Gerente.", function() {
+
+        let user = {
+          id: accounts.cliente.id,
+          role: '3'
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.gerente.token)
           .then(function(responseUpdate) {
 
             expect(responseUpdate.statusCode).toEqual(403)
