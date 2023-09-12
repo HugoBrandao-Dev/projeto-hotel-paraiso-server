@@ -1922,10 +1922,20 @@ describe("Suite de testes das rotas User.", function() {
         // Antes de fazer a atualização, é feito o Login.
         return request.post(`${ endpoints.toLogin }`).send(login)
           .then(function(responseLogin) {
+
             expect(responseLogin.statusCode).toEqual(200)
 
+            expect(responseLogin.body.token).toBeDefined()
+
+            expect(responseLogin.body._links).toBeDefined()
+            expect(responseLogin.body._links).toHaveLength(3)
+
+            let { token, _links } = responseLogin.body
+
+            let id = _links[0].href.split('/').pop()
+
             let user = {
-              id: responseLogin.body._links[0].href.split('/').pop(),
+              id,
               email: "doralice@gmail.com",
               phoneNumber: "2129982222",
               country: "US",
@@ -1934,7 +1944,7 @@ describe("Suite de testes das rotas User.", function() {
             }
 
             // Envia o token do login para a rota de atualização, junto com as informações.
-            return request.put(endpoints.toUpdate).send(user).set('Authorization', `Bearer ${ responseLogin.body.token }`)
+            return request.put(endpoints.toUpdate).send(user).set('Authorization', `Bearer ${ token }`)
               .then(function(responseUpdate) {
                 expect(responseUpdate.statusCode).toEqual(200)
 
