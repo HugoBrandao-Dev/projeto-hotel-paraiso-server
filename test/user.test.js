@@ -3028,6 +3028,41 @@ describe("Suite de testes das rotas User.", function() {
           })
 
       })
+
+      test("PUT - Deve retornar 400, devido ao valor da função (role) ser de uma função inexistente.", function() {
+
+        let user = {
+          id: accounts.cliente.id,
+          name: "Doralice Cruz",
+          email: "dora_cruz@hotmail.com",
+          password: "%QiouewR*123423%",
+          role: "10",
+          phoneCode: "55",
+          phoneNumber: "11984752352",
+          birthDate: "2000-02-11",
+          country: "BR",
+          state: "SP",
+          city: "São Paulo",
+          cpf: Generator.genCPF(),
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.admin.token)
+          .then(function(response) {
+
+            expect(response.statusCode).toEqual(400)
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O valor de Role é de uma função inexistente")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRole')
+            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O valor de Role é de uma função inexistente")
+
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
       /*
       test("POST - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
         const user = {
