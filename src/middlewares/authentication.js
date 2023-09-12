@@ -7,7 +7,7 @@ const projectLinks = {
 }
 
 // Verifica se a conta tem permissão de realizar uma determinada ação.
-function isActionAllowed(decodedToken, method, paramID = '', bodyRole = 0) {
+function isActionAllowed(decodedToken, method, params, body) {
   const upperMethod = method.toUpperCase()
   let allowed = true
 
@@ -18,19 +18,17 @@ function isActionAllowed(decodedToken, method, paramID = '', bodyRole = 0) {
           allowed = false
           break
         case 'GET':
-          if (!paramID || paramID !== decodedToken.id) {
+          if (!params.id || params.id !== decodedToken.id) {
             allowed = false
           }
           break
         case 'PUT':
-          if (decodedToken.id === paramID) {
-            if (bodyRole) {
-              allowed = false
-            }
+          if (body.id !== decodedToken.id || body.role > 0) {
+            allowed = false
           }
           break
         case 'DELETE':
-          if (!paramID || decodedToken.id !== paramID) {
+          if (!params.id || decodedToken.id !== params.id) {
             allowed = false
           }
           break
@@ -50,8 +48,7 @@ function authentication(req, res, next) {
       if (error) {
         console.log(error)
       } else {
-
-        if (isActionAllowed(decoded, req.method, req.params.id, req.body.role)) {
+        if (isActionAllowed(decoded, req.method, req.params, req.body)) {
           next()
         } else {
           let RestException = {
