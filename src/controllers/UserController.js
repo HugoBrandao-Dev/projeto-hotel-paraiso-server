@@ -507,14 +507,15 @@ class UserController {
       }
 
       // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
-      let roleValue = role == undefined ? '0' : role
-      let roleResult = Analyzer.analyzeUserRole(roleValue)
-      if (roleResult.hasError.value) {
-        if (roleResult.hasError.type != 1) {
-          errorFields.push(roleResult)
+      if (role) {
+        let roleResult = Analyzer.analyzeUserRole(role)
+        if (roleResult.hasError.value) {
+          if (roleResult.hasError.type != 1) {
+            errorFields.push(roleResult)
+          }
+        } else {
+          fields.role = role
         }
-      } else {
-        fields.role = role
       }
 
       if (phoneCode) {
