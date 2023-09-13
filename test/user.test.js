@@ -21,6 +21,7 @@ let endpoints = {
 
 let accounts = {
   admin: { id: '', token: '' },
+  gerente2: { id: '', token: '' },
   gerente: { id: '', token: '' },
   funcionario2: { id: '', token: '' },
   funcionario: { id: '', token: '' },
@@ -32,7 +33,7 @@ const projectLinks = {
 }
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
-jest.setTimeout(15000)
+jest.setTimeout(20000)
 
 function register(user) {
   return new Promise((resolve, reject) => {
@@ -217,6 +218,29 @@ beforeAll(async () => {
       accounts.gerente.token = `Bearer ${ tokenGerente.token }`
     } catch (errorGerente) {
       console.log(errorGerente)
+    }
+
+    try {
+      const userGerente2 = {
+        name: "Diogo Silva",
+        email: "di_silva@outlook.com",
+        password: "54df@qWEr797sa@#df!6qWE7",
+        phoneCode: "1",
+        phoneNumber: "2129980000",
+        birthDate: "2000-01-02",
+        country: "BR",
+        state: "CE",
+        city: "Fortaleza",
+        cpf: Generator.genCPF()
+      }
+      let registredGerente2 = await register(userGerente2)
+      let gerenteLogin2 = registredGerente2.login
+      accounts.gerente2.id = registredGerente2.id
+      await updateRole(accounts.gerente2.id, '2')
+      let tokenGerente2 = await login(gerenteLogin2)
+      accounts.gerente2.token = `Bearer ${ tokenGerente2.token }`
+    } catch (errorGerente2) {
+      console.log(errorGerente2)
     }
 
   } catch (error) {
