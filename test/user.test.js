@@ -3387,7 +3387,7 @@ describe("Suite de testes das rotas User.", function() {
   })
 
   describe("DELETE", function() {
-    
+
     describe("Testes de SUCESSO.", function() {
       test("DELETE - Deve retornar 200, para um cliente que deleta a própria conta.", function() {
 
@@ -3454,7 +3454,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
     })
-    
+
     describe("Testes de FALHA.", function() {
       test("DELETE - Deve retornar 401, já que ninguém está logado.", function() {
         return request.delete(`${ endpoints.toDelete }/d9d62beecdde62af82efd82c`)
@@ -3476,6 +3476,22 @@ describe("Suite de testes das rotas User.", function() {
 
       test("DELETE - Deve retornar 403, já um cliente não pode deletar a conta de outro.", function() {
         return request.delete(`${ endpoints.toDelete }/02n07j2d1hf5a2f26djjj92a`).set('Authorization', accounts.cliente.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(403)
+
+            expect(responseDelete.body.RestException.Code).toBe('6')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseDelete.body.RestException.Status).toBe('403')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("DELETE - Deve retornar 403, já um Cliente não pode deletar a conta de um Funcionário.", function() {
+        return request.delete(`${ endpoints.toDelete }/${ accounts.funcionario.id }`).set('Authorization', accounts.cliente.token)
           .then(function(responseDelete) {
 
             expect(responseDelete.statusCode).toEqual(403)
