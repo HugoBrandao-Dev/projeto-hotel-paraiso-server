@@ -22,6 +22,7 @@ let endpoints = {
 let accounts = {
   admin: { id: '', token: '' },
   gerente: { id: '', token: '' },
+  funcionario2: { id: '', token: '' },
   funcionario: { id: '', token: '' },
   cliente: { id: '', token: ''  }
 }
@@ -173,6 +174,29 @@ beforeAll(async () => {
     }
 
     try {
+      const userFuncionario2 = {
+        name: "Pedro Cruz",
+        email: "pedro_cruz@hotmail.com",
+        password: "213Erpoklsdf#@$qwER",
+        phoneCode: "1",
+        phoneNumber: "2129980000",
+        birthDate: "1988-07-09",
+        country: "BR",
+        state: "CE",
+        city: "Fortaleza",
+        cpf: Generator.genCPF()
+      }
+      let registredFuncionario2 = await register(userFuncionario2)
+      let funcionarioLogin2 = registredFuncionario2.login
+      accounts.funcionario2.id = registredFuncionario2.id
+      await updateRole(accounts.funcionario2.id, '1')
+      let tokenFuncionario2 = await login(funcionarioLogin2)
+      accounts.funcionario2.token = `Bearer ${ tokenFuncionario2.token }`
+    } catch (errorFuncionario2) {
+      console.log(errorFuncionario2)
+    }
+
+    try {
       const userGerente = {
         name: "Ana de Oliveira",
         email: "ana_oli@outlook.com",
@@ -188,7 +212,7 @@ beforeAll(async () => {
       let registredGerente = await register(userGerente)
       let gerenteLogin = registredGerente.login
       accounts.gerente.id = registredGerente.id
-      await updateRole(accounts.funcionario.id, '2')
+      await updateRole(accounts.gerente.id, '2')
       let tokenGerente = await login(gerenteLogin)
       accounts.gerente.token = `Bearer ${ tokenGerente.token }`
     } catch (errorGerente) {
@@ -3450,7 +3474,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("DELETE - Deve retornar 403, já que ninguém está logado.", function() {
+      test("DELETE - Deve retornar 403, já um cliente não pode deletar a conta de outro.", function() {
         return request.delete(`${ endpoints.toDelete }/02n07j2d1hf5a2f26djjj92a`).set('Authorization', accounts.cliente.token)
           .then(function(responseDelete) {
 
@@ -3465,7 +3489,6 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-
       /*
       test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
         return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`)
