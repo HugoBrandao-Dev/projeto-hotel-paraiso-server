@@ -3557,6 +3557,25 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
+      test("DELETE - Deve retornar 403, já que Funcionário não pode deletar a conta de um Gerente.", function() {
+
+        return request.delete(`${ endpoints.toDelete }/${ accounts.gerente.id }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(403)
+
+            expect(responseDelete.body.RestException.Code).toBe('6')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseDelete.body.RestException.Status).toBe('403')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorDelete) {
+            fail(errorDelete)
+          })
+
+      })
+
       /*
       test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
         return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`)
