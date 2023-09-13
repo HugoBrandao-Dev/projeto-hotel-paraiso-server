@@ -13,27 +13,28 @@ const projectLinks = {
 async function isActionAllowed(decodedToken, method, params, body) {
   try {
     const upperMethod = method.toUpperCase()
-    let allowed = true
+    let allowed = false
 
     switch (decodedToken.role) {
       case '0':
         switch (upperMethod) {
           case 'POST':
-            allowed = false
             break
           case 'GET':
-            if (!params.id || params.id !== decodedToken.id) {
-              allowed = false
+            if (params.id && params.id === decodedToken.id) {
+              allowed = true
             }
             break
           case 'PUT':
-            if (body.id !== decodedToken.id || body.role > 0) {
-              allowed = false
+            if (body.id === decodedToken.id) {
+              if (!(body.role >= 0)) {
+                allowed = true
+              }
             }
             break
           case 'DELETE':
-            if (!params.id || decodedToken.id !== params.id) {
-              allowed = false
+            if (params.id && decodedToken.id === params.id) {
+              allowed = true
             }
             break
         }
@@ -45,8 +46,8 @@ async function isActionAllowed(decodedToken, method, params, body) {
           case 'GET':
             break
           case 'PUT':
-            if (body.role > 0) {
-              allowed = false
+            if (body.role < 1) {
+              allowed = true
             }
             break
           case 'DELETE':
@@ -54,8 +55,8 @@ async function isActionAllowed(decodedToken, method, params, body) {
             let idResult = await Analyzer.analyzeID(params.id)
             if (!idResult.hasError.value) {
               let userToBeDeleted = await User.findOne(params.id)
-              if (userToBeDeleted.role > 0) {
-                allowed = false
+              if (userToBeDeleted.role < 1) {
+                allowed = true
               }
             }
             break
@@ -68,13 +69,16 @@ async function isActionAllowed(decodedToken, method, params, body) {
           case 'GET':
             break
           case 'PUT':
-            if (body.role > 1) {
+            if (body.role <= 1) {
               allowed = false
             }
             break
           case 'DELETE':
             break
         }
+        break
+      case '4':
+        allowed = true
         break
     }
 
@@ -94,8 +98,8 @@ function authentication(req, res, next) {
         console.log(error)
       } else {
         isActionAllowed(decoded, req.method, req.params, req.body)
-          .then(function(responseAllowed) {
-            if (responseAllowed) {
+          .then(function(isAllowed) {
+            if (isAllowed) {
               next()
             } else {
               let RestException = {
@@ -110,7 +114,7 @@ function authentication(req, res, next) {
             }
           })
           .catch(function(errorAllowed) {
-
+            console.log(errorAllowed)
           })
       }
     })
