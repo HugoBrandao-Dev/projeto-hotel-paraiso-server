@@ -2088,7 +2088,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("PUT - Deve retornar 200 para cliente que tenha sua Função alterada para funcionário pelo Admin.", function() {
+      test("PUT - Deve retornar 200 para cliente que tem sua Função alterada para Funcionário pelo Admin.", function() {
 
         let user = {
           id: '600f191e810c19829de900ea',
@@ -2125,7 +2125,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para cliente que tenha sua Função alterada para gerente pelo Admin.", function() {
+      test("PUT - Deve retornar 200 para cliente que tem sua Função alterada para Gerente pelo Admin.", function() {
 
         let user = {
           id: accounts.gerente.id,
@@ -2160,7 +2160,44 @@ describe("Suite de testes das rotas User.", function() {
             fail(errorUpdate)
           })
 
-      })      
+      })
+
+      test("PUT - Deve retornar 200 para cliente que tem sua Função alterada para Funcionário pelo Gerente.", function() {
+
+        let user = {
+          id: '600f191e810c19829de900ea',
+          role: '1'
+        }
+
+        return request.put(`${ endpoints.toUpdate }`).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  id: user.id,
+                  role: user.role
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
       /*
       test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
         let user = {
@@ -3109,7 +3146,7 @@ describe("Suite de testes das rotas User.", function() {
 
         let user = {
           id: accounts.cliente.id,
-          role: '3'
+          role: '2'
         }
 
         return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.gerente.token)
