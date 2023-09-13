@@ -34,6 +34,21 @@ function isActionAllowed(decodedToken, method, params, body) {
           break
       }
       break
+    case '1':
+      switch (upperMethod) {
+        case 'POST':
+          break
+        case 'GET':
+          break
+        case 'PUT':
+          if (body.role > 0) {
+            allowed = false
+          }
+          break
+        case 'DELETE':
+          break
+      }
+      break
   }
 
   return allowed
