@@ -1338,6 +1338,7 @@ describe("Suite de testes das rotas User.", function() {
           })
 
       })
+
     })
 
   })
@@ -1345,6 +1346,7 @@ describe("Suite de testes das rotas User.", function() {
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
+
       test("GET - Deve retornar 200 para usuário que buscam suas próprias informações.", function() {
 
         let login = {
@@ -1362,9 +1364,7 @@ describe("Suite de testes das rotas User.", function() {
             // Pega o ID do usuário que fez login.
             let id = _links[0].href.split('/').pop()
 
-            let authorization = `Bearer ${ token }`
-
-            return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', authorization)
+            return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', `Bearer ${ token }`)
               .then(responseRead => {
 
                 expect(responseRead.statusCode).toEqual(200)
@@ -1485,350 +1485,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      /*
-      test("Deve retornar 200, e as informações do usuário que corresponda ao ID informado.", function() {
-
-        let user = { id: '5da9ea674234635bdff45c02' }
-
-        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-
-            expect(response.body).toMatchObject({
-              name: "Jeremias de Oliveira",
-              email: "jere_oliveira@yahoo.com",
-              password: "oiwquro9237894883",
-              role: "2",
-              phoneCode: "55",
-              phoneNumber: "11984755654",
-              birthDate: "1999-08-03",
-              country: "BR",
-              state: "SP",
-              cep: "08391700",
-              city: "São Paulo",
-              cpf: "11111111111",
-              passportNumber: "",
-              neighborhood: "Jardim Nova São Paulo",
-              road: "Rua Nina Simone",
-              house_number: "2000",
-              information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
-            })
-
-            expect(response.body.created).toBeDefined()
-            expect(response.body.updated).toBeDefined()
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-      */
-
-      /*
-      test("GET - Deve retornar 200 para busca das informações obrigatórias de um usuário Brasileiro.", function() {
-        let user = { id: '507f1f77bcf86cd799439011' }
-        return request.get(`${ endpoints.toRead }/${ user.id }`)
-          .then(function(response) {
-            let {
-              id,
-              name,
-              email,
-              phoneCode,
-              phoneNumber,
-              birthDate,
-              country,
-              state,
-              cep,
-              city,
-              cpf,
-              created,
-              updated,
-              passportNumber,
-              neighborhood,
-              road,
-              house_number,
-              information,
-              _links
-            } = response.body
-
-            // ID
-            expect(id).toBeDefined()
-            expect(id).toBe(user.id)
-
-            // Nome
-            expect(name).toBeDefined()
-            expect(name).toBe("Macunaíma Cruz")
-
-            // Email
-            expect(email).toBeDefined()
-            expect(email).toBe("macuna_curz@hotmail.com")
-
-            // Data de nascimento
-            expect(birthDate).toBeDefined()
-            expect(birthDate).toBe("1995-08-03")
-
-            // Código do país do telefone de contato
-            expect(phoneCode).toBeDefined()
-            expect(phoneCode).toBe("21")
-
-            // Número de contato do cliente
-            expect(phoneNumber).toBeDefined()
-            expect(phoneNumber).toBe("994755654")
-
-            // País de nascimento do cliente
-            expect(country).toBeDefined()
-            expect(country).toBe("BR")
-
-            // CEP do cliente
-            expect(cep).toBeDefined()
-            expect(cep).toBe("21051990")
-
-            // Estado de nascimento do cliente
-            expect(state).toBeDefined()
-            expect(state).toBe("RJ")
-
-            // Cidade de nascimento do cliente
-            expect(city).toBeDefined()
-            expect(city).toBe("Rio de Janeiro")
-
-            // CPF do cliente
-            expect(cpf).toBeDefined()
-            expect(cpf).toBe("22222222222")
-
-            expect(created).toBeDefined()
-            expect(created).toMatchObject({
-              "createdAt": "2020-09-12T11:10:06.596Z",
-              "createdBy": "5da9ea674234635bdff45c02"
-            })
-
-            expect(updated).toBeDefined()
-            expect(updated).toMatchObject({
-              "updatedAt": "2021-01-12T10:25:49.045Z",
-              "updatedBy": "507f1f77bcf86cd799439011"
-            })
-
-            // Dado condicional
-            expect(passportNumber).toBeUndefined()
-
-            // Dados opcionais
-            expect(neighborhood).toBeUndefined()
-            expect(road).toBeUndefined()
-            expect(house_number).toBeUndefined()
-            expect(information).toBeUndefined()
-
-            // HATEOAS
-            expect(_links).toBeDefined()
-            expect(_links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("GET - Deve retornar 200 para busca das informações obrigatórias + opcionais de um usuário estrangeiro.", function() {
-        let user = { id: '507f191e810c19729de860ea' }
-        return request.get(`${ endpoints.toRead }/${ user.id }`)
-          .then(function(response) {
-            let {
-              id,
-              name,
-              email,
-              birthDate,
-              phoneCode,
-              phoneNumber,
-              country,
-              cep,
-              state,
-              city,
-              cpf,
-              passportNumber,
-              neighborhood,
-              road,
-              house_number,
-              information,
-              created,
-              updated,
-              _links
-            } = response.body
-
-            expect(response.statusCode).toEqual(200)
-
-            // ID
-            expect(id).toBeDefined()
-            expect(id).toBe(user.id)
-
-            // Nome
-            expect(name).toBeDefined()
-            expect(name).toBe("John Smith")
-
-            // Email
-            expect(email).toBeDefined()
-            expect(email).toBe("john_sm@hotmail.com")
-
-            // Data de nascimento
-            expect(birthDate).toBeDefined()
-            expect(birthDate).toBe("1970-06-11")
-
-            // Código do país do telefone de contato
-            expect(phoneCode).toBeDefined()
-            expect(phoneCode).toBe("1")
-
-            // Número de contato do cliente
-            expect(phoneNumber).toBeDefined()
-            expect(phoneNumber).toBe("2129981212")
-
-            // País de nascimento do cliente
-            expect(country).toBeDefined()
-            expect(country).toBe("US")
-
-            // Estado de nascimento do cliente
-            expect(state).toBeDefined()
-            expect(state).toBe("NY")
-
-            // Cidade de nascimento do cliente
-            expect(city).toBeDefined()
-            expect(city).toBe("New York City")
-
-            expect(passportNumber).toBeDefined()
-            expect(passportNumber).toBe("303004786")
-            
-            // Nome do bairro onde o cliente nasceu.
-            expect(neighborhood).toBeDefined()
-            expect(neighborhood).toBe("2 Broadway")
-
-            // Nome da rua onde o cliente nasceu.
-            expect(road).toBeDefined()
-            expect(road).toBe("13th Street")
-
-            // Número da casa onde o cliente nasceu.
-            expect(house_number).toBeDefined()
-            expect(house_number).toBe("10310")
-
-            // Infomações adicionais do cliente.
-            expect(information).toBeDefined()
-            expect(information).toBe("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra congue elit non elementum. Praesent fringilla lectus interdum ipsum tempor, ut commodo urna blandit. Nunc sagittis vestibulum luctus. Duis eget arcu nisi. Donec lobortis tellus at porttitor mattis. In ornare ornare posuere. Nunc eu aliquam metus, in sodales tellus. Sed eu mi mi. Nullam varius sed massa interdum vulputate. Morbi sodales justo tellus, quis luctus lorem lacinia eu. Integer efficitur eu ante ac tempus. Phasellus tincidunt fermentum metus ac dignissim.")
-
-            expect(created).toBeDefined()
-            expect(created).toMatchObject({
-              "createdAt": "2021-05-102T11:43:42.300Z",
-              "createdBy": "5da9ea674234635bdff45c02"
-            })
-
-            expect(updated).toBeDefined()
-            expect(updated).toMatchObject({
-              "updatedAt": "2022-11-12T14:25:49.045Z",
-              "updatedBy": "507f1f77bcf86cd799439011"
-            })
-
-            // Campos que podem ser undefined para estrangeiros
-            expect(cpf).toBeUndefined()
-            expect(cep).toBeUndefined()
-
-            // HATEOAS
-            expect(_links).toBeDefined()
-            expect(_links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("GET - Deve retornar 200 para busca de informações obrigatórias de um usuario estrangeiro.", function() {
-        let user = { id: '600f191e810c19829de900ea' }
-        return request.get(`${ endpoints.toRead }/${ user.id }`)
-          .then(function(response) {
-            let {
-              id,
-              name,
-              email,
-              birthDate,
-              phoneCode,
-              phoneNumber,
-              country,
-              state,
-              city,
-              cpf,
-              passportNumber,
-              created,
-              updated,
-              neighborhood,
-              road,
-              house_number,
-              information,
-              _links
-            } = response.body
-
-            expect(response.statusCode).toEqual(200)
-
-            // ID
-            expect(id).toBeDefined()
-            expect(id).toBe(user.id)
-
-            // Nome do cliente
-            expect(name).toBeDefined()
-            expect(name).toBe("Michael Ronald")
-
-            // Email do cliente
-            expect(email).toBeDefined()
-            expect(email).toBe("mi_ronald@gmail.com")
-
-            // Data de nascimento do cliente
-            expect(birthDate).toBeDefined()
-            expect(birthDate).toBe("1979-11-11")
-
-            // Código do telefone do cliente
-            expect(phoneCode).toBeDefined()
-            expect(phoneCode).toBe("1")
-
-            // Número do telefone do cliente
-            expect(phoneNumber).toBeDefined()
-            expect(phoneNumber).toBe("8049981212")
-
-            // País do cliente
-            expect(country).toBeDefined()
-            expect(country).toBe("US")
-
-            // Estado do cliente
-            expect(state).toBeDefined()
-            expect(state).toBe("VA")
-
-            // Cidade do cliente
-            expect(city).toBeDefined()
-            expect(city).toBe("Richmond")
-
-            // Número do passaporte do cliente
-            expect(passportNumber).toBeDefined()
-            expect(passportNumber).toBe("431276122")
-
-            expect(created).toBeDefined()
-            expect(created).toMatchObject({
-              "createdAt": "2022-04-222T20:41:18.365Z",
-              "createdBy": "5da9ea674234635bdff45c02"
-            })
-
-            expect(updated).toBeDefined()
-            expect(updated).toMatchObject({
-              "updatedAt": "2023-02-12T16:06:21.145Z",
-              "updatedBy": "507f1f77bcf86cd799439011"
-            })
-
-            // Dado condicional
-            expect(cpf).toBeUndefined()
-
-            // Dados opcionais
-            expect(neighborhood).toBeUndefined()
-            expect(road).toBeUndefined()
-            expect(house_number).toBeUndefined()
-            expect(information).toBeUndefined()
-
-            // HATEOAS
-            expect(_links).toBeDefined()
-            expect(_links).toHaveLength(4)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
       test("POST - Deve retornar 200 e um Token.", function() {
 
         const user = {
@@ -1848,7 +1504,7 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-      */
+
     })
 
     describe("Testes de FALHA.", function() {
