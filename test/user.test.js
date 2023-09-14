@@ -1508,9 +1508,9 @@ describe("Suite de testes das rotas User.", function() {
     })
 
     describe("Testes de FALHA.", function() {
-      /*
+
       test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
-        return request.post(endpoints.toSearch).send({})
+        return request.post(endpoints.toSearch).send({}).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1531,7 +1531,7 @@ describe("Suite de testes das rotas User.", function() {
       test("POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
         return request.post(endpoints.toSearch).send({
           name: 'Tobias de Oliveira'
-        })
+        }).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1548,7 +1548,7 @@ describe("Suite de testes das rotas User.", function() {
       test("POST - Deve retornar 400, por ter informado um valor de CPF inválido.", function() {
         return request.post(endpoints.toSearch).send({
           cpf: '2222222222a'
-        })
+        }).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1565,7 +1565,7 @@ describe("Suite de testes das rotas User.", function() {
       test("POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
         return request.post(endpoints.toSearch).send({
           passportNumber: 'C100100--'
-        })
+        }).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1578,10 +1578,8 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-      */
 
       // Teste na visualização das infos do cliente pelo lado do funcionário++.
-      /*
       test("Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
 
         let user = { id: '5da9ea674234635bdff4+-!7' }
@@ -1617,7 +1615,6 @@ describe("Suite de testes das rotas User.", function() {
             fail(error)
           })
       })
-      */
 
       // Testes no Login
       test("POST - Deve retornar 400, por não ter informado o Email para Login.", function() {
@@ -1718,6 +1715,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
+      // Testes para busca por documentação
       test("POST - Deve retornar 401, por tentar buscar um Usuários pelo CPF sem estar AUTORIZADO.", function() {
 
         const info = {
@@ -1756,36 +1754,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      // Testes das Rotas de Views (Admin)
-      /*
-      test("Deve retornar 401, para visualização das informações de um cliente, não estar AUTORIZADO", function() {
-        return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(401)
-            expect(response.body.RestException.Code).toBe('5')
-            expect(response.body.RestException.Message).toBe('O usuário não está autorizado')
-            expect(response.body.RestException.Status).toBe('401')
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
-      test("Deve retornar 403, para visualização das informações de um cliente, não estar AUTENTICADO", function() {
-        return request.get(`${ endpoints.toView }/5da9ea674234635bdff45c02`).set('Authorization', accounts.cliente.token)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(403)
-            expect(response.body.RestException.Code).toBe('6')
-            expect(response.body.RestException.Message).toBe('O usuário não está autenticado')
-            expect(response.body.RestException.Status).toBe('403')
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-      */
     })
 
   })
