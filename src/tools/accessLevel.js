@@ -42,10 +42,17 @@ async function isActionAllowed(decodedToken, method, params, body) {
       case '1':
         switch (upperMethod) {
           case 'POST':
+
+            // Verifica se o Funcionário está tentando informar uma Função.
+            if (!(body.role >= 0)) {
+              allowed = true
+            }
             break
           case 'GET':
             break
           case 'PUT':
+
+            // Verifica se o Funcionário está tentando alterar a função.
             if (body.role < 1) {
               allowed = true
             }
