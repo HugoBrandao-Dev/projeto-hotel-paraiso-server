@@ -390,7 +390,7 @@ class UserController {
       if (user) {
         user._links = await Generator.genHATEOAS(user.id, 'users', 'user', true)
         res.status(200)
-        res.json({user})
+        res.json(user)
       } else {
         res.sendStatus(404)
       }
