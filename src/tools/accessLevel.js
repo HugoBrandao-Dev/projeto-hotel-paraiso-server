@@ -54,7 +54,7 @@ async function isActionAllowed(decodedToken, method, params, body) {
           case 'PUT':
 
             // Verifica se o Funcionário está tentando alterar a função.
-            if (body.role < 1) {
+            if (!(body.role > 0)) {
               allowed = true
             }
             break
