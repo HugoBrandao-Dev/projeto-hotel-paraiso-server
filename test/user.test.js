@@ -2871,6 +2871,34 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
+      test("PUT - Deve retornar 200 para Gerente que busca um usuário pelo Número do Passaporte.", function() {
+
+        let info = {
+          passportNumber: fixedPassportNumber
+        }
+
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.gerente.token)
+          .then(function(responseSearch) {
+
+            expect(responseSearch.statusCode).toEqual(200)
+
+            expect(responseSearch.body).toMatchObject({
+              id: "5da9ea674234635bdff45c02",
+              name: "Jeremias de Oliveira",
+              email: "jere_oli@yahoo.com",
+              country: "US",
+              state: "MN",
+              city: "Saint Paul",
+              passportNumber: info.passportNumber,
+            })
+
+          })
+          .catch(function(errorSearch) {
+            fail(errorSearch)
+          })
+
+      })
+
     })
 
     describe("Testes de FALHA.", function() {
