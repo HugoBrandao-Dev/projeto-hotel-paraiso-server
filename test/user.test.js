@@ -2638,11 +2638,11 @@ describe("Suite de testes das rotas User.", function() {
             })
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
-              .then(function(responseGET) {
+              .then(function(responseRead) {
 
-                expect(responseGET.statusCode).toEqual(200)
+                expect(responseRead.statusCode).toEqual(200)
 
-                expect(responseGET.body).toMatchObject({
+                expect(responseRead.body).toMatchObject({
                   name: user.name,
                   email: user.email,
                   country: user.country,
@@ -2664,46 +2664,68 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
-      test("PUT - Deve retornar 200 para usuários que informa o mesmo Número de Passaporte.", function() {
+      test("PUT - Deve retornar 200 para Admin que informa o mesmo Número de Passaporte para o Gerente.", function() {
+
         let user = {
           id: "507f191e810c19729de860ea",
           name: "John Smith John",
           email: "john_sms@hotmail.com",
           passportNumber: "303004786",
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
 
-            expect(response.body._links).toBeDefined()
-            expect(response.body._links).toHaveLength(4)
-            expect(response.body._links[0]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
               method: 'GET',
               rel: 'self_user'
             })
-            expect(response.body._links[1]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
               method: 'PUT',
               rel: 'edit_user'
             })
-            expect(response.body._links[2]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
               method: 'DELETE',
               rel: 'delete_user'
             })
-            expect(response.body._links[3]).toMatchObject({
-              href: `${ baseURL }/users`,
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'user_list'
             })
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  name: user.name,
+                  email: user.email,
+                  passportNumber: user.passportNumber,
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("PUT - Deve retornar 200 para o usuário estrangeiro que modifica seu local de nascimento e informa o CPF.", function() {
         const fixedForeignCPF = Generator.genCPF()
         let user = {
