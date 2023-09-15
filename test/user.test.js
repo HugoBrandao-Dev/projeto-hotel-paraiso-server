@@ -2792,6 +2792,32 @@ describe("Suite de testes das rotas User.", function() {
           })
 
       })
+
+      test("PUT - Deve retornar 200 para Funcionário que busca um usuário pelo Número do Passaporte.", function() {
+
+        let info = {
+          cpf: fixedCPF
+        }
+
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.funcionario.token)
+          .then(function(responseSearch) {
+
+            expect(responseSearch.statusCode).toEqual(200)
+
+            expect(responseSearch.body).toMatchObject({
+              id: "507f1f77bcf86cd799439011",
+              name: "Macunaíma Cruz",
+              email: "macuna_cruz@hotmail.com",
+              cpf: info.cpf,
+            })
+
+          })
+          .catch(function(errorSearch) {
+            fail(errorSearch)
+          })
+
+      })
+
     })
 
     describe("Testes de FALHA.", function() {
