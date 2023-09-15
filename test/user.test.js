@@ -2793,7 +2793,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Funcionário que busca um usuário pelo Número do Passaporte.", function() {
+      test("PUT - Deve retornar 200 para Funcionário que busca um usuário pelo CPF.", function() {
 
         let info = {
           cpf: fixedCPF
