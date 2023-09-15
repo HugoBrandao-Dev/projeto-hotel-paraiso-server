@@ -1975,7 +1975,7 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
-            
+
             expect(responseUpdate.body._links[0]).toMatchObject({
               href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
               method: 'GET',
@@ -2030,9 +2030,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      /*
-
-      test("PUT - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF.", function() {
+      test("PUT - Deve retornar 200 para usuários Brasileiro que não querem ter o CPF atualizado pelo Funcionário.", function() {
         let user = {
           id: "5da9ea674234635bdff45c02",
           name: "Josias de Oliveira",
@@ -2046,76 +2044,63 @@ describe("Suite de testes das rotas User.", function() {
           state: "SP",
           city: "São Paulo"
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(responsePUT) {
-            expect(responsePUT.statusCode).toEqual(200)
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
 
-            expect(responsePUT.body._links).toBeDefined()
-            expect(responsePUT.body._links).toHaveLength(4)
-            expect(responsePUT.body._links[0]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
               method: 'GET',
               rel: 'self_user'
             })
-            expect(responsePUT.body._links[1]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
               method: 'PUT',
               rel: 'edit_user'
             })
-            expect(responsePUT.body._links[2]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
               method: 'DELETE',
               rel: 'delete_user'
             })
-            expect(responsePUT.body._links[3]).toMatchObject({
-              href: `${ baseURL }/users`,
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'user_list'
             })
 
-            return request.get(`${ endpoints.toRead }/${ user.id }`)
-              .then(function(responseGET) {
-                expect(responseGET.statusCode).toEqual(200)
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
+              .then(function(responseRead) {
 
-                expect(responseGET.body.name).toBeDefined()
-                expect(responseGET.body.name).toBe(user.name)
+                expect(responseRead.statusCode).toEqual(200)
 
-                expect(responseGET.body.email).toBeDefined()
-                expect(responseGET.body.email).toBe(user.email)
-
-                expect(responseGET.body.password).toBeDefined()
-                expect(responseGET.body.password).toBe(user.password)
-
-                expect(responseGET.body.role).toBeDefined()
-                expect(responseGET.body.role).toBe(user.role)
-
-                expect(responseGET.body.phoneCode).toBeDefined()
-                expect(responseGET.body.phoneCode).toBe(user.phoneCode)
-
-                expect(responseGET.body.phoneNumber).toBeDefined()
-                expect(responseGET.body.phoneNumber).toBe(user.phoneNumber)
-
-                expect(responseGET.body.birthDate).toBeDefined()
-                expect(responseGET.body.birthDate).toBe(user.birthDate)
-
-                expect(responseGET.body.country).toBeDefined()
-                expect(responseGET.body.country).toBe(user.country)
-
-                expect(responseGET.body.state).toBeDefined()
-                expect(responseGET.body.state).toBe(user.state)
-
-                expect(responseGET.body.city).toBeDefined()
-                expect(responseGET.body.city).toBe(user.city)
-              })
-              .catch(function(errorGET) {
+                expect(responseRead.body).toMatchObject({
+                  name: user.name,
+                  email: user.email,
+                  role: user.role,
+                  phoneCode: user.phoneCode,
+                  phoneNumber: user.phoneNumber,
+                  birthDate: user.birthDate,
+                  country: user.country,
+                  state: user.state,
+                  city: user.city,
+                })
 
               })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
-
+/*
       test("PUT - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF e Cidade.", function() {
         let user = {
           id: "5da9ea674234635bdff45c02",
