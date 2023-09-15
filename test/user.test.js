@@ -2924,6 +2924,44 @@ describe("Suite de testes das rotas User.", function() {
                   phoneNumber: user.phoneNumber,
                   birthDate: user.birthDate,
                 })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("PUT - Deve retornar 200 para Gerente que atualiza suas próprias informações.", function() {
+
+        let user = {
+          id: accounts.gerente.id,
+          name: "Ana Cruz",
+          phoneNumber: "2129989999",
+          birthDate: "1998-07-01",
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.gerente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  id: user.id,
+                  name: user.name,
+                  phoneNumber: user.phoneNumber,
+                  birthDate: user.birthDate,
+                })
                 
               })
               .catch(function(errorRead) {
