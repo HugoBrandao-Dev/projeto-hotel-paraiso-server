@@ -86,6 +86,7 @@ async function isActionAllowed(decodedToken, method, params, body) {
             }
             break
           case 'GET':
+            allowed = true
             break
           case 'PUT':
 
