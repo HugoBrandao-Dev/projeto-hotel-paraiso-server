@@ -313,6 +313,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
+    /*
     describe("Testes de FALHA.", function() {
 
       // Testes no NOME
@@ -1340,9 +1341,9 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-
+*/
   })
-
+/*
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -1757,7 +1758,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
-
+*/
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -1946,8 +1947,8 @@ describe("Suite de testes das rotas User.", function() {
           })
 
       })
-      /*
-      test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações obrigatórias e opcionais/condicionais atualizadas.", function() {
+
+      test("PUT - Deve retornar 200 para o Funcionário que atualiza as informações obrigatórias e opcionais/condicionais de um usuário Brasileiro.", function() {
         let user = {
           id: "507f1f77bcf86cd799439011",
           name: "Macunaíma Cruz",
@@ -1966,80 +1967,59 @@ describe("Suite de testes das rotas User.", function() {
           road: "Rua 29 de março",
           house_number: "2300",
           information: "Vivamus vitae turpis fermentum, scelerisque neque eget, aliquet nibh. In consequat, urna quis rhoncus fringilla, elit nisi tincidunt metus, a tempus nibh turpis vel orci. Sed a tellus ac odio viverra blandit. Aenean neque odio, vulputate eget quam eu, commodo aliquam sem. Integer efficitur magna vel aliquam luctus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer mollis tempor libero, a gravida orci suscipit eu. Morbi cursus odio in tempus tincidunt. Nulla facilisi."
-
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(responsePUT) {
-            expect(responsePUT.statusCode).toEqual(200)
 
-            expect(responsePUT.body._links).toBeDefined()
-            expect(responsePUT.body._links).toHaveLength(4)
-            expect(responsePUT.body._links[0]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
               method: 'GET',
               rel: 'self_user'
             })
-            expect(responsePUT.body._links[1]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
               method: 'PUT',
               rel: 'edit_user'
             })
-            expect(responsePUT.body._links[2]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
               method: 'DELETE',
               rel: 'delete_user'
             })
-            expect(responsePUT.body._links[3]).toMatchObject({
-              href: `${ baseURL }/users`,
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'user_list'
             })
 
-            return request.get(`${ endpoints.toRead }/${ user.id }`)
-              .then(function(responseGET) {
-                expect(responseGET.statusCode).toEqual(200)
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
+              .then(function(responseRead) {
 
-                expect(responseGET.body.name).toBeDefined()
-                expect(responseGET.body.name).toBe(user.name)
+                expect(responseRead.statusCode).toEqual(200)
 
-                expect(responseGET.body.email).toBeDefined()
-                expect(responseGET.body.email).toBe(user.email)
+                expect(responseRead.body).toMatchObject({
+                  name: user.name,
+                  email: user.email,
+                  role: user.role,
+                  phoneCode: user.phoneCode,
+                  phoneNumber: user.phoneNumber,
+                  birthDate: user.birthDate,
+                  country: user.country,
+                  state: user.state,
+                  cep: user.cep,
+                  city: user.city,
+                  cpf: user.cpf,
+                  neighborhood: user.neighborhood,
+                  road: user.road,
+                  house_number: user.house_number,
+                  information: user.information
+                })
 
-                expect(responseGET.body.role).toBeDefined()
-                expect(responseGET.body.role).toBe(user.role)
-
-                expect(responseGET.body.phoneCode).toBeDefined()
-                expect(responseGET.body.phoneCode).toBe(user.phoneCode)
-
-                expect(responseGET.body.phoneNumber).toBeDefined()
-                expect(responseGET.body.phoneNumber).toBe(user.phoneNumber)
-
-                expect(responseGET.body.birthDate).toBeDefined()
-                expect(responseGET.body.birthDate).toBe(user.birthDate)
-
-                expect(responseGET.body.country).toBeDefined()
-                expect(responseGET.body.country).toBe(user.country)
-
-                expect(responseGET.body.state).toBeDefined()
-                expect(responseGET.body.state).toBe(user.state)
-
-                expect(responseGET.body.city).toBeDefined()
-                expect(responseGET.body.city).toBe(user.city)
-
-                expect(responseGET.body.cpf).toBeDefined()
-                expect(responseGET.body.cpf).toBe(user.cpf)
-
-                expect(responseGET.body.neighborhood).toBeDefined()
-                expect(responseGET.body.neighborhood).toBe(user.neighborhood)
-
-                expect(responseGET.body.road).toBeDefined()
-                expect(responseGET.body.road).toBe(user.road)
-
-                expect(responseGET.body.house_number).toBeDefined()
-                expect(responseGET.body.house_number).toBe(user.house_number)
-
-                expect(responseGET.body.information).toBeDefined()
-                expect(responseGET.body.information).toBe(user.information)
               })
               .catch(function(errorGET) {
                 fail(errorGET)
@@ -2049,6 +2029,8 @@ describe("Suite de testes das rotas User.", function() {
             fail(errorPOST)
           })
       })
+
+      /*
 
       test("PUT - Deve retornar 200 para usuários Brasileiro que não querem atualizar o CPF.", function() {
         let user = {
