@@ -2899,6 +2899,44 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
+      test("PUT - Deve retornar 200 para Funcionário que atualiza suas próprias informações.", function() {
+
+        let user = {
+          id: accounts.funcionario.id,
+          name: "Tobias de Oliveira Cruz",
+          phoneNumber: "11984752000",
+          birthDate: "1967-01-11",
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  id: user.id,
+                  name: user.name,
+                  phoneNumber: user.phoneNumber,
+                  birthDate: user.birthDate,
+                })
+                
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
     })
 
     describe("Testes de FALHA.", function() {
