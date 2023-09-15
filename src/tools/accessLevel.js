@@ -85,8 +85,8 @@ async function isActionAllowed(decodedToken, method, params, body) {
             break
           case 'PUT':
 
-            // Verifica se o Gerente está tentando passar um valor de Função menor que o dele (2).
-            if (body.role <= 1) {
+            // Verifica se o Gerente está tentando passar um valor de Função maior que o dele (2).
+            if (!(body.role >= 2)) {
               allowed = true
             }
             break
