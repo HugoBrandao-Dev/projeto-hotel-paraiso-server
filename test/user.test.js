@@ -2531,6 +2531,7 @@ describe("Suite de testes das rotas User.", function() {
           .catch(function(errorUpdate) {
             fail(errorUpdate)
           })
+
       })
 
       test("PUT - Deve retornar 200 para Funcionário que informa o mesmo CPF para o cliente.", function() {
@@ -2595,8 +2596,8 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
-      test("PUT - Deve retornar 200 para o usuário Brasileiro que modifica seu local de nascimento e informa o Número do Passaporte.", function() {
+      test("PUT - Deve retornar 200 para o Admin que modifica seu local de nascimento e informa o Número do Passaporte para Gerente.", function() {
+
         let user = {
           id: "5da9ea674234635bdff45c02",
           name: "Jeremias de Oliveira",
@@ -2606,86 +2607,64 @@ describe("Suite de testes das rotas User.", function() {
           city: "Saint Paul",
           passportNumber: fixedPassportNumber,
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(responsePUT) {
-            expect(responsePUT.statusCode).toEqual(200)
 
-            expect(responsePUT.body._links).toBeDefined()
-            expect(responsePUT.body._links).toHaveLength(4)
-            expect(responsePUT.body._links[0]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
               method: 'GET',
               rel: 'self_user'
             })
-            expect(responsePUT.body._links[1]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
               method: 'PUT',
               rel: 'edit_user'
             })
-            expect(responsePUT.body._links[2]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
               method: 'DELETE',
               rel: 'delete_user'
             })
-            expect(responsePUT.body._links[3]).toMatchObject({
-              href: `${ baseURL }/users`,
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'user_list'
             })
-            return request.get(`${ endpoints.toRead }/${ user.id }`)
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseGET) {
-                const {
-                  id,
-                  name,
-                  email,
-                  country,
-                  state,
-                  city,
-                  cpf,
-                  passportNumber
-                } = responseGET.body
 
-                // ID
-                expect(id).toBeDefined()
-                expect(id).toBe(user.id)
+                expect(responseGET.statusCode).toEqual(200)
 
-                // Nome
-                expect(name).toBeDefined()
-                expect(name).toBe(user.name)
+                expect(responseGET.body).toMatchObject({
+                  name: user.name,
+                  email: user.email,
+                  country: user.country,
+                  state: user.state,
+                  city: user.city,
+                  cpf: '',
+                  passportNumber: user.passportNumber,
+                })
 
-                // Email
-                expect(email).toBeDefined()
-                expect(email).toBe(user.email)
-
-                // País de nascimento
-                expect(country).toBeDefined()
-                expect(country).toBe(user.country)
-
-                // Estado de nascimento
-                expect(state).toBeDefined()
-                expect(state).toBe(user.state)
-
-                // Cidade de nascimento
-                expect(city).toBeDefined()
-                expect(city).toBe(user.city)
-
-                // CPF
-                expect(cpf).toBeDefined()
-                expect(cpf).toBe('')
-
-                // Número do passaporte
-                expect(passportNumber).toBeDefined()
-                expect(passportNumber).toBe(user.passportNumber)
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(errorRead) {
+                fail(errorRead)
               })
+
           })
-          .catch(function(errorPUT) {
-            fail(errorPUT)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("PUT - Deve retornar 200 para usuários que informa o mesmo Número de Passaporte.", function() {
         let user = {
           id: "507f191e810c19729de860ea",
