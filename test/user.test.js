@@ -2033,7 +2033,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para usuários Brasileiro que não querem ter o CPF atualizado pelo Funcionário.", function() {
+      test("PUT - Deve retornar 200 para usuário Brasileiro que não querem ter o CPF atualizado pelo Funcionário.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2106,7 +2106,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para usuários Brasileiro que não querem ter o CPF e Cidade atualizados pelo Funcionário.", function() {
+      test("PUT - Deve retornar 200 para usuário Brasileiro que não querem ter o CPF e Cidade atualizados pelo Funcionário.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2174,7 +2174,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para usuários Brasileiro que não quer ter o CPF, Local e Data de Nascimento atualizados pelo Funcionário.", function() {
+      test("PUT - Deve retornar 200 para usuário Brasileiro que não quer ter o CPF, Local e Data de Nascimento atualizados pelo Funcionário.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2240,8 +2240,8 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
-      test("PUT - Deve retornar 200 para usuários Brasileiro que querem atualizar somente o Nome, Email, Senha e Função.", function() {
+      test("PUT - Deve retornar 200 para Gerente que atualiza somente o Nome, Email, Senha e Função do cliente.", function() {
+
         let user = {
           id: "5da9ea674234635bdff45c02",
           name: "Josias de Oliveira",
@@ -2249,58 +2249,60 @@ describe("Suite de testes das rotas User.", function() {
           password: "@JosiaS&654975@",
           role: '1'
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(responsePUT) {
-            expect(responsePUT.statusCode).toEqual(200)
 
-            expect(responsePUT.body._links).toBeDefined()
-            expect(responsePUT.body._links).toHaveLength(4)
-            expect(responsePUT.body._links[0]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
               method: 'GET',
               rel: 'self_user'
             })
-            expect(responsePUT.body._links[1]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
               method: 'PUT',
               rel: 'edit_user'
             })
-            expect(responsePUT.body._links[2]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
               method: 'DELETE',
               rel: 'delete_user'
             })
-            expect(responsePUT.body._links[3]).toMatchObject({
-              href: `${ baseURL }/users`,
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'user_list'
             })
 
-            return request.get(`${ endpoints.toRead }/${ user.id }`)
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseGET) {
+
                 expect(responseGET.statusCode).toEqual(200)
 
-                expect(responseGET.body.name).toBeDefined()
-                expect(responseGET.body.name).toBe(user.name)
+                expect(responseGET.body).toMatchObject({
+                  name: user.name,
+                  email: user.email,
+                  role: user.role,
+                })
 
-                expect(responseGET.body.email).toBeDefined()
-                expect(responseGET.body.email).toBe(user.email)
-
-                expect(responseGET.body.password).toBeDefined()
-                expect(responseGET.body.password).toBe(user.password)
-
-                expect(responseGET.body.role).toBeDefined()
-                expect(responseGET.body.role).toBe(user.role)
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(errorRead) {
+                fail(errorRead)
               })
+
           })
-          .catch(function(errorPOST) {
-            fail(errorPOST)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("PUT - Deve retornar 200 para usuários Brasileiro que querem atualizar somente o Nome, Senha e Função.", function() {
         let user = {
           id: "5da9ea674234635bdff45c02",
