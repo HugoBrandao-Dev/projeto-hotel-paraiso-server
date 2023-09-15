@@ -2420,54 +2420,63 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
-      test("PUT - Deve retornar 200 para usuários que querem atualizar somente o Nome.", function() {
+      test("PUT - Deve retornar 200 Gerente que atualiza somente o Nome do cliente.", function() {
+
         let user = {
           id: "5da9ea674234635bdff45c02",
           name: "Josias de Oliveira Cruz"
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(responsePUT) {
-            expect(responsePUT.statusCode).toEqual(200)
 
-            expect(responsePUT.body._links).toBeDefined()
-            expect(responsePUT.body._links).toHaveLength(4)
-            expect(responsePUT.body._links[0]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
               method: 'GET',
               rel: 'self_user'
             })
-            expect(responsePUT.body._links[1]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
               method: 'PUT',
               rel: 'edit_user'
             })
-            expect(responsePUT.body._links[2]).toMatchObject({
-              href: `${ baseURL }/users/${ user.id }`,
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
               method: 'DELETE',
               rel: 'delete_user'
             })
-            expect(responsePUT.body._links[3]).toMatchObject({
-              href: `${ baseURL }/users`,
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'user_list'
             })
-            return request.get(`${ endpoints.toRead }/${ user.id }`)
-              .then(function(responseGET) {
-                expect(responseGET.statusCode).toEqual(200)
 
-                expect(responseGET.body.name).toBeDefined()
-                expect(responseGET.body.name).toBe(user.name)
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  name: user.name
+                })
+
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(errorRead) {
+                fail(errorRead)
               })
+
           })
-          .catch(function(errorPOST) {
-            fail(errorPOST)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("PUT - Deve retornar 200 para usuários que informa o mesmo Email.", function() {
         let user = {
           id: "507f191e810c19729de860ea",
