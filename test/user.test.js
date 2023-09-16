@@ -3352,27 +3352,32 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
-      test("POST - Deve retornar 400, já que o usuário não mudou seu local de nascimento para um país estrangeiro.", function() {
+      test("PUT - Deve retornar 400, já que o usuário não mudou seu local de nascimento para um país estrangeiro.", function() {
+
         const user = {
           id: "507f1f77bcf86cd799439011",
           name: "Macunaíma Cruz",
           email: "macuna_curz@hotmail.com",
           passportNumber: `${ Generator.genPassportNumber() }`
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O campo de País de Nascimento é obrigatório")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+            expect(responseUpdate.body.RestException.Code).toBe("1")
+            expect(responseUpdate.body.RestException.Message).toBe("O campo de País de Nascimento é obrigatório")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("POST - Deve retornar 400, já que o email informado já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
         const user = {
           id: "507f191e810c19729de860ea",
