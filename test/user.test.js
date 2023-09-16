@@ -1790,77 +1790,49 @@ describe("Suite de testes das rotas User.", function() {
     describe("Testes de SUCESSO.", function() {
       test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações atualizadas.", function() {
 
-        const login = {
-          email: "doralice@yahoo.com",
-          password: "oiqwuerowq#&134890OIU@",
+        let user = {
+          id: accounts.cliente.id,
+          email: "doralice@gmail.com",
+          phoneNumber: "2129982222",
+          country: "US",
+          state: "OH",
+          city: "Columbus"
         }
 
-        // Antes de fazer a atualização, é feito o Login.
-        return request.post(`${ endpoints.toLogin }`).send(login)
-          .then(function(responseLogin) {
+        // Envia o token do login para a rota de atualização, junto com as informações.
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.cliente.token)
+          .then(function(responseUpdate) {
 
-            expect(responseLogin.statusCode).toEqual(200)
+            expect(responseUpdate.statusCode).toEqual(200)
 
-            expect(responseLogin.body.token).toBeDefined()
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(3)
 
-            expect(responseLogin.body._links).toBeDefined()
-            expect(responseLogin.body._links).toHaveLength(3)
+            // Utilizando o ADMIN para verificar se as informações foram atualizadas.
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
 
-            let { token, _links } = responseLogin.body
+                expect(responseRead.statusCode).toEqual(200)
 
-            let id = _links[0].href.split('/').pop()
+                expect(responseRead.body).toMatchObject({
+                  id: user.id,
+                  email: user.email,
+                  phoneNumber: user.phoneNumber,
+                  country: user.country,
+                  state: user.state,
+                  city: user.city,
+                })
 
-            let user = {
-              id,
-              email: "doralice@gmail.com",
-              phoneNumber: "2129982222",
-              country: "US",
-              state: "OH",
-              city: "Columbus"
-            }
-
-            // Envia o token do login para a rota de atualização, junto com as informações.
-            return request.put(endpoints.toUpdate).send(user).set('Authorization', `Bearer ${ token }`)
-              .then(function(responseUpdate) {
-                expect(responseUpdate.statusCode).toEqual(200)
-
-                expect(responseUpdate.body._links).toBeDefined()
-                expect(responseUpdate.body._links).toHaveLength(3)
-
-                // Utilizando o ADMIN para verificar se as informações foram atualizadas.
-                /*
-                return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
-                  .then(function(responseView) {
-                    expect(responseView.statusCode).toEqual(200)
-
-                    const {
-                      id,
-                      email,
-                      phoneNumber,
-                      country,
-                      state,
-                      city
-                    } = responseView.body
-
-                    expect(id).toBe(user.id)
-                    expect(email).toBe(user.email)
-                    expect(phoneNumber).toBe(user.phoneNumber)
-                    expect(country).toBe(user.country)
-                    expect(state).toBe(user.state)
-                    expect(city).toBe(user.city)
-                  })
-                  .catch(function(errorGET) {
-                    fail(errorGET)
-                  })
-              */
               })
-              .catch(function(errorPOST) {
-                fail(errorPOST)
+              .catch(function(errorRead) {
+                fail(errorRead)
               })
+
           })
-          .catch(function(errorLogin) {
-            fail(errorLogin)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
       test("PUT - Deve retornar 200 para cliente que tem sua Função alterada para Funcionário pelo Admin.", function() {
