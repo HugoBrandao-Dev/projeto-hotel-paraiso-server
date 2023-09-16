@@ -3377,26 +3377,31 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
-      test("POST - Deve retornar 400, já que o email informado já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+      test("PUT - Deve retornar 400, já que o email informado já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+
         const user = {
           id: "507f191e810c19729de860ea",
           name: "Tobias de Oliveira",
-          email: "macuna_curz@hotmail.com"
+          email: "luiz_oli@gmail.com"
         }
-        return request.put(endpoints.toUpdate).send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe("4")
-            expect(response.body.RestException.Message).toBe("O Email informado já foi cadastrado anteriormente")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+            expect(responseUpdate.body.RestException.Code).toBe("4")
+            expect(responseUpdate.body.RestException.Message).toBe("O Email informado já foi cadastrado anteriormente")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("POST - Deve retornar 400, já que o número do CPF já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
         const user = {
           id: "5da9ea674234635bdff45c02",
