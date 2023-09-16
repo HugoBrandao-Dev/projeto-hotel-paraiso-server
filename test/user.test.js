@@ -3680,23 +3680,27 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
       test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
-        return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(404)
-            expect(response.body.RestException.Code).toBe('3')
-            expect(response.body.RestException.Message).toBe('Nenhum usuário com o ID informado está cadastrado')
-            expect(response.body.RestException.Status).toBe('404')
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
-            expect(response.body.RestException.ErrorFields.field).toBe('iptClient')
-            expect(response.body.RestException.ErrorFields.hasError.error).toBe('Nenhum usuário com o ID informado está cadastrado')
+
+        return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(404)
+            expect(responseDelete.body.RestException.Code).toBe('3')
+            expect(responseDelete.body.RestException.Message).toBe('Nenhum usuário com o ID informado está cadastrado')
+            expect(responseDelete.body.RestException.Status).toBe('404')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(responseDelete.body.RestException.ErrorFields.field).toBe('iptClient')
+            expect(responseDelete.body.RestException.ErrorFields.hasError.error).toBe('Nenhum usuário com o ID informado está cadastrado')
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorDelete) {
+            fail(errorDelete)
           })
+
       })
 
+      /*
       test("DELETE - Deve retornar 400, uma vez que o ID tem uma estrutura inválida.", function() {
         return request.delete(`${ endpoints.toDelete }/91e810*c19729de8644-`)
           .then(function(response) {
