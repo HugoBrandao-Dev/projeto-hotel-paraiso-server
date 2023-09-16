@@ -21,6 +21,7 @@ let endpoints = {
 
 let accounts = {
   admin: { id: '', token: '' },
+  gerente3: { id: '', token: '' },  
   gerente2: { id: '', token: '' },
   gerente: { id: '', token: '' },
   funcionario2: { id: '', token: '' },
@@ -3025,6 +3026,37 @@ describe("Suite de testes das rotas User.", function() {
                   birthDate: user.birthDate,
                 })
                 
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("PUT - Deve retornar 200, para Admin que modifica a Função de um Gerente para Funcionário.", function() {
+
+        let user = {
+          id: accounts.gerente3.id,
+          role: '1'
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body.role).toEqual('1')
+
               })
               .catch(function(errorRead) {
                 fail(errorRead)
