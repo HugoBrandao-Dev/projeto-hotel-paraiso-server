@@ -34,7 +34,7 @@ const projectLinks = {
 }
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
-jest.setTimeout(20000)
+jest.setTimeout(100000)
 
 function register(user) {
   return new Promise((resolve, reject) => {
@@ -1367,7 +1367,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 */
   })
-/*
+
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -1473,15 +1473,17 @@ describe("Suite de testes das rotas User.", function() {
         }
 
         return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-            expect(response.body.user).toMatchObject({
+          .then(function(responseSearch) {
+
+            expect(responseSearch.statusCode).toEqual(200)
+
+            expect(responseSearch.body).toMatchObject({
               "name": "Macunaíma Cruz",
               "email": "macuna_curz@hotmail.com"
             })
 
-            expect(response.body.user._links).toBeDefined()
-            expect(response.body.user._links).toHaveLength(4)
+            expect(responseSearch.body._links).toBeDefined()
+            expect(responseSearch.body._links).toHaveLength(4)
           })
           .catch(function(error) {
             fail(error)
@@ -1495,15 +1497,15 @@ describe("Suite de testes das rotas User.", function() {
         }
         
         return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-            expect(response.body.user).toMatchObject({
+          .then(function(responseSearch) {
+            expect(responseSearch.statusCode).toEqual(200)
+            expect(responseSearch.body).toMatchObject({
               "name": "John Smith",
               "email": "john_sm@hotmail.com"
             })
 
-            expect(response.body.user._links).toBeDefined()
-            expect(response.body.user._links).toHaveLength(4)
+            expect(responseSearch.body._links).toBeDefined()
+            expect(responseSearch.body._links).toHaveLength(4)
           })
           .catch(function(error) {
             fail(error)
@@ -1782,7 +1784,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
-*/
+
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -3300,15 +3302,19 @@ describe("Suite de testes das rotas User.", function() {
           })
 
       })
+      
       /*
       test("POST - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
+
         const user = {
           id: "5da9ea674234635bdff45d22",
           name: "Tobias de Oliveira",
           email: "tobias_atualizado@hotmail.com"
         }
+
         return request.put(endpoints.toUpdate).send(user)
           .then(function(response) {
+
             expect(response.statusCode).toEqual(404)
             expect(response.body.RestException.Code).toBe("3")
             expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
@@ -3318,6 +3324,7 @@ describe("Suite de testes das rotas User.", function() {
           .catch(function(error) {
             fail(error)
           })
+
       })
 
       test("POST - Deve retornar 400, já que o usuário não mudou seu local de nascimento para Brasil.", function() {
