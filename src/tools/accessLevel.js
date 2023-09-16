@@ -70,9 +70,15 @@ async function isActionAllowed(decodedToken, method, params, body) {
               let userToBeDeleted = await User.findOne(params.id)
 
               // Verifica se a conta a ser deletada é do tipo Cliente (0).
-              if (userToBeDeleted.role < 1) {
-                allowed = true
+              if (userToBeDeleted) {
+                if (userToBeDeleted.role < 1) {
+                  allowed = true
+                }
               }
+
+            // Caso seja encontrado erros no ID, deve-se ser tratado no Controller.
+            } else {
+              allowed = true
             }
             break
         }
