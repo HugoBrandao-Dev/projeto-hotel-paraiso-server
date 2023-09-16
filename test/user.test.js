@@ -337,7 +337,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-    /*
+
     describe("Testes de FALHA.", function() {
 
       // Testes no NOME
@@ -1365,7 +1365,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-*/
+
   })
 
   describe("READ", function() {
@@ -3700,23 +3700,26 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      /*
       test("DELETE - Deve retornar 400, uma vez que o ID tem uma estrutura inválida.", function() {
-        return request.delete(`${ endpoints.toDelete }/91e810*c19729de8644-`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-            expect(response.body.RestException.Code).toBe('2')
-            expect(response.body.RestException.Message).toBe('O ID do cliente/usuário contém caracteres inválidos')
-            expect(response.body.RestException.Status).toBe('400')
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields.field).toBe('iptClient')
-            expect(response.body.RestException.ErrorFields.hasError.error).toBe('O ID do cliente/usuário contém caracteres inválidos')
+
+        return request.delete(`${ endpoints.toDelete }/91e810*c19729de8644-`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(400)
+            expect(responseDelete.body.RestException.Code).toBe('2')
+            expect(responseDelete.body.RestException.Message).toBe('O ID do cliente/usuário contém caracteres inválidos')
+            expect(responseDelete.body.RestException.Status).toBe('400')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseDelete.body.RestException.ErrorFields.field).toBe('iptClient')
+            expect(responseDelete.body.RestException.ErrorFields.hasError.error).toBe('O ID do cliente/usuário contém caracteres inválidos')
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorDelete) {
+            fail(errorDelete)
           })
+
       })
-      */
+
     })
 
   })
