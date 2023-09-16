@@ -3055,7 +3055,39 @@ describe("Suite de testes das rotas User.", function() {
 
                 expect(responseRead.statusCode).toEqual(200)
 
-                expect(responseRead.body.role).toEqual('1')
+                expect(responseRead.body.role).toEqual(user.role)
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("PUT - Deve retornar 200, para Admin que modifica a Função de um Gerente para Funcionário.", function() {
+
+        // Esse gerente foi alterado no teste anterior para Funcionário.
+        let user = {
+          id: accounts.gerente3.id,
+          role: '0'
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.gerente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body.role).toEqual(user.role)
 
               })
               .catch(function(errorRead) {
