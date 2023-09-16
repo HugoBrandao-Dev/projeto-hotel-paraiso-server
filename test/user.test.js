@@ -3302,9 +3302,8 @@ describe("Suite de testes das rotas User.", function() {
           })
 
       })
-      
-      /*
-      test("POST - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
+
+      test("PUT - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
 
         const user = {
           id: "5da9ea674234635bdff45d22",
@@ -3312,7 +3311,7 @@ describe("Suite de testes das rotas User.", function() {
           email: "tobias_atualizado@hotmail.com"
         }
 
-        return request.put(endpoints.toUpdate).send(user)
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
 
             expect(response.statusCode).toEqual(404)
@@ -3320,6 +3319,7 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
             expect(response.body.RestException.Status).toBe("404")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
           })
           .catch(function(error) {
             fail(error)
@@ -3327,6 +3327,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
+      /*
       test("POST - Deve retornar 400, já que o usuário não mudou seu local de nascimento para Brasil.", function() {
         const user = {
           id: "600f191e810c19829de900ea",
