@@ -243,6 +243,29 @@ beforeAll(async () => {
       console.log(errorGerente2)
     }
 
+    try {
+      const userGerente3 = {
+        name: "Luiz de Oliveira",
+        email: "luiz_oli@gmail.com",
+        password: "Wi89@!#7234ofq%&W8792",
+        phoneCode: "1",
+        phoneNumber: "2129941526",
+        birthDate: "2001-08-22",
+        country: "BR",
+        state: "CE",
+        city: "Fortaleza",
+        cpf: Generator.genCPF()
+      }
+      let registredGerente3 = await register(userGerente3)
+      let gerenteLogin3 = registredGerente3.login
+      accounts.gerente3.id = registredGerente3.id
+      await updateRole(accounts.gerente3.id, '2')
+      let tokenGerente3 = await login(gerenteLogin3)
+      accounts.gerente3.token = `Bearer ${ tokenGerente3.token }`
+    } catch (errorGerente3) {
+      console.log(errorGerente3)
+    }
+
   } catch (error) {
     console.log(error)
   }
