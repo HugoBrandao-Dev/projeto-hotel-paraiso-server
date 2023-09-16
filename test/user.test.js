@@ -2903,9 +2903,9 @@ describe("Suite de testes das rotas User.", function() {
 
         let user = {
           id: accounts.funcionario.id,
-          name: "Tobias de Oliveira Cruz",
-          phoneNumber: "11984752000",
-          birthDate: "1967-01-11",
+          name: "Alan Jesus",
+          phoneNumber: "2129984444",
+          birthDate: "1995-11-21",
         }
 
         return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.funcionario.token)
@@ -2952,6 +2952,45 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.statusCode).toEqual(200)
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.gerente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                expect(responseRead.body).toMatchObject({
+                  id: user.id,
+                  name: user.name,
+                  phoneNumber: user.phoneNumber,
+                  birthDate: user.birthDate,
+                })
+                
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("PUT - Deve retornar 200 para Admin que atualiza suas próprias informações.", function() {
+
+        let user = {
+          id: accounts.admin.id,
+          name: "Tobias de Oliveira Cruz",
+          phoneCode: "55",
+          phoneNumber: "69984751212",
+          birthDate: "1987-02-09",
+        }
+
+        return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.admin.token)
               .then(function(responseRead) {
 
                 expect(responseRead.statusCode).toEqual(200)
