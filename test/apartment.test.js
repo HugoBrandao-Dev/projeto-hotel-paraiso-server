@@ -294,7 +294,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/POST - Deve retornar 403, um Funcionário não pode modificar características do apartamento.", function() {
+      test("/POST - Deve retornar 403, um Funcionário não pode cadastrar um apartamento.", function() {
 
         let apartment = {
           floor: "1",
@@ -337,7 +337,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/POST - Deve retornar 403, um Gerente não pode modificar características do apartamento.", function() {
+      test("/POST - Deve retornar 403, um Gerente não pode cadastrar um apartamento.", function() {
 
         let apartment = {
           floor: "1",

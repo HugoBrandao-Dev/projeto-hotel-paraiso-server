@@ -8,7 +8,6 @@ let baseURL = 'http://localhost:4000'
 let endpoints = {
   toCreate: '/user',
   toRead: '/user',
-  toView: '/user',
   toSearch: '/user/search',
   toUpdate: '/user',
   toDelete: '/user',
