@@ -249,8 +249,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
     */
 
-
     describe("Testes de FALHA.", function() {
+
       test("/POST - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
 
         let apartment = {
@@ -294,11 +294,51 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-    })
-    /*
-    describe("Testes de FALHA.", function() {
+      test("/POST - Deve retornar 403, o usuário não está AUTENTICADO.", function() {
+
+        let apartment = {
+          floor: "1",
+          number: "3",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
+
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(403)
+
+            expect(responseCreate.body.RestException.Code).toBe('6')
+            expect(responseCreate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseCreate.body.RestException.Status).toBe('403')
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
 
       // Validação do Piso do apartamento.
+      /*
       test("/POST - Deve retornar 400 pela ausência do campo de Piso (floor) do apartamento.", function() {
         let apartment = {
           floor: "",
@@ -962,8 +1002,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+      */
     })
-    */
+
   })
 
   describe("READ", function() {

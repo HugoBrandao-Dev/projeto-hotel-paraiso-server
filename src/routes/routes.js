@@ -36,7 +36,7 @@ router.delete('/user/:id', authorization, authentication, UserController.remove)
 /* ########### APARTMENT ########### */
 
 // Create
-router.post('/apartment', authorization, ApartmentController.create)
+router.post('/apartment', authorization, authentication, ApartmentController.create)
 
 // Read
 router.get('/apartment/:id', ApartmentController.read)
