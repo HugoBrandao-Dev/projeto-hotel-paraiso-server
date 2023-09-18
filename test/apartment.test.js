@@ -381,8 +381,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
       // Validação do Piso do apartamento.
-      /*
       test("/POST - Deve retornar 400 pela ausência do campo de Piso (floor) do apartamento.", function() {
+
         let apartment = {
           floor: "",
           number: "9",
@@ -406,8 +406,10 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post(endpoints.toCreate).send(apartment)
+
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
           .then(function(response) {
+
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("1")
@@ -416,12 +418,14 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
             expect(response.body.RestException.ErrorFields[0].field).toBe('iptFloor')
             expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O campo de Piso do apartamento é obrigatório')
+
           })
           .catch(function(error) {
             fail(error)
           })
-      })
 
+      })
+      /*
       test("/POST - Deve retornar 400, pelo valor do Piso (floor) do apartamento ser inválido.", function() {
         let apartment = {
           floor: "occuped",
