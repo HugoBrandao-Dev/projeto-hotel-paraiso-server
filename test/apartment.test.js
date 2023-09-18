@@ -425,8 +425,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-      /*
+
       test("/POST - Deve retornar 400, pelo valor do Piso (floor) do apartamento ser inválido.", function() {
+
         let apartment = {
           floor: "occuped",
           number: "9",
@@ -452,8 +453,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
         }
 
         // O valor de floor deve ser NUMÉRICO.
-        return request.post(endpoints.toCreate).send(apartment)
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
           .then(function(response) {
+
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("2")
@@ -462,12 +464,15 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
             expect(response.body.RestException.ErrorFields[0].field).toBe('iptFloor')
             expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo do Piso do apartamento é inválido')
+
           })
           .catch(function(error) {
             fail(error)
           })
+
       })
 
+      /*
       test("/POST - Deve retornar 400, pelo valor do Piso (floor) do apartamento ser inválido (estar fora do intervalo válido).", function() {
         let apartment = {
           floor: "88",
