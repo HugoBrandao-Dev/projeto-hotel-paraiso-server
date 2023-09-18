@@ -881,37 +881,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
-      test("/POST - Deve retornar 400, pela ausência de um campo no cômodo do apartamento.", function() {
-        let apartment = {
-          floor: "3",
-          number: "10",
-          rooms: [
-            {
-              room: 'cozinha',
-              quantity: '-1'
-            }
-          ],
-          daily_price: '200'
-        }
-        return request.post(endpoints.toCreate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe(`A quantidade de ${ apartment.rooms[0].room } é inválida`)
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRooms')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe(`A quantidade de ${ apartment.rooms[0].room } é inválida`)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
       // Validação da diária do apartamento.
-      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
+      test("/POST - Deve retornar 400, devido a ausência do valor da diária.", function() {
+
         let apartment = {
           floor: "3",
           number: "10",
@@ -935,22 +907,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: ''
         }
-        return request.post(endpoints.toCreate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O campo de Diária do Apartamento é obrigatório")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Diária do Apartamento é obrigatório")
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("1")
+            expect(responseCreate.body.RestException.Message).toBe("O campo de Diária do Apartamento é obrigatório")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Diária do Apartamento é obrigatório")
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
+
       })
 
+      /*
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
         let apartment = {
           floor: "3",
