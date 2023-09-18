@@ -1,8 +1,27 @@
 const Analyzer = require('../tools/Analyzer')
 const User = require('../models/User')
 
+const endpoints = {
+  user: {
+    toCreate: '/user',
+    toRead: '/user',
+    toSearch: '/user/search',
+    toUpdate: '/user',
+    toDelete: '/user',
+    toList: '/users',
+    toLogin: '/login'
+  },
+  apartment: {
+    toCreate: '/apartment',
+    toRead: '/apartment',
+    toUpdate: '/apartment',
+    toDelete: '/apartment',
+    toList: '/apartments'
+  }
+}
+
 // Verifica se a conta tem permissão de realizar uma determinada ação.
-async function isActionAllowed(decodedToken, method, params, body) {
+async function isActionAllowed(decodedToken, path, method, params, body) {
   try {
     const upperMethod = method.toUpperCase()
     let allowed = false
@@ -44,9 +63,10 @@ async function isActionAllowed(decodedToken, method, params, body) {
           case 'POST':
 
             // Verifica se o Funcionário está tentando informar uma Função.
-            if (!(body.role >= 0)) {
+            if (path != endpoints.apartment.toCreate && !(body.role >= 0)) {
               allowed = true
             }
+
             break
           case 'GET':
             allowed = true

@@ -16,7 +16,7 @@ function authentication(req, res, next) {
       if (error) {
         console.log(error)
       } else {
-        isActionAllowed(decoded, req.method, req.params, req.body)
+        isActionAllowed(decoded, req.path, req.method, req.params, req.body)
           .then(function(isAllowed) {
             if (isAllowed) {
               next()
