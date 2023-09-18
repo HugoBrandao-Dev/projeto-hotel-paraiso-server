@@ -1,9 +1,6 @@
 const app = require('../src/app')
 const supertest = require('supertest')
-const validator = require('validator')
 const Generator = require('../src/tools/Generator')
-
-let UserCollection = require('../src/data/UserCollection.json')
 
 const request = supertest(app)
 
