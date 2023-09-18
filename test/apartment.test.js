@@ -655,29 +655,35 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
       // Validação dos cômodos
-      /*
       test("/POST - Deve retornar 400, pela ausência dos valores dos cômodos do apartamento.", function() {
-        return request.post(endpoints.toCreate).send({
+
+        const apartment = {
           floor: "3",
           number: "10",
           rooms: [],
           daily_price: '200'
-        })
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
+        }
 
-            expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O campo de Cômodos é obrigatório")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptRooms')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Cômodos é obrigatório")
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("1")
+            expect(responseCreate.body.RestException.Message).toBe("O campo de Cômodos é obrigatório")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptRooms')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Cômodos é obrigatório")
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
+
       })
 
+      /*
       test("/POST - Deve retornar 400, pela ausência do valor do nome do campo obrigatório.", function() {
         let apartment = {
           floor: "3",
