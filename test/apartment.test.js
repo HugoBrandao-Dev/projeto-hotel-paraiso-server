@@ -337,6 +337,49 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/POST - Deve retornar 403, um Gerente não pode modificar características do apartamento.", function() {
+
+        let apartment = {
+          floor: "1",
+          number: "3",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
+
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.gerente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(403)
+
+            expect(responseCreate.body.RestException.Code).toBe('6')
+            expect(responseCreate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseCreate.body.RestException.Status).toBe('403')
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
+
       // Validação do Piso do apartamento.
       /*
       test("/POST - Deve retornar 400 pela ausência do campo de Piso (floor) do apartamento.", function() {

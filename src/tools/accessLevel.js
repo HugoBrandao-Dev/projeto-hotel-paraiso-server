@@ -107,7 +107,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
         switch (upperMethod) {
           case 'POST':
             // Verifica se o Gerente está tentando passar um valor de Função maior que o dele (2).
-            if (!(body.role >= 2)) {
+            if (path != endpoints.apartment.toCreate && !(body.role >= 2)) {
               allowed = true
             }
             break
