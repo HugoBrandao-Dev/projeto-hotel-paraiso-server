@@ -914,6 +914,39 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/POST - Deve retornar 400, devido a presença de ponto na quantidade comodo.", function() {
+
+        let apartment = {
+          floor: "3",
+          number: "10",
+          rooms: [
+            {
+              room: 'cozinha',
+              quantity: '1,2'
+            }
+          ],
+          daily_price: '200'
+        }
+
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe(`A quantidade de ${ apartment.rooms[0].room } possui caracteres inválidos`)
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptRooms')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe(`A quantidade de ${ apartment.rooms[0].room } possui caracteres inválidos`)
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
       // Validação da diária do apartamento.
       test("/POST - Deve retornar 400, devido a ausência do valor da diária.", function() {
 
