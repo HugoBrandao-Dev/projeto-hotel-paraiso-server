@@ -563,8 +563,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
       test("/POST - Deve retornar 400, pelo valor do Número do apartamento ser inválido.", function() {
+
         let apartment = {
           floor: "3",
           number: "um",
@@ -588,23 +588,28 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        // O valor de Número do Apartamento deve ser NUMÉRICO.
-        return request.post(endpoints.toCreate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O valor do campo de Número do Apartamento é inválido")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptNumber')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Número do Apartamento é inválido')
+        // O valor de Número do Apartamento deve ser NUMÉRICO.
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("O valor do campo de Número do Apartamento é inválido")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptNumber')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Número do Apartamento é inválido')
+
           })
           .catch(function(error) {
             fail(error)
           })
+
       })
 
+      /*
       test("/POST - Deve retornar 400, devido ao valor do Número do Apartamento já ter sido cadastrado anteriormente.", function() {
         let apartment = {
           floor: "3",
