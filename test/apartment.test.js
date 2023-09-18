@@ -972,8 +972,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
+
         let apartment = {
           floor: "3",
           number: "10",
@@ -997,22 +997,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '800a'
         }
-        return request.post(endpoints.toCreate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O valor da diária contém caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O valor da diária contém caracteres inválidos")
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("O valor da diária contém caracteres inválidos")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O valor da diária contém caracteres inválidos")
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
+
       })
 
+      /*      
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
         let apartment = {
           floor: "3",
