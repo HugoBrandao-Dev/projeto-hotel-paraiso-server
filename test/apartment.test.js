@@ -609,8 +609,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
       test("/POST - Deve retornar 400, devido ao valor do Número do Apartamento já ter sido cadastrado anteriormente.", function() {
+
         let apartment = {
           floor: "3",
           number: "11",
@@ -634,23 +634,28 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post(endpoints.toCreate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("4")
-            expect(response.body.RestException.Message).toBe("O Número do Apartamento já está cadastrado")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptNumber')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O Número do Apartamento já está cadastrado")
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("4")
+            expect(responseCreate.body.RestException.Message).toBe("O Número do Apartamento já está cadastrado")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptNumber')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O Número do Apartamento já está cadastrado")
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
+
       })
 
       // Validação dos cômodos
+      /*
       test("/POST - Deve retornar 400, pela ausência dos valores dos cômodos do apartamento.", function() {
         return request.post(endpoints.toCreate).send({
           floor: "3",
