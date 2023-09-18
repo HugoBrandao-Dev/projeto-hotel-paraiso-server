@@ -294,7 +294,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/POST - Deve retornar 403, o usuário não está AUTENTICADO.", function() {
+      test("/POST - Deve retornar 403, um Funcionário não pode modificar características do apartamento.", function() {
 
         let apartment = {
           floor: "1",
@@ -320,7 +320,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           daily_price: '200'
         }
 
-        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.cliente.token)
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.funcionario.token)
           .then(function(responseCreate) {
 
             expect(responseCreate.statusCode).toEqual(403)
