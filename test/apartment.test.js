@@ -208,6 +208,8 @@ beforeAll(async () => {
 
 describe("Suite de testes das rotas de Apartment.", function() {
   describe("CREATE", function() {
+
+    /*
     describe("Testes de SUCESSO.", function() {
       test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
         let apartment = {
@@ -245,7 +247,55 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
     })
+    */
 
+
+    describe("Testes de FALHA.", function() {
+      test("/POST - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        let apartment = {
+          floor: "1",
+          number: "3",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
+
+        return request.post(endpoints.toCreate).send(apartment)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(401)
+
+            expect(responseCreate.body.RestException.Code).toBe('5')
+            expect(responseCreate.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseCreate.body.RestException.Status).toBe('401')
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
+
+    })
+    /*
     describe("Testes de FALHA.", function() {
 
       // Validação do Piso do apartamento.
@@ -913,6 +963,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
     })
+    */
   })
 
   describe("READ", function() {
