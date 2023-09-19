@@ -1,4 +1,5 @@
 const Analyzer = require('../tools/Analyzer')
+const Generator = require('../tools/Generator')
 const uuid = require('uuid')
 
 let baseURL = 'http://localhost:4000'
@@ -136,28 +137,8 @@ class ApartmentController {
       }
       
       let apartment = await Apartment.findOne(id)
-      let HATEOAS = [
-        {
-          href: `${ baseURL }/apartments/${ req.params.id }`,
-          method: 'GET',
-          rel: 'self_apartment'
-        },
-        {
-          href: `${ baseURL }/apartments/${ req.params.id }`,
-          method: 'PUT',
-          rel: 'edit_apartment'
-        },
-        {
-          href: `${ baseURL }/apartments/${ req.params.id }`,
-          method: 'DELETE',
-          rel: 'delete_apartment'
-        },
-        {
-          href: `${ baseURL }/apartments`,
-          method: 'GET',
-          rel: 'apartment_list'
-        }
-      ]
+
+      let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
 
       apartment._links = HATEOAS
 

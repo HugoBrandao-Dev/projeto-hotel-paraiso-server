@@ -1179,34 +1179,34 @@ describe("Suite de testes das rotas de Apartment.", function() {
   })
 
   describe("READ", function() {
-    /*
+
     describe("Testes de SUCESSO.", function() {
+
       test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", function() {
-        let apartment = { id: 'd9d62beecdde62af82efd82c' }
-        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
+
+        let apartment = {
+          id: 'd9d62beecdde62af82efd82c'
+        }
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
+
+            expect(response.statusCode).toEqual(200)
+
             const {
-              id,
-              floor,
-              number,
               rooms,
-              daily_price,
               reserve,
               created,
               updated,
               _links
             } = response.body
 
-            expect(response.statusCode).toEqual(200)
-
-            expect(id).toBeDefined()
-            expect(id).toBe(apartment.id)
-
-            expect(floor).toBeDefined()
-            expect(floor).toBe("3")
-
-            expect(number).toBeDefined()
-            expect(number).toBe("12")
+            expect(response.body).toMatchObject({
+              id: apartment.id,
+              floor: "3",
+              number: "12",
+              daily_price: "500",
+            })
 
             expect(rooms).toBeDefined()
             expect(rooms).toHaveLength(4)
@@ -1235,9 +1235,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: "2"
             })
 
-            expect(daily_price).toBeDefined()
-            expect(daily_price).toEqual("500")
-
             expect(reserve).toBeDefined()
             expect(reserve).toMatchObject({
               status: "ocupado",
@@ -1262,31 +1259,33 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
             expect(_links[0]).toMatchObject({
-              href: `${ baseURL }/apartments/${ id }`,
+              href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
               method: 'GET',
               rel: 'self_apartment'
             })
             expect(_links[1]).toMatchObject({
-              href: `${ baseURL }/apartments/${ id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_apartment'
             })
             expect(_links[2]).toMatchObject({
-              href: `${ baseURL }/apartments/${ id }`,
+              href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
               method: 'DELETE',
               rel: 'delete_apartment'
             })
             expect(_links[3]).toMatchObject({
-              href: `${ baseURL }/apartments`,
+              href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'apartment_list'
             })
+
           })
           .catch(function(error) {
             fail(error)
           })
-      })
 
+      })
+/*
       test("GET - Deve retornar uma lista de apartamentos.", function() {
         return request.get(endpoints.toList)
           .then(function(response) {
@@ -1326,8 +1325,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+*/
     })
-    */
 
     describe("Testes de FALHA.", function() {
 
