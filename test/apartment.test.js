@@ -1370,22 +1370,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-/*
-      // Leituras individuais de apartamentos
-      test("/GET - Deve retornar 400, já que o ID do apartamento não foi informado.", function() {
-        return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef*`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+      // Leituras individuais de apartamentos
+      test("/GET - Deve retornar 400, já que o ID do apartamento contém caracteres inválidos.", function() {
+
+        return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef*`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(400)
+
+            expect(responseRead.body.RestException.Code).toBe("2")
+            expect(responseRead.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(responseRead.body.RestException.Status).toBe("400")
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorRead) {
+            fail(errorRead)
           })
+
       })
+/*
 
       test("/GET - Deve retornar 404, já que o ID não pertence a um apartamento cadastrado.", function() {
         return request.get(`${ endpoints.toRead }/d9d62beecdde62af82efd82d`)
