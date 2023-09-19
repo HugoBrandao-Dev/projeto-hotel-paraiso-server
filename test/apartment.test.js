@@ -205,9 +205,9 @@ beforeAll(async () => {
 describe("Suite de testes das rotas de Apartment.", function() {
   describe("CREATE", function() {
 
-    /*
     describe("Testes de SUCESSO.", function() {
       test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
+
         let apartment = {
           floor: "1",
           number: "3",
@@ -231,19 +231,23 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.post(endpoints.toCreate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(201)
 
-            expect(response.body._links).toBeDefined()
-            expect(response.body._links).toHaveLength(4)
+        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(201)
+
+            expect(responseCreate.body._links).toBeDefined()
+            expect(responseCreate.body._links).toHaveLength(4)
+
           })
           .catch(function(error) {
             fail(error)
           })
+
       })
+
     })
-    */
 
     describe("Testes de FALHA.", function() {
 
