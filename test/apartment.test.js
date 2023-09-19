@@ -1390,22 +1390,26 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-/*
 
       test("/GET - Deve retornar 404, já que o ID não pertence a um apartamento cadastrado.", function() {
-        return request.get(`${ endpoints.toRead }/d9d62beecdde62af82efd82d`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(404)
 
-            expect(response.body.RestException.Code).toBe("3")
-            expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
-            expect(response.body.RestException.Status).toBe("404")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+        return request.get(`${ endpoints.toRead }/d9d62beecdde62af82efd82d`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(404)
+
+            expect(responseRead.body.RestException.Code).toBe("3")
+            expect(responseRead.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseRead.body.RestException.Status).toBe("404")
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
           })
-          .catch(function(error) {
-            fail(error)
+
+          .catch(function(errorRead) {
+            fail(errorRead)
           })
-      })*/
+
+      })
+
     })
   })
 /*
