@@ -2,18 +2,12 @@ const app = require('../src/app')
 const supertest = require('supertest')
 const Generator = require('../src/tools/Generator')
 
+const EndPoints = require('../src/routes/endpoints')
+const endpoints = new EndPoints({ singular: 'user', plural: 'users' })
+
 const request = supertest(app)
 
 let baseURL = 'http://localhost:4000'
-let endpoints = {
-  toCreate: '/user',
-  toRead: '/user',
-  toSearch: '/user/search',
-  toUpdate: '/user',
-  toDelete: '/user',
-  toList: '/users',
-  toLogin: '/login'
-}
 
 let accounts = {
   admin: { id: '', token: '' },
@@ -1607,7 +1601,7 @@ describe("Suite de testes das rotas User.", function() {
 
         let user = { id: '5da9ea674234635bdff4+-!7' }
 
-        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
+        return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
@@ -1625,7 +1619,7 @@ describe("Suite de testes das rotas User.", function() {
 
         let user = { id: '507f1f77bcf86cd799431111' }
 
-        return request.get(`${ endpoints.toView }/${ user.id }`).set('Authorization', accounts.admin.token)
+        return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(404)
 

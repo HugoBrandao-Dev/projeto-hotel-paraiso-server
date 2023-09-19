@@ -2,18 +2,14 @@ const app = require('../src/app')
 const supertest = require('supertest')
 const Generator = require('../src/tools/Generator')
 
+const EndPoints = require('../src/routes/endpoints')
+const endpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
+
 const request = supertest(app)
 
 const baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
-}
-const endpoints = {
-  toCreate: '/apartment',
-  toRead: '/apartment',
-  toUpdate: '/apartment',
-  toDelete: '/apartment',
-  toList: '/apartments'
 }
 
 let accounts = {

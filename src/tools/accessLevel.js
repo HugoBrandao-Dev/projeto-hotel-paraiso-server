@@ -1,24 +1,9 @@
 const Analyzer = require('../tools/Analyzer')
 const User = require('../models/User')
+const EndPoints = require('../routes/endpoints')
 
-const endpoints = {
-  user: {
-    toCreate: '/user',
-    toRead: '/user',
-    toSearch: '/user/search',
-    toUpdate: '/user',
-    toDelete: '/user',
-    toList: '/users',
-    toLogin: '/login'
-  },
-  apartment: {
-    toCreate: '/apartment',
-    toRead: '/apartment',
-    toUpdate: '/apartment',
-    toDelete: '/apartment',
-    toList: '/apartments'
-  }
-}
+const userEndpoints = new EndPoints({ singular: 'user', plural: 'users' })
+const apartmentEndpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
 
 // Verifica se a conta tem permissão de realizar uma determinada ação.
 async function isActionAllowed(decodedToken, path, method, params, body) {
@@ -62,7 +47,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
         switch (upperMethod) {
           case 'POST':
 
-            if (path != endpoints.apartment.toCreate && !(body.role >= 0)) {
+            if (path != apartmentEndpoints.toCreate && !(body.role >= 0)) {
               allowed = true
             }
 
@@ -105,7 +90,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
       case '2':
         switch (upperMethod) {
           case 'POST':
-            if (path != endpoints.apartment.toCreate && !(body.role >= 2)) {
+            if (path != apartmentEndpoints.toCreate && !(body.role >= 2)) {
               allowed = true
             }
             break
