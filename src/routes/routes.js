@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const router = express.Router()
+const EndPoints = require('./endpoints')
 
 // Controllers
 const HomeController = require('../controllers/HomeController')
@@ -14,50 +15,52 @@ router.get('/', HomeController.index)
 
 /* ########### USER ########### */
 
+const userEndpoints = new EndPoints({ singular: 'user', plural: 'users' }, true)
+
 // Create
-router.post('/user', UserController.create)
+router.post(userEndpoints.toCreate, UserController.create)
 
 // Read
-router.get('/user/:id', authorization, authentication, UserController.read)
-
-// Esta rota é utilizada para visualização de informações do cliente pelo lado de um Funcionário++
-// router.get('/user/:id', authorization, authentication, UserController.view)
-
-router.get('/users', authorization, authentication, UserController.list)
-router.post('/user/search', authorization, authentication, UserController.readByDoc)
-router.post('/login', UserController.login)
+router.get(userEndpoints.toRead, authorization, authentication, UserController.read)
+router.get(userEndpoints.toList, authorization, authentication, UserController.list)
+router.post(userEndpoints.toSearch, authorization, authentication, UserController.readByDoc)
+router.post(userEndpoints.toLogin, UserController.login)
 
 // Update
-router.put('/user', authorization, authentication, UserController.update)
+router.put(userEndpoints.toUpdate, authorization, authentication, UserController.update)
 
 // Delete
-router.delete('/user/:id', authorization, authentication, UserController.remove)
+router.delete(userEndpoints.toDelete, authorization, authentication, UserController.remove)
 
 /* ########### APARTMENT ########### */
 
+const apartmentEndpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' }, true)
+
 // Create
-router.post('/apartment', authorization, authentication, ApartmentController.create)
+router.post(apartmentEndpoints.toCreate, authorization, authentication, ApartmentController.create)
 
 // Read
-router.get('/apartment/:id', ApartmentController.read)
-router.get('/apartments', ApartmentController.list)
+router.get(apartmentEndpoints.toRead, ApartmentController.read)
+router.get(apartmentEndpoints.toList, ApartmentController.list)
 
 // Update
-router.put('/apartment', ApartmentController.update)
+router.put(apartmentEndpoints.toUpdate, ApartmentController.update)
 
 // Delete
-router.delete('/apartment/:id', ApartmentController.remove)
+router.delete(apartmentEndpoints.toDelete, ApartmentController.remove)
 
 /* ########### RESERVE ########### */
 
+const reserveEndpoints = new EndPoints({ singular: 'reserve', plural: 'reserves' }, true)
+
 // Read
-router.get('/reserve/:id', ReserveController.read)
-router.get('/reserves', ReserveController.list)
+router.get(reserveEndpoints.toRead, ReserveController.read)
+router.get(reserveEndpoints.toList, ReserveController.list)
 
 // Update
-router.put('/reserve', ReserveController.update)
+router.put(reserveEndpoints.toUpdate, ReserveController.update)
 
 // Delete
-router.delete('/reserve/:id', ReserveController.remove)
+router.delete(reserveEndpoints.toDelete, ReserveController.remove)
 
 module.exports = router
