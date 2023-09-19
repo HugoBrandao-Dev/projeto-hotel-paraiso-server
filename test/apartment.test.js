@@ -1423,14 +1423,14 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
         let apartment = { id: 'd9d62beecdde62af82efd82c' }
         return request.get(endpoints.toList)
-          .then(function(responseRead) {
+          .then(function(responseList) {
 
-            expect(responseRead.statusCode).toEqual(401)
+            expect(responseList.statusCode).toEqual(401)
 
-            expect(responseRead.body.RestException.Code).toBe('5')
-            expect(responseRead.body.RestException.Message).toBe('O usuário não está autorizado')
-            expect(responseRead.body.RestException.Status).toBe('401')
-            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+            expect(responseList.body.RestException.Code).toBe('5')
+            expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseList.body.RestException.Status).toBe('401')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
 
           })
           .catch(function(errorRead) {
@@ -1919,8 +1919,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
       test("/PUT - Deve retornar 400, uma vez que o ID informado é inválido.", function() {
+
         let apartment = { 
           id: 'ljb9kf3d5a65f17ljf2i0kc*',
           floor: "3",
@@ -1945,20 +1945,25 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.put(endpoints.toUpdate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("/PUT - Deve retornar 404, uma vez que o ID informado não pertence a um apartamento.", function() {
         let apartment = {
           id: 'ljb9kf3d5a65f17ljf2i0kc7',
