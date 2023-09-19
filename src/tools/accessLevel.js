@@ -57,10 +57,10 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'PUT':
 
-            // Verifica se o Funcionário está tentando alterar a função.
             if (path != apartmentEndpoints.toUpdate && !(body.role > 0)) {
               allowed = true
             }
+
             break
           case 'DELETE':
 
@@ -99,10 +99,10 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'PUT':
 
-            // Verifica se o Gerente está tentando passar um valor de Função maior que o dele (2).
-            if (!(body.role >= 2)) {
+            if (path != apartmentEndpoints.toUpdate && !(body.role >= 2)) {
               allowed = true
             }
+
             break
           case 'DELETE':
             break

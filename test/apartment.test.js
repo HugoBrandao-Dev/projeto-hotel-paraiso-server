@@ -1831,6 +1831,50 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/PUT - Deve retornar 403, já que o Gerente não está AUTENTICADO.", function() {
+
+        let apartment = { 
+          id: '856377c88f8fd9fc65fd3ef5',
+          floor: "1",
+          number: "2",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
+
+        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
       /*
       test("/PUT - Deve retornar 400, uma vez que o ID informado é inválido.", function() {
         let apartment = { 
