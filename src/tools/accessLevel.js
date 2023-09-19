@@ -58,7 +58,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
           case 'PUT':
 
             // Verifica se o Funcionário está tentando alterar a função.
-            if (!(body.role > 0)) {
+            if (path != apartmentEndpoints.toUpdate && !(body.role > 0)) {
               allowed = true
             }
             break
