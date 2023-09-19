@@ -41,7 +41,7 @@ router.post(apartmentEndpoints.toCreate, authorization, authentication, Apartmen
 
 // Read
 router.get(apartmentEndpoints.toRead, authorization, authentication, ApartmentController.read)
-router.get(apartmentEndpoints.toList, ApartmentController.list)
+router.get(apartmentEndpoints.toList, authorization, ApartmentController.list)
 
 // Update
 router.put(apartmentEndpoints.toUpdate, authorization, authentication,ApartmentController.update)

@@ -1418,6 +1418,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      // Listagem de apartamentos
+      test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        let apartment = { id: 'd9d62beecdde62af82efd82c' }
+        return request.get(endpoints.toList)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(401)
+
+            expect(responseRead.body.RestException.Code).toBe('5')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseRead.body.RestException.Status).toBe('401')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
     })
 
   })
