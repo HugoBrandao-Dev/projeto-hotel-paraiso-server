@@ -170,23 +170,7 @@ class ApartmentController {
         apartments.pop()
 
         for (let apartment of apartments) {
-          let HATEOAS = [
-            {
-              href: `${ baseURL }/apartment/${ apartment.id }`,
-              method: 'GET',
-              rel: 'self_apartment'
-            },
-            {
-              href: `${ baseURL }/apartment/${ apartment.id }`,
-              method: 'PUT',
-              rel: 'edit_apartment'
-            },
-            {
-              href: `${ baseURL }/apartment/${ apartment.id }`,
-              method: 'DELETE',
-              rel: 'delete_apartment'
-            }
-          ]
+          let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartments', 'apartment', false)
           apartment._links = HATEOAS
         }
 

@@ -1285,26 +1285,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-/*
-      test("GET - Deve retornar uma lista de apartamentos.", function() {
-        return request.get(endpoints.toList)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
 
-            expect(response.body).toHaveProperty('apartments')
-            expect(response.body).toHaveProperty('hasNext')
+      test("/GET - Deve retornar uma lista de apartamentos.", function() {
 
-            expect(response.body.hasNext).toBe(false)
+        return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
 
-            for (let apartment of response.body.apartments) {
+            expect(responseList.statusCode).toEqual(200)
+
+            expect(responseList.body).toHaveProperty('apartments')
+            expect(responseList.body).toHaveProperty('hasNext')
+
+            expect(responseList.body.hasNext).toBe(false)
+
+            for (let apartment of responseList.body.apartments) {
               expect(apartment._links).toBeDefined()
               expect(apartment._links).toHaveLength(3)
             }
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorList) {
+            fail(errorList)
           })
+
       })
+/*
 
       test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
         let url = endpoints.toList + '?offset=1&limit=3'
