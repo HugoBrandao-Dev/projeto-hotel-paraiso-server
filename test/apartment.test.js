@@ -1350,6 +1350,26 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
+
+      test("/GET - Deve retornar 403, o Cliente não está AUTENTICADO.", function() {
+
+        let apartment = { id: 'd9d62beecdde62af82efd82c' }
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(403)
+
+            expect(responseRead.body.RestException.Code).toBe('6')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseRead.body.RestException.Status).toBe('403')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
 /*
       // Leituras individuais de apartamentos
       test("/GET - Deve retornar 400, já que o ID do apartamento não foi informado.", function() {
