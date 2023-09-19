@@ -37,17 +37,17 @@ class Generator {
       {
         href: `${ baseURL }/${ singular }/${ id }`,
         method: 'GET',
-        rel: 'self_user'
+        rel: `self_${ singular }`
       },
       {
-        href: `${ baseURL }/${ singular }/${ id }`,
+        href: `${ baseURL }/${ singular }`,
         method: 'PUT',
-        rel: 'edit_user'
+        rel: `edit_${ singular }`
       },
       {
         href: `${ baseURL }/${ singular }/${ id }`,
         method: 'DELETE',
-        rel: 'delete_user'
+        rel: `delete_${ singular }`
       },
     ]
 
@@ -55,7 +55,7 @@ class Generator {
       HATEOAS.push({
         href: `${ baseURL }/${ plural }`,
         method: 'GET',
-        rel: 'user_list'
+        rel: `${ singular }_list`
       })
     }
 
