@@ -1419,10 +1419,13 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
+
   })
-/*
+
   describe("UPDATE", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
+
       test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento.", function() {
 
         let apartment = {
@@ -1690,8 +1693,57 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(errorPUT)
           })
       })
+
     })
+    */
+
     describe("Testes de FALHA.", function() {
+
+      test("/PUT - Deve retornar 401, já que o usuáiro não está AUTORIZADO.", function() {
+
+        let apartment = { 
+          id: '856377c88f8fd9fc65fd3ef5',
+          floor: "1",
+          number: "2",
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '200'
+        }
+
+        return request.put(endpoints.toUpdate).send(apartment)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(401)
+
+            expect(responseUpdate.body.RestException.Code).toBe('5')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseUpdate.body.RestException.Status).toBe('401')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      /*
       test("/PUT - Deve retornar 400, uma vez que o ID informado é inválido.", function() {
         let apartment = { 
           id: 'ljb9kf3d5a65f17ljf2i0kc*',
@@ -1808,9 +1860,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+      */
     })
-  })
 
+  })
+  /*
   describe("DELETE", function() {
     describe("Testes de SUCESSO.", function() {
       test("Deve retornar 200, na delecao de um apartamento.", function() {
@@ -1868,5 +1922,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
     })
-  })*/
+  })
+  */
 })
