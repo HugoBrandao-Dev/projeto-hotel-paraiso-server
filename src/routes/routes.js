@@ -40,7 +40,7 @@ const apartmentEndpoints = new EndPoints({ singular: 'apartment', plural: 'apart
 router.post(apartmentEndpoints.toCreate, authorization, authentication, ApartmentController.create)
 
 // Read
-router.get(apartmentEndpoints.toRead, ApartmentController.read)
+router.get(apartmentEndpoints.toRead, authorization, ApartmentController.read)
 router.get(apartmentEndpoints.toList, ApartmentController.list)
 
 // Update

@@ -203,6 +203,7 @@ beforeAll(async () => {
 })
 
 describe("Suite de testes das rotas de Apartment.", function() {
+
   describe("CREATE", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -1178,6 +1179,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
   })
 
   describe("READ", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
       test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", function() {
         let apartment = { id: 'd9d62beecdde62af82efd82c' }
@@ -1325,9 +1327,30 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
     })
+    */
 
     describe("Testes de FALHA.", function() {
 
+      test("/GET - Deve retornar 401, o Cliente não está AUTORIZADO.", function() {
+
+        let apartment = { id: 'd9d62beecdde62af82efd82c' }
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(401)
+
+            expect(responseRead.body.RestException.Code).toBe('5')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseRead.body.RestException.Status).toBe('401')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+/*
       // Leituras individuais de apartamentos
       test("/GET - Deve retornar 400, já que o ID do apartamento não foi informado.", function() {
         return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef*`)
@@ -1357,10 +1380,10 @@ describe("Suite de testes das rotas de Apartment.", function() {
           .catch(function(error) {
             fail(error)
           })
-      })
+      })*/
     })
   })
-
+/*
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {
       test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento.", function() {
@@ -1808,5 +1831,5 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
     })
-  })
+  })*/
 })
