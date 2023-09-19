@@ -1963,8 +1963,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
       test("/PUT - Deve retornar 404, uma vez que o ID informado não pertence a um apartamento.", function() {
+
         let apartment = {
           id: 'ljb9kf3d5a65f17ljf2i0kc7',
           floor: "3",
@@ -1989,20 +1989,25 @@ describe("Suite de testes das rotas de Apartment.", function() {
           ],
           daily_price: '200'
         }
-        return request.put(endpoints.toUpdate).send(apartment)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(404)
 
-            expect(response.body.RestException.Code).toBe("3")
-            expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
-            expect(response.body.RestException.Status).toBe("404")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(404)
+
+            expect(responseUpdate.body.RestException.Code).toBe("3")
+            expect(responseUpdate.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseUpdate.body.RestException.Status).toBe("404")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("/PUT - Deve retornar 400, já que o número informado já está cadastrado e NÃO pertence ao apartamento que está sendo atualizado.", function() {
         let apartment = {
           id: 'd9d62beecdde62af82efd82c',
