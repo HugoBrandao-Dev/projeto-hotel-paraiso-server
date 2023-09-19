@@ -270,7 +270,7 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", function() {
+      test("/POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", function() {
 
         const user = {
           name: "Dinorá de Oliveira",
@@ -299,7 +299,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
+      test("/POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
 
         const user = {
           name: "Josias Cruz",
@@ -331,7 +331,7 @@ describe("Suite de testes das rotas User.", function() {
     describe("Testes de FALHA.", function() {
 
       // Testes no NOME
-      test("POST - Deve retornar 400, pela ausência do nome do User.", function() {
+      test("/POST - Deve retornar 400, pela ausência do nome do User.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "",
@@ -360,7 +360,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido a presença de elementos inválidos do nome do User.", function() {
+      test("/POST - Deve retornar 400, devido a presença de elementos inválidos do nome do User.", function() {
 
         // O "O" de "Oliveira", na verdade é um 0 (zero).
         return request.post(endpoints.toCreate).send({
@@ -391,7 +391,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no EMAIL
-      test("POST - Deve retornar 400, pela ausência do email do User.", function() {
+      test("/POST - Deve retornar 400, pela ausência do email do User.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -420,7 +420,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido a presença de elementos inválidos no email do User.", function() {
+      test("/POST - Deve retornar 400, devido a presença de elementos inválidos no email do User.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -449,7 +449,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, por passar um email já cadastrado.", function() {
+      test("/POST - Deve retornar 400, por passar um email já cadastrado.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -479,7 +479,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes na DATA DE NASCIMENTO/IDADE
-      test("POST - Deve retornar 400, pela ausência da data de nascimento do User.", function() {
+      test("/POST - Deve retornar 400, pela ausência da data de nascimento do User.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -508,7 +508,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, por ter informado uma data de nascimento inválida.", function() {
+      test("/POST - Deve retornar 400, por ter informado uma data de nascimento inválida.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -537,7 +537,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, pela idade do usuário ser menor que 18 anos.", function() {
+      test("/POST - Deve retornar 400, pela idade do usuário ser menor que 18 anos.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -567,7 +567,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes na SENHA
-      test("POST - Deve retornar 400, pela ausência da senha do usuário.", function() {
+      test("/POST - Deve retornar 400, pela ausência da senha do usuário.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -596,7 +596,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido a senha informada ser muito fraca.", function() {
+      test("/POST - Deve retornar 400, devido a senha informada ser muito fraca.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -626,7 +626,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no CÓDIGO DO TELEFONE/TELEFONE
-      test("POST - Deve retornar 400, pela ausência do código do telefone.", function() {
+      test("/POST - Deve retornar 400, pela ausência do código do telefone.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -655,7 +655,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao código de telefone informado ser invalido.", function() {
+      test("/POST - Deve retornar 400, devido ao código de telefone informado ser invalido.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -684,7 +684,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, pela ausência do telefone do usuario.", function() {
+      test("/POST - Deve retornar 400, pela ausência do telefone do usuario.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -713,7 +713,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao número de telefone do usuário ser inválido.", function() {
+      test("/POST - Deve retornar 400, devido ao número de telefone do usuário ser inválido.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -743,7 +743,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no PAÍS DE NASCIMENTO
-      test("POST - Deve retornar 400, pela ausência do país de nascimento do usuário.", function() {
+      test("/POST - Deve retornar 400, pela ausência do país de nascimento do usuário.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -772,7 +772,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao ISO do pais de nascimento do usuário ser inválido.", function() {
+      test("/POST - Deve retornar 400, devido ao ISO do pais de nascimento do usuário ser inválido.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -802,7 +802,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no ESTADO DE NASCIMENTO
-      test("POST - Deve retornar 400, pela ausência do estado de nascimento do usuário.", function() {
+      test("/POST - Deve retornar 400, pela ausência do estado de nascimento do usuário.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -831,7 +831,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao nome/sigla do estado de nascimento ser inválido.", function() {
+      test("/POST - Deve retornar 400, devido ao nome/sigla do estado de nascimento ser inválido.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -861,7 +861,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes na CIDADE DE NASCIMENTO
-      test("POST - Deve retornar 400, pela ausência do nome da cidade de nascimento do usuário.", function() {
+      test("/POST - Deve retornar 400, pela ausência do nome da cidade de nascimento do usuário.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -890,7 +890,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao nome da cidade de nascimento do usuário ser inválido.", function() {
+      test("/POST - Deve retornar 400, devido ao nome da cidade de nascimento do usuário ser inválido.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -920,7 +920,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no CPF (para Brasileiros)
-      test("POST - Deve retornar 400, pela ausência do CPF do usuário nascido no Brasil.", function() {
+      test("/POST - Deve retornar 400, pela ausência do CPF do usuário nascido no Brasil.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -949,7 +949,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao valor do CPF do usuário ser inválido.", function() {
+      test("/POST - Deve retornar 400, devido ao valor do CPF do usuário ser inválido.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -978,7 +978,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao valor do CPF do usuário estar faltando dígitos.", function() {
+      test("/POST - Deve retornar 400, devido ao valor do CPF do usuário estar faltando dígitos.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1007,7 +1007,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao CPF informado já estar cadastrado.", function() {
+      test("/POST - Deve retornar 400, devido ao CPF informado já estar cadastrado.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1037,7 +1037,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no NÚMERO DE PASSAPORTE (para estrangeiros)
-      test("POST - Deve retornar 400, devido a ausência do número do passaporte de um usuário estrangeiro.", function() {
+      test("/POST - Deve retornar 400, devido a ausência do número do passaporte de um usuário estrangeiro.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1066,7 +1066,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, uma vez que o número do passaporte do usuario estrangeiro está errado.", function() {
+      test("/POST - Deve retornar 400, uma vez que o número do passaporte do usuario estrangeiro está errado.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1095,7 +1095,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, uma vez que o número do passaporte do usuário estrangeiro já foi registrado anteriormente.", function() {
+      test("/POST - Deve retornar 400, uma vez que o número do passaporte do usuário estrangeiro já foi registrado anteriormente.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1125,7 +1125,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no CEP
-      test("POST - Deve retornar 400, uma vez que o número do CEP não existe.", function() {
+      test("/POST - Deve retornar 400, uma vez que o número do CEP não existe.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1155,7 +1155,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, uma vez que o falta número do CEP informado.", function() {
+      test("/POST - Deve retornar 400, uma vez que o falta número do CEP informado.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1185,7 +1185,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido ao número de CEP possuir caractere inválido.", function() {
+      test("/POST - Deve retornar 400, devido ao número de CEP possuir caractere inválido.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1216,7 +1216,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Teste no NOME DO BAIRRO
-      test("POST - Deve retornar 400, devido a presença de caracteres inválidos no nome do bairro.", function() {
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no nome do bairro.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1250,7 +1250,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("POST - Deve retornar 400, devido a presença de caracteres inválidos no nome da rua.", function() {
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no nome da rua.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1285,7 +1285,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Teste no NÚMERO DA CASA
-      test("POST - Deve retornar 400, devido a presença de caracteres inválidos no numero da casa do usuario.", function() {
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no numero da casa do usuario.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1320,7 +1320,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Teste nas INFORMAÇÕES ADICIONAIS
-      test("POST - Deve retornar 400, devido a presença de caracteres inválidos nas informações adicionais do usuario.", function() {
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos nas informações adicionais do usuario.", function() {
 
         return request.post(endpoints.toCreate).send({
           name: "Tobias de Oliveira",
@@ -1362,7 +1362,7 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("GET - Deve retornar 200 para usuário que buscam suas próprias informações.", function() {
+      test("/GET - Deve retornar 200 para usuário que buscam suas próprias informações.", function() {
 
         let login = {
           email: "dino_oli@hotmail.com",
@@ -1415,7 +1415,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("GET - Deve retornar 200 e uma lista de usuários.", function() {
+      test("/GET - Deve retornar 200 e uma lista de usuários.", function() {
         return request.get(endpoints.toList).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
@@ -1436,7 +1436,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
+      test("/GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
         let url = endpoints.toList + '?offset=1&limit=3'
         return request.get(url).set('Authorization', accounts.admin.token)
           .then(function(response) {
@@ -1456,7 +1456,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 200 e o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
+      test("/POST - Deve retornar 200 e o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
 
         const info = {
           cpf: '22222222222'
@@ -1480,7 +1480,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
+      test("/POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
 
         const info = {
           passportNumber: '303004786'
@@ -1502,7 +1502,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 200 e um Token.", function() {
+      test("/POST - Deve retornar 200 e um Token.", function() {
 
         const user = {
           email: 'tobias@gmail.com',
@@ -1526,7 +1526,7 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de FALHA.", function() {
 
-      test("POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
+      test("/POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
         return request.post(endpoints.toSearch).send({}).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -1545,7 +1545,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
+      test("/POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
         return request.post(endpoints.toSearch).send({
           name: 'Tobias de Oliveira'
         }).set('Authorization', accounts.funcionario.token)
@@ -1562,7 +1562,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 400, por ter informado um valor de CPF inválido.", function() {
+      test("/POST - Deve retornar 400, por ter informado um valor de CPF inválido.", function() {
         return request.post(endpoints.toSearch).send({
           cpf: '2222222222a'
         }).set('Authorization', accounts.funcionario.token)
@@ -1579,7 +1579,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
+      test("/POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
         return request.post(endpoints.toSearch).send({
           passportNumber: 'C100100--'
         }).set('Authorization', accounts.funcionario.token)
@@ -1634,7 +1634,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes no Login
-      test("POST - Deve retornar 400, por não ter informado o Email para Login.", function() {
+      test("/POST - Deve retornar 400, por não ter informado o Email para Login.", function() {
 
         const user = {
           password: "@TobiaS&591022@",
@@ -1656,7 +1656,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 404, por ter informado um Email, para Login, que não foi cadastrado anteriormente.", function() {
+      test("/POST - Deve retornar 404, por ter informado um Email, para Login, que não foi cadastrado anteriormente.", function() {
 
         const user = {
           email: "tobia@gmail.com",
@@ -1679,7 +1679,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 400, por não ter informado uma senha para Login.", function() {
+      test("/POST - Deve retornar 400, por não ter informado uma senha para Login.", function() {
 
         const user = {
           email: "tobias@gmail.com"
@@ -1702,7 +1702,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes de Listagem
-      test("POST - Deve retornar 401, por tentar acessar a listagem de Usuários sem estar AUTORIZADO.", function() {
+      test("/POST - Deve retornar 401, por tentar acessar a listagem de Usuários sem estar AUTORIZADO.", function() {
 
         return request.get(endpoints.toList)
           .then(function(responseList) {
@@ -1717,7 +1717,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 403, por tentar acessar a listagem de Usuários sem estar AUTENTICADO.", function() {
+      test("/POST - Deve retornar 403, por tentar acessar a listagem de Usuários sem estar AUTENTICADO.", function() {
 
         return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
@@ -1733,7 +1733,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes para busca por documentação
-      test("POST - Deve retornar 401, por tentar buscar um Usuários pelo CPF sem estar AUTORIZADO.", function() {
+      test("/POST - Deve retornar 401, por tentar buscar um Usuários pelo CPF sem estar AUTORIZADO.", function() {
 
         const info = {
           cpf: '11111111111'
@@ -1752,7 +1752,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("POST - Deve retornar 403, por tentar buscar um Usuários pelo CPF sem estar AUTENTICADO.", function() {
+      test("/POST - Deve retornar 403, por tentar buscar um Usuários pelo CPF sem estar AUTENTICADO.", function() {
 
         const info = {
           cpf: '11111111111'
@@ -1778,7 +1778,7 @@ describe("Suite de testes das rotas User.", function() {
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
-      test("PUT - Deve retornar 200 e o usuário Brasileiro com suas informações atualizadas.", function() {
+      test("/PUT - Deve retornar 200 e o usuário Brasileiro com suas informações atualizadas.", function() {
 
         let user = {
           id: accounts.cliente.id,
@@ -1825,7 +1825,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para cliente que tem sua Função alterada para Funcionário pelo Admin.", function() {
+      test("/PUT - Deve retornar 200 para cliente que tem sua Função alterada para Funcionário pelo Admin.", function() {
 
         let user = {
           id: '600f191e810c19829de900ea',
@@ -1862,7 +1862,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para cliente que tem sua Função alterada para Gerente pelo Admin.", function() {
+      test("/PUT - Deve retornar 200 para cliente que tem sua Função alterada para Gerente pelo Admin.", function() {
 
         let user = {
           id: accounts.gerente.id,
@@ -1899,7 +1899,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para cliente que tem sua Função alterada para Funcionário pelo Gerente.", function() {
+      test("/PUT - Deve retornar 200 para cliente que tem sua Função alterada para Funcionário pelo Gerente.", function() {
 
         let user = {
           id: '600f191e810c19829de900ea',
@@ -1936,7 +1936,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para o Funcionário que atualiza as informações obrigatórias e opcionais/condicionais de um usuário Brasileiro.", function() {
+      test("/PUT - Deve retornar 200 para o Funcionário que atualiza as informações obrigatórias e opcionais/condicionais de um usuário Brasileiro.", function() {
 
         let user = {
           id: "507f1f77bcf86cd799439011",
@@ -1971,7 +1971,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2021,7 +2021,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para usuário Brasileiro que não querem ter o CPF atualizado pelo Funcionário.", function() {
+      test("/PUT - Deve retornar 200 para usuário Brasileiro que não querem ter o CPF atualizado pelo Funcionário.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2050,7 +2050,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2094,7 +2094,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para usuário Brasileiro que não querem ter o CPF e Cidade atualizados pelo Funcionário.", function() {
+      test("/PUT - Deve retornar 200 para usuário Brasileiro que não querem ter o CPF e Cidade atualizados pelo Funcionário.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2121,7 +2121,7 @@ describe("Suite de testes das rotas User.", function() {
             rel: 'self_user'
           })
           expect(responseUpdate.body._links[1]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+            href: `${ baseURL }${ endpoints.toUpdate }`,
             method: 'PUT',
             rel: 'edit_user'
           })
@@ -2162,7 +2162,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para usuário Brasileiro que não quer ter o CPF, Local e Data de Nascimento atualizados pelo Funcionário.", function() {
+      test("/PUT - Deve retornar 200 para usuário Brasileiro que não quer ter o CPF, Local e Data de Nascimento atualizados pelo Funcionário.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2188,7 +2188,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2228,7 +2228,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Gerente que atualiza somente o Nome, Email, Senha e Função do cliente.", function() {
+      test("/PUT - Deve retornar 200 para Gerente que atualiza somente o Nome, Email, Senha e Função do cliente.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2252,7 +2252,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2290,7 +2290,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 Gerente que atualiza somente o Nome, Senha e Função do cliente.", function() {
+      test("/PUT - Deve retornar 200 Gerente que atualiza somente o Nome, Senha e Função do cliente.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2313,7 +2313,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2350,7 +2350,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 Gerente que atualiza somente o Nome e Senha do cliente.", function() {
+      test("/PUT - Deve retornar 200 Gerente que atualiza somente o Nome e Senha do cliente.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2372,7 +2372,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2408,7 +2408,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 Gerente que atualiza somente o Nome do cliente.", function() {
+      test("/PUT - Deve retornar 200 Gerente que atualiza somente o Nome do cliente.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2428,7 +2428,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2464,7 +2464,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Admin que informa o mesmo Email para o cliente.", function() {
+      test("/PUT - Deve retornar 200 para Admin que informa o mesmo Email para o cliente.", function() {
 
         let user = {
           id: "507f191e810c19729de860ea",
@@ -2485,7 +2485,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2522,7 +2522,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Funcionário que informa o mesmo CPF para o cliente.", function() {
+      test("/PUT - Deve retornar 200 para Funcionário que informa o mesmo CPF para o cliente.", function() {
 
         let user = {
           id: "507f1f77bcf86cd799439011",
@@ -2545,7 +2545,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2584,7 +2584,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para o Admin que modifica seu local de nascimento e informa o Número do Passaporte para Gerente.", function() {
+      test("/PUT - Deve retornar 200 para o Admin que modifica seu local de nascimento e informa o Número do Passaporte para Gerente.", function() {
 
         let user = {
           id: "5da9ea674234635bdff45c02",
@@ -2610,7 +2610,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2652,7 +2652,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Admin que informa o mesmo Número de Passaporte para o Gerente.", function() {
+      test("/PUT - Deve retornar 200 para Admin que informa o mesmo Número de Passaporte para o Gerente.", function() {
 
         let user = {
           id: "507f191e810c19729de860ea",
@@ -2675,7 +2675,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2713,7 +2713,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para o Admin que atualiza o Local de Nascimento e informa o CPF para Gerente.", function() {
+      test("/PUT - Deve retornar 200 para o Admin que atualiza o Local de Nascimento e informa o CPF para Gerente.", function() {
 
         const fixedForeignCPF = Generator.genCPF()
         let user = {
@@ -2739,7 +2739,7 @@ describe("Suite de testes das rotas User.", function() {
               rel: 'self_user'
             })
             expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }/${ user.id }`,
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_user'
             })
@@ -2781,7 +2781,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Funcionário que busca um usuário pelo CPF.", function() {
+      test("/PUT - Deve retornar 200 para Funcionário que busca um usuário pelo CPF.", function() {
 
         let info = {
           cpf: fixedCPF
@@ -2806,7 +2806,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Funcionário que busca um usuário pelo Número do Passaporte.", function() {
+      test("/PUT - Deve retornar 200 para Funcionário que busca um usuário pelo Número do Passaporte.", function() {
 
         let info = {
           passportNumber: fixedPassportNumber
@@ -2834,7 +2834,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Gerente que busca um usuário pelo CPF.", function() {
+      test("/PUT - Deve retornar 200 para Gerente que busca um usuário pelo CPF.", function() {
 
         let info = {
           cpf: fixedCPF
@@ -2859,7 +2859,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Gerente que busca um usuário pelo Número do Passaporte.", function() {
+      test("/PUT - Deve retornar 200 para Gerente que busca um usuário pelo Número do Passaporte.", function() {
 
         let info = {
           passportNumber: fixedPassportNumber
@@ -2887,7 +2887,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Funcionário que atualiza suas próprias informações.", function() {
+      test("/PUT - Deve retornar 200 para Funcionário que atualiza suas próprias informações.", function() {
 
         let user = {
           id: accounts.funcionario.id,
@@ -2925,7 +2925,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Gerente que atualiza suas próprias informações.", function() {
+      test("/PUT - Deve retornar 200 para Gerente que atualiza suas próprias informações.", function() {
 
         let user = {
           id: accounts.gerente.id,
@@ -2963,7 +2963,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200 para Admin que atualiza suas próprias informações.", function() {
+      test("/PUT - Deve retornar 200 para Admin que atualiza suas próprias informações.", function() {
 
         let user = {
           id: accounts.admin.id,
@@ -3002,7 +3002,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200, para Admin que modifica a Função de um Gerente para Funcionário.", function() {
+      test("/PUT - Deve retornar 200, para Admin que modifica a Função de um Gerente para Funcionário.", function() {
 
         let user = {
           id: accounts.gerente3.id,
@@ -3033,7 +3033,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 200, para Admin que modifica a Função de um Gerente para Funcionário.", function() {
+      test("/PUT - Deve retornar 200, para Admin que modifica a Função de um Gerente para Funcionário.", function() {
 
         // Esse gerente foi alterado no teste anterior para Funcionário.
         let user = {
@@ -3068,7 +3068,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 
     describe("Testes de FALHA.", function() {
-      test("PUT - Deve retornar 401, já que o usuário NÃO está AUTORIZADO.", function() {
+      test("/PUT - Deve retornar 401, já que o usuário NÃO está AUTORIZADO.", function() {
 
         const user = {
           id: "507f191e810c19729de860ea",
@@ -3093,7 +3093,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 403, já que o cliente NÃO está AUTENTICADO a mudar sua própria função.", function() {
+      test("/PUT - Deve retornar 403, já que o cliente NÃO está AUTENTICADO a mudar sua própria função.", function() {
 
         let login = {
           email: "dino_oli@hotmail.com",
@@ -3148,7 +3148,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 403, já que o funcionário não pode alterar a Função de uma conta (nenhuma conta)", function() {
+      test("/PUT - Deve retornar 403, já que o funcionário não pode alterar a Função de uma conta (nenhuma conta)", function() {
 
         let user = {
           id: accounts.cliente.id,
@@ -3172,7 +3172,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 403, já que o Gerente NÃO tem autenticação alterar a conta do cliente para Gerente.", function() {
+      test("/PUT - Deve retornar 403, já que o Gerente NÃO tem autenticação alterar a conta do cliente para Gerente.", function() {
 
         let user = {
           id: accounts.cliente.id,
@@ -3197,7 +3197,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Testes na FUNÇÃO DA CONTA QUE ESTÁ SENDO CRIADA (role)
-      test("PUT - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
+      test("/PUT - Deve retornar 400, devido a função (role) informada ter caracteres inválidos.", function() {
 
         let user = {
           id: accounts.cliente.id,
@@ -3230,7 +3230,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 400, devido ao valor da função (role) ser de uma função inexistente.", function() {
+      test("/PUT - Deve retornar 400, devido ao valor da função (role) ser de uma função inexistente.", function() {
 
         let user = {
           id: accounts.cliente.id,
@@ -3265,7 +3265,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
+      test("/PUT - Deve retornar 404, já que o ID não correponde a um usuário cadastrado.", function() {
 
         const user = {
           id: "5da9ea674234635bdff45d22",
@@ -3289,7 +3289,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 400, já que o usuário não mudou seu local de nascimento para Brasil.", function() {
+      test("/PUT - Deve retornar 400, já que o usuário não mudou seu local de nascimento para Brasil.", function() {
 
         const user = {
           id: "600f191e810c19829de900ea",
@@ -3314,7 +3314,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 400, já que o usuário não mudou seu local de nascimento para um país estrangeiro.", function() {
+      test("/PUT - Deve retornar 400, já que o usuário não mudou seu local de nascimento para um país estrangeiro.", function() {
 
         const user = {
           id: "507f1f77bcf86cd799439011",
@@ -3339,7 +3339,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 400, já que o email informado já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+      test("/PUT - Deve retornar 400, já que o email informado já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
 
         const user = {
           id: "507f191e810c19729de860ea",
@@ -3363,7 +3363,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 400, já que o número do CPF já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+      test("/PUT - Deve retornar 400, já que o número do CPF já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
 
         const user = {
           id: "5da9ea674234635bdff45c02",
@@ -3391,7 +3391,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("PUT - Deve retornar 400, já que o Número do Passaporte já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
+      test("/PUT - Deve retornar 400, já que o Número do Passaporte já está cadastrado e NÃO pertence ao usuário que está sendo atualizado.", function() {
 
         const user = {
           id: "507f191e810c19729de860ea",
@@ -3426,7 +3426,7 @@ describe("Suite de testes das rotas User.", function() {
   describe("DELETE", function() {
 
     describe("Testes de SUCESSO.", function() {
-      test("DELETE - Deve retornar 200, para um cliente que deleta a própria conta.", function() {
+      test("/DELETE - Deve retornar 200, para um cliente que deleta a própria conta.", function() {
 
         let login = {
           email: "josias_cruz@hotmail.com",
@@ -3461,7 +3461,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("DELETE - Deve retornar 200, para um funcionário++ que deleta a conta do cliente.", function() {
+      test("/DELETE - Deve retornar 200, para um funcionário++ que deleta a conta do cliente.", function() {
 
         let login = {
           email: "tobias@gmail.com",
@@ -3493,7 +3493,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 
     describe("Testes de FALHA.", function() {
-      test("DELETE - Deve retornar 401, já que ninguém está logado.", function() {
+      test("/DELETE - Deve retornar 401, já que ninguém está logado.", function() {
         return request.delete(`${ endpoints.toDelete }/d9d62beecdde62af82efd82c`)
           .then(function(responseDelete) {
 
@@ -3511,7 +3511,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("DELETE - Deve retornar 403, já um cliente não pode deletar a conta de outro.", function() {
+      test("/DELETE - Deve retornar 403, já um cliente não pode deletar a conta de outro.", function() {
         return request.delete(`${ endpoints.toDelete }/02n07j2d1hf5a2f26djjj92a`).set('Authorization', accounts.cliente.token)
           .then(function(responseDelete) {
 
@@ -3527,7 +3527,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("DELETE - Deve retornar 403, já um Cliente não pode deletar a conta de um Funcionário.", function() {
+      test("/DELETE - Deve retornar 403, já um Cliente não pode deletar a conta de um Funcionário.", function() {
         return request.delete(`${ endpoints.toDelete }/${ accounts.funcionario.id }`).set('Authorization', accounts.cliente.token)
           .then(function(responseDelete) {
 
@@ -3543,7 +3543,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("DELETE - Deve retornar 403, já um Cliente não pode deletar a conta de um Gerente.", function() {
+      test("/DELETE - Deve retornar 403, já um Cliente não pode deletar a conta de um Gerente.", function() {
         return request.delete(`${ endpoints.toDelete }/${ accounts.gerente.id }`).set('Authorization', accounts.cliente.token)
           .then(function(responseDelete) {
 
@@ -3559,7 +3559,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("DELETE - Deve retornar 403, já um Cliente não pode deletar a conta de um Admin.", function() {
+      test("/DELETE - Deve retornar 403, já um Cliente não pode deletar a conta de um Admin.", function() {
         return request.delete(`${ endpoints.toDelete }/${ accounts.admin.id }`).set('Authorization', accounts.cliente.token)
           .then(function(responseDelete) {
 
@@ -3575,7 +3575,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("DELETE - Deve retornar 403, já que Funcionário não pode deletar a conta de outro Funcionário.", function() {
+      test("/DELETE - Deve retornar 403, já que Funcionário não pode deletar a conta de outro Funcionário.", function() {
 
         return request.delete(`${ endpoints.toDelete }/${ accounts.funcionario2.id }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseDelete) {
@@ -3594,7 +3594,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("DELETE - Deve retornar 403, já que Funcionário não pode deletar a conta de um Gerente.", function() {
+      test("/DELETE - Deve retornar 403, já que Funcionário não pode deletar a conta de um Gerente.", function() {
 
         return request.delete(`${ endpoints.toDelete }/${ accounts.gerente.id }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseDelete) {
@@ -3613,7 +3613,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("DELETE - Deve retornar 403, já que Funcionário não pode deletar a conta de um Admin.", function() {
+      test("/DELETE - Deve retornar 403, já que Funcionário não pode deletar a conta de um Admin.", function() {
 
         return request.delete(`${ endpoints.toDelete }/${ accounts.admin.id }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseDelete) {
@@ -3632,7 +3632,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("DELETE - Deve retornar 403, já que Gerente não pode deletar a conta de outro Gerente.", function() {
+      test("/DELETE - Deve retornar 403, já que Gerente não pode deletar a conta de outro Gerente.", function() {
 
         return request.delete(`${ endpoints.toDelete }/${ accounts.gerente2.id }`).set('Authorization', accounts.gerente.token)
           .then(function(responseDelete) {
@@ -3651,7 +3651,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("DELETE - Deve retornar 403, já que Gerente não pode deletar a conta de um Admin.", function() {
+      test("/DELETE - Deve retornar 403, já que Gerente não pode deletar a conta de um Admin.", function() {
 
         return request.delete(`${ endpoints.toDelete }/${ accounts.admin.id }`).set('Authorization', accounts.gerente.token)
           .then(function(responseDelete) {
@@ -3670,7 +3670,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
+      test("/DELETE - Deve retornar 404 pelo ID não corresponder a um usuário.", function() {
 
         return request.delete(`${ endpoints.toDelete }/507f191e810c19729de86444`).set('Authorization', accounts.funcionario.token)
           .then(function(responseDelete) {
@@ -3690,7 +3690,7 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("DELETE - Deve retornar 400, uma vez que o ID tem uma estrutura inválida.", function() {
+      test("/DELETE - Deve retornar 400, uma vez que o ID tem uma estrutura inválida.", function() {
 
         return request.delete(`${ endpoints.toDelete }/91e810*c19729de8644-`).set('Authorization', accounts.funcionario.token)
           .then(function(responseDelete) {
