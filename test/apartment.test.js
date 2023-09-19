@@ -1309,28 +1309,32 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-/*
 
-      test("GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
+      test("/GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
+
         let url = endpoints.toList + '?offset=1&limit=3'
-        return request.get(url)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
-            expect(response.body.apartments.length).toEqual(2)
 
-            expect(response.body).toHaveProperty('apartments')
-            expect(response.body).toHaveProperty('hasNext')
+        return request.get(url).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
 
-            for (let user of response.body.apartments) {
+            expect(responseList.statusCode).toEqual(200)
+            expect(responseList.body.apartments.length).toEqual(2)
+
+            expect(responseList.body).toHaveProperty('apartments')
+            expect(responseList.body).toHaveProperty('hasNext')
+
+            for (let user of responseList.body.apartments) {
               expect(user._links).toBeDefined()
               expect(user._links).toHaveLength(3)
             }
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorList) {
+            fail(errorList)
           })
+
       })
-*/
+
     })
 
     describe("Testes de FALHA.", function() {
