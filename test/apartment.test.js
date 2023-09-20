@@ -2155,21 +2155,25 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
       test("/DELETE - Deve retornar 400, já que o ID possui caracteres inválidos.", function() {
-        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3e*5`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3e*5`).set('Authorization', accounts.admin.token)
+          .then(function(responseDelete) {
 
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseDelete.statusCode).toEqual(400)
+
+            expect(responseDelete.body.RestException.Code).toBe("2")
+            expect(responseDelete.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(responseDelete.body.RestException.Status).toBe("400")
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorDelete) {
+            fail(errorDelete)
           })
+
       })
+
+      /*
 
       test("/DELETE - Deve retornar 404, já que o ID não pertence a um apartamento.", function() {
         return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd315`)
