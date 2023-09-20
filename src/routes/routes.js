@@ -44,10 +44,10 @@ router.get(apartmentEndpoints.toRead, authorization, authentication, ApartmentCo
 router.get(apartmentEndpoints.toList, authorization, authentication, ApartmentController.list)
 
 // Update
-router.put(apartmentEndpoints.toUpdate, authorization, authentication,ApartmentController.update)
+router.put(apartmentEndpoints.toUpdate, authorization, authentication, ApartmentController.update)
 
 // Delete
-router.delete(apartmentEndpoints.toDelete, authorization, ApartmentController.remove)
+router.delete(apartmentEndpoints.toDelete, authorization, authentication, ApartmentController.remove)
 
 /* ########### RESERVE ########### */
 
