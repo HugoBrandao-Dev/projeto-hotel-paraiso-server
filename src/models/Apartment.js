@@ -66,11 +66,11 @@ class Apartment {
     }
   }
 
-  async edit(apartment) {
+  async edit(apartment, updatedBy) {
     try {
       apartment.updated = {
         updatedAt: date.getDateTime(),
-        updatedBy: genID()
+        updatedBy
       }
 
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(doc => doc.id == apartment.id)

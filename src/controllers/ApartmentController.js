@@ -283,7 +283,9 @@ class ApartmentController {
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
 
-      await Apartment.edit(apartment)
+      const decodedToken = getDecodedToken(req.headers['authorization'])
+
+      await Apartment.edit(apartment, decodedToken.id)
       res.status(200)
       res.json({ _links: HATEOAS })
     } catch(error) {

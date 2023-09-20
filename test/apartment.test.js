@@ -1564,7 +1564,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 expect(updated).toBeDefined()
                 expect(updated).toMatchObject({
                   updatedAt: expect.any(String),
-                  updatedBy: expect.any(String)
+                  updatedBy: accounts.admin.id
                 })
 
                 expect(_links).toBeDefined()
@@ -1655,7 +1655,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 expect(updated).toBeDefined()
                 expect(updated).toMatchObject({
                   updatedAt: expect.any(String),
-                  updatedBy: expect.any(String)
+                  updatedBy: accounts.admin.id
                 })
 
                 expect(_links).toBeDefined()
@@ -1729,15 +1729,23 @@ describe("Suite de testes das rotas de Apartment.", function() {
             return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
               .then(function(responseRead) {
 
-                expect(responseRead.body.rooms[2]).toMatchObject({
+                const { rooms, daily_price, updated } = responseRead.body
+
+                expect(rooms[2]).toMatchObject({
                   room: "banheiro",
                   quantity: "2"
                 })
-                expect(responseRead.body.rooms[3]).toMatchObject({
+                expect(rooms[3]).toMatchObject({
                   room: "quarto",
                   quantity: "3"
                 })
-                expect(responseRead.body.daily_price).toBe('1000')
+                expect(daily_price).toBe('1000')
+
+                expect(updated).toBeDefined()
+                expect(updated).toMatchObject({
+                  updatedAt: expect.any(String),
+                  updatedBy: accounts.admin.id
+                })
 
               })
               .catch(function(errorRead) {
