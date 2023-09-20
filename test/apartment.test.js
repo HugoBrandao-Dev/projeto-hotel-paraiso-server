@@ -2048,8 +2048,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
 
   })
-  /*
+
   describe("DELETE", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
       test("Deve retornar 200, na delecao de um apartamento.", function() {
         return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3ef5`)
@@ -2074,8 +2075,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
       })
     })
+    */
 
     describe("Testes de FALHA.", function() {
+
+      test("/DELETE - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3ef5`)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(401)
+
+            expect(responseDelete.body.RestException.Code).toBe('5')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseDelete.body.RestException.Status).toBe('401')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorDelete) {
+            fail(errorDelete)
+          })
+
+      })
+
+
+      /*
       test("/DELETE - Deve retornar 400, já que o ID possui caracteres inválidos.", function() {
         return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3e*5`)
           .then(function(response) {
@@ -2105,7 +2129,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
             fail(error)
           })
       })
+      */
     })
   })
-  */
+
 })
