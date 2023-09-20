@@ -20,17 +20,21 @@ const roles = {
 }
 
 function getDecodedToken(bearerToken) {
+
   let token = bearerToken.split(' ')[1]
   let decodedToken = null
   jwt.verify(token, secret, function(error, decoded) {
+
     if (error) {
       console.log(error)
       return ''
     } else {
       decodedToken = decoded
     }
+
   })
   return decodedToken
+
 }
 
 class UserController {

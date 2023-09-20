@@ -1,10 +1,30 @@
 const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
-const uuid = require('uuid')
+const jwt = require('jsonwebtoken')
 
 let baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
+}
+
+function getDecodedToken(bearerToken) {
+
+  const secret = 'k372gkhcfmhg6l9nj19i51ng'
+  let token = bearerToken.split(' ')[1]
+  let decodedToken = null
+  jwt.verify(token, secret, function(error, decoded) {
+
+    if (error) {
+      console.log(error)
+      return ''
+    } else {
+      decodedToken = decoded
+    }
+
+  })
+
+  return decodedToken
+
 }
 
 // Models
@@ -69,37 +89,18 @@ class ApartmentController {
         return
       }
 
+      const decodedToken = getDecodedToken(req.headers['authorization'])
+
       let apartment = {}
       apartment.floor = floor
       apartment.number = number
       apartment.rooms = rooms
       apartment.daily_price = daily_price
       
-      await Apartment.save(apartment)
+      await Apartment.save(apartment, decodedToken.id)
       const savedApartment = await Apartment.findByNumber(number)
 
-      let HATEOAS = [
-        {
-          href: `${ baseURL }/users/${ savedApartment.id }`,
-          method: 'GET',
-          rel: 'self_user'
-        },
-        {
-          href: `${ baseURL }/users/${ savedApartment.id }`,
-          method: 'PUT',
-          rel: 'edit_user'
-        },
-        {
-          href: `${ baseURL }/users/${ savedApartment.id }`,
-          method: 'DELETE',
-          rel: 'delete_user'
-        },
-        {
-          href: `${ baseURL }/users`,
-          method: 'GET',
-          rel: 'user_list'
-        }
-      ]
+      let HATEOAS = Generator.genHATEOAS(savedApartment.id, 'apartments', 'apartment', true)
 
       res.status(201)
       res.json({ _links: HATEOAS })

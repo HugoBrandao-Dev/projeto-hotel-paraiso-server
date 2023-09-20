@@ -207,6 +207,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
   describe("CREATE", function() {
 
     describe("Testes de SUCESSO.", function() {
+
       test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
 
         let apartment = {
@@ -241,9 +242,26 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseCreate.body._links).toBeDefined()
             expect(responseCreate.body._links).toHaveLength(4)
 
+            const id = responseCreate.body._links[0].href.split('/').pop()
+
+            return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                const { created } = responseRead.body
+
+                expect(created).toBeDefined()
+                expect(created).toMatchObject({
+                  createdAt: expect.any(String),
+                  createdBy: accounts.admin.id
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
 
       })

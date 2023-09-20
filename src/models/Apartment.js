@@ -10,7 +10,7 @@ function genID() {
 const date = new DateFormated('mongodb')
 
 class Apartment {
-  async save(apartment) {
+  async save(apartment, createdBy) {
     try {
       apartment.id = await genID()
 
@@ -24,7 +24,7 @@ class Apartment {
 
       apartment.created = {
         createdAt: date.getDateTime(),
-        createdBy: genID()
+        createdBy
       }
       
       await ApartmentCollection.apartments.data.push(apartment)
