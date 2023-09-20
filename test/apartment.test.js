@@ -2173,23 +2173,25 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
-
       test("/DELETE - Deve retornar 404, já que o ID não pertence a um apartamento.", function() {
-        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd315`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(404)
 
-            expect(response.body.RestException.Code).toBe("3")
-            expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
-            expect(response.body.RestException.Status).toBe("404")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd315`).set('Authorization', accounts.admin.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(404)
+
+            expect(responseDelete.body.RestException.Code).toBe("3")
+            expect(responseDelete.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseDelete.body.RestException.Status).toBe("404")
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorDelete) {
+            fail(errorDelete)
           })
+
       })
-      */
+
     })
   })
 
