@@ -8,6 +8,9 @@ const endpoints = new EndPoints({ singular: 'user', plural: 'users' })
 const request = supertest(app)
 
 let baseURL = 'http://localhost:4000'
+const projectLinks = {
+  errors: 'https://projetohotelparaiso.dev/docs/erros'
+}
 
 let accounts = {
   admin: { id: '', token: '' },
@@ -19,9 +22,6 @@ let accounts = {
   cliente: { id: '', token: ''  }
 }
 
-const projectLinks = {
-  errors: 'https://projetohotelparaiso.dev/docs/erros'
-}
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
 jest.setTimeout(100000)
