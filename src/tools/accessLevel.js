@@ -47,7 +47,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
         switch (upperMethod) {
           case 'POST':
 
-            if (path != apartmentEndpoints.toCreate && !(body.role >= 0)) {
+            if (path.indexOf(apartmentEndpoints.toCreate) == -1 && !(body.role >= 0)) {
               allowed = true
             }
 
@@ -64,26 +64,29 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'DELETE':
 
-            // Analisa o ID do parâmetro.
-            let idResult = await Analyzer.analyzeID(params.id)
+            if (path.indexOf(apartmentEndpoints.toDelete) == -1) {
+              // Analisa o ID do parâmetro.
+              let idResult = await Analyzer.analyzeID(params.id)
 
-            // Verifica se o ID passado no parâmetro tem algum erro.
-            if (!idResult.hasError.value) {
+              // Verifica se o ID passado no parâmetro tem algum erro.
+              if (!idResult.hasError.value) {
 
-              // Busca pelo usuário que será deletado.
-              let userToBeDeleted = await User.findOne(params.id)
+                // Busca pelo usuário que será deletado.
+                let userToBeDeleted = await User.findOne(params.id)
 
-              // Verifica se a conta a ser deletada é do tipo Cliente (0).
-              if (userToBeDeleted) {
-                if (userToBeDeleted.role < 1) {
-                  allowed = true
+                // Verifica se a conta a ser deletada é do tipo Cliente (0).
+                if (userToBeDeleted) {
+                  if (userToBeDeleted.role < 1) {
+                    allowed = true
+                  }
                 }
-              }
 
-            // Caso seja encontrado erros no ID, deve-se ser tratado no Controller.
-            } else {
-              allowed = true
+              // Caso seja encontrado erros no ID, deve-se ser tratado no Controller.
+              } else {
+                allowed = true
+              }
             }
+
             break
         }
         break

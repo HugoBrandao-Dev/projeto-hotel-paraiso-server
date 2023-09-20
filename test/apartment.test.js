@@ -2117,6 +2117,25 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/DELETE - Deve retornar 403, o Funcionário não pode acessar essa área (não está AUTENTICADO).", function() {
+
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3ef5`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(403)
+
+            expect(responseDelete.body.RestException.Code).toBe('6')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseDelete.body.RestException.Status).toBe('403')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorDelete) {
+            fail(errorDelete)
+          })
+
+      })
+
       /*
       test("/DELETE - Deve retornar 400, já que o ID possui caracteres inválidos.", function() {
         return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3e*5`)
