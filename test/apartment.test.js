@@ -2050,32 +2050,40 @@ describe("Suite de testes das rotas de Apartment.", function() {
   })
 
   describe("DELETE", function() {
-    /*
+
     describe("Testes de SUCESSO.", function() {
+
       test("Deve retornar 200, na delecao de um apartamento.", function() {
-        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3ef5`)
-          .then(function(responseDELETE) {
-            expect(responseDELETE.statusCode).toEqual(200)
 
-            return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef5`)
-              .then(function(responseGET) {
-                expect(responseGET.statusCode).toEqual(404)
+        return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3ef5`).set('Authorization', accounts.admin.token)
+          .then(function(responseDelete) {
 
-                expect(responseGET.body.RestException.Code).toBe("3")
-                expect(responseGET.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
-                expect(responseGET.body.RestException.Status).toBe("404")
-                expect(responseGET.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(responseDelete.statusCode).toEqual(200)
+
+            return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef5`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(404)
+
+                expect(responseRead.body.RestException.Code).toBe("3")
+                expect(responseRead.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+                expect(responseRead.body.RestException.Status).toBe("404")
+                expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
               })
               .catch(function(errorGET) {
                 fail(errorGET)
               })
+
           })
-          .catch(function(errorDELETE) {
-            fail(errorDELETE)
+          .catch(function(errorDelete) {
+            fail(errorDelete)
           })
+
       })
+
     })
-    */
+
 
     describe("Testes de FALHA.", function() {
 
