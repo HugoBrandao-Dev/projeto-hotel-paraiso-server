@@ -1583,7 +1583,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-      /*
+
       test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento, onde se faz uso de seu próprio número.", function() {
 
         let apartment = {
@@ -1611,33 +1611,25 @@ describe("Suite de testes das rotas de Apartment.", function() {
           daily_price: "400",
         }
 
-        return request.put(endpoints.toUpdate).send(apartment)
-          .then(function(responsePUT) {
-            if (responsePUT.body.RestException) {
-              console.log(responsePUT.body.RestException)
+        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            if (responseUpdate.body.RestException) {
+              console.log(responseUpdate.body.RestException)
             }
 
-            expect(responsePUT.statusCode).toEqual(200)
+            expect(responseUpdate.statusCode).toEqual(200)
 
-            return request.get(`${ endpoints.toRead }/${ apartment.id }`)
+            return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
               .then(function(responseGET) {
-                const {
-                  id,
-                  floor,
-                  number,
-                  rooms,
-                  updated,
-                  _links
-                } = responseGET.body
 
-                expect(id).toBeDefined()
-                expect(id).toBe(apartment.id)
+                const { rooms, updated, _links } = responseGET.body
 
-                expect(floor).toBeDefined()
-                expect(floor).toBe("3")
-
-                expect(number).toBeDefined()
-                expect(number).toBe("11")
+                expect(responseGET.body).toMatchObject({
+                  id: apartment.id,
+                  floor: "3",
+                  number: "11",
+                })
 
                 expect(rooms).toBeDefined()
                 expect(rooms).toHaveLength(4)
@@ -1651,35 +1643,38 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 expect(_links).toBeDefined()
                 expect(_links).toHaveLength(4)
                 expect(_links[0]).toMatchObject({
-                  href: `${ baseURL }/apartments/${ id }`,
+                  href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
                   method: 'GET',
                   rel: 'self_apartment'
                 })
                 expect(_links[1]).toMatchObject({
-                  href: `${ baseURL }/apartments/${ id }`,
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
                   method: 'PUT',
                   rel: 'edit_apartment'
                 })
                 expect(_links[2]).toMatchObject({
-                  href: `${ baseURL }/apartments/${ id }`,
+                  href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
                   method: 'DELETE',
                   rel: 'delete_apartment'
                 })
                 expect(_links[3]).toMatchObject({
-                  href: `${ baseURL }/apartments`,
+                  href: `${ baseURL }${ endpoints.toList }`,
                   method: 'GET',
                   rel: 'apartment_list'
                 })
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(errorRead) {
+                fail(errorRead)
               })
+
           })
-          .catch(function(errorPUT) {
-            fail(errorPUT)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       test("/PUT - Deve retornar 200, para sucesso na atualização parcial das informações de um apartamento.", function() {
 
         let apartment = {
