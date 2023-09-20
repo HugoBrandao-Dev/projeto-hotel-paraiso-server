@@ -1674,7 +1674,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /*
       test("/PUT - Deve retornar 200, para sucesso na atualização parcial das informações de um apartamento.", function() {
 
         let apartment = {
@@ -1700,34 +1699,40 @@ describe("Suite de testes das rotas de Apartment.", function() {
           daily_price: "1000",
         }
 
-        return request.put(endpoints.toUpdate).send(apartment)
-          .then(function(responsePUT) {
-            if (responsePUT.body.RestException) {
-              console.log(responsePUT.body.RestException)
-            }
-            expect(responsePUT.statusCode).toEqual(200)
+        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
 
-            return request.get(`${ endpoints.toRead }/${ apartment.id }`)
-              .then(function(responseGET) {
-                expect(responseGET.body.rooms[2]).toMatchObject({
+            if (responseUpdate.body.RestException) {
+              console.log(responseUpdate.body.RestException)
+            }
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.body.rooms[2]).toMatchObject({
                   room: "banheiro",
                   quantity: "2"
                 })
-                expect(responseGET.body.rooms[3]).toMatchObject({
+                expect(responseRead.body.rooms[3]).toMatchObject({
                   room: "quarto",
                   quantity: "3"
                 })
-                expect(responseGET.body.daily_price).toBe('1000')
+                expect(responseRead.body.daily_price).toBe('1000')
+
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(errorRead) {
+                fail(errorRead)
               })
+
           })
-          .catch(function(errorPUT) {
-            fail(errorPUT)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
-      */
+
     })
 
     describe("Testes de FALHA.", function() {
