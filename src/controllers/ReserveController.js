@@ -12,11 +12,11 @@ class ReserveController {
   async create(req, res, next) {
     try {
 
-      const { id } = req.body
+      const { apartment_id } = req.body
 
       let errorFields = []
 
-      const idResult = await Analyzer.analyzeID(id, 'apartment')
+      const idResult = await Analyzer.analyzeID(apartment_id, 'apartment')
       if (idResult.hasError.value) {
         errorFields.push(idResult)
       }
