@@ -1,5 +1,9 @@
 const app = require('../src/app')
 const supertest = require('supertest')
+const Generator = require('../src/tools/Generator')
+
+const EndPoints = require('../src/routes/endpoints')
+const endpoints = new EndPoints({ singular: 'reserve', plural: 'reserves' })
 
 let request = supertest(app)
 
@@ -7,13 +11,196 @@ let baseURL = 'http://localhost:4000'
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
-const endpoints = {
-  toCreate: '/reserve',
-  toRead: '/reserve',
-  toUpdate: '/reserve',
-  toDelete: '/reserve',
-  toList: '/reserves'
+
+let accounts = {
+  admin: { id: '', token: '' },
+  gerente: { id: '', token: '' },
+  funcionario: { id: '', token: '' },
+  cliente: { id: '', token: ''  }
 }
+
+// Aumenta o tempo máximo para resposta - o padrão é 5000ms.
+jest.setTimeout(20000)
+
+function register(user) {
+
+  return new Promise((resolve, reject) => {
+
+    return request.post('/user').send(user)
+      .then(response => {
+
+        if (response.statusCode == 201) {
+
+          let id = response.body._links[0].href.split('/').pop()
+          let login = {
+            email: user.email,
+            password: user.password
+          }
+          resolve({ id, login })
+
+        } else {
+          reject(response.body.RestException.Message)
+        }
+
+      })
+      .catch(error => {
+        reject(error)
+      })
+
+  })
+
+}
+
+function login(login) {
+
+  return new Promise((resolve, reject) => {
+
+    return request.post('/login').send(login)
+      .then(response => {
+
+        if (response.statusCode == 200) {
+          resolve({ token: response.body.token })
+        } else {
+          reject(response.body.RestException.Message)
+        }
+
+      })
+      .catch(error => {
+        reject(error)
+      })
+
+  })
+
+}
+
+function updateRole(userID, role) {
+
+  return new Promise((resolve, reject) => {
+
+    return request.put('/user').send({
+      id: userID,
+      role
+    }).set('Authorization', accounts.admin.token)
+      .then(function(response) {
+
+        if (response.statusCode == 200) {
+          resolve(true)
+        } else {
+          reject(response.body.RestException.Message)
+        }
+
+      })
+      .catch(function(error) {
+        reject(error)
+      })
+
+  })
+
+}
+
+beforeAll(async () => {
+
+  try {
+
+    try {
+      const userAdmin = {
+        name: "Tobias de Oliveira",
+        email: "tobias@gmail.com",
+        password: "@TobiaS&591022@",
+        phoneCode: "55",
+        phoneNumber: "11984752352",
+        birthDate: "1985-06-09",
+        country: "BR",
+        state: "SP",
+        city: "São Paulo",
+        cpf: `${ Generator.genCPF() }`
+      }
+      let registredAdmin = await register(userAdmin)
+      let adminLogin = registredAdmin.login
+      let tokenAdmin = await login(adminLogin)
+      accounts.admin.id = registredAdmin.id
+      accounts.admin.token = `Bearer ${ tokenAdmin.token }`
+    } catch (errorAdmin) {
+      console.log(errorAdmin)
+    }
+
+    try {
+      const userGerente = {
+        name: "Ana de Oliveira",
+        email: "ana_oli@outlook.com",
+        password: "&QoiWeroW$92381749&",
+        phoneCode: "1",
+        phoneNumber: "2129980000",
+        birthDate: "2000-01-02",
+        country: "BR",
+        state: "CE",
+        city: "Fortaleza",
+        cpf: Generator.genCPF()
+      }
+      let registredGerente = await register(userGerente)
+      let gerenteLogin = registredGerente.login
+      accounts.gerente.id = registredGerente.id
+      await updateRole(accounts.gerente.id, '2')
+      let tokenGerente = await login(gerenteLogin)
+      accounts.gerente.token = `Bearer ${ tokenGerente.token }`
+    } catch (errorGerente) {
+      console.log(errorGerente)
+    }
+
+    try {
+      const userFuncionario = {
+        name: "Alan de Jesus",
+        email: "alan_jesus@hotmail.com",
+        password: "ksDOiu239847#@$qwER",
+        phoneCode: "1",
+        phoneNumber: "2129980000",
+        birthDate: "1985-10-29",
+        country: "BR",
+        state: "CE",
+        city: "Fortaleza",
+        cpf: Generator.genCPF()
+      }
+      let registredFuncionario = await register(userFuncionario)
+      let funcionarioLogin = registredFuncionario.login
+      accounts.funcionario.id = registredFuncionario.id
+      await updateRole(accounts.funcionario.id, '1')
+      let tokenFuncionario = await login(funcionarioLogin)
+      accounts.funcionario.token = `Bearer ${ tokenFuncionario.token }`
+    } catch (errorFuncionario) {
+      console.log(errorFuncionario)
+    }
+    
+    try {
+      const userCliente = {
+        name: "Doralice Cruz",
+        email: "doralice@yahoo.com",
+        password: "oiqwuerowq#&134890OIU@",
+        phoneCode: "1",
+        phoneNumber: "2129981212",
+        birthDate: "1998-04-09",
+        country: "US",
+        state: "NY",
+        city: "New York City",
+        passportNumber: "100003105",
+        neighborhood: "Jardim Nova São Paulo",
+        road: "Rua Nina Simone",
+        house_number: "2000",
+        information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+      }
+      let registredCliente = await register(userCliente)
+      let clienteLogin = registredCliente.login
+      let tokenCliente = await login(clienteLogin)
+      accounts.cliente.id = registredCliente.id
+      accounts.cliente.token = `Bearer ${ tokenCliente.token }`
+    } catch (errorCliente) {
+      console.log(errorCliente)
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
+
+})
 
 describe("Suite de teste para as Reservas.", function() {
   describe("READ", function() {
@@ -177,6 +364,29 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseRead.body.RestException.Message).toBe('O usuário não está autorizado')
             expect(responseRead.body.RestException.Status).toBe('401')
             expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 403, o Cliente não pode acessar essa área (não está AUTENTICADO).", function() {
+
+        const apartment = {
+          id: '856377c88f8fd9fc65fd3ef5'
+        }
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(403)
+
+            expect(responseRead.body.RestException.Code).toBe('6')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseRead.body.RestException.Status).toBe('403')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
 
           })
           .catch(function(errorRead) {
