@@ -21,7 +21,7 @@ class ReserveController {
         errorFields.push(idResult)
       }
 
-      const statusResult = await Analyzer.analyzeApartmentStatus(status)
+      const statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
       if (statusResult.hasError.value) {
         errorFields.push(statusResult)
       }
