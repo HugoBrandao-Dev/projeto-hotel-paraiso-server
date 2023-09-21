@@ -247,12 +247,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
             return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', accounts.admin.token)
               .then(function(responseRead) {
 
-                const { created } = responseRead.body
+                const { reserve, created } = responseRead.body
 
                 expect(created).toBeDefined()
                 expect(created).toMatchObject({
                   createdAt: expect.any(String),
                   createdBy: accounts.admin.id
+                })
+
+                expect(reserve).toBeDefined()
+                expect(reserve).toMatchObject({
+                  status: "livre",
+                  user_id: "",
+                  date: "",
+                  start: "",
+                  end: "",
+                })
+
+                expect(reserve.created).toMatchObject({
+                    createdAt: '',
+                    createdBy: ''
+                })
+
+                expect(reserve.updated).toMatchObject({
+                    updatedAt: '',
+                    updatedBy: ''
                 })
 
               })

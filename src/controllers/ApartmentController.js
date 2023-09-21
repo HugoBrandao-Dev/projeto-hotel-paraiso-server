@@ -96,6 +96,21 @@ class ApartmentController {
       apartment.number = number
       apartment.rooms = rooms
       apartment.daily_price = daily_price
+      apartment.reserve = {
+        status: "livre",
+        user_id: "",
+        date: "",
+        start: "",
+        end: "",
+        created: {
+          createdAt: '',
+          createdBy: ''
+        },
+        updated: {
+          updatedAt: '',
+          updatedBy: ''
+        }
+      }
       
       await Apartment.save(apartment, decodedToken.id)
       const savedApartment = await Apartment.findByNumber(number)
