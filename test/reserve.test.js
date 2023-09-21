@@ -292,6 +292,62 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/POST - Deve retornar 400, por conter caracteres inválidos no ID do apartamento.", function() {
+
+        let reserve = {
+          apartment_id: "sdf*q98-we7",
+          status: "livre",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento contém caracteres inválidos')
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, pelo ID do apartamento não pertencer a um apartamento.", function() {
+
+        let reserve = {
+          apartment_id: "856377c88f8fd9fc65fd6666",
+          status: "livre",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(404)
+            
+            expect(responseCreate.body.RestException.Code).toBe("3")
+            expect(responseCreate.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseCreate.body.RestException.Status).toBe("404")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
     })
 
   })
