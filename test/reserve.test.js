@@ -234,6 +234,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      // Testes no ID
       test("/POST - Deve retornar 400, por não conter o ID do apartamento a ser reservado.", function() {
 
         let reserve = {
@@ -340,6 +341,36 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseCreate.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
             expect(responseCreate.body.RestException.Status).toBe("404")
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      // Testes no Status
+      test("/POST - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {
+
+        let reserve = {
+          apartment_id: "856377c88f8fd9fc65fd3ef5",
+          status: "",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("1")
+            expect(responseCreate.body.RestException.Message).toBe("O campo de Status é obrigatório")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O campo de Status é obrigatório')
 
           })
           .catch(function(errorCreate) {
