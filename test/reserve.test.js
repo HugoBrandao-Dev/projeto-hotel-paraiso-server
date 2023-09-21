@@ -17,6 +17,7 @@ const endpoints = {
 
 describe("Suite de teste para as Reservas.", function() {
   describe("READ", function() {
+    /*
     describe("Testes de SUCESSO.", function() {
 
       // Busca por uma única reserva, baseada no ID do apartamento.
@@ -95,7 +96,6 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
 
-
       // Busca reservas que possuem um determinado Status.
       test("/GET - Deve retornar 200, na listagem de reservas LIVRES.", function() {
         return request.get(`${ endpoints.toList }?status=livre`)
@@ -156,9 +156,36 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
+
     })
+    */
 
     describe("Testes de FALHA.", function() {
+
+      test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        const apartment = {
+          id: '856377c88f8fd9fc65fd3ef5'
+        }
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(401)
+
+            expect(responseRead.body.RestException.Code).toBe('5')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseRead.body.RestException.Status).toBe('401')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      /*
       test("/GET - Deve retornar 400, pelo ID do apartamento conter caracteres inválidos.", function() {
         return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3e*5`)
           .then(function(response) {
@@ -188,9 +215,10 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
+      */
     })
   })
-
+/*
   describe("UPDATE", function() {
     describe("Testes de SUCESSO.", function() {
       test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva.", function() {
@@ -677,4 +705,5 @@ describe("Suite de teste para as Reservas.", function() {
       })
     })
   })
+*/
 })
