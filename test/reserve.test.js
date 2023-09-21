@@ -379,6 +379,35 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/POST - Deve retornar 400, já que o valor de Status é inválido.", function() {
+
+        let reserve = {
+          apartment_id: "856377c88f8fd9fc65fd3ef5",
+          status: "1",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("O valor do campo de Status é inválido")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Status é inválido')
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
     })
 
   })
