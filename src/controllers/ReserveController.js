@@ -11,6 +11,44 @@ const Reserve = require('../models/Reserve')
 class ReserveController {
   async create(req, res, next) {
     try {
+
+      const { id } = req.body
+
+      let errorFields = []
+
+      const idResult = await Analyzer.analyzeID(id, 'apartment')
+      if (idResult.hasError.value) {
+        errorFields.push(idResult)
+      }
+
+      if (errorFields.length) {
+        let codes = errorFields.map(item => item.hasError.type)
+
+        // Cria um array contendo os Status codes dos erros encontrados.
+        let status = codes.map(code => {
+          switch(code) {
+            case 3:
+              return '404'
+              break
+            default:
+              return '400'
+          }
+        })
+        let messages = errorFields.map(item => item.hasError.error)
+        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
+        res.status(parseInt(status))
+        res.json({ 
+          RestException: {
+            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
+            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
+            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
+            "ErrorFields": errorFields
+          }
+        })
+        return
+      }
+
       res.sendStatus(201)
     } catch (error) {
       next(error)
