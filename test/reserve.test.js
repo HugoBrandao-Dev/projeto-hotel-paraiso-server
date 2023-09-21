@@ -203,10 +203,45 @@ beforeAll(async () => {
 })
 
 describe("Suite de teste para as Reservas.", function() {
-  describe("READ", function() {
-    /*
-    describe("Testes de SUCESSO.", function() {
 
+  describe("CREATE", function() {
+
+    describe("Testes de FALHA.", function() {
+
+      test("/POST - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        let reserve = {
+          status: "reservado",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-12-01",
+          end: "2024-01-30"
+        }
+
+        return request.post(endpoints.toCreate).set(reserve)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(401)
+
+            expect(responseCreate.body.RestException.Code).toBe('5')
+            expect(responseCreate.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseCreate.body.RestException.Status).toBe('401')
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+    })
+
+  })
+
+  describe("READ", function() {
+
+    describe("Testes de SUCESSO.", function() {
+      /*
       // Busca por uma única reserva, baseada no ID do apartamento.
       test("/GET - Faz a busca de uma reserva, baseada no ID do apartamento.", function() {
         const apartment = { id: '856377c88f8fd9fc65fd3ef5' }
@@ -343,9 +378,8 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
-
+      */
     })
-    */
 
     describe("Testes de FALHA.", function() {
 

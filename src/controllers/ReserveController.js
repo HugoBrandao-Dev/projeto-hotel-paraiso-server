@@ -9,6 +9,14 @@ const projectLinks = {
 const Reserve = require('../models/Reserve')
 
 class ReserveController {
+  async create(req, res, next) {
+    try {
+      res.sendStatus(201)
+    } catch (error) {
+      next(error)
+    }
+  }
+
   async read(req, res, next) {
     try {
       const { id } = req.params

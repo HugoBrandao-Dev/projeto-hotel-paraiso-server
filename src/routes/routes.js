@@ -53,6 +53,9 @@ router.delete(apartmentEndpoints.toDelete, authorization, authentication, Apartm
 
 const reserveEndpoints = new EndPoints({ singular: 'reserve', plural: 'reserves' }, true)
 
+// Create
+router.post(reserveEndpoints.toCreate, authorization, ReserveController.create)
+
 // Read
 router.get(reserveEndpoints.toRead, authorization, authentication, ReserveController.read)
 router.get(reserveEndpoints.toList, ReserveController.list)
