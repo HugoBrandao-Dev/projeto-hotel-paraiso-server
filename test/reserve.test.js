@@ -437,7 +437,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      // Falhas no ID do cliente.
+      // Testes no ID do cliente.
       test("/POST - Deve retornar 400, já que não foi informado o cliente que ocupará o apartamento.", function() {
 
         let reserve = {
@@ -459,6 +459,35 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
             expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptClient')
             expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O ID do cliente/usuário é obrigatório")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, já que ID do cliente contém caractere inválido.", function() {
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "reservado",
+          user_id: "507f1f77bcf86cd79943901*",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("O ID do cliente/usuário contém caracteres inválidos")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptClient')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O ID do cliente/usuário contém caracteres inválidos")
 
           })
           .catch(function(errorCreate) {
