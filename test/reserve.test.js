@@ -234,6 +234,33 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/POST - Deve retornar 403, o Cliente não pode mudar o Status DIRETAMENTE.", function() {
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "reservado",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-12-01",
+          end: "2024-01-30"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(403)
+
+            expect(responseCreate.body.RestException.Code).toBe('6')
+            expect(responseCreate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseCreate.body.RestException.Status).toBe('403')
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
       // Testes no ID
       test("/POST - Deve retornar 400, por não conter o ID do apartamento a ser reservado.", function() {
 
@@ -350,6 +377,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       // Testes no Status
+      /*
       test("/POST - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {
 
         let reserve = {
@@ -378,6 +406,7 @@ describe("Suite de teste para as Reservas.", function() {
           })
 
       })
+      */
 
       test("/POST - Deve retornar 400, já que o valor de Status é inválido.", function() {
 

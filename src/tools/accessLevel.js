@@ -4,6 +4,7 @@ const EndPoints = require('../routes/endpoints')
 
 const userEndpoints = new EndPoints({ singular: 'user', plural: 'users' })
 const apartmentEndpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
+const reserveEndpoints = new EndPoints({ singular: 'reserve', plural: 'reserves' })
 
 // Verifica se a conta tem permissão de realizar uma determinada ação.
 async function isActionAllowed(decodedToken, path, method, params, body) {
@@ -15,6 +16,13 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
       case '0':
         switch (upperMethod) {
           case 'POST':
+            console.log(path, reserveEndpoints.toCreate)
+            if (path == reserveEndpoints.toCreate) {
+              if (!body.status) {
+                allowed = true
+              }
+            }
+
             break
           case 'GET':
 
