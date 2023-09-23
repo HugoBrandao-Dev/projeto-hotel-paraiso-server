@@ -18,7 +18,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
           case 'POST':
 
             if (path == reserveEndpoints.toCreate) {
-              if (!body.status) {
+              if (!body.status && !body.user_id) {
                 allowed = true
               }
             }
