@@ -395,37 +395,6 @@ describe("Suite de teste para as Reservas.", function() {
           })
 
       })
-/*
-      
-
-      test("/POST - Deve retornar 404, já que ID do cliente não foi encontrado.", function() {
-
-        let reserve = {
-          apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          user_id: "6kde3ibi8a1d4187c1ji73bj",
-          start: "2023-11-12",
-          end: "2024-01-12"
-        }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(404)
-
-            expect(responseCreate.body.RestException.Code).toBe("3")
-            expect(responseCreate.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
-            expect(responseCreate.body.RestException.Status).toBe("404")
-            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
-            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptClient')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("Nenhum usuário com o ID informado está cadastrado")
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
-
-      })
-      */
 
       /* ############ FUNCINÁRIO ############ */
 
@@ -569,6 +538,35 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
             expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptClient')
             expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O ID do cliente/usuário contém caracteres inválidos")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 404, já que ID do cliente não foi encontrado.", function() {
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          user_id: "6kde3ibi8a1d4187c1ji73bj",
+          status: "reservado",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(404)
+
+            expect(responseCreate.body.RestException.Code).toBe("3")
+            expect(responseCreate.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(responseCreate.body.RestException.Status).toBe("404")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptClient')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("Nenhum usuário com o ID informado está cadastrado")
 
           })
           .catch(function(errorCreate) {
