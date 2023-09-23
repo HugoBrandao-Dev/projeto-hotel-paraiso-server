@@ -35,8 +35,8 @@ class ReserveController {
     try {
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
-      const { apartment_id, user_id } = req.body
-      let status = req.body.status
+      const { apartment_id } = req.body
+      let { status, user_id } = req.body
 
       let errorFields = []
 
@@ -47,6 +47,7 @@ class ReserveController {
 
       if (decodedToken.role == 0) {
         status = 'reservado'
+        user_id = decodedToken.id
       }
 
       const statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
