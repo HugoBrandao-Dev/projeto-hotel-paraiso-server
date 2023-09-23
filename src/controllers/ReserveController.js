@@ -42,7 +42,9 @@ class ReserveController {
 
       const idResult = await Analyzer.analyzeID(apartment_id, 'apartment')
       if (idResult.hasError.value) {
-        errorFields.push(idResult)
+        if (idResult.hasError.type != 4) {
+          errorFields.push(idResult)
+        }
       }
 
       if (decodedToken.role == 0) {
@@ -57,7 +59,10 @@ class ReserveController {
 
       const clientResult = await Analyzer.analyzeID(user_id)
       if (clientResult.hasError.value) {
-        errorFields.push(clientResult)
+        if (clientResult.hasError.type != 4) {
+          errorFields.push(clientResult)
+        }
+        
       }
 
       if (errorFields.length) {
