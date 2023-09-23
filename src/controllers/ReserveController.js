@@ -35,7 +35,7 @@ class ReserveController {
     try {
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
-      const { apartment_id } = req.body
+      const { apartment_id, start } = req.body
       let { status, user_id } = req.body
 
       let errorFields = []
@@ -62,7 +62,11 @@ class ReserveController {
         if (clientResult.hasError.type != 4) {
           errorFields.push(clientResult)
         }
-        
+      }
+
+      let startDateResult = Analyzer.analyzeReserveStartDate(start)
+      if (startDateResult.hasError.value) {
+        errorFields.push(startDateResult)
       }
 
       if (errorFields.length) {

@@ -371,7 +371,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      test("/POST - Deve retornar 400, pelo ID do apartamento não pertencer a um apartamento.", function() {
+      test("/POST - Deve retornar 404, pelo ID do apartamento não pertencer a um apartamento.", function() {
 
         let reserve = {
           apartment_id: "856377c88f8fd9fc65fd6666",
@@ -388,6 +388,32 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseCreate.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
             expect(responseCreate.body.RestException.Status).toBe("404")
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, a data de início da reserva não foi informada.", function() {
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("1")
+            expect(responseCreate.body.RestException.Message).toBe("O campo de Data de Início da reserva é obrigatório")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Início da reserva é obrigatório")
 
           })
           .catch(function(errorCreate) {
