@@ -234,6 +234,8 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      /* ############ CLIENTE ############ */
+
       test("/POST - Deve retornar 403, o Cliente não pode mudar o Status DIRETAMENTE.", function() {
 
         let reserve = {
@@ -266,7 +268,6 @@ describe("Suite de teste para as Reservas.", function() {
 
         let reserve = {
           apartment_id: "",
-          status: "livre",
           user_id: "507f1f77bcf86cd799439011",
           start: "2023-11-12",
           end: "2024-01-12"
@@ -295,7 +296,6 @@ describe("Suite de teste para as Reservas.", function() {
 
         let reserve = {
           apartment_id: "sdf*q98-we7",
-          status: "livre",
           user_id: "507f1f77bcf86cd799439011",
           start: "2023-11-12",
           end: "2024-01-12"
@@ -324,7 +324,6 @@ describe("Suite de teste para as Reservas.", function() {
 
         let reserve = {
           apartment_id: "sdf*q98-we7",
-          status: "livre",
           user_id: "507f1f77bcf86cd799439011",
           start: "2023-11-12",
           end: "2024-01-12"
@@ -353,7 +352,6 @@ describe("Suite de teste para as Reservas.", function() {
 
         let reserve = {
           apartment_id: "856377c88f8fd9fc65fd6666",
-          status: "livre",
           user_id: "507f1f77bcf86cd799439011",
           start: "2023-11-12",
           end: "2024-01-12"
@@ -376,102 +374,11 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      // Testes no Status
-      /*
-      test("/POST - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {
-
-        let reserve = {
-          apartment_id: "856377c88f8fd9fc65fd3ef5",
-          status: "",
-          user_id: "507f1f77bcf86cd799439011",
-          start: "2023-11-12",
-          end: "2024-01-12"
-        }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(400)
-
-            expect(responseCreate.body.RestException.Code).toBe("1")
-            expect(responseCreate.body.RestException.Message).toBe("O campo de Status é obrigatório")
-            expect(responseCreate.body.RestException.Status).toBe("400")
-            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O campo de Status é obrigatório')
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
-
-      })
-      */
-
-      test("/POST - Deve retornar 400, já que o valor de Status é inválido.", function() {
-
-        let reserve = {
-          apartment_id: "856377c88f8fd9fc65fd3ef5",
-          status: "1",
-          user_id: "507f1f77bcf86cd799439011",
-          start: "2023-11-12",
-          end: "2024-01-12"
-        }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(400)
-
-            expect(responseCreate.body.RestException.Code).toBe("2")
-            expect(responseCreate.body.RestException.Message).toBe("O valor do campo de Status é inválido")
-            expect(responseCreate.body.RestException.Status).toBe("400")
-            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Status é inválido')
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
-
-      })
-
-      test("/POST - Deve retornar 400, já que o apartamento já está reservado, ocupado ou indisponível.", function() {
-
-        let reserve = {
-          apartment_id: "856377c88f8fd9fc65fd3ef5",
-          status: "reservado",
-          user_id: "507f1f77bcf86cd799439011",
-          start: "2023-11-12",
-          end: "2024-01-12"
-        }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(400)
-
-            expect(responseCreate.body.RestException.Code).toBe("4")
-            expect(responseCreate.body.RestException.Message).toBe("O apartamento escolhido já está Reservado, Ocupado ou Indisponível")
-            expect(responseCreate.body.RestException.Status).toBe("400")
-            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
-            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O apartamento escolhido já está Reservado, Ocupado ou Indisponível")
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
-
-      })
-
       // Testes no ID do cliente.
       test("/POST - Deve retornar 400, já que não foi informado o cliente que ocupará o apartamento.", function() {
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          status: "reservado",
           user_id: "",
           start: "2023-11-12",
           end: "2024-01-12"
@@ -500,7 +407,6 @@ describe("Suite de teste para as Reservas.", function() {
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          status: "reservado",
           user_id: "507f1f77bcf86cd79943901*",
           start: "2023-11-12",
           end: "2024-01-12"
@@ -529,7 +435,6 @@ describe("Suite de teste para as Reservas.", function() {
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          status: "reservado",
           user_id: "6kde3ibi8a1d4187c1ji73bj",
           start: "2023-11-12",
           end: "2024-01-12"
@@ -546,6 +451,97 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
             expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptClient')
             expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("Nenhum usuário com o ID informado está cadastrado")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      /* ############ FUNCINÁRIO ############ */
+
+      // Testes no Status
+      test("/POST - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {
+
+        let reserve = {
+          apartment_id: "856377c88f8fd9fc65fd3ef5",
+          status: "",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("1")
+            expect(responseCreate.body.RestException.Message).toBe("O campo de Status é obrigatório")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O campo de Status é obrigatório')
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+
+      test("/POST - Deve retornar 400, já que o valor de Status é inválido.", function() {
+
+        let reserve = {
+          apartment_id: "856377c88f8fd9fc65fd3ef5",
+          status: "1",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("O valor do campo de Status é inválido")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Status é inválido')
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, já que o apartamento já está reservado, ocupado ou indisponível.", function() {
+
+        let reserve = {
+          apartment_id: "856377c88f8fd9fc65fd3ef5",
+          status: "reservado",
+          user_id: "507f1f77bcf86cd799439011",
+          start: "2023-11-12",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("4")
+            expect(responseCreate.body.RestException.Message).toBe("O apartamento escolhido já está Reservado, Ocupado ou Indisponível")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/4`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O apartamento escolhido já está Reservado, Ocupado ou Indisponível")
 
           })
           .catch(function(errorCreate) {

@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 const Analyzer = require('../tools/Analyzer')
 
 let baseURL = 'http://localhost:4000'
@@ -8,17 +10,43 @@ const projectLinks = {
 // Models
 const Reserve = require('../models/Reserve')
 
+function getDecodedToken(bearerToken) {
+
+  const secret = 'k372gkhcfmhg6l9nj19i51ng'
+  let token = bearerToken.split(' ')[1]
+  let decodedToken = null
+  jwt.verify(token, secret, function(error, decoded) {
+
+    if (error) {
+      console.log(error)
+      return ''
+    } else {
+      decodedToken = decoded
+    }
+
+  })
+
+  return decodedToken
+
+}
+
 class ReserveController {
   async create(req, res, next) {
     try {
+      const decodedToken = getDecodedToken(req.headers['authorization'])
 
-      const { apartment_id, status, user_id } = req.body
+      const { apartment_id, user_id } = req.body
+      let status = req.body.status
 
       let errorFields = []
 
       const idResult = await Analyzer.analyzeID(apartment_id, 'apartment')
       if (idResult.hasError.value) {
         errorFields.push(idResult)
+      }
+
+      if (decodedToken.role == 0) {
+        status = 'reservado'
       }
 
       const statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
@@ -35,7 +63,7 @@ class ReserveController {
         let codes = errorFields.map(item => item.hasError.type)
 
         // Cria um array contendo os Status codes dos erros encontrados.
-        let status = codes.map(code => {
+        let statusCode = codes.map(code => {
           switch(code) {
             case 3:
               return '404'
@@ -46,12 +74,12 @@ class ReserveController {
         })
         let messages = errorFields.map(item => item.hasError.error)
         let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(parseInt(status))
+        res.status(parseInt(statusCode))
         res.json({ 
           RestException: {
             "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
             "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "Status": statusCode.length > 1 ? statusCode.join(';') : statusCode.toString(),
             "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
             "ErrorFields": errorFields
           }

@@ -16,7 +16,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
       case '0':
         switch (upperMethod) {
           case 'POST':
-            console.log(path, reserveEndpoints.toCreate)
+
             if (path == reserveEndpoints.toCreate) {
               if (!body.status) {
                 allowed = true
