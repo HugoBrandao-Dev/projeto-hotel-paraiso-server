@@ -550,7 +550,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       // Testes de Data de Fim da reserva.
-      test("/POST - Deve retornar 400, a Data de Início da reserva não foi informada.", function() {
+      test("/POST - Deve retornar 400, a Data de Fim da reserva não foi informada.", function() {
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
@@ -568,6 +568,44 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
             expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
             expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Fim da reserva é obrigatório")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, a Data de Fim contém caracteres inválidos.", function() {
+
+        // Coloca caracteres no dia da data.
+        let date = dateNow.getDate()
+        let dateWithChar = date.slice(0, -1) + '*'
+
+        let month = parseInt(dateNow.getDate().split('-')[1])
+
+        let nextMonth = month + 1
+        if (nextMonth < 10) {
+          nextMonth = '0' + nextMonth
+        }
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          start: dateNow.getDate(),
+          end: dateWithChar
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("A Data de Fim escolhida é inválida")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Fim escolhida é inválida")
 
           })
           .catch(function(errorCreate) {
