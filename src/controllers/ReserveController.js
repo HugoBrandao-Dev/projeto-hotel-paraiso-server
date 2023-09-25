@@ -35,7 +35,7 @@ class ReserveController {
     try {
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
-      const { apartment_id, start } = req.body
+      const { apartment_id, start, end } = req.body
       let { status, user_id } = req.body
 
       let errorFields = []
@@ -68,6 +68,11 @@ class ReserveController {
       if (startDateResult.hasError.value) {
         errorFields.push(startDateResult)
       }
+
+      let endDateResult = Analyzer.analyzeReserveEndDate(end, start)
+        if (endDateResult.hasError.value) {
+          errorFields.push(endDateResult)
+        }
 
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)
