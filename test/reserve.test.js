@@ -2,6 +2,9 @@ const app = require('../src/app')
 const supertest = require('supertest')
 const Generator = require('../src/tools/Generator')
 
+const DateFormated = require('../src/tools/DateFormated')
+const dateNow = new DateFormated('mongodb')
+
 const EndPoints = require('../src/routes/endpoints')
 const endpoints = new EndPoints({ singular: 'reserve', plural: 'reserves' })
 
@@ -423,7 +426,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      test("/POST - Deve retornar 400, a Data de Início é inválida (contém caracteres inválidos).", function() {
+      test("/POST - Deve retornar 400, a Data de Início contém caracteres inválidos.", function() {
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
@@ -434,12 +437,41 @@ describe("Suite de teste para as Reservas.", function() {
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
           .then(function(responseCreate) {
 
+            expect(responseCreate.statusCode).toEqual(400)
+
             expect(responseCreate.body.RestException.Code).toBe("2")
-            expect(responseCreate.body.RestException.Message).toBe("O campo de Data de Início da reserva possui caracteres inválidos")
+            expect(responseCreate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
             expect(responseCreate.body.RestException.Status).toBe("400")
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
             expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Início da reserva possui caracteres inválidos")
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, a Data de Início é inválida.", function() {
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          start: "2023-02-03",
+          end: "2024-01-12"
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
 
           })
           .catch(function(errorCreate) {
@@ -450,21 +482,25 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, a Data de Início é inválida (não existe 31 de fev.).", function() {
 
+        let year = parseInt(dateNow.getDate().split('-')[0])
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          start: "2023-02-31",
-          end: "2024-01-12"
+          start: `${ year }-02-31`,
+          end: `${ year }-03-31`
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
           .then(function(responseCreate) {
 
+            expect(responseCreate.statusCode).toEqual(400)
+
             expect(responseCreate.body.RestException.Code).toBe("2")
-            expect(responseCreate.body.RestException.Message).toBe("O campo de Data de Início da reserva possui caracteres inválidos")
+            expect(responseCreate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
             expect(responseCreate.body.RestException.Status).toBe("400")
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
             expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Início da reserva possui caracteres inválidos")
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
 
           })
           .catch(function(errorCreate) {

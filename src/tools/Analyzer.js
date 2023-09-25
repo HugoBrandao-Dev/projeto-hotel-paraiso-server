@@ -862,16 +862,11 @@ class Analyzer {
     }
 
     let isDate = validator.isDate(date)
-    if (!isDate) {
-      result.hasError.value = true
-      result.hasError.type = 2
-      result.hasError.error = "O campo de Data de Início da reserva possui caracteres inválidos"
-      return result
-    }
 
     let dateNow = new DateFormated()
     let isBefore = validator.isBefore(date, dateNow.getDate())
-    if (isBefore) {
+
+    if (!isDate || isBefore) {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "A Data de Início escolhida é inválida"
