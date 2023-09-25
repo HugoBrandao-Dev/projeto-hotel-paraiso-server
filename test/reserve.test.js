@@ -595,7 +595,48 @@ describe("Suite de teste para as Reservas.", function() {
           end: `${ parseInt(year) + 1 }-02-31`
         }
 
-        console.log(reserve)
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("A Data de Fim escolhida é inválida")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Fim escolhida é inválida")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, a Data de Fim é anterior a Data de Início.", function() {
+
+        let data = dateNow.getDate()
+        let year = data.split('-')[0]
+        let month = data.split('-')[1]
+        let day = data.split('-')[2]
+
+        let lastMonth = ''
+
+        if (month != 1) {
+          lastMonth = parseInt(month) - 1
+          if (lastMonth < 10) {
+            lastMonth = '0' + lastMonth
+          }
+        } else {
+          lastMonth = '12'
+        }
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          start: data,
+          end: `${ year }-${ lastMonth }-${ day }`
+        }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
           .then(function(responseCreate) {
