@@ -509,6 +509,46 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/POST - Deve retornar 400, a Data de Início é anterior a Data Atual.", function() {
+
+        let year = parseInt(dateNow.getDate().split('-')[0])
+        let month = parseInt(dateNow.getDate().split('-')[1])
+
+        let lastMonth = month - 1
+        if (lastMonth < 10) {
+          lastMonth = '0' + lastMonth
+        }
+
+        let nextMonth = month + 1
+        if (nextMonth < 10) {
+          nextMonth = '0' + nextMonth
+        }
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          start: `${ year }-${ lastMonth }-31`,
+          end: `${ year }-${ nextMonth }-31`
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
       /* ############ FUNCINÁRIO ############ */
 
       // Testes no Status
