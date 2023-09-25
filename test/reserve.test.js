@@ -453,33 +453,6 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      test("/POST - Deve retornar 400, a Data de Início é inválida.", function() {
-
-        let reserve = {
-          apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          start: "2023-02-03",
-          end: "2024-01-12"
-        }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(400)
-
-            expect(responseCreate.body.RestException.Code).toBe("2")
-            expect(responseCreate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
-            expect(responseCreate.body.RestException.Status).toBe("400")
-            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
-
-      })
-
       test("/POST - Deve retornar 400, a Data de Início é inválida (não existe 31 de fev.).", function() {
 
         let year = parseInt(dateNow.getDate().split('-')[0])
@@ -584,16 +557,45 @@ describe("Suite de teste para as Reservas.", function() {
 
         let month = parseInt(dateNow.getDate().split('-')[1])
 
-        let nextMonth = month + 1
-        if (nextMonth < 10) {
-          nextMonth = '0' + nextMonth
-        }
-
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           start: dateNow.getDate(),
           end: dateWithChar
         }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("A Data de Fim escolhida é inválida")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Fim escolhida é inválida")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 400, a Data de Fim é inválida (não existe 31 de fev.).", function() {
+
+        let date = dateNow.getDate()
+        let year = date.split('-')[0]
+        let month = date.split('-')[1]
+        let day = date.split('-')[2]
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          start: date,
+          end: `${ parseInt(year) + 1 }-02-31`
+        }
+
+        console.log(reserve)
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
           .then(function(responseCreate) {
