@@ -1005,38 +1005,29 @@ describe("Suite de teste para as Reservas.", function() {
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
-      /*
+
       // Busca por uma única reserva, baseada no ID do apartamento.
-      test("/GET - Faz a busca de uma reserva, baseada no ID do apartamento.", function() {
+      test("/GET - Deve retornar 200, na busca de uma reserva baseada no ID do apartamento.", function() {
+
         const apartment = { id: '856377c88f8fd9fc65fd3ef5' }
-        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(200)
 
             const {
-              apartment_id,
-              status,
-              user_id,
-              date,
-              start,
-              end,
               _links
-            } = response.body
+            } = responseRead.body
 
-            expect(apartment_id).toBeDefined()
-            expect(apartment_id).toBe(apartment.id)
-            
-            expect(status).toBeDefined()
-            expect(status).toBe("reservado")
-            
-            expect(user_id).toBeDefined()
-            expect(user_id).toBe("507f1f77bcf86cd799439011")
-            
-            expect(date).toBeDefined()
-            expect(date).toBe("2023-08-12T22:49:04.421Z")
-            
-            expect(start).toBeDefined()
-            expect(start).toBe("2023-11-12")
+            expect(responseRead.body).toMatchObject({
+              apartment_id: apartment.id,
+              status: "reservado",
+              user_id: "507f1f77bcf86cd799439011",
+              date: "2023-08-12T22:49:04.421Z",
+              start: "2023-11-12",
+              end: "2024-01-12"
+            })
             
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
@@ -1060,12 +1051,15 @@ describe("Suite de teste para as Reservas.", function() {
               method: 'GET',
               rel: 'reserve_list'
             })
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorRead) {
+            fail(errorRead)
           })
+
       })
 
+      /*
       // Busca várias reservas.
       test("/GET - Deve retornar 200, na listagem de reservas.", function() {
         return request.get(endpoints.toList)
