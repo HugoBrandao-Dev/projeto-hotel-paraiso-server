@@ -1099,22 +1099,26 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      /*
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS.", function() {
-        return request.get(endpoints.toList)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(200)
 
-            for (let reserve of response.body.reserves) {
+        return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            for (let reserve of responseList.body) {
               expect(reserve).toBeDefined()
               expect(reserve._links).toHaveLength(4)
             }
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorList) {
+            fail(errorList)
           })
+
       })
 
+      /*
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO.", function() {
         return request.get(`${ endpoints.toList }?status=ocupado`)
           .then(function(response) {
