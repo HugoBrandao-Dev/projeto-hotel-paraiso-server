@@ -25,6 +25,60 @@ let accounts = {
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
 jest.setTimeout(20000)
 
+function getDateWithNextMonth(_date) {
+  let date = null
+
+  let dateArray = _date.split('-')
+  let year = parseInt(dateArray[0])
+  let month = parseInt(dateArray[1])
+
+  let nextYear = null
+  let nextMonth = null
+  if (month == 12) {
+    nextMonth = '01'
+    nextYear = year + 1
+  } else {
+    nextYear = year
+    nextMonth = month + 1
+    if (nextMonth < 10) {
+      nextMonth = '0' + nextMonth
+    }
+  }
+
+  dateArray[0] = nextYear
+  dateArray[1] = nextMonth
+  date = dateArray.join('-')
+
+  return date
+}
+
+function getDateWithLastMonth(_date) {
+  let date = null
+
+  let dateArray = _date.split('-')
+  let year = parseInt(dateArray[0])
+  let month = parseInt(dateArray[1])
+
+  let lastYear = null
+  let lastMonth = null
+  if (month == 1) {
+    lastYear = year - 1
+    lastMonth = '12'
+  } else {
+    lastYear = year
+    lastMonth = month - 1
+    if (lastMonth < 10) {
+      lastMonth = '0' + lastMonth
+    }
+  }
+
+  dateArray[0] = lastYear
+  dateArray[1] = lastMonth
+  date = dateArray.join('-')
+
+  return date
+}
+
 function register(user) {
 
   return new Promise((resolve, reject) => {
@@ -213,11 +267,14 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           status: "reservado",
           user_id: "507f1f77bcf86cd799439011",
-          start: "2023-12-01",
-          end: "2024-01-30"
+          start,
+          end,
         }
 
         return request.post(endpoints.toCreate).set(reserve)
@@ -241,12 +298,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 403, o Cliente não pode mudar o Status DIRETAMENTE.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           status: "reservado",
           user_id: "507f1f77bcf86cd799439011",
-          start: "2023-12-01",
-          end: "2024-01-30"
+          start,
+          end,
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -268,11 +328,14 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 403, o Cliente não pode informar o campo de ID de outro Cliente.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           user_id: "507f1f77bcf86cd799439011",
-          start: "2023-12-01",
-          end: "2024-01-30"
+          start,
+          end,
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -295,10 +358,13 @@ describe("Suite de teste para as Reservas.", function() {
       // Testes no ID do apartamento.
       test("/POST - Deve retornar 400, por não conter o ID do apartamento a ser reservado.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end,
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -322,10 +388,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, por conter caracteres inválidos no ID do apartamento.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "sdf*q98-we7",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end,
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -349,10 +418,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, por conter caracteres inválidos no ID do apartamento.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "sdf*q98-we7",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end,
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -376,10 +448,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 404, pelo ID do apartamento não pertencer a um apartamento.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "856377c88f8fd9fc65fd6666",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -402,9 +477,12 @@ describe("Suite de teste para as Reservas.", function() {
       // Testes de Data de Início da reserva.
       test("/POST - Deve retornar 400, a Data de Início da reserva não foi informada.", function() {
 
+        let date = dateNow.getDate()
+        let end = getDateWithNextMonth(date)
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          end: "2024-01-12"
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -428,10 +506,16 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, a Data de Início contém caracteres inválidos.", function() {
 
+        // Coloca caractere * no dia da data.
+        let date = dateNow.getDate()
+
+        let dateWithChar = date.slice(0, -1) + '*'
+        let end = getDateWithNextMonth(date)
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          start: "2023-11-0*",
-          end: "2024-01-12"
+          start: dateWithChar,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -455,12 +539,14 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, a Data de Início é inválida (não existe 31 de fev.).", function() {
 
-        let year = parseInt(dateNow.getDate().split('-')[0])
+        let date = dateNow.getDate()
+        let year = parseInt(date.split('-')[0])
+        let end = getDateWithNextMonth(date)
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           start: `${ year }-02-31`,
-          end: `${ year }-03-31`
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -484,23 +570,14 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, a Data de Início é anterior a Data Atual.", function() {
 
-        let year = parseInt(dateNow.getDate().split('-')[0])
-        let month = parseInt(dateNow.getDate().split('-')[1])
-
-        let lastMonth = month - 1
-        if (lastMonth < 10) {
-          lastMonth = '0' + lastMonth
-        }
-
-        let nextMonth = month + 1
-        if (nextMonth < 10) {
-          nextMonth = '0' + nextMonth
-        }
+        let date = dateNow.getDate()
+        let start = getDateWithLastMonth(date)
+        let end = getDateWithNextMonth(date)
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          start: `${ year }-${ lastMonth }-31`,
-          end: `${ year }-${ nextMonth }-31`
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -551,11 +628,9 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, a Data de Fim contém caracteres inválidos.", function() {
 
-        // Coloca caracteres no dia da data.
+        // Coloca caractere * no dia da data.
         let date = dateNow.getDate()
         let dateWithChar = date.slice(0, -1) + '*'
-
-        let month = parseInt(dateNow.getDate().split('-')[1])
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
@@ -585,14 +660,12 @@ describe("Suite de teste para as Reservas.", function() {
       test("/POST - Deve retornar 400, a Data de Fim é inválida (não existe 31 de fev.).", function() {
 
         let date = dateNow.getDate()
-        let year = date.split('-')[0]
-        let month = date.split('-')[1]
-        let day = date.split('-')[2]
+        let year = parseInt(date.split('-')[0])
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           start: date,
-          end: `${ parseInt(year) + 1 }-02-31`
+          end: `${ year + 1 }-02-31`
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -616,26 +689,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, a Data de Fim é anterior a Data de Início.", function() {
 
-        let data = dateNow.getDate()
-        let year = data.split('-')[0]
-        let month = data.split('-')[1]
-        let day = data.split('-')[2]
-
-        let lastMonth = ''
-
-        if (month != 1) {
-          lastMonth = parseInt(month) - 1
-          if (lastMonth < 10) {
-            lastMonth = '0' + lastMonth
-          }
-        } else {
-          lastMonth = '12'
-        }
+        let date = dateNow.getDate()
+        let end = getDateWithLastMonth(date)
 
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          start: data,
-          end: `${ year }-${ lastMonth }-${ day }`
+          start: date,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
@@ -662,12 +722,15 @@ describe("Suite de teste para as Reservas.", function() {
       // Testes no Status
       test("/POST - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "856377c88f8fd9fc65fd3ef5",
           status: "",
           user_id: "507f1f77bcf86cd799439011",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
@@ -692,12 +755,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, já que o valor de Status é inválido.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "856377c88f8fd9fc65fd3ef5",
           status: "1",
           user_id: "507f1f77bcf86cd799439011",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
@@ -721,12 +787,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, já que o apartamento já está reservado, ocupado ou indisponível.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "856377c88f8fd9fc65fd3ef5",
           status: "reservado",
           user_id: "507f1f77bcf86cd799439011",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
@@ -751,12 +820,15 @@ describe("Suite de teste para as Reservas.", function() {
       // Testes no ID do cliente.
       test("/POST - Deve retornar 400, já que não foi informado o cliente que ocupará o apartamento.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           status: "reservado",
           user_id: "",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
@@ -780,12 +852,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 400, já que ID do cliente contém caractere inválido.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           user_id: "507f1f77bcf86cd79943901*",
           status: "reservado",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
@@ -809,12 +884,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/POST - Deve retornar 404, já que ID do cliente não foi encontrado.", function() {
 
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
           user_id: "6kde3ibi8a1d4187c1ji73bj",
           status: "reservado",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          start,
+          end
         }
 
         return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
