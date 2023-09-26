@@ -55,7 +55,24 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
         switch (upperMethod) {
           case 'POST':
 
-            if (path.indexOf(apartmentEndpoints.toCreate) == -1 && !(body.role >= 0)) {
+            if (path == reserveEndpoints.toCreate) {
+              if (body.user_id) {
+                let idResult = await Analyzer.analyzeID(body.user_id)
+                if (!idResult.hasError.value) {
+
+                  // Usuário para o qual será reservado o apto.
+                  let user = await User.findOne(body.user_id)
+
+                  if (user && decodedToken.role > user.role) {
+                    allowed = true
+                  }
+                } else {
+                  allowed = true
+                }
+              } else {
+                allowed = true
+              }
+            } else if (path != apartmentEndpoints.toCreate && path != apartmentEndpoints.toSearch && !(body.role >= 0)) {
               allowed = true
             }
 
