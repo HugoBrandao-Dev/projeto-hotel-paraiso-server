@@ -1,7 +1,8 @@
 const Analyzer = require('../tools/Analyzer')
 const User = require('../models/User')
-const EndPoints = require('../routes/endpoints')
+const Reserve = require('../models/Reserve')
 
+const EndPoints = require('../routes/endpoints')
 const userEndpoints = new EndPoints({ singular: 'user', plural: 'users' })
 const apartmentEndpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
 const reserveEndpoints = new EndPoints({ singular: 'reserve', plural: 'reserves' })
@@ -26,10 +27,26 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'GET':
 
+            if (path.indexOf(reserveEndpoints.toRead) != -1) {
+              if (params.id) {
+                let idResult = await Analyzer.analyzeID(params.id, 'apartment')
+
+                if (!idResult.hasError.value) {
+
+                  let reserve = await Reserve.findOne(params.id)
+
+                  if (decodedToken.id == reserve.user_id) {
+                    allowed = true
+                  }
+                }
+              }
+            }
+
             // Verifica se o ID passado no parâmetro é o mesmo do armazenado no Token.
             if (params.id && params.id === decodedToken.id) {
               allowed = true
             }
+
             break
           case 'PUT':
 
