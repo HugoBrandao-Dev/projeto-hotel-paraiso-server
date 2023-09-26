@@ -205,7 +205,7 @@ class ReserveController {
       }
 
       res.status(200)
-      res.json({ reserves })
+      res.json(reserves)
     } catch (error) {
       next(error)
     }
