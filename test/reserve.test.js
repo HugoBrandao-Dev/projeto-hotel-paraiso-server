@@ -968,6 +968,36 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/POST - Deve retornar 403, já que o Funcionário não pode fazer a reserva para um Gerente.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        const reserve = {
+          apartment_id: '02n07j2d1hf5a2f26djjj92a',
+          status: 'ocupado',
+          user_id: accounts.gerente.id,
+          start,
+          end
+        }
+
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(403)
+
+            expect(responseCreate.body.RestException.Code).toBe('6')
+            expect(responseCreate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseCreate.body.RestException.Status).toBe('403')
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
     })
 
   })
