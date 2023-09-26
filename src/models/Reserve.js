@@ -12,6 +12,8 @@ class Reserve {
         ApartmentCollection.apartments.data[apartmentIndex].reserve[info] = reserve[info]
       }
 
+      ApartmentCollection.apartments.data[apartmentIndex].reserve.reservedIn = date.getDateTime()
+
       return
     } catch (error) {
       console.log(error)

@@ -329,6 +329,7 @@ describe("Suite de teste para as Reservas.", function() {
                 expect(responseRead.statusCode).toEqual(200)
 
                 const {
+                  reservedIn,
                   _links
                 } = responseRead.body
 
@@ -339,6 +340,8 @@ describe("Suite de teste para as Reservas.", function() {
                   start: reserve.start,
                   end: reserve.end,
                 })
+
+                expect(responseRead.body.reservedIn).toBeDefined()
 
                 expect(responseRead.body._links).toBeDefined()
                 expect(responseRead.body._links).toHaveLength(3)
@@ -1102,6 +1105,7 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseRead.statusCode).toEqual(200)
 
             const {
+              reservedIn,
               _links
             } = responseRead.body
 
@@ -1109,11 +1113,11 @@ describe("Suite de teste para as Reservas.", function() {
               apartment_id: apartment.id,
               status: "reservado",
               user_id: "507f1f77bcf86cd799439011",
-              date: "2023-08-12T22:49:04.421Z",
               start: "2023-11-12",
               end: "2024-01-12"
             })
             
+            expect(reservedIn).toBeDefined()
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
             expect(_links[0]).toMatchObject({
@@ -1193,6 +1197,7 @@ describe("Suite de teste para as Reservas.", function() {
 
             for (let reserve of responseList.body) {
               expect(reserve).toBeDefined()
+              expect(reserve.reservedIn).toBeDefined()
               expect(reserve._links).toHaveLength(4)
             }
 
@@ -1212,6 +1217,7 @@ describe("Suite de teste para as Reservas.", function() {
 
             for (let reserve of responseList.body) {
               expect(reserve).toBeDefined()
+              expect(reserve.reservedIn).toBeDefined()
               expect(reserve.status).toBe('ocupado')
             }
 
