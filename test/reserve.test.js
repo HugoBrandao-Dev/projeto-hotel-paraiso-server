@@ -1724,31 +1724,40 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      /*
       test("/PUT - Deve retornar 400, por conter caracteres inválidos no ID do apartamento.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "sdf*q98-we7",
-          status: "livre",
-          user_id: "507f1f77bcf86cd799439011",
-          start: "2023-11-12",
-          end: "2024-01-12"
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
         }
-        return request.put(endpoints.toUpdate).send(reserve)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptApartment')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento contém caracteres inválidos')
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento contém caracteres inválidos')
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       // Falhas no Status da reserva.
       test("/PUT - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {
         let reserve = {
