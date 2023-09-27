@@ -79,7 +79,7 @@ class ReserveController {
         let codes = errorFields.map(item => item.hasError.type)
 
         // Cria um array contendo os Status codes dos erros encontrados.
-        let statusCode = codes.map(code => {
+        let statusCodes = codes.map(code => {
           switch(code) {
             case 3:
               return '404'
@@ -90,12 +90,12 @@ class ReserveController {
         })
         let messages = errorFields.map(item => item.hasError.error)
         let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(parseInt(statusCode))
+        res.status(parseInt(statusCodes))
         res.json({ 
           RestException: {
             "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
             "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": statusCode.length > 1 ? statusCode.join(';') : statusCode.toString(),
+            "Status": statusCodes.length > 1 ? statusCodes.join(';') : statusCodes.toString(),
             "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
             "ErrorFields": errorFields
           }
@@ -249,7 +249,7 @@ class ReserveController {
         let codes = errorFields.map(item => item.hasError.type)
 
         // Cria um array contendo os Status codes dos erros encontrados.
-        let status = codes.map(code => {
+        let statusCodes = codes.map(code => {
           switch(code) {
             case 3:
               return '404'
@@ -260,12 +260,12 @@ class ReserveController {
         })
         let messages = errorFields.map(item => item.hasError.error)
         let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(parseInt(status))
+        res.status(parseInt(statusCodes))
         res.json({ 
           RestException: {
             "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
             "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "Status": statusCodes.length > 1 ? statusCodes.join(';') : statusCodes.toString(),
             "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
             "ErrorFields": errorFields
           }
