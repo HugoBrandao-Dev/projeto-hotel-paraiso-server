@@ -1915,30 +1915,29 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      test("/PUT - Deve retornar 400, já que o valor de Status é inválido.", function() {
+      test("/PUT - Deve retornar 403, já que o Cliente não pode alterar o Status.", function() {
 
         let start = dateNow.getDate()
         let end = getDateWithNextMonth(start)
 
+        // Esse apartamento foi cadastrado para o cliente, na Suite de CREATE.
         let reserve = {
-          apartment_id: "856377c88f8fd9fc65fd3ef5",
-          status: "1",
+          apartment_id: "48421917gjm6g8dhjj52lb7j",
+          status: "ocupado",
           user_id: accounts.cliente.id,
           start,
           end,
         }
 
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente.token)
           .then(function(responseUpdate) {
 
-            expect(responseUpdate.statusCode).toEqual(400)
+            expect(responseUpdate.statusCode).toEqual(403)
 
-            expect(responseUpdate.body.RestException.Code).toBe("2")
-            expect(responseUpdate.body.RestException.Message).toBe("O valor do campo de Status é inválido")
-            expect(responseUpdate.body.RestException.Status).toBe("400")
-            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
-            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Status é inválido')
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
 
           })
           .catch(function(errorUpdate) {
