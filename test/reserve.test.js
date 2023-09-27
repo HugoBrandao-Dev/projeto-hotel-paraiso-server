@@ -1757,6 +1757,39 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/PUT - Deve retornar 404, o ID informado não pertence a um apartamento.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "4d4i4kgh2ijg22led9g57nhl",
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(404)
+
+            expect(responseUpdate.body.RestException.Code).toBe("3")
+            expect(responseUpdate.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseUpdate.body.RestException.Status).toBe("404")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe('Nenhum apartamento com o ID informado está cadastrado')
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
       /*
       // Falhas no Status da reserva.
       test("/PUT - Deve retornar 400, uma vez que NÃO foi informado o Status.", function() {

@@ -29,8 +29,12 @@ campos de formulários de cadastro e atualização de usuário, reservar, etc.
 ## Possíveis melhorias futuras
 
 ## Bug(s)
-* Validação do Email: No método de validação de email, implementar o teste e o codigo para verificar se o email informado pelo usuário já foi cadastrado.
+* Validação do Email: No método de validação de email, implementar o teste e o codigo para verificar 
+se o email informado pelo usuário já foi cadastrado.
+* Quando o valor de um parâmetro informado não pertence a um dado do documento que se quer obter, o 
+valor do Status Code retornado é 404.
 
 ## Informações adicionais
 ### Jest e o this dos métodos de uma rota
-* Métodos, que são usados para atender uma rota, como é o caso do create do UserController, não conseguem reconhecer o this de sua classe, sendo impossível chamar outros métodos da mesma.
+* Métodos, que são usados para atender uma rota, como é o caso do create do UserController, não 
+conseguem reconhecer o this de sua classe, sendo impossível chamar outros métodos da mesma.
