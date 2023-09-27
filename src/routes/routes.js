@@ -61,7 +61,7 @@ router.get(reserveEndpoints.toRead, authorization, authentication, ReserveContro
 router.get(reserveEndpoints.toList, ReserveController.list)
 
 // Update
-router.put(reserveEndpoints.toUpdate, ReserveController.update)
+router.put(reserveEndpoints.toUpdate, authorization, ReserveController.update)
 
 // Delete
 router.delete(reserveEndpoints.toDelete, ReserveController.remove)

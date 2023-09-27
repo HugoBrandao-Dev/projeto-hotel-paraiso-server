@@ -1691,6 +1691,35 @@ describe("Suite de teste para as Reservas.", function() {
 
     describe("Testes de FALHA.", function() {
 
+      test("/PUT - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(401)
+
+            expect(responseUpdate.body.RestException.Code).toBe('5')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseUpdate.body.RestException.Status).toBe('401')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+      })
+
       // Falhas no ID do apartamento escolhido.
       test("/PUT - Deve retornar 400, por não conter o ID do apartamento a ser reservado.", function() {
 
