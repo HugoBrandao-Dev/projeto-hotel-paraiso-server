@@ -1718,6 +1718,7 @@ describe("Suite de teste para as Reservas.", function() {
           .catch(function(errorUpdate) {
             fail(errorUpdate)
           })
+
       })
 
       // Falhas no ID do apartamento escolhido.
@@ -1833,7 +1834,7 @@ describe("Suite de teste para as Reservas.", function() {
           end,
         }
 
-        return request.put(endpoints.toUpdate).send(reserve)
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
           .then(function(responseUpdate) {
 
             expect(responseUpdate.statusCode).toEqual(400)
