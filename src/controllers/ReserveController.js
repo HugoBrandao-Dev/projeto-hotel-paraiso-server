@@ -227,7 +227,9 @@ class ReserveController {
 
       let statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
       if (statusResult.hasError.value) {
-        errorFields.push(statusResult)
+        if (statusResult.hasError.type != 4) {
+          errorFields.push(statusResult)
+        }
       }
 
       let clientResult = await Analyzer.analyzeID(user_id)
