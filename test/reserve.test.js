@@ -2133,6 +2133,30 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/PUT - Deve retornar 403, o Funcionário não pode tornar um apto Indisponível.", function() {
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "indisponível"
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
       // Falhas no ID do cliente.
       test("/PUT - Deve retornar 400, já que ID do cliente contém caractere inválido.", function() {
 

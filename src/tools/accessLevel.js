@@ -1,4 +1,6 @@
 const Analyzer = require('../tools/Analyzer')
+const validator = require('validator')
+
 const User = require('../models/User')
 const Reserve = require('../models/Reserve')
 
@@ -134,7 +136,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
 
                   if (reserve) {
 
-                    if (reserve.status != 'indisponível') {
+                    if (body.status != 'indisponível' && reserve.status != 'indisponível') {
                       allowed = true
                     }
 
