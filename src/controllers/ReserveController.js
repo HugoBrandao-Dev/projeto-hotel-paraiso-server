@@ -210,7 +210,7 @@ class ReserveController {
   async update(req, res, next) {
     try {
       const decodedToken = getDecodedToken(req.headers['authorization'])
-            
+
       const {
         apartment_id,
         status,
@@ -235,6 +235,8 @@ class ReserveController {
         if (statusResult.hasError.value) {
           if (statusResult.hasError.type != 4) {
             errorFields.push(statusResult)
+          } else {
+            fieldsToBeUpdated.status = status
           }
         } else {
           fieldsToBeUpdated.status = status
