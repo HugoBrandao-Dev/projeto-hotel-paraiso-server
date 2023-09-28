@@ -50,6 +50,30 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'PUT':
 
+            if (path == reserveEndpoints.toUpdate) {
+
+              if (body.apartment_id) {
+
+                let idResult = await Analyzer.analyzeID(body.apartment_id, 'apartment')
+
+                if (!idResult.hasError.value) {
+
+                  let reserve = await Reserve.findOne(body.apartment_id)
+
+                  if (reserve.user_id == decodedToken.id) {
+                    if (!body.status) {
+                      allowed = true
+                    }
+                  }
+
+                } else {
+                  allowed = true
+                }
+
+              }
+
+            }
+
             // Verifica se o ID passado no corpo é o mesmo do armazenado no Token.
             if (body.id === decodedToken.id) {
 

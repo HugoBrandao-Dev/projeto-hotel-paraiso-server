@@ -32,7 +32,9 @@ function getDateWithNextMonth(_date) {
   let dateArray = _date.split('-')
   let year = parseInt(dateArray[0])
   let month = parseInt(dateArray[1])
+  let day = null
 
+  // Define o próximo mês.
   let nextYear = null
   let nextMonth = null
   if (month == 12) {
@@ -46,8 +48,28 @@ function getDateWithNextMonth(_date) {
     }
   }
 
+  // Define o dia.
+  let maxDay = null
+  if (nextMonth % 2 == 0) {
+    if (nextMonth == 2) {
+      if ((nextYear % 4 == 0 && nextYear % 100 != 0) || (nextYear % 400 == 0)) {
+        maxDay = 29
+      } else {
+        maxDay = 28
+      }
+    } else {
+      maxDay = 31
+    }
+  } else {
+    maxDay = 30
+  }
+  day = Math.floor(Math.random() * maxDay) + 1
+
+
   dateArray[0] = nextYear
   dateArray[1] = nextMonth
+  dateArray[2] = day < 10 ? `0${ day }` : `${ day }`
+
   date = dateArray.join('-')
 
   return date
@@ -59,6 +81,7 @@ function getDateWithLastMonth(_date) {
   let dateArray = _date.split('-')
   let year = parseInt(dateArray[0])
   let month = parseInt(dateArray[1])
+  let day = null
 
   let lastYear = null
   let lastMonth = null
@@ -73,8 +96,27 @@ function getDateWithLastMonth(_date) {
     }
   }
 
+  // Define o dia.
+  let maxDay = null
+  if (lastMonth % 2 == 0) {
+    if (lastMonth == 2) {
+      if ((lastYear % 4 == 0 && lastYear % 100 != 0) || (lastYear % 400 == 0)) {
+        maxDay = 29
+      } else {
+        maxDay = 28
+      }
+    } else {
+      maxDay = 31
+    }
+  } else {
+    maxDay = 30
+  }
+  day = Math.floor(Math.random() * maxDay) + 1
+
   dateArray[0] = lastYear
   dateArray[1] = lastMonth
+  dateArray[2] = day < 10 ? `0${ day }` : `${ day }`
+
   date = dateArray.join('-')
 
   return date
@@ -1613,81 +1655,87 @@ describe("Suite de teste para as Reservas.", function() {
   })
 
   describe("UPDATE", function() {
-    /*
+
     describe("Testes de SUCESSO.", function() {
-      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva.", function() {
+
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Cliente.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
         let reserve = {
           apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
-          status: "reservado",
-          user_id: "507f1f77bcf86cd799439011",
-          start: "2023-12-01",
-          end: "2024-01-30"
+          start,
+          end,
         }
 
-        return request.put(endpoints.toUpdate).send(reserve)
-          .then(function(responsePUT) {
-            expect(responsePUT.statusCode).toEqual(200)
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseUpdate) {
 
-            expect(responsePUT.body._links).toBeDefined()
-            expect(responsePUT.body._links).toHaveLength(4)
-            expect(responsePUT.body._links[0]).toMatchObject({
-              href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(3)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
               method: 'GET',
               rel: 'self_reserve'
             })
-            expect(responsePUT.body._links[1]).toMatchObject({
-              href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_reserve'
             })
-            expect(responsePUT.body._links[2]).toMatchObject({
-              href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
               method: 'DELETE',
               rel: 'delete_reserve'
             })
-            expect(responsePUT.body._links[3]).toMatchObject({
-              href: `${ baseURL }/reserves`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
 
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`)
-              .then(function(responseGET) {
-                expect(responseGET.statusCode).toEqual(200)
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
 
-                const {
-                  status,
-                  date,
-                  user_id,
-                  start,
-                  end
-                } = responseGET.body
+                expect(responseRead.statusCode).toEqual(200)
 
-                expect(status).toBeDefined()
-                expect(status).toBe("reservado")
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  start: reserve.start,
+                  end: reserve.end,
+                })
 
-                expect(date).toBeDefined()
+                expect(responseRead.body.date).toBeDefined()
 
-                expect(user_id).toBeDefined()
-                expect(user_id).toBe("507f1f77bcf86cd799439011")
-
-                expect(start).toBeDefined()
-                expect(start).toBe("2023-12-01")
-
-                expect(end).toBeDefined()
-                expect(end).toBe("2024-01-30")
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
 
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(responseRead) {
+                fail(responseRead)
               })
+
           })
-          .catch(function(errorPUT) {
-            fail(errorPUT)
+          .catch(function(responseUpdate) {
+            fail(responseUpdate)
           })
+
       })
+
     })
-    */
 
     describe("Testes de FALHA.", function() {
 

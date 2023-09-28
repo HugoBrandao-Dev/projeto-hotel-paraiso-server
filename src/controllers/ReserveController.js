@@ -209,6 +209,8 @@ class ReserveController {
 
   async update(req, res, next) {
     try {
+      const decodedToken = getDecodedToken(req.headers['authorization'])
+            
       const {
         apartment_id,
         status,
@@ -219,31 +221,49 @@ class ReserveController {
       } = req.body
 
       let errorFields = []
+      let fieldsToBeUpdated = {}
 
       let apartmentIDResult = await Analyzer.analyzeID(apartment_id, 'apartment')
       if (apartmentIDResult.hasError.value) {
         errorFields.push(apartmentIDResult)
+      } else {
+        fieldsToBeUpdated.apartment_id = apartment_id
       }
 
-      let statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
-      if (statusResult.hasError.value) {
-        if (statusResult.hasError.type != 4) {
-          errorFields.push(statusResult)
+      if (status) {
+        let statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
+        if (statusResult.hasError.value) {
+          if (statusResult.hasError.type != 4) {
+            errorFields.push(statusResult)
+          }
+        } else {
+          fieldsToBeUpdated.status = status
         }
       }
 
-      let clientResult = await Analyzer.analyzeID(user_id)
-      if (clientResult.hasError.value) {
-        errorFields.push(clientResult)
+      if (user_id) {
+        let clientResult = await Analyzer.analyzeID(user_id)
+        if (clientResult.hasError.value) {
+          errorFields.push(clientResult)
+        } else {
+          fieldsToBeUpdated.user_id = user_id
+        }
       }
 
-      let startDateResult = Analyzer.analyzeReserveStartDate(start)
-      if (startDateResult.hasError.value) {
-        errorFields.push(startDateResult)
-      } else {
-        let endDateResult = Analyzer.analyzeReserveEndDate(end, start)
-        if (endDateResult.hasError.value) {
-          errorFields.push(endDateResult)
+      if (start) {
+        let startDateResult = Analyzer.analyzeReserveStartDate(start)
+        if (startDateResult.hasError.value) {
+          errorFields.push(startDateResult)
+        } else {
+          fieldsToBeUpdated.start = start
+          if (end) {
+            let endDateResult = Analyzer.analyzeReserveEndDate(end, start)
+            if (endDateResult.hasError.value) {
+              errorFields.push(endDateResult)
+            } else {
+              fieldsToBeUpdated.end = end
+            }
+          }
         }
       }
 
@@ -275,39 +295,9 @@ class ReserveController {
         return
       }
 
-      let reserve = {}
-      reserve.apartment_id = apartment_id
-      reserve.status = status
-      reserve.user_id = user_id
-      reserve.date = date
-      reserve.start = start
-      reserve.end = end
+      await Reserve.edit(fieldsToBeUpdated)
 
-      let HATEOAS = [
-        {
-          href: `${ baseURL }/reserves/${ apartment_id }`,
-          method: 'GET',
-          rel: 'self_reserve'
-        },
-        {
-          href: `${ baseURL }/reserves/${ apartment_id }`,
-          method: 'PUT',
-          rel: 'edit_reserve'
-        },
-        {
-          href: `${ baseURL }/reserves/${ apartment_id }`,
-          method: 'DELETE',
-          rel: 'delete_reserve'
-        },
-        {
-          href: `${ baseURL }/reserves`,
-          method: 'GET',
-          rel: 'reserve_list'
-        }
-      ]
-
-
-      await Reserve.edit(reserve)
+      let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
       
       res.status(200)
       res.json({ _links: HATEOAS })
