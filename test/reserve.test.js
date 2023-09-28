@@ -2043,31 +2043,40 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      /*
       test("/PUT - Deve retornar 400, já que a Data de Início é anterior a data Atual.", function() {
-        let reserve = {
-          apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          status: "reservado",
-          user_id: "600f191e810c19829de900ea",
-          start: "2023-08-02",
-          end: "2024-01-12"
-        }
-        return request.put(endpoints.toUpdate).send(reserve)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
 
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
+        let date = dateNow.getDate()
+        let start = getDateWithLastMonth(date)
+        let end = getDateWithNextMonth(date)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "ocupado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
           })
+
       })
 
+      /*
       // Falhas na Data de Fim da reserva.
       test("/PUT - Deve retornar 400, devido a ausência da Data de Fim da reserva.", function() {
         let reserve = {
