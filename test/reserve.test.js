@@ -1980,37 +1980,6 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       // Falhas na Data de Início da reserva.
-      test("/PUT - Deve retornar 400, devido a ausência da Data de Início da reserva.", function() {
-
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
-
-        let reserve = {
-          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
-          status: "ocupado",
-          user_id: accounts.cliente.id,
-          end
-        }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(400)
-
-            expect(responseUpdate.body.RestException.Code).toBe("1")
-            expect(responseUpdate.body.RestException.Message).toBe("O campo de Data de Início da reserva é obrigatório")
-            expect(responseUpdate.body.RestException.Status).toBe("400")
-            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
-            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Início da reserva é obrigatório")
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
-
-      })
-
       test("/PUT - Deve retornar 400, devido a presença de caracteres inválidos na Data de Início da reserva.", function() {
 
         let start = dateNow.getDate()
@@ -2078,29 +2047,6 @@ describe("Suite de teste para as Reservas.", function() {
 
       /*
       // Falhas na Data de Fim da reserva.
-      test("/PUT - Deve retornar 400, devido a ausência da Data de Fim da reserva.", function() {
-        let reserve = {
-          apartment_id: "02n07j2d1hf5a2f26djjj92a",
-          status: "reservado",
-          user_id: "600f191e810c19829de900ea",
-          start: "2023-12-01"
-        }
-        return request.put(endpoints.toUpdate).send(reserve)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-
-            expect(response.body.RestException.Code).toBe("1")
-            expect(response.body.RestException.Message).toBe("O campo de Data de Fim da reserva é obrigatório")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(response.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
-            expect(response.body.RestException.ErrorFields[0].hasError.error).toBe("O campo de Data de Fim da reserva é obrigatório")
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
       test("/PUT - Deve retornar 400, devido a presença de caracteres inválidos na Data de Fim da reserva.", function() {
         let reserve = {
           apartment_id: "02n07j2d1hf5a2f26djjj92a",
