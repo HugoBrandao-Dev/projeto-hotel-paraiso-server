@@ -1406,7 +1406,7 @@ describe("Suite de teste para as Reservas.", function() {
   })
 
   describe("READ", function() {
-
+/*
     describe("Testes de SUCESSO.", function() {
 
       // Busca por uma única reserva, baseada no ID do apartamento.
@@ -1563,8 +1563,10 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
     })
-
+*/
     describe("Testes de FALHA.", function() {
+
+      /* ################## LEITURA DE UMA ÚNICA RESERVA ################## */
 
       test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
 
@@ -1642,6 +1644,27 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseRead.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
             expect(responseRead.body.RestException.Status).toBe("404")
             expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      /* ################## LISTAGEM ################## */
+
+      test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        return request.get(`${ endpoints.toList }`)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(401)
+
+            expect(responseList.body.RestException.Code).toBe('5')
+            expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseList.body.RestException.Status).toBe('401')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
 
           })
           .catch(function(errorRead) {

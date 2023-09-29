@@ -58,7 +58,7 @@ router.post(reserveEndpoints.toCreate, authorization, authentication, ReserveCon
 
 // Read
 router.get(reserveEndpoints.toRead, authorization, authentication, ReserveController.read)
-router.get(reserveEndpoints.toList, ReserveController.list)
+router.get(reserveEndpoints.toList, authorization, ReserveController.list)
 
 // Update
 router.put(reserveEndpoints.toUpdate, authorization, authentication, ReserveController.update)
