@@ -197,7 +197,39 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'PUT':
 
-            if (path != apartmentEndpoints.toUpdate && !(body.role >= 2)) {
+            if (path == reserveEndpoints.toUpdate) {
+
+                let idResult = await Analyzer.analyzeID(body.apartment_id, 'apartment')
+
+                if (!idResult.hasError.value) {
+
+                  let reserve = await Reserve.findOne(body.apartment_id)
+
+                  if (reserve) {
+
+                    if (reserve.status == 'ocupado') {
+
+                      if (body.status != 'indisponível') {
+
+                        allowed = true
+
+                      }
+
+                    } else {
+
+                      allowed = true
+
+                    }
+
+                  }
+
+                } else {
+
+                  allowed = true
+
+                }
+
+            } else if (path != apartmentEndpoints.toUpdate && !(body.role >= 2)) {
               allowed = true
             }
 
