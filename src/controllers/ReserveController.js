@@ -297,6 +297,17 @@ class ReserveController {
         return
       }
 
+      if (status == 'indisponível') {
+        fieldsToBeUpdated = {
+          apartment_id,
+          status: 'indisponível',
+          user_id: '',
+          start: '',
+          end: '',
+          reservedIn: ''
+        }
+      }
+
       await Reserve.edit(fieldsToBeUpdated)
 
       let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)

@@ -2500,6 +2500,94 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/PUT - Deve retornar 200, o Admin modifica o Status da reserva para Indisponível.", function() {
+
+        let reserve = {
+          apartment_id: "cljn205e58dcmh6fb0ffabgg",
+          status: "indisponível",
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                  user_id: '',
+                  start: '',
+                  end: '',
+                  reservedIn: '',
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(4)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+                expect(responseUpdate.body._links[3]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toList }`,
+                  method: 'GET',
+                  rel: 'reserve_list'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
     })
 
     describe("Testes de FALHA.", function() {
