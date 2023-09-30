@@ -164,44 +164,45 @@ class ReserveController {
 
   async list(req, res, next) {
     try {
-      let reserves = null
+      const decodedToken = getDecodedToken(req.headers['authorization'])
 
-      if (req.query.status) {
-        let status = req.query.status
-        reserves = await Reserve.findMany(status)
+      const status = req.query.status
+
+      let hasNext = false
+      let reserves = []
+
+      // Skip é equivalente ao offset, no mongodb.
+      let skip = req.query.offset ? parseInt(req.query.offset) : 0
+
+      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
+      let limit = req.query.limit ? parseInt(req.query.limit) : 20
+
+      if (decodedToken.role > 0) {
+
+        // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
+        reserves = await Reserve.findMany(status, skip, limit + 1)
+
       } else {
-        reserves = await Reserve.findMany()
+
+        // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
+        reserves = await Reserve.findManyByUserID(decodedToken.id, status, skip, limit + 1)
+
       }
 
-      for (let reserve of reserves) {
-        let HATEOAS = [
-          {
-            href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
-            method: 'GET',
-            rel: 'self_reserve'
-          },
-          {
-            href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
-            method: 'PUT',
-            rel: 'edit_reserve'
-          },
-          {
-            href: `${ baseURL }/reserves/${ reserve.apartment_id }`,
-            method: 'DELETE',
-            rel: 'delete_reserve'
-          },
-          {
-            href: `${ baseURL }/reserves`,
-            method: 'GET',
-            rel: 'reserve_list'
-          }
-        ]
+      if (reserves.length) {
+        hasNext = reserves.length > (limit - skip)
 
-        reserve._links = HATEOAS
+        // Retira o dado extra para cálculo do hasNext.
+        reserves.pop()
+
+        for (let reserve of reserves) {
+          let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
+          reserve._links = HATEOAS
+        }
+
+        res.status(200)
+        res.json({ reserves, hasNext })
       }
-
-      res.status(200)
-      res.json(reserves)
     } catch (error) {
       next(error)
     }

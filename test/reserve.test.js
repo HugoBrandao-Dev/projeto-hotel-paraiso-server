@@ -1406,7 +1406,7 @@ describe("Suite de teste para as Reservas.", function() {
   })
 
   describe("READ", function() {
-/*
+
     describe("Testes de SUCESSO.", function() {
 
       // Busca por uma única reserva, baseada no ID do apartamento.
@@ -1471,10 +1471,14 @@ describe("Suite de teste para as Reservas.", function() {
 
             expect(responseList.statusCode).toEqual(200)
 
-            for (let reserve of responseList.body) {
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
               expect(reserve).toBeDefined()
+              expect(reserve.reservedIn).toBeDefined()              
               expect(reserve._links).toHaveLength(4)
             }
+            expect(hasNext).toEqual(false)
 
           })
           .catch(function(errorList) {
@@ -1491,10 +1495,15 @@ describe("Suite de teste para as Reservas.", function() {
 
             expect(responseList.statusCode).toEqual(200)
 
-            for (let reserve of responseList.body) {
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
               expect(reserve).toBeDefined()
+              expect(reserve.reservedIn).toBeDefined()
               expect(reserve.status).toBe('livre')
             }
+
+            expect(hasNext).toEqual(false)
 
           })
           .catch(function(errorList) {
@@ -1510,11 +1519,15 @@ describe("Suite de teste para as Reservas.", function() {
 
             expect(responseList.statusCode).toEqual(200)
 
-            for (let reserve of responseList.body) {
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
               expect(reserve).toBeDefined()
               expect(reserve.reservedIn).toBeDefined()
               expect(reserve._links).toHaveLength(4)
             }
+
+            expect(hasNext).toEqual(false)
 
           })
           .catch(function(errorList) {
@@ -1525,16 +1538,20 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO.", function() {
 
-        return request.get(`${ endpoints.toList }?status=ocupado`)
+        return request.get(`${ endpoints.toList }?status=ocupado`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
-            for (let reserve of responseList.body) {
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
               expect(reserve).toBeDefined()
               expect(reserve.reservedIn).toBeDefined()
               expect(reserve.status).toBe('ocupado')
             }
+
+            expect(hasNext).toEqual(false)
 
           })
           .catch(function(errorList) {
@@ -1550,10 +1567,14 @@ describe("Suite de teste para as Reservas.", function() {
 
             expect(responseList.statusCode).toEqual(200)
 
-            for (let reserve of responseList.body) {
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
               expect(reserve).toBeDefined()
               expect(reserve.status).toBe('indisponível')
             }
+
+            expect(hasNext).toEqual(false)
 
           })
           .catch(function(errorList) {
@@ -1563,7 +1584,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
     })
-*/
+
     describe("Testes de FALHA.", function() {
 
       /* ################## LEITURA DE UMA ÚNICA RESERVA ################## */
