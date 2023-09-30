@@ -1835,6 +1835,39 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      /* ################## GERENTE ################## */
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Admin.", function() {
+
+        let queryString = {
+          status: 'livre',
+          offset: 1,
+          limit: 3,
+        }
+
+        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.admin.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(queryString.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('livre')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
     })
 
     describe("Testes de FALHA.", function() {
