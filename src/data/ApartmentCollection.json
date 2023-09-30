@@ -197,6 +197,162 @@
         }
       },
       {
+        "id": "1nencg05fo8b258k1240dpkhm1",
+        "floor": "3",
+        "number": "6",
+        "rooms": [
+          {
+            "room": "sala de estar",
+            "quantity": "1"
+          },
+          {
+            "room": "cozinha",
+            "quantity": "1"
+          },
+          {
+            "room": "banheiro",
+            "quantity": "2"
+          },
+          {
+            "room": "quarto",
+            "quantity": "2"
+          }
+        ],
+        "daily_price": "500",
+        "reserve": {
+          "status": "livre",
+          "user_id": "",
+          "reservedIn": "",
+          "start": "",
+          "end": ""
+        },
+        "created": {
+            "createdAt": "2022-06-12T22:01:20.596Z",
+            "createdBy": "5da9ea674234635bdff45c02"
+        },
+        "updated": {
+            "updatedAt": "2023-01-12T10:25:49.045Z",
+            "updatedBy": "507f1f77bcf86cd799439011"
+        }
+      },
+      {
+        "id": "2i8ji7m14b1ipplbh83igdca9j",
+        "floor": "3",
+        "number": "7",
+        "rooms": [
+          {
+            "room": "sala de estar",
+            "quantity": "1"
+          },
+          {
+            "room": "cozinha",
+            "quantity": "1"
+          },
+          {
+            "room": "banheiro",
+            "quantity": "2"
+          },
+          {
+            "room": "quarto",
+            "quantity": "2"
+          }
+        ],
+        "daily_price": "500",
+        "reserve": {
+          "status": "livre",
+          "user_id": "",
+          "reservedIn": "",
+          "start": "",
+          "end": ""
+        },
+        "created": {
+            "createdAt": "2022-06-12T22:01:20.596Z",
+            "createdBy": "5da9ea674234635bdff45c02"
+        },
+        "updated": {
+            "updatedAt": "2023-01-12T10:25:49.045Z",
+            "updatedBy": "507f1f77bcf86cd799439011"
+        }
+      },
+      {
+        "id": "g518a87llijik93fj6o3hhlgik",
+        "floor": "3",
+        "number": "8",
+        "rooms": [
+          {
+            "room": "sala de estar",
+            "quantity": "1"
+          },
+          {
+            "room": "cozinha",
+            "quantity": "1"
+          },
+          {
+            "room": "banheiro",
+            "quantity": "2"
+          },
+          {
+            "room": "quarto",
+            "quantity": "2"
+          }
+        ],
+        "daily_price": "500",
+        "reserve": {
+          "status": "livre",
+          "user_id": "",
+          "reservedIn": "",
+          "start": "",
+          "end": ""
+        },
+        "created": {
+            "createdAt": "2022-06-12T22:01:20.596Z",
+            "createdBy": "5da9ea674234635bdff45c02"
+        },
+        "updated": {
+            "updatedAt": "2023-01-12T10:25:49.045Z",
+            "updatedBy": "507f1f77bcf86cd799439011"
+        }
+      },
+      {
+        "id": "i96ano7g28l02oc4d1jn4o5ogk",
+        "floor": "4",
+        "number": "9",
+        "rooms": [
+          {
+            "room": "sala de estar",
+            "quantity": "1"
+          },
+          {
+            "room": "cozinha",
+            "quantity": "1"
+          },
+          {
+            "room": "banheiro",
+            "quantity": "2"
+          },
+          {
+            "room": "quarto",
+            "quantity": "2"
+          }
+        ],
+        "daily_price": "500",
+        "reserve": {
+          "status": "livre",
+          "user_id": "",
+          "reservedIn": "",
+          "start": "",
+          "end": ""
+        },
+        "created": {
+            "createdAt": "2022-06-12T22:01:20.596Z",
+            "createdBy": "5da9ea674234635bdff45c02"
+        },
+        "updated": {
+            "updatedAt": "2023-01-12T10:25:49.045Z",
+            "updatedBy": "507f1f77bcf86cd799439011"
+        }
+      },
+      {
         "id": "cljn205e58dcmh6fb0ffabgg",
         "floor": "2",
         "number": "4",
@@ -316,7 +472,7 @@
       {
         "id": "f5gee7kf7l3dl2950gbn3ckf",
         "floor": "3",
-        "number": "11",
+        "number": "10",
         "rooms": [
           {
             "room": "sala de estar",

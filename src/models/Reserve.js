@@ -33,7 +33,7 @@ class Reserve {
     }
   }
 
-  async findMany(status = '') {
+  async findMany(status = '', skip = 0, limit = 20) {
     try {
       let reserves = null
       if (status) {
@@ -56,7 +56,15 @@ class Reserve {
         })
       }
 
+      if ((skip || skip == 0) && limit) {
+        if (skip == 1 && limit == 4) {
+          console.log(reserves)
+        }
+        return reserves.slice(skip, (skip + limit))
+      }
+
       return reserves
+
     } catch (error) {
       console.log(error)
       return []
