@@ -57,10 +57,7 @@ class Reserve {
       }
 
       if ((skip || skip == 0) && limit) {
-        if (skip == 1 && limit == 4) {
-          console.log(reserves)
-        }
-        return reserves.slice(skip, (skip + limit))
+        return await reserves.slice(skip, (skip + limit))
       }
 
       return reserves

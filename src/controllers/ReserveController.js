@@ -193,7 +193,9 @@ class ReserveController {
         hasNext = reserves.length > (limit - skip)
 
         // Retira o dado extra para cálculo do hasNext.
-        reserves.pop()
+        if (hasNext) {
+          reserves.pop()
+        }
 
         for (let reserve of reserves) {
           let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
@@ -203,6 +205,9 @@ class ReserveController {
         res.status(200)
         res.json({ reserves, hasNext })
       }
+
+      res.status(404)
+      res.json({})
     } catch (error) {
       next(error)
     }
