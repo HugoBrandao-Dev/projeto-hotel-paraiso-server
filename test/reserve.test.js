@@ -1676,6 +1676,37 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO, com offset e limit.", function() {
+
+        let queryString = {
+          status: 'ocupado',
+          offset: 1,
+          limit: 2,
+        }
+
+        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(queryString.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('ocupado')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
     })
 
     describe("Testes de FALHA.", function() {
