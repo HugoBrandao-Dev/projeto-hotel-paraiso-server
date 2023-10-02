@@ -8,11 +8,12 @@ class DateFormated {
   getDate() {
     let year = this.dateTime.getFullYear()
 
-    let month = this.dateTime.getMonth()
+    // O contagem do mês começa com 0, por isso é necessário acrescentar + 1.
+    let month = this.dateTime.getMonth() + 1
 
     // Trata o valor de mês, caso ele seja menor que 10.
     if (month < 10) {
-      month = `0${ month + 1 }`
+      month = `0${ month }`
     }
 
     let day = this.dateTime.getDate()
