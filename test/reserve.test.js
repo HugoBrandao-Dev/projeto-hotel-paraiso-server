@@ -1835,7 +1835,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      /* ################## GERENTE ################## */
+      /* ################## ADMIN ################## */
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Admin.", function() {
 
@@ -1973,8 +1973,27 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
 
           })
-          .catch(function(errorRead) {
-            fail(errorRead)
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido.", function() {
+
+        return request.get(`${ endpoints.toList }?staus=livre`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'staus\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
           })
 
       })

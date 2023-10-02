@@ -171,6 +171,24 @@ class ReserveController {
       let hasNext = false
       let reserves = []
 
+      if (req.query) {
+
+        let queryStringResult = Analyzer.analyzeQueryList(req.query, 'reserves')
+        if (queryStringResult.hasError.value) {
+          res.status(400)
+          res.json({ 
+            RestException: {
+              "Code": `${ queryStringResult.hasError.type }`,
+              "Message": queryStringResult.hasError.error,
+              "Status": "400",
+              "MoreInfo": `${ projectLinks.errors }/${ queryStringResult.hasError.type }`
+            }
+          })
+          return
+        }
+
+      }
+
       // Skip é equivalente ao offset, no mongodb.
       let skip = req.query.offset ? parseInt(req.query.offset) : 0
 
@@ -204,11 +222,12 @@ class ReserveController {
 
         res.status(200)
         res.json({ reserves, hasNext })
+        return
       }
 
-      res.status(404)
-      res.json({})
+      res.sendStatus(404)
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }

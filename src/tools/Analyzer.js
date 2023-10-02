@@ -851,6 +851,28 @@ class Analyzer {
     }
   }
 
+  // Método utilizado para analise das Query Strings das Listagens.
+  static analyzeQueryList(list = null, resource = 'users') {
+    let result = { field: 'queryString', hasError: { value: false, type: null, error: '' }}
+    let acceptableParams = []
+
+    switch (resource) {
+      case 'reserves':
+        acceptableParams = ['status', 'offset', 'limit']
+        for (let param of Object.keys(list)) {
+          let isParamValid = validator.isIn(param, acceptableParams)
+          if (!isParamValid) {
+            result.hasError.value = true
+            result.hasError.type = 2
+            result.hasError.error = `O parâmetro \'${ param }\' é inválido`
+            return result
+          }
+        }
+    }
+
+    return result
+  }
+
   static analyzeReserveStartDate(date = '') {
     let result = { field: 'iptStartDate', hasError: { value: false, type: null, error: '' }}
     
