@@ -2023,6 +2023,30 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como segundo query string.", function() {
+
+        let queryString = {
+          status: 'livre',
+          offset: 0
+        }
+
+        return request.get(`${ endpoints.toList }?status=livre&offse=${ queryString.offset }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'offse\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
     })
 
   })
