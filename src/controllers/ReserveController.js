@@ -185,6 +185,37 @@ class ReserveController {
             }
           })
           return
+        } else {
+
+          let errorParams = []
+
+          // Verifica se o valor passado no Status é valido.
+          let statusResult = await Analyzer.analyzeApartmentStatus(status)
+          console.log(statusResult)
+          if (statusResult.hasError.value) {
+            if (statusResult.hasError.type != 4 && statusResult.hasError.type != 1) {
+              errorParams.push(statusResult)
+            }
+          }
+
+          if (errorParams.length) {
+            let codes = errorParams.map(item => item.hasError.type)
+
+            let messages = errorParams.map(item => item.hasError.error)
+            let moreinfos = errorParams.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
+            res.status(400)
+            res.json({ 
+              RestException: {
+                "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
+                "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
+                "Status": "400",
+                "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
+                "ErrorParams": errorParams
+              }
+            })
+            return
+          }
+
         }
 
       }
