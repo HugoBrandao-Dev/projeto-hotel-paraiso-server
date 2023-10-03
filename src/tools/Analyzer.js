@@ -874,6 +874,7 @@ class Analyzer {
   }
 
   static analyzeReserveListSkip(skip) {
+
     let result = { field: 'offset', hasError: { value: false, type: null, error: '' }}
 
     let isInt = validator.isInt(skip, {
@@ -887,10 +888,21 @@ class Analyzer {
     }
 
     return result
+
   }
 
   static analyzeReserveListLimit(limit) {
     let result = { field: 'limit', hasError: { value: false, type: null, error: '' }}
+
+    let isInt = validator.isInt(limit, {
+      gt: 0
+    })
+
+    if (!isInt) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Limit é inválido"
+    }
 
     return result
   }
