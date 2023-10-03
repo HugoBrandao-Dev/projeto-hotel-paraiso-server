@@ -87,8 +87,23 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'DELETE':
 
+            if (path.indexOf(reserveEndpoints.toDelete) >= 0) {
+
+              let idResult = await Analyzer.analyzeID(params.id, 'apartment')
+
+              if (!idResult.hasError.value) {
+                
+                let reserve = await Reserve.findOne(params.id)
+
+                if (reserve && reserve.user_id == decodedToken.id) {
+                  allowed = true
+                }
+
+              } else {
+                allowed = true
+              }
             // Verifica se o ID passado no parâmetro é o mesmo do armazenado no Token.
-            if (params.id && decodedToken.id === params.id) {
+            } else if (params.id && decodedToken.id === params.id) {
               allowed = true
             }
             break

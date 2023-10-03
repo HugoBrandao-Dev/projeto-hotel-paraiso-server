@@ -18,9 +18,10 @@ const projectLinks = {
 let accounts = {
   admin: { id: '', token: '' },
   gerente: { id: '', token: '' },
-  funcionario2: { id: '', token: '' },
   funcionario: { id: '', token: '' },
-  cliente: { id: '', token: ''  }
+  funcionario2: { id: '', token: '' },
+  cliente: { id: '', token: ''  },
+  cliente2: { id: '', token: '' },
 }
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
@@ -319,6 +320,28 @@ beforeAll(async () => {
       console.log(errorCliente)
     }
 
+    try {
+      const userCliente2 = {
+        name: "Jeremias Cruz",
+        email: "jere_cruz@gmail.com",
+        password: "&asdf$sdf7qwer97QWER",
+        phoneCode: "1",
+        phoneNumber: "2129981212",
+        birthDate: "1992-01-02",
+        country: "BR",
+        state: "AM",
+        city: "Manaus",
+        cpf: Generator.genCPF()
+      }
+      let registredCliente2 = await register(userCliente2)
+      let clienteLogin2 = registredCliente2.login
+      let tokenCliente2 = await login(clienteLogin2)
+      accounts.cliente2.id = registredCliente2.id
+      accounts.cliente2.token = `Bearer ${ tokenCliente2.token }`
+    } catch (errorCliente2) {
+      console.log(errorCliente2)
+    }
+
   } catch (error) {
     console.log(error)
   }
@@ -379,6 +402,90 @@ describe("Suite de teste para as Reservas.", function() {
                   apartment_id: reserve.apartment_id,
                   status: 'reservado',
                   user_id: accounts.cliente.id,
+                  start: reserve.start,
+                  end: reserve.end,
+                })
+
+                expect(responseRead.body.reservedIn).toBeDefined()
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Cliente.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "mmfel7oi6p43kjj6jebln8dn97",
+          start,
+          end,
+        }
+
+        return request.post(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente2.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(201)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(3)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente2.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reservedIn,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: 'reservado',
+                  user_id: accounts.cliente2.id,
                   start: reserve.start,
                   end: reserve.end,
                 })
@@ -3892,6 +3999,27 @@ describe("Suite de teste para as Reservas.", function() {
           .catch(function(errorDelete) {
             fail(errorDelete)
           })
+      })
+
+      test("/DELETE - Deve retornar 403, o Cliente não pode cancelar uma reserva que não seja sua.", function() {
+
+        const apartment = { id: 'mmfel7oi6p43kjj6jebln8dn97' }
+
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(403)
+
+            expect(responseDelete.body.RestException.Code).toBe('6')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseDelete.body.RestException.Status).toBe('403')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorDelete) {
+            fail(errorDelete)
+          })
+
       })
 
       /*
