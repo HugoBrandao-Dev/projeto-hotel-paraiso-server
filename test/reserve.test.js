@@ -1992,7 +1992,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido.", function() {
 
-        return request.get(`${ endpoints.toList }?staus=livre`).set('Authorization', accounts.cliente.token)
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `staus=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2011,11 +2017,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, o valor de Status da Query String de listagem é inválido.", function() {
 
-        let queryString = {
+        let params = {
           status: 'live'
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }`).set('Authorization', accounts.cliente.token)
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2036,12 +2044,14 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como segundo query string.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 0
         }
 
-        return request.get(`${ endpoints.toList }?status=livre&offse=${ queryString.offset }`).set('Authorization', accounts.cliente.token)
+        let queryString = `status=livre&offse=${ params.offset }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2060,12 +2070,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, o valor de Offset da Query String de listagem é inválido.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
-          offset: '1a'
+          offset: '1a',
+          limit: 3
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=3`).set('Authorization', accounts.cliente.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2086,13 +2099,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como a terceira query string.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 2,
           limit: 2
         }
 
-        return request.get(`${ endpoints.toList }?status=livre&offset=${ queryString.offset }&limi=${ queryString.limit }`).set('Authorization', accounts.cliente.token)
+        let queryString = `status=livre&offset=${ params.offset }&limi=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2111,13 +2126,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, o valor de Limit da Query String de listagem é inválido.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 2,
           limit: 0
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.cliente.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2140,7 +2157,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido pelo funcionario.", function() {
 
-        return request.get(`${ endpoints.toList }?staus=livre`).set('Authorization', accounts.funcionario.token)
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `staus=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2159,11 +2182,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, o valor de Status da Query String de listagem é inválido, pelo Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'live'
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2184,12 +2209,14 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como segundo query string pelo Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 0
         }
 
-        return request.get(`${ endpoints.toList }?status=livre&offse=${ queryString.offset }`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=livre&offse=${ params.offset }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2208,12 +2235,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, o valor de Offset da Query String de listagem é inválido pelo Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
-          offset: '1a'
+          offset: '1a',
+          limit: 3
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=3`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2234,13 +2264,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como a terceira query string pelo Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 2,
           limit: 2
         }
 
-        return request.get(`${ endpoints.toList }?status=livre&offset=${ queryString.offset }&limi=${ queryString.limit }`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=livre&offset=${ params.offset }&limi=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
@@ -2259,13 +2291,15 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 400, o valor de Limit da Query String de listagem é inválido pelo Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 2,
           limit: 0
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(400)
