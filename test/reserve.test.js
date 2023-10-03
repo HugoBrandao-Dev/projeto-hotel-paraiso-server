@@ -3983,6 +3983,7 @@ describe("Suite de teste para as Reservas.", function() {
     describe("Teste de FALHA.", function() {
 
       test("/DELETE - Deve retornar 401, o usuário não está logado.", function() {
+
         const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
 
         return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
@@ -3999,6 +4000,28 @@ describe("Suite de teste para as Reservas.", function() {
           .catch(function(errorDelete) {
             fail(errorDelete)
           })
+
+      })
+
+      test("/DELETE - Deve retornar 400, já que o ID do apartamento é inválido.", function() {
+
+        const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
+
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+          .then(function(response) {
+
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
       })
 
       test("/DELETE - Deve retornar 403, o Cliente não pode cancelar uma reserva que não seja sua.", function() {
@@ -4023,23 +4046,6 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       /*
-      test("/DELETE - Deve retornar 400, já que o ID do apartamento é inválido.", function() {
-        const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
-
-        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(400)
-
-            expect(response.body.RestException.Code).toBe("2")
-            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
-            expect(response.body.RestException.Status).toBe("400")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
-      })
-
       test("/DELETE - Deve retornar 404, já que o ID informado não corresponde a um apartamento cadastrado.", function() {
         const apartment = { id: '27ibm1he7gl4ei9i7jcaccc' }
 
