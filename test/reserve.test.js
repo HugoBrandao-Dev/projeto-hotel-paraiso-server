@@ -3838,9 +3838,10 @@ describe("Suite de teste para as Reservas.", function() {
 
   })
 
-/*
   // A Deletação/Cancelamento de uma reserva se baseia no ID do apartamento.
   describe("DELETE", function() {
+
+    /*
     describe("Teste de SUCESSO.", function() {
       test("/DELETE - Deve retornar 200, para cancelamento/deleção da reserva.", function() {
         const apartment = { id: 'f5gee7kf7l3dl2950gbn3ckf' }
@@ -3870,8 +3871,30 @@ describe("Suite de teste para as Reservas.", function() {
           })
       })
     })
+    */
 
     describe("Teste de FALHA.", function() {
+
+      test("/DELETE - Deve retornar 401, o usuário não está logado.", function() {
+        const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
+
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(401)
+
+            expect(responseDelete.body.RestException.Code).toBe('5')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseDelete.body.RestException.Status).toBe('401')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorDelete) {
+            fail(errorDelete)
+          })
+      })
+
+      /*
       test("/DELETE - Deve retornar 400, já que o ID do apartamento é inválido.", function() {
         const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
 
@@ -3905,7 +3928,9 @@ describe("Suite de teste para as Reservas.", function() {
             fail(error)
           })
       })
+      */
     })
+
   })
-*/
+
 })

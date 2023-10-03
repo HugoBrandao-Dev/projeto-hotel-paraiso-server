@@ -64,6 +64,6 @@ router.get(reserveEndpoints.toList, authorization, ReserveController.list)
 router.put(reserveEndpoints.toUpdate, authorization, authentication, ReserveController.update)
 
 // Delete
-router.delete(reserveEndpoints.toDelete, ReserveController.remove)
+router.delete(reserveEndpoints.toDelete, authorization, ReserveController.remove)
 
 module.exports = router
