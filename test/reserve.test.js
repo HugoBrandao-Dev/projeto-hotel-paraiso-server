@@ -1459,7 +1459,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS.", function() {
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS para o Cliente.", function() {
 
         let params = {
           status: 'reservado'
@@ -1481,6 +1481,31 @@ describe("Suite de teste para as Reservas.", function() {
               expect(reserve._links).toHaveLength(3)
             }
 
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO para o Cliente.", function() {
+
+        let params = {
+          status: 'ocupado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(0)
             expect(hasNext).toEqual(false)
 
           })
@@ -1631,7 +1656,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO.", function() {
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO para o Funcionário.", function() {
 
         let params = {
           status: 'ocupado'
