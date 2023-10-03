@@ -1459,6 +1459,37 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS.", function() {
+
+        let params = {
+          status: 'reservado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.user_id).toBe(accounts.cliente.id)
+              expect(reserve.reservedIn).toBeDefined()
+              expect(reserve._links).toHaveLength(3)
+            }
+
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
       /* ################## FUNCIONÁRIO ################## */
 
       // Busca por uma única reserva, baseada no ID do apartamento.
@@ -1570,7 +1601,7 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS.", function() {
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS para o Funcionário.", function() {
 
         let params = {
           status: 'reservado'
