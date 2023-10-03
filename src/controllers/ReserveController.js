@@ -167,6 +167,7 @@ class ReserveController {
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
       const status = req.query.status
+      let { offset: skip, limit } = req.query
 
       let hasNext = false
       let reserves = []
@@ -191,11 +192,29 @@ class ReserveController {
 
           // Verifica se o valor passado no Status é valido.
           let statusResult = await Analyzer.analyzeApartmentStatus(status)
-          console.log(statusResult)
           if (statusResult.hasError.value) {
             if (statusResult.hasError.type != 4 && statusResult.hasError.type != 1) {
               errorParams.push(statusResult)
             }
+          }
+
+          if ((skip || skip == 0) && limit) {
+            let skipResult = Analyzer.analyzeReserveListSkip(skip)
+            if (skipResult.hasError.value) {
+              errorParams.push(skipResult)
+            } else {
+              skip = parseInt(skip)
+            }
+
+            let limitResult = Analyzer.analyzeReserveListLimit(limit)
+            if (limitResult.hasError.value) {
+              errorParams.push(limitResult)
+            } else {
+              limit = parseInt(limit)
+            }
+          } else {
+            skip = 0
+            limit = 20
           }
 
           if (errorParams.length) {
@@ -214,46 +233,41 @@ class ReserveController {
               }
             })
             return
+          } else {
+
+            if (decodedToken.role > 0) {
+
+              // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
+              reserves = await Reserve.findMany(status, skip, limit + 1)
+
+            } else {
+
+              // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
+              reserves = await Reserve.findManyByUserID(decodedToken.id, status, skip, limit + 1)
+
+            }
+
+            if (reserves.length) {
+              hasNext = reserves.length > limit
+
+              // Retira o dado extra para cálculo do hasNext.
+              if (hasNext) {
+                reserves.pop()
+              }
+
+              for (let reserve of reserves) {
+                let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
+                reserve._links = HATEOAS
+              }
+
+              res.status(200)
+              res.json({ reserves, hasNext })
+              return
+            }
           }
 
         }
 
-      }
-
-      // Skip é equivalente ao offset, no mongodb.
-      let skip = req.query.offset ? parseInt(req.query.offset) : 0
-
-      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
-      let limit = req.query.limit ? parseInt(req.query.limit) : 20
-
-      if (decodedToken.role > 0) {
-
-        // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-        reserves = await Reserve.findMany(status, skip, limit + 1)
-
-      } else {
-
-        // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-        reserves = await Reserve.findManyByUserID(decodedToken.id, status, skip, limit + 1)
-
-      }
-
-      if (reserves.length) {
-        hasNext = reserves.length > (limit - skip)
-
-        // Retira o dado extra para cálculo do hasNext.
-        if (hasNext) {
-          reserves.pop()
-        }
-
-        for (let reserve of reserves) {
-          let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
-          reserve._links = HATEOAS
-        }
-
-        res.status(200)
-        res.json({ reserves, hasNext })
-        return
       }
 
       res.sendStatus(404)

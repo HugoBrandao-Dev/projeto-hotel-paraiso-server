@@ -873,6 +873,28 @@ class Analyzer {
     return result
   }
 
+  static analyzeReserveListSkip(skip) {
+    let result = { field: 'offset', hasError: { value: false, type: null, error: '' }}
+
+    let isInt = validator.isInt(skip, {
+      min: 0
+    })
+
+    if (!isInt) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Offset é inválido"
+    }
+
+    return result
+  }
+
+  static analyzeReserveListLimit(limit) {
+    let result = { field: 'limit', hasError: { value: false, type: null, error: '' }}
+
+    return result
+  }
+
   static analyzeReserveStartDate(date = '') {
     let result = { field: 'iptStartDate', hasError: { value: false, type: null, error: '' }}
     

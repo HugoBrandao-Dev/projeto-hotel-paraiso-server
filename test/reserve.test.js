@@ -2047,6 +2047,32 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, o valor de Offset da Query String de listagem é inválido.", function() {
+
+        let queryString = {
+          status: 'livre',
+          offset: '1a'
+        }
+
+        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=3`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Offset é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseList.body.RestException.ErrorParams[0].field).toBe('offset')
+            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do parâmetro Offset é inválido')
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
     })
 
   })
