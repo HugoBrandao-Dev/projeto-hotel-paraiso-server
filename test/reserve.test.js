@@ -1490,7 +1490,13 @@ describe("Suite de teste para as Reservas.", function() {
       // Busca reservas que possuem um determinado Status.
       test("/GET - Deve retornar 200, na listagem de reservas LIVRES.", function() {
 
-        return request.get(`${ endpoints.toList }?status=livre`).set('Authorization', accounts.funcionario.token)
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
@@ -1514,7 +1520,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS.", function() {
 
-        return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
+        let params = {
+          status: 'reservado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
@@ -1538,7 +1550,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO.", function() {
 
-        return request.get(`${ endpoints.toList }?status=ocupado`).set('Authorization', accounts.funcionario.token)
+        let params = {
+          status: 'ocupado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
@@ -1562,7 +1580,13 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, na listagem de apartamento/reservas INDISPONÍVEL.", function() {
 
-        return request.get(`${ endpoints.toList }?status=indisponível`).set('Authorization', accounts.funcionario.token)
+        let params = {
+          status: 'indisponível'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
@@ -1587,20 +1611,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 1,
           limit: 3,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
@@ -1618,20 +1644,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas RESERVADO, com offset e limit para o Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'reservado',
           offset: 1,
           limit: 3,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
@@ -1649,51 +1677,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas OCUPADO, com offset e limit para o Funcionário.", function() {
 
-        let queryString = {
+        let params = {
           status: 'ocupado',
           offset: 2,
           limit: 1,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.funcionario.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
-
-            for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
-              expect(reserve.status).toBe('ocupado')
-            }
-
-            expect(hasNext).toEqual(true)
-
-          })
-          .catch(function(errorList) {
-            fail(errorList)
-          })
-
-      })
-
-      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas INDISPONÍVEL, com offset e limit para o Funcionário.", function() {
-
-        let queryString = {
-          status: 'ocupado',
-          offset: 1,
-          limit: 2,
-        }
-
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.funcionario.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(200)
-
-            const { reserves, hasNext } = responseList.body
-
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
@@ -1713,20 +1712,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Gerente.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 1,
           limit: 3,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.gerente.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
@@ -1744,20 +1745,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas RESERVADO, com offset e limit para o Gerente.", function() {
 
-        let queryString = {
+        let params = {
           status: 'reservado',
           offset: 1,
           limit: 3,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.gerente.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
@@ -1775,20 +1778,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas OCUPADO, com offset e limit para o Gerente.", function() {
 
-        let queryString = {
+        let params = {
           status: 'ocupado',
           offset: 2,
           limit: 1,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.gerente.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
@@ -1806,20 +1811,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas INDISPONÍVEL, com offset e limit para o Gerente.", function() {
 
-        let queryString = {
+        let params = {
           status: 'ocupado',
           offset: 1,
           limit: 2,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.gerente.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
@@ -1839,20 +1846,22 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Admin.", function() {
 
-        let queryString = {
+        let params = {
           status: 'livre',
           offset: 1,
           limit: 3,
         }
 
-        return request.get(`${ endpoints.toList }?status=${ queryString.status }&offset=${ queryString.offset }&limit=${ queryString.limit }`).set('Authorization', accounts.admin.token)
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.admin.token)
           .then(function(responseList) {
 
             expect(responseList.statusCode).toEqual(200)
 
             const { reserves, hasNext } = responseList.body
 
-            expect(reserves).toHaveLength(queryString.limit)
+            expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
