@@ -4045,24 +4045,27 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
-      /*
       test("/DELETE - Deve retornar 404, já que o ID informado não corresponde a um apartamento cadastrado.", function() {
+
         const apartment = { id: '27ibm1he7gl4ei9i7jcaccc' }
 
-        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
+
             expect(response.statusCode).toEqual(404)
 
             expect(response.body.RestException.Code).toBe("3")
             expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
             expect(response.body.RestException.Status).toBe("404")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
           })
           .catch(function(error) {
             fail(error)
           })
+
       })
-      */
+
     })
 
   })
