@@ -254,16 +254,16 @@ class ReserveController {
               if (hasNext) {
                 reserves.pop()
               }
-
-              for (let reserve of reserves) {
-                let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
-                reserve._links = HATEOAS
-              }
-
-              res.status(200)
-              res.json({ reserves, hasNext })
-              return
             }
+
+            for (let reserve of reserves) {
+              let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
+              reserve._links = HATEOAS
+            }
+
+            res.status(200)
+            res.json({ reserves, hasNext })
+            return
           }
 
         }

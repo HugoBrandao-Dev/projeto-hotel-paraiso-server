@@ -1409,6 +1409,58 @@ describe("Suite de teste para as Reservas.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
+      /* ################## CLIENTES ################## */
+
+      test("/GET - Deve retornar 200, na listagem de reservas.", function() {
+
+        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.user_id).toBe(accounts.cliente.id)
+              expect(reserve.reservedIn).toBeDefined()
+            }
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de reservas LIVRES para o Cliente.", function() {
+
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(0)
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      /* ################## FUNCIONÁRIO ################## */
+
       // Busca por uma única reserva, baseada no ID do apartamento.
       test("/GET - Deve retornar 200, na busca de uma reserva baseada no ID do apartamento.", function() {
 
@@ -1488,7 +1540,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       // Busca reservas que possuem um determinado Status.
-      test("/GET - Deve retornar 200, na listagem de reservas LIVRES.", function() {
+      test("/GET - Deve retornar 200, na listagem de reservas LIVRES para o Funcionário.", function() {
 
         let params = {
           status: 'livre'
@@ -1606,8 +1658,6 @@ describe("Suite de teste para as Reservas.", function() {
           })
 
       })
-
-      /* ################## FUNCIONÁRIO ################## */
 
       test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Funcionário.", function() {
 
