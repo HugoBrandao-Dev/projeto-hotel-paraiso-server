@@ -1979,6 +1979,8 @@ describe("Suite de teste para as Reservas.", function() {
 
       })
 
+      // Listagem para clientes com Query String
+
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido.", function() {
 
         return request.get(`${ endpoints.toList }?staus=livre`).set('Authorization', accounts.cliente.token)
@@ -2117,6 +2119,27 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
             expect(responseList.body.RestException.ErrorParams[0].field).toBe('limit')
             expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe("O valor do parâmetro Limit é inválido")
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      // Listagem para funcionários com Query String
+
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido pelo funcionario.", function() {
+
+        return request.get(`${ endpoints.toList }?staus=livre`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'staus\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
 
           })
           .catch(function(errorList) {
