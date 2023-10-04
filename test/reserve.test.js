@@ -3948,37 +3948,45 @@ describe("Suite de teste para as Reservas.", function() {
   // A Deletação/Cancelamento de uma reserva se baseia no ID do apartamento.
   describe("DELETE", function() {
 
-    /*
     describe("Teste de SUCESSO.", function() {
-      test("/DELETE - Deve retornar 200, para cancelamento/deleção da reserva.", function() {
-        const apartment = { id: 'f5gee7kf7l3dl2950gbn3ckf' }
+      test("/DELETE - Deve retornar 200, para cancelamento a reserva pelo Cliente .", function() {
 
-        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
-          .then(function(responseDELETE) {
-            expect(responseDELETE.statusCode).toEqual(200)
+        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
 
-            return request.get(`${ endpoints.toRead }/${ apartment.id }`)
-              .then(function(responseGET) {
-                expect(responseGET.statusCode).toEqual(200)
-                expect(responseGET.body).toMatchObject({
-                  apartment_id: apartment.id,
-                  status: 'livre',
-                  user_id: '',
-                  date: '',
-                  start: '',
-                  end: ''
-                })
+            const apartment = { id: responseList.body.reserves[0].apartment_id }
+
+            return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseDelete) {
+
+                expect(responseDelete.statusCode).toEqual(200)
+
+                return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+                  .then(function(responseRead) {
+                    expect(responseRead.statusCode).toEqual(200)
+                    expect(responseRead.body).toMatchObject({
+                      apartment_id: apartment.id,
+                      status: 'livre',
+                      user_id: '',
+                      date: '',
+                      start: '',
+                      end: ''
+                    })
+                  })
+                  .catch(function(errorRead) {
+                    fail(errorRead)
+                  })
               })
-              .catch(function(errorGET) {
-                fail(errorGET)
+              .catch(function(errorDelete) {
+                fail(errorDelete)
               })
+
           })
-          .catch(function(errorDELETE) {
-            fail(errorDELETE)
+          .catch(function(errorList) {
+            fail(errorList)
           })
       })
     })
-    */
 
     describe("Teste de FALHA.", function() {
 
