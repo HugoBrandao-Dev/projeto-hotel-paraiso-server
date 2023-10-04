@@ -3949,6 +3949,7 @@ describe("Suite de teste para as Reservas.", function() {
   describe("DELETE", function() {
 
     describe("Teste de SUCESSO.", function() {
+
       test("/DELETE - Deve retornar 200, para cancelamento a reserva pelo Cliente .", function() {
 
         return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
@@ -3986,6 +3987,45 @@ describe("Suite de teste para as Reservas.", function() {
             fail(errorList)
           })
       })
+
+      test("/DELETE - Deve retornar 200, para cancelamento a reserva pelo Cliente .", function() {
+
+        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            const apartment = { id: responseList.body.reserves[0].apartment_id }
+
+            return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+              .then(function(responseDelete) {
+
+                expect(responseDelete.statusCode).toEqual(200)
+
+                return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+                  .then(function(responseRead) {
+                    expect(responseRead.statusCode).toEqual(200)
+                    expect(responseRead.body).toMatchObject({
+                      apartment_id: apartment.id,
+                      status: 'livre',
+                      user_id: '',
+                      date: '',
+                      start: '',
+                      end: ''
+                    })
+                  })
+                  .catch(function(errorRead) {
+                    fail(errorRead)
+                  })
+              })
+              .catch(function(errorDelete) {
+                fail(errorDelete)
+              })
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+      })
+
     })
 
     describe("Teste de FALHA.", function() {
