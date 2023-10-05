@@ -4,6 +4,7 @@ const Generator = require('../src/tools/Generator')
 const ApartmentsTools = require('../src/tools/ApartmentsTools')
 
 const EndPoints = require('../src/routes/endpoints')
+const userEndPoints = new EndPoints({ singular: 'user', plural: 'users' })
 const endpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
 
 const request = supertest(app)
@@ -27,7 +28,7 @@ function register(user) {
 
   return new Promise((resolve, reject) => {
 
-    return request.post('/user').send(user)
+    return request.post(userEndPoints.toCreate).send(user)
       .then(response => {
 
         if (response.statusCode == 201) {
@@ -56,7 +57,7 @@ function login(login) {
 
   return new Promise((resolve, reject) => {
 
-    return request.post('/login').send(login)
+    return request.post(userEndPoints.toLogin).send(login)
       .then(response => {
 
         if (response.statusCode == 200) {
@@ -78,7 +79,7 @@ function updateRole(userID, role) {
 
   return new Promise((resolve, reject) => {
 
-    return request.put('/user').send({
+    return request.put(userEndPoints.toUpdate).send({
       id: userID,
       role
     }).set('Authorization', accounts.admin.token)

@@ -33,19 +33,21 @@ class Generator {
   }
 
   static genHATEOAS(id, plural, singular, toAdmin = false) {
+
+
     let HATEOAS = [
       {
-        href: `${ baseURL }/${ singular }/${ id }`,
+        href: `${ baseURL }/${ plural }/${ id }`,
         method: 'GET',
         rel: `self_${ singular }`
       },
       {
-        href: `${ baseURL }/${ singular }`,
+        href: `${ baseURL }/${ plural }`,
         method: 'PUT',
         rel: `edit_${ singular }`
       },
       {
-        href: `${ baseURL }/${ singular }/${ id }`,
+        href: `${ baseURL }/${ plural }/${ id }`,
         method: 'DELETE',
         rel: `delete_${ singular }`
       },

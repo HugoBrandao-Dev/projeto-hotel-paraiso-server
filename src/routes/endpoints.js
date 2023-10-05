@@ -6,14 +6,14 @@ class EndPoints {
   }
 
   get toCreate() {
-    return `/${ this.substantive.singular }`
+    return `/${ this.substantive.plural }`
   }
 
   get toRead() {
     if (this.withParams) {
-      return `/${ this.substantive.singular }/:id`
+      return `/${ this.substantive.plural }/:id`
     }
-    return `/${ this.substantive.singular }`
+    return `/${ this.substantive.plural }`
   }
 
   get toList() {
@@ -25,14 +25,14 @@ class EndPoints {
   }
 
   get toUpdate() {
-    return `/${ this.substantive.singular }`
+    return `/${ this.substantive.plural }`
   }
 
   get toDelete() {
     if (this.withParams) {
-      return `/${ this.substantive.singular }/:id`
+      return `/${ this.substantive.plural }/:id`
     }
-    return `/${ this.substantive.singular }`
+    return `/${ this.substantive.plural }`
   }
 
   get toLogin() {
