@@ -1,6 +1,7 @@
 const app = require('../src/app')
 const supertest = require('supertest')
 const Generator = require('../src/tools/Generator')
+const ApartmentsTools = require('../src/tools/ApartmentsTools')
 
 const EndPoints = require('../src/routes/endpoints')
 const endpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
@@ -210,9 +211,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "1",
-          number: "3",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -421,9 +424,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
       // Validação do Piso do apartamento.
       test("/POST - Deve retornar 400 pela ausência do campo de Piso (floor) do apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "",
-          number: "9",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -450,6 +455,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(response.statusCode).toEqual(400)
 
+            console.log(response.body)
+
             expect(response.body.RestException.Code).toBe("1")
             expect(response.body.RestException.Message).toBe("O campo de Piso do apartamento é obrigatório")
             expect(response.body.RestException.Status).toBe("400")
@@ -466,9 +473,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, pelo valor do Piso (floor) do apartamento ser inválido.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "occuped",
-          number: "9",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -512,9 +521,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, pelo valor do Piso (floor) do apartamento ser inválido (estar fora do intervalo válido).", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "88",
-          number: "9",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -695,9 +706,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
       // Validação dos cômodos
       test("/POST - Deve retornar 400, pela ausência dos valores dos cômodos do apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         const apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [],
           daily_price: '200'
         }
@@ -723,9 +736,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, pela ausência do valor do nome do campo obrigatório.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: '',
@@ -756,9 +771,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, pela presença de campos inválidos nos cômodos do apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               // Não é 'rooms' e sim 'room'
@@ -790,9 +807,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, pela presença de um caracter inválido no nome do cômodo do apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'sala de estar*',
@@ -823,9 +842,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, pela ausência de um campo no cômodo do apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               quantity: '1'
@@ -855,9 +876,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos na quantidade de um determinado comodo.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -888,9 +911,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido ao valor da quantidade de cômodo estar fora do intervalo válido.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'cozinha',
@@ -921,9 +946,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido a presença de ponto na quantidade comodo.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'cozinha',
@@ -954,9 +981,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido a presença de ponto na quantidade comodo.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'cozinha',
@@ -988,9 +1017,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
       // Validação da diária do apartamento.
       test("/POST - Deve retornar 400, devido a ausência do valor da diária.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -1033,9 +1064,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido ao valor da diária ser inválido.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -1078,9 +1111,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -1123,9 +1158,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -1168,9 +1205,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/POST - Deve retornar 400, devido a presença de caracteres inválidos no valor da diária.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           floor: "3",
-          number: "10",
+          number,
           rooms: [
             {
               room: 'sala de estar',

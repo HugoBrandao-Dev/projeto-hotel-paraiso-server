@@ -3,8 +3,8 @@
     "data": [
       {
         "id": "856377c88f8fd9fc65fd3ef5",
-        "floor": "3",
-        "number": "11",
+        "floor": "1",
+        "number": "1",
         "rooms": [
           {
             "room": "sala de estar",
@@ -42,8 +42,8 @@
       },
       {
         "id": "d9d62beecdde62af82efd82c",
-        "floor": "3",
-        "number": "12",
+        "floor": "1",
+        "number": "2",
         "rooms": [
           {
             "room": "sala de estar",
@@ -82,7 +82,7 @@
       {
         "id": "02n07j2d1hf5a2f26djjj92a",
         "floor": "1",
-        "number": "2",
+        "number": "3",
         "rooms": [
           {
             "room": "sala de estar",
@@ -120,8 +120,8 @@
       },
       {
         "id": "48421917gjm6g8dhjj52lb7j",
-        "floor": "2",
-        "number": "3",
+        "floor": "1",
+        "number": "4",
         "rooms": [
           {
             "room": "sala de estar",
@@ -159,7 +159,7 @@
       },
       {
         "id": "n0kj2b1e0g9h22in405c9c6g",
-        "floor": "3",
+        "floor": "2",
         "number": "5",
         "rooms": [
           {
@@ -198,7 +198,7 @@
       },
       {
         "id": "1nencg05fo8b258k1240dpkhm1",
-        "floor": "3",
+        "floor": "2",
         "number": "6",
         "rooms": [
           {
@@ -237,7 +237,7 @@
       },
       {
         "id": "2i8ji7m14b1ipplbh83igdca9j",
-        "floor": "3",
+        "floor": "2",
         "number": "7",
         "rooms": [
           {
@@ -276,7 +276,7 @@
       },
       {
         "id": "g518a87llijik93fj6o3hhlgik",
-        "floor": "3",
+        "floor": "2",
         "number": "8",
         "rooms": [
           {
@@ -315,7 +315,7 @@
       },
       {
         "id": "i96ano7g28l02oc4d1jn4o5ogk",
-        "floor": "4",
+        "floor": "3",
         "number": "9",
         "rooms": [
           {
@@ -354,7 +354,7 @@
       },
       {
         "id": "mmfel7oi6p43kjj6jebln8dn97",
-        "floor": "4",
+        "floor": "3",
         "number": "10",
         "rooms": [
           {
@@ -393,8 +393,8 @@
       },
       {
         "id": "cljn205e58dcmh6fb0ffabgg",
-        "floor": "2",
-        "number": "4",
+        "floor": "3",
+        "number": "11",
         "rooms": [
           {
             "room": "sala de estar",
@@ -432,8 +432,8 @@
       },
       {
         "id": "27ibm1he7gl4ei9i7jcacbl6",
-        "floor": "1",
-        "number": "1",
+        "floor": "3",
+        "number": "12",
         "rooms": [
           {
             "room": "sala de estar",
@@ -510,8 +510,8 @@
       },
       {
         "id": "f5gee7kf7l3dl2950gbn3ckf",
-        "floor": "3",
-        "number": "10",
+        "floor": "4",
+        "number": "14",
         "rooms": [
           {
             "room": "sala de estar",
@@ -550,7 +550,7 @@
       {
         "id": "8k238ol02blnk6ha8mabfdk1gh",
         "floor": "4",
-        "number": "14",
+        "number": "15",
         "rooms": [
           {
             "room": "sala de estar",
@@ -587,9 +587,9 @@
         }
       },
       {
-        "id": "8k238ol02blnk6ha8mabfdk1gh",
+        "id": "41ej89h75e11i4c9d0cmfc1l52",
         "floor": "4",
-        "number": "14",
+        "number": "16",
         "rooms": [
           {
             "room": "sala de estar",
@@ -628,7 +628,7 @@
       {
         "id": "ncn1l70ga62n07840ffmmek9li",
         "floor": "5",
-        "number": "15",
+        "number": "17",
         "rooms": [
           {
             "room": "sala de estar",
@@ -667,7 +667,7 @@
       {
         "id": "8lledjn11moc178l358k0lbj6a",
         "floor": "5",
-        "number": "15",
+        "number": "18",
         "rooms": [
           {
             "room": "sala de estar",
