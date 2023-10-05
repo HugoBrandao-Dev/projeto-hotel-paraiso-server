@@ -1548,10 +1548,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           id: "d9d62beecdde62af82efd82c",
           floor: "3",
-          number: "7",
+          number,
           rooms: [
             {
               room: "sala de estar",
@@ -1606,10 +1608,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
                 const { rooms, updated, _links } = responseRead.body
 
+                let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
                 expect(responseRead.body).toMatchObject({
                   id: apartment.id,
-                  floor: "3",
-                  number: "7",
+                  floor: apartmentJSON.floor,
+                  number: apartmentJSON.number,
                 })
 
                 expect(rooms).toBeDefined()
@@ -1658,10 +1662,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento, onde se faz uso de seu próprio número.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           id: "856377c88f8fd9fc65fd3ef5",
           floor: "3",
-          number: "11",
+          number,
           rooms: [
             {
               room: "sala de estar",
@@ -1693,10 +1699,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
                 const { rooms, updated, _links } = responseGET.body
 
+                let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
                 expect(responseGET.body).toMatchObject({
                   id: apartment.id,
-                  floor: "3",
-                  number: "11",
+                  floor: apartmentJSON.floor,
+                  number: apartmentJSON.number,
                 })
 
                 expect(rooms).toBeDefined()
@@ -1991,10 +1999,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/PUT - Deve retornar 400, uma vez que o ID informado é inválido.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = { 
           id: 'ljb9kf3d5a65f17ljf2i0kc*',
           floor: "3",
-          number: "9",
+          number,
           rooms: [
             {
               room: 'sala de estar',
@@ -2035,10 +2045,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/PUT - Deve retornar 404, uma vez que o ID informado não pertence a um apartamento.", function() {
 
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
         let apartment = {
           id: 'ljb9kf3d5a65f17ljf2i0kc7',
           floor: "3",
-          number: "9",
+          number,
           rooms: [
             {
               room: 'sala de estar',
