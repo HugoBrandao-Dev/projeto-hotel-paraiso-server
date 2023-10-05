@@ -2,6 +2,22 @@ const ApartmentCollection = require('../data/ApartmentCollection.json')
 
 class ApartmentsTools {
 
+  // Busca um Apartamento pelo ID cadastrado no JSON (o ID deve estar correto).
+  static getApartmentByID(id) {
+
+    try {
+
+      let apartment = ApartmentCollection.apartments.data.find(apto => apto.id == id)
+
+      return apartment
+
+    } catch (error) {
+      console.error(error)
+    }
+
+  }
+
+  // Pega o menor e o maior Piso de Apartamento cadastrado.
   static getMinMaxFloor() {
 
     try {
@@ -18,6 +34,7 @@ class ApartmentsTools {
 
   }
 
+  // Pega o menor e o maior Número de Apartamento cadastrado.
   static getMinMaxNumber() {
 
     try {

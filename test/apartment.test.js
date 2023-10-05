@@ -455,8 +455,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(response.statusCode).toEqual(400)
 
-            console.log(response.body)
-
             expect(response.body.RestException.Code).toBe("1")
             expect(response.body.RestException.Message).toBe("O campo de Piso do apartamento é obrigatório")
             expect(response.body.RestException.Status).toBe("400")
@@ -1277,11 +1275,13 @@ describe("Suite de testes das rotas de Apartment.", function() {
               _links
             } = response.body
 
+            let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
             expect(response.body).toMatchObject({
               id: apartment.id,
-              floor: "3",
-              number: "12",
-              daily_price: "500",
+              floor: apartmentJSON.floor,
+              number: apartmentJSON.number,
+              daily_price: apartmentJSON.daily_price,
             })
 
             expect(rooms).toBeDefined()
@@ -1313,23 +1313,23 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(reserve).toBeDefined()
             expect(reserve).toMatchObject({
-              status: "ocupado",
-              user_id: "600f191e810c19829de900ea",
-              date: "2022-08-12T22:49:04.421Z",
-              start: "2022-11-12",
-              end: "2023-01-12"
+              status: apartmentJSON.reserve.status,
+              user_id: apartmentJSON.reserve.user_id,
+              reservedIn: apartmentJSON.reserve.reservedIn,
+              start: apartmentJSON.reserve.start,
+              end: apartmentJSON.reserve.end,
             })
 
             expect(created).toBeDefined()
             expect(created).toMatchObject({
-              createdAt: "2022-06-12T22:01:20.596Z",
-              createdBy: "5da9ea674234635bdff45c02"
+              createdAt: apartmentJSON.created.createdAt,
+              createdBy: apartmentJSON.created.createdBy,
             })
 
             expect(updated).toBeDefined()
             expect(updated).toMatchObject({
-              updatedAt: "2023-01-12T10:25:49.045Z",
-              updatedBy: "507f1f77bcf86cd799439011"
+              updatedAt: apartmentJSON.updated.updatedAt,
+              updatedBy: apartmentJSON.updated.updatedBy,
             })
 
             expect(_links).toBeDefined()
@@ -1576,10 +1576,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
         return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
           .then(function(responseUpdate) {
 
-            if (responseUpdate.body.RestException) {
-              console.log(responseUpdate.body.RestException)
-            }
-
             expect(responseUpdate.statusCode).toEqual(200)
 
             expect(responseUpdate.body._links).toBeDefined()
@@ -1689,10 +1685,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
         return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
           .then(function(responseUpdate) {
-
-            if (responseUpdate.body.RestException) {
-              console.log(responseUpdate.body.RestException)
-            }
 
             expect(responseUpdate.statusCode).toEqual(200)
 
