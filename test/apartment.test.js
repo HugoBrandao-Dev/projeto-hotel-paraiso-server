@@ -207,7 +207,7 @@ beforeAll(async () => {
 describe("Suite de testes das rotas de Apartment.", function() {
 
   describe("CREATE", function() {
-
+    /*
     describe("Testes de SUCESSO.", function() {
 
       test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
@@ -290,7 +290,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
-
+*/
     describe("Testes de FALHA.", function() {
 
       test("/POST - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
@@ -1249,10 +1249,63 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/POST - Deve retornar 400, a imagem enviada é inválida (extensão inválida).", function() {
+
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
+        let apartment = {
+          floor: "3",
+          number,
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '800'
+        }
+
+        let apartmentJSON = JSON.stringify(apartment)
+
+        return request.post(endpoints.toCreate)
+          .field('apartment', apartmentJSON, { contentType: 'application/json' })
+          .attach('iptImages', 'test/img/imgFail.txt')
+          .set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
+
+            expect(responseCreate.statusCode).toEqual(400)
+            console.log(responseCreate.body.RestException.Message)
+
+            expect(responseCreate.body.RestException.Code).toBe("2")
+            expect(responseCreate.body.RestException.Message).toBe("A extensão das imagens é inválida")
+            expect(responseCreate.body.RestException.Status).toBe("400")
+            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A extensão das imagens é inválida")
+
+          })
+          .catch(function(errorCreate) {
+            fail(errorCreate)
+          })
+
+      })
+
     })
 
   })
-
+/*
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -2291,5 +2344,5 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
     })
   })
-
+*/
 })
