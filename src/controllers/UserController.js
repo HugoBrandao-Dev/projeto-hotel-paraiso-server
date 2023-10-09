@@ -178,7 +178,7 @@ class UserController {
         const role = adminUsers.length > 0 ? '0' : '4'
 
         // OBRIGATÓRIOS
-        user.id = await Generator.genID()
+        user.id = Generator.genID()
         user.name = req.body.name
         user.email = req.body.email
         user.password = hash

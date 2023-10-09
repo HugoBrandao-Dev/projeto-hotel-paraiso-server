@@ -1286,13 +1286,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
           .then(function(responseCreate) {
 
             expect(responseCreate.statusCode).toEqual(400)
-            console.log(responseCreate.body.RestException.Message)
 
             expect(responseCreate.body.RestException.Code).toBe("2")
             expect(responseCreate.body.RestException.Message).toBe("A extensão das imagens é inválida")
             expect(responseCreate.body.RestException.Status).toBe("400")
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptDailyPrice')
+            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptImages')
             expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A extensão das imagens é inválida")
 
           })

@@ -3,9 +3,9 @@ const validator = require('validator')
 const baseURL = 'http://localhost:4000'
 
 class Generator {
-  static async genID() {
+  static genID() {
     try {
-      return await [...Array(24)].map(() => Math.floor(Math.random() * 24).toString(24)).join('')
+      return [...Array(24)].map(() => Math.floor(Math.random() * 24).toString(24)).join('')
     } catch (error) {
       console.log(error)
     }
