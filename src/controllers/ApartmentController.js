@@ -33,13 +33,26 @@ const Apartment = require('../models/Apartment')
 class ApartmentController {
   async create(req, res, next) {
     try {
+
+      let floor = null
+      let number = null
+      let rooms = null
+      let daily_price = null
+
+      if (req.body.apartment) {
+        let parsedApartment = JSON.parse(req.body.apartment)
+        floor = parsedApartment.floor
+        number = parsedApartment.number
+        rooms = parsedApartment.rooms
+        daily_price = parsedApartment.daily_price
+      } else {
+        floor = req.body.floor
+        number = req.body.number
+        rooms = req.body.rooms
+        daily_price = req.body.daily_price
+      }
+
       let errorFields = []
-      const {
-        floor,
-        number,
-        rooms,
-        daily_price
-      } = req.body
 
       const floorResult = Analyzer.analyzeApartmentFloor(floor)
       if (floorResult.hasError.value) {
