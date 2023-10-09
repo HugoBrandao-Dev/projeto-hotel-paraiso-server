@@ -10,6 +10,7 @@ const ApartmentController = require('../controllers/ApartmentController')
 const ReserveController = require('../controllers/ReserveController')
 const authorization = require('../middlewares/authorization')
 const authentication = require('../middlewares/authentication')
+const multerConfig = require('../middlewares/multerConfig')
 
 router.get('/', HomeController.index)
 
@@ -37,7 +38,7 @@ router.delete(userEndpoints.toDelete, authorization, authentication, UserControl
 const apartmentEndpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' }, true)
 
 // Create
-router.post(apartmentEndpoints.toCreate, authorization, authentication, ApartmentController.create)
+router.post(apartmentEndpoints.toCreate, authorization, authentication, multerConfig,ApartmentController.create)
 
 // Read
 router.get(apartmentEndpoints.toRead, authorization, authentication, ApartmentController.read)
