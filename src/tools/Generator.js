@@ -1,6 +1,7 @@
 const validator = require('validator')
-
 const baseURL = 'http://localhost:4000'
+const path = require('path')
+const fileSystem = require('fs')
 
 class Generator {
   static genID() {
@@ -34,7 +35,6 @@ class Generator {
 
   static genHATEOAS(id, plural, singular, toAdmin = false) {
 
-
     let HATEOAS = [
       {
         href: `${ baseURL }/${ plural }/${ id }`,
@@ -62,6 +62,22 @@ class Generator {
     }
 
     return HATEOAS
+  }
+
+  static genBinaryFile(fileName) {
+
+    // Todos os arquivo devem estar dentro da pasta IMG.
+    let src = path.resolve(__dirname, `../../test/img/${ fileName }`)
+
+    fileSystem.readFile(src, 'binary', function(errorFile, responseFile) {
+      if (errorFile) {
+        console.log(errorFile)
+        return
+      } else {
+        return responseFile
+      }
+    })
+
   }
 }
 
