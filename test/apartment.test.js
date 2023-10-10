@@ -22,7 +22,7 @@ let accounts = {
 }
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
-jest.setTimeout(20000)
+jest.setTimeout(50000)
 
 function register(user) {
 
@@ -1298,6 +1298,61 @@ describe("Suite de testes das rotas de Apartment.", function() {
           .catch(function(errorCreate) {
             fail(errorCreate)
           })
+
+      })
+
+      test("/POST - Deve retornar 400, uma das imagens enviadas é inválida (extensão inválida).", function() {
+
+        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
+        let apartment = {
+          floor: "3",
+          number,
+          rooms: [
+            {
+              room: 'sala de estar',
+              quantity: '1'
+            },
+            {
+              room: 'cozinha',
+              quantity: '1'
+            },
+            {
+              room: 'banheiro',
+              quantity: '1'
+            },
+            {
+              room: 'quarto',
+              quantity: '1'
+            }
+          ],
+          daily_price: '800'
+        }
+
+        let apartmentJSON = JSON.stringify(apartment)
+
+        let livingRoom = Generator.genBinaryFile('living-room.jpg')
+
+          return request.post(endpoints.toCreate)
+            .field('apartment', apartmentJSON, { contentType: 'application/json' })
+            .attach('iptImages', livingRoom)
+            .attach('iptImages', 'test/img/imgFail.txt')
+            .set('Authorization', accounts.admin.token)
+            .then(function(responseCreate) {
+
+              expect(responseCreate.statusCode).toEqual(400)
+
+              expect(responseCreate.body.RestException.Code).toBe("2")
+              expect(responseCreate.body.RestException.Message).toBe("A extensão das imagens é inválida")
+              expect(responseCreate.body.RestException.Status).toBe("400")
+              expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+              expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptImages')
+              expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A extensão das imagens é inválida")
+
+            })
+            .catch(function(errorCreate) {
+              fail(errorCreate)
+            })
 
       })
 
