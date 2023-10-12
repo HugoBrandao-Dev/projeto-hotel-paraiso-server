@@ -3,6 +3,19 @@ const supertest = require('supertest')
 const Generator = require('../src/tools/Generator')
 const ApartmentsTools = require('../src/tools/ApartmentsTools')
 
+const path = require('path')
+
+function genPath(img) {
+  return new Promise(function(resolve, reject) {
+    let src = path.resolve(__dirname, `img/${ img }`)
+    if (src) {
+      resolve(src)
+    } else {
+      reject('Erro no SRC')
+    }
+  })
+}
+
 const EndPoints = require('../src/routes/endpoints')
 const userEndPoints = new EndPoints({ singular: 'user', plural: 'users' })
 const endpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
@@ -207,7 +220,7 @@ beforeAll(async () => {
 describe("Suite de testes das rotas de Apartment.", function() {
 
   describe("CREATE", function() {
-    /*
+
     describe("Testes de SUCESSO.", function() {
 
       test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
@@ -290,7 +303,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
-*/
+
     describe("Testes de FALHA.", function() {
 
       test("/POST - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
@@ -1249,110 +1262,127 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/POST - Deve retornar 400, a imagem enviada é inválida (extensão inválida).", function() {
+      test("/POST - Deve retornar 400, a imagem enviada é inválida (extensão inválida).", async function() {
 
-        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+        try {
 
-        let apartment = {
-          floor: "3",
-          number,
-          rooms: [
-            {
-              room: 'sala de estar',
-              quantity: '1'
-            },
-            {
-              room: 'cozinha',
-              quantity: '1'
-            },
-            {
-              room: 'banheiro',
-              quantity: '1'
-            },
-            {
-              room: 'quarto',
-              quantity: '1'
-            }
-          ],
-          daily_price: '800'
+          let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
+          let apartment = {
+            floor: "3",
+            number,
+            rooms: [
+              {
+                room: 'sala de estar',
+                quantity: '1'
+              },
+              {
+                room: 'cozinha',
+                quantity: '1'
+              },
+              {
+                room: 'banheiro',
+                quantity: '1'
+              },
+              {
+                room: 'quarto',
+                quantity: '1'
+              }
+            ],
+            daily_price: '800'
+          }
+
+          let apartmentJSON = JSON.stringify(apartment)
+
+          let imagens = ['imgFail.txt']
+
+          let requestCreate = request.post(endpoints.toCreate)
+
+          requestCreate
+            .set('Authorization', accounts.admin.token)
+            .field('apartment', apartmentJSON, { contentType: 'application/json' })
+
+          for (let image of imagens) {
+            let src = await genPath(image)
+            requestCreate.attach('iptImages', src)
+          }
+
+          let responseCreate = await requestCreate
+
+          expect(responseCreate.statusCode).toEqual(400)
+
+          expect(responseCreate.body.RestException.Code).toBe("2")
+          expect(responseCreate.body.RestException.Message).toBe("A extensão das imagens é inválida")
+          expect(responseCreate.body.RestException.Status).toBe("400")
+          expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptImages')
+          expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A extensão das imagens é inválida")
+
+        } catch (error) {
+          fail(error)
         }
-
-        let apartmentJSON = JSON.stringify(apartment)
-
-        return request.post(endpoints.toCreate)
-          .field('apartment', apartmentJSON, { contentType: 'application/json' })
-          .attach('iptImages', 'test/img/imgFail.txt')
-          .set('Authorization', accounts.admin.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(400)
-
-            expect(responseCreate.body.RestException.Code).toBe("2")
-            expect(responseCreate.body.RestException.Message).toBe("A extensão das imagens é inválida")
-            expect(responseCreate.body.RestException.Status).toBe("400")
-            expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptImages')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A extensão das imagens é inválida")
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
 
       })
 
-      test("/POST - Deve retornar 400, uma das imagens enviadas é inválida (extensão inválida).", function() {
+      test("/POST - Deve retornar 400, uma das imagens enviadas é inválida (extensão inválida).", async function() {
 
-        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+        try {
 
-        let apartment = {
-          floor: "3",
-          number,
-          rooms: [
-            {
-              room: 'sala de estar',
-              quantity: '1'
-            },
-            {
-              room: 'cozinha',
-              quantity: '1'
-            },
-            {
-              room: 'banheiro',
-              quantity: '1'
-            },
-            {
-              room: 'quarto',
-              quantity: '1'
-            }
-          ],
-          daily_price: '800'
-        }
+          let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
 
-        let apartmentJSON = JSON.stringify(apartment)
+          let apartment = {
+            floor: "3",
+            number,
+            rooms: [
+              {
+                room: 'sala de estar',
+                quantity: '1'
+              },
+              {
+                room: 'cozinha',
+                quantity: '1'
+              },
+              {
+                room: 'banheiro',
+                quantity: '1'
+              },
+              {
+                room: 'quarto',
+                quantity: '1'
+              }
+            ],
+            daily_price: '800'
+          }
 
-        let livingRoom = Generator.genBinaryFile('living-room.jpg')
+          let apartmentJSON = JSON.stringify(apartment)
 
-          return request.post(endpoints.toCreate)
-            .field('apartment', apartmentJSON, { contentType: 'application/json' })
-            .attach('iptImages', livingRoom)
-            .attach('iptImages', 'test/img/imgFail.txt')
+          let imagens = ['living-room.jpg', 'imgFail.txt']
+
+          let requestCreate = request.post(endpoints.toCreate)
+
+          requestCreate
             .set('Authorization', accounts.admin.token)
-            .then(function(responseCreate) {
+            .field('apartment', apartmentJSON, { contentType: 'application/json' })
 
-              expect(responseCreate.statusCode).toEqual(400)
+          for (let image of imagens) {
+            let src = await genPath(image)
+            requestCreate.attach('iptImages', src)
+          }
 
-              expect(responseCreate.body.RestException.Code).toBe("2")
-              expect(responseCreate.body.RestException.Message).toBe("A extensão das imagens é inválida")
-              expect(responseCreate.body.RestException.Status).toBe("400")
-              expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-              expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptImages')
-              expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A extensão das imagens é inválida")
+          let responseCreate = await requestCreate
 
-            })
-            .catch(function(errorCreate) {
-              fail(errorCreate)
-            })
+          expect(responseCreate.statusCode).toEqual(400)
+
+          expect(responseCreate.body.RestException.Code).toBe("2")
+          expect(responseCreate.body.RestException.Message).toBe("A extensão das imagens é inválida")
+          expect(responseCreate.body.RestException.Status).toBe("400")
+          expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptImages')
+          expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("A extensão das imagens é inválida")
+
+        } catch (error) {
+          fail(error)
+        }
 
       })
 
