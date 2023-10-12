@@ -21,7 +21,7 @@ function fileFilter (req, file, callback) {
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, 'tmp/uploads')
+    callback(null, 'src/tmp/uploads')
   },
   filename: function (req, file, callback) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -47,6 +47,7 @@ function multerFiles(req, res, next) {
       }]
       res.status(400)
       res.json({ RestException })
+      return
     }
     next()
   })
