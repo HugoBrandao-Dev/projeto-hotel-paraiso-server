@@ -1,5 +1,8 @@
 const multer = require('multer')
+const Generator = require('../tools/Generator')
+
 const path = require('path')
+const fileSystem = require('fs')
 
 const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
@@ -21,11 +24,26 @@ function fileFilter (req, file, callback) {
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, 'src/tmp/uploads')
+    let apartment = JSON.parse(req.body.apartment)
+
+    let src = path.resolve(__dirname, `../tmp/uploads/apartments`)
+
+    fileSystem.mkdir(`${ src }\\${ apartment.floor }\\${ apartment.number }`, { recursive: true }, (error, response) => {
+
+      if (error) {
+        console.log(error)
+      } else {
+        callback(null, `src/tmp/uploads/apartments/${ apartment.floor }/${ apartment.number }`)
+      }
+
+    })
   },
   filename: function (req, file, callback) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    callback(null, file.fieldname + '-' + uniqueSuffix)
+    let extension = path.extname(file.originalname)
+    let name = path.basename(file.originalname, extension)
+    let prefix = Generator.genID()
+    let result = `${ prefix }&${ name }${ extension }`
+    callback(null, result)
   }
 })
 
