@@ -26,14 +26,14 @@ const storage = multer.diskStorage({
   destination: function (req, file, callback) {
     let apartment = JSON.parse(req.body.apartment)
 
-    let src = path.resolve(__dirname, `../tmp/uploads/apartments`)
+    let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment.number }`)
 
-    fileSystem.mkdir(`${ src }\\${ apartment.floor }\\${ apartment.number }`, { recursive: true }, (error, response) => {
+    fileSystem.mkdir(src, { recursive: true }, (error, response) => {
 
       if (error) {
         console.log(error)
       } else {
-        callback(null, `src/tmp/uploads/apartments/${ apartment.floor }/${ apartment.number }`)
+        callback(null, src)
       }
 
     })
