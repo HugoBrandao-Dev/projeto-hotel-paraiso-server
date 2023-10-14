@@ -50,24 +50,28 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, fileFilter }).array('iptImages')
 
 function multerFiles(req, res, next) {
-  upload(req, res, function(error) {
-    if (error) {
-      let RestException = {}
-      RestException.Code = '2'
-      RestException.Message = 'A extensão das imagens é inválida'
-      RestException.Status = '400'
-      RestException.MoreInfo = `${ projectLinks.errors }/2`
-      RestException.ErrorFields = [{
-        field: 'iptImages',
-        hasError: {
-          error: "A extensão das imagens é inválida"
-        }
-      }]
-      res.status(400)
-      res.json({ RestException })
-      return
+  upload(req, res, async function(error) {
+    try {
+      if (error) {
+        let RestException = {}
+        RestException.Code = '2'
+        RestException.Message = 'A extensão das imagens é inválida'
+        RestException.Status = '400'
+        RestException.MoreInfo = `${ projectLinks.errors }/2`
+        RestException.ErrorFields = [{
+          field: 'iptImages',
+          hasError: {
+            error: "A extensão das imagens é inválida"
+          }
+        }]
+        res.status(400)
+        res.json({ RestException })
+        return
+      }
+      next()
+    } catch (error) {
+      console.log(error)
     }
-    next()
   })
 }
 
