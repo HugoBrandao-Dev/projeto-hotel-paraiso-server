@@ -271,12 +271,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
                 const { reserve, created, updated } = responseRead.body
 
-                expect(created).toBeDefined()
-                expect(created).toMatchObject({
-                  createdAt: expect.any(String),
-                  createdBy: accounts.admin.id
-                })
-
                 expect(reserve).toBeDefined()
                 expect(reserve).toMatchObject({
                   status: "livre",
@@ -286,11 +280,13 @@ describe("Suite de testes das rotas de Apartment.", function() {
                   end: "",
                 })
 
+                expect(created).toBeDefined()
                 expect(created).toMatchObject({
-                    createdAt: '',
-                    createdBy: ''
+                  createdAt: expect.any(String),
+                  createdBy: accounts.admin.id
                 })
 
+                expect(updated).toBeDefined()
                 expect(updated).toMatchObject({
                     updatedAt: '',
                     updatedBy: ''
@@ -1645,7 +1641,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
           expect(pictures).toHaveLength(picturesArray.length)
-          console.log(pictures)
 
           expect(reserve).toBeDefined()
           expect(reserve).toMatchObject({
