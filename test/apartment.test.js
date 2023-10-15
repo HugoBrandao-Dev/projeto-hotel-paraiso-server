@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const Generator = require('../src/tools/Generator')
 const ApartmentsTools = require('../src/tools/ApartmentsTools')
 
+const fileSystem = require('fs')
 const path = require('path')
 
 const EndPoints = require('../src/routes/endpoints')
@@ -2572,4 +2573,34 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
   })
 */
+})
+
+function deleteApartmentsFolder() {
+
+  return new Promise((resolve, reject) => {
+
+    let src = path.resolve(__dirname, '../src/tmp/uploads/apartments')
+
+    fileSystem.rmdir(src, { recursive: true }, (error, response) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(true)
+      }
+    })
+
+  })
+
+}
+
+afterAll(async () => {
+
+  try {
+
+    await deleteApartmentsFolder()
+
+  } catch (error) {
+    console.log(error)
+  }
+
 })
