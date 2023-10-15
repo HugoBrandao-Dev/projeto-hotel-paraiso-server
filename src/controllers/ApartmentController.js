@@ -169,6 +169,8 @@ class ApartmentController {
       let pictures = await Apartment.findPictures(apartment.number)
       if (pictures.length)
         apartment.pictures = pictures
+      else 
+        apartment.pictures = []
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
 

@@ -8,9 +8,11 @@ const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 
-// Só é possível aceitar arquivos que sejam do tipo JPEG.
 function fileFilter (req, file, callback) {
+
+  // Só é possível aceitar arquivos que tenham extensão JPG.
   let validExtensions = ['.jpg']
+
   let fileExtension = path.extname(file.originalname)
   if (!validExtensions.includes(fileExtension)) {
     callback(null, false)
@@ -28,6 +30,7 @@ const storage = multer.diskStorage({
 
     let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment.number }`)
 
+    // Cria uma pasta com o nome do número do apto, para armazenar as imagens.
     fileSystem.mkdir(src, { recursive: true }, (error, response) => {
 
       if (error) {
@@ -50,6 +53,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, fileFilter }).array('iptImages')
 
 function multerFiles(req, res, next) {
+
+  // O async/await é necessário para evitar erros READ e WRITE de arquivos.
   upload(req, res, async function(error) {
     try {
       if (error) {

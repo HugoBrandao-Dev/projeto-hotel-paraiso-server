@@ -60,12 +60,15 @@ class Apartment {
     }
   }
 
+  // Faz a busca das imagens de um apartamento, baseado em seu número.
   async findPictures(number) {
 
     try {
 
       let src = await path.resolve(__dirname, `../tmp/uploads/apartments/${ number }`)
 
+      // Verifica se a pasta do apto existe.
+      // OBS: Os métodos accessSync() e statSync() NÃO ACEITAM OPERADORES TERNÁRIOS.
       let hasFolder = await fileSystem.existsSync(src) ? true : false
 
       if (hasFolder) {
@@ -74,10 +77,7 @@ class Apartment {
         if (!pictureNames.length)
           return []
 
-        let pictures = pictureNames.map(name => {
-          let pic = path.resolve(__dirname, `..\\tmp\\uploads\\apartments\\${ number }`, name)
-          return pic.split("\\\\").join("\\")
-        })
+        let pictures = pictureNames.map(name => path.resolve(__dirname, `..\\tmp\\uploads\\apartments\\${ number }`, name))
 
         return pictures
       }
