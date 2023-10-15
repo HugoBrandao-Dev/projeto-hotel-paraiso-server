@@ -8,7 +8,7 @@ const projectLinks = {
   errors: 'https://projetohotelparaiso.dev/docs/erros'
 }
 
-// Só é possível aceitar arquivos que sejam do tipo JPEG
+// Só é possível aceitar arquivos que sejam do tipo JPEG.
 function fileFilter (req, file, callback) {
   let validExtensions = ['.jpg']
   let fileExtension = path.extname(file.originalname)

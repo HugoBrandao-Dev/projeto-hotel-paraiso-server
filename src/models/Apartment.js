@@ -1,6 +1,8 @@
 let ApartmentCollection = require('../data/ApartmentCollection.json')
 let DateFormated = require('../tools/DateFormated')
-let uuid = require('uuid')
+
+let fileSystem = require('fs')
+let path = require('path')
 
 // Gera um ID (hardcoded) em Hexadecimal
 function genID() {
@@ -56,6 +58,37 @@ class Apartment {
       console.log(error)
       return []
     }
+  }
+
+  async findPictures(number) {
+
+    try {
+
+      let src = await path.resolve(__dirname, `../tmp/uploads/apartments/${ number }`)
+
+      let hasFolder = await fileSystem.existsSync(src) ? true : false
+
+      if (hasFolder) {
+        let pictureNames = await fileSystem.readdirSync(src)
+
+        if (!pictureNames.length)
+          return []
+
+        let pictures = pictureNames.map(name => {
+          let pic = path.resolve(__dirname, `..\\tmp\\uploads\\apartments\\${ number }`, name)
+          return pic.split("\\\\").join("\\")
+        })
+
+        return pictures
+      }
+
+      return []
+
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+
   }
 
   async edit(apartment, updatedBy) {

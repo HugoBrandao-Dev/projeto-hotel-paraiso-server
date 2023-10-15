@@ -112,17 +112,17 @@ class ApartmentController {
       apartment.reserve = {
         status: "livre",
         user_id: "",
-        date: "",
+        reservedIn: "",
         start: "",
         end: "",
-        created: {
-          createdAt: '',
-          createdBy: ''
-        },
-        updated: {
-          updatedAt: '',
-          updatedBy: ''
-        }
+      }
+      apartment.created = {
+        createdAt: '',
+        createdBy: ''
+      }
+      apartment.updated = {
+        updatedAt: '',
+        updatedBy: ''
       }
       
       await Apartment.save(apartment, decodedToken.id)
@@ -166,6 +166,9 @@ class ApartmentController {
       }
       
       let apartment = await Apartment.findOne(id)
+      let pictures = await Apartment.findPictures(apartment.number)
+      if (pictures.length)
+        apartment.pictures = pictures
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
 

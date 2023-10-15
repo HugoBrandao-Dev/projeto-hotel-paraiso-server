@@ -1,4 +1,6 @@
 const ApartmentCollection = require('../data/ApartmentCollection.json')
+const fileSystem = require('fs')
+const path = require('path')
 
 class ApartmentsTools {
 
@@ -48,6 +50,22 @@ class ApartmentsTools {
     } catch (error) {
       console.error(error)
     }
+
+  }
+
+  // Pega as imagens de um apartamento, utilizando o Número informado.
+  static getPictures(apartment_number) {
+
+    return new Promise((resolve, reject) => {
+
+      fileSystem.readdir(path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment_number }`), (error, response) => {
+        if (error)
+          reject(error)
+        else
+          resolve(response)
+      })
+
+    })
 
   }
 

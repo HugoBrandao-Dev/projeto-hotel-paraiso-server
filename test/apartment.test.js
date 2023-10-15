@@ -5,17 +5,6 @@ const ApartmentsTools = require('../src/tools/ApartmentsTools')
 
 const path = require('path')
 
-function genPath(img) {
-  return new Promise(function(resolve, reject) {
-    let src = path.resolve(__dirname, `img/${ img }`)
-    if (src) {
-      resolve(src)
-    } else {
-      reject('Erro no SRC')
-    }
-  })
-}
-
 const EndPoints = require('../src/routes/endpoints')
 const userEndPoints = new EndPoints({ singular: 'user', plural: 'users' })
 const endpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
@@ -36,6 +25,21 @@ let accounts = {
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
 jest.setTimeout(50000)
+
+function extractApartmentID(link) {
+  return link.split('/')[4]
+}
+
+function genPath(img) {
+  return new Promise(function(resolve, reject) {
+    let src = path.resolve(__dirname, `img/${ img }`)
+    if (src) {
+      resolve(src)
+    } else {
+      reject('Erro no SRC')
+    }
+  })
+}
 
 function register(user) {
 
@@ -218,6 +222,7 @@ beforeAll(async () => {
 })
 
 describe("Suite de testes das rotas de Apartment.", function() {
+  let idRegisteredApartments = []
 
   describe("CREATE", function() {
 
@@ -264,7 +269,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', accounts.admin.token)
               .then(function(responseRead) {
 
-                const { reserve, created } = responseRead.body
+                const { reserve, created, updated } = responseRead.body
 
                 expect(created).toBeDefined()
                 expect(created).toMatchObject({
@@ -276,17 +281,17 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 expect(reserve).toMatchObject({
                   status: "livre",
                   user_id: "",
-                  date: "",
+                  reservedIn: "",
                   start: "",
                   end: "",
                 })
 
-                expect(reserve.created).toMatchObject({
+                expect(created).toMatchObject({
                     createdAt: '',
                     createdBy: ''
                 })
 
-                expect(reserve.updated).toMatchObject({
+                expect(updated).toMatchObject({
                     updatedAt: '',
                     updatedBy: ''
                 })
@@ -351,6 +356,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
           let responseCreate = await requestCreate
 
           expect(responseCreate.statusCode).toEqual(201)
+
+          idRegisteredApartments.push(extractApartmentID(responseCreate.body._links[0].href))
 
         } catch (error) {
           fail(error)
@@ -1445,7 +1452,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
 
   })
-/*
+
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -1605,8 +1612,93 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-    })
+      test("/GET - Deve retornar 200, para busca de um apartamento e suas imagens.", async function() {
 
+        try {
+
+          let apartment = {
+            id: idRegisteredApartments[0]
+          }
+
+          let responseCreate = await request.get(`${endpoints.toRead}/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+
+          expect(responseCreate.statusCode).toEqual(200)
+
+          const {
+            number,
+            rooms,
+            pictures,
+            reserve,
+            _links,
+            created,
+            updated
+          } = responseCreate.body
+
+          let picturesArray = await ApartmentsTools.getPictures(number)
+          let apartmentJSON = await ApartmentsTools.getApartmentByID(apartment.id)
+
+          expect(responseCreate.body).toMatchObject({
+            id: apartment.id,
+            floor: apartmentJSON.floor,
+            number: apartmentJSON.number,
+            daily_price: apartmentJSON.daily_price,
+          })
+
+          expect(pictures).toHaveLength(picturesArray.length)
+          console.log(pictures)
+
+          expect(reserve).toBeDefined()
+          expect(reserve).toMatchObject({
+            status: apartmentJSON.reserve.status,
+            user_id: apartmentJSON.reserve.user_id,
+            reservedIn: apartmentJSON.reserve.reservedIn,
+            start: apartmentJSON.reserve.start,
+            end: apartmentJSON.reserve.end,
+          })
+
+          expect(created).toBeDefined()
+          expect(created).toMatchObject({
+            createdAt: apartmentJSON.created.createdAt,
+            createdBy: apartmentJSON.created.createdBy,
+          })
+
+          expect(updated).toBeDefined()
+          expect(updated).toMatchObject({
+            updatedAt: apartmentJSON.updated.updatedAt,
+            updatedBy: apartmentJSON.updated.updatedBy,
+          })
+
+          expect(_links).toBeDefined()
+          expect(_links).toHaveLength(4)
+          expect(_links[0]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
+            method: 'GET',
+            rel: 'self_apartment'
+          })
+          expect(_links[1]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toUpdate }`,
+            method: 'PUT',
+            rel: 'edit_apartment'
+          })
+          expect(_links[2]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
+            method: 'DELETE',
+            rel: 'delete_apartment'
+          })
+          expect(_links[3]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toList }`,
+            method: 'GET',
+            rel: 'apartment_list'
+          })
+
+        } catch (error) {
+          fail(error)
+        }
+
+      })
+
+    })
+/*
     describe("Testes de FALHA.", function() {
 
       test("/GET - Deve retornar 401, o Cliente não está AUTORIZADO.", function() {
@@ -1733,9 +1825,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
-
+*/
   })
-
+/*
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
