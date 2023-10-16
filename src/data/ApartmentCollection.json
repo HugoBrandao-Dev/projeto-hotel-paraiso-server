@@ -23,6 +23,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "200",
         "reserve": {
           "status": "reservado",
@@ -62,6 +63,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
@@ -101,6 +103,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -140,6 +143,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -179,6 +183,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -218,6 +223,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -257,6 +263,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -296,6 +303,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -335,6 +343,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -374,6 +383,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -413,6 +423,7 @@
             "quantity": "2"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "livre",
@@ -452,6 +463,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "250",
         "reserve": {
           "status": "livre",
@@ -491,6 +503,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "indisponível",
@@ -530,6 +543,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "200",
         "reserve": {
           "status": "reservado",
@@ -569,6 +583,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
@@ -608,6 +623,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
@@ -647,6 +663,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
@@ -686,6 +703,7 @@
             "quantity": "1"
           }
         ],
+        "pictures": [],
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",

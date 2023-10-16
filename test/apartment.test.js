@@ -223,7 +223,7 @@ beforeAll(async () => {
 })
 
 describe("Suite de testes das rotas de Apartment.", function() {
-  let idRegisteredApartments = []
+  let idRegisteredApartmentsWithPictures = []
 
   describe("CREATE", function() {
 
@@ -354,7 +354,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
           expect(responseCreate.statusCode).toEqual(201)
 
-          idRegisteredApartments.push(extractApartmentID(responseCreate.body._links[0].href))
+          idRegisteredApartmentsWithPictures.push(extractApartmentID(responseCreate.body._links[0].href))
 
         } catch (error) {
           fail(error)
@@ -412,7 +412,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
           expect(responseCreate.statusCode).toEqual(201)
 
-          idRegisteredApartments.push(extractApartmentID(responseCreate.body._links[0].href))
+          idRegisteredApartmentsWithPictures.push(extractApartmentID(responseCreate.body._links[0].href))
 
         } catch (error) {
           fail(error)
@@ -1618,63 +1618,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar uma lista de apartamentos.", function() {
-
-        return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(200)
-
-            expect(responseList.body).toHaveProperty('apartments')
-            expect(responseList.body).toHaveProperty('hasNext')
-
-            let apartmentList = ApartmentsTools.getApartments()
-
-            expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
-
-            for (let apartment of responseList.body.apartments) {
-              expect(apartment._links).toBeDefined()
-              expect(apartment._links).toHaveLength(3)
-            }
-
-          })
-          .catch(function(errorList) {
-            fail(errorList)
-          })
-
-      })
-
-      test("/GET - Deve retornar uma lista de usuários, contendo limite de usuários.", function() {
-
-        let url = endpoints.toList + '?offset=1&limit=3'
-
-        return request.get(url).set('Authorization', accounts.funcionario.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(200)
-            expect(responseList.body.apartments.length).toEqual(2)
-
-            expect(responseList.body).toHaveProperty('apartments')
-            expect(responseList.body).toHaveProperty('hasNext')
-
-            for (let user of responseList.body.apartments) {
-              expect(user._links).toBeDefined()
-              expect(user._links).toHaveLength(3)
-            }
-
-          })
-          .catch(function(errorList) {
-            fail(errorList)
-          })
-
-      })
-
       test("/GET - Deve retornar 200, para busca de um apartamento e suas imagens.", async function() {
 
         try {
 
           let apartment = {
-            id: idRegisteredApartments[0]
+            id: idRegisteredApartmentsWithPictures[0]
           }
 
           let responseCreate = await request.get(`${endpoints.toRead}/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
@@ -1750,6 +1699,63 @@ describe("Suite de testes das rotas de Apartment.", function() {
         } catch (error) {
           fail(error)
         }
+
+      })
+
+      test("/GET - Deve retornar 200 e uma lista de apartamentos, com 0 ou várias fotos.", function() {
+
+        return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            expect(responseList.body).toHaveProperty('apartments')
+            expect(responseList.body).toHaveProperty('hasNext')
+
+            let apartmentList = ApartmentsTools.getApartments()
+
+            expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
+
+            for (let apartment of responseList.body.apartments) {
+              if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
+                let picturesCount = ApartmentsTools.getApartmentByID(apartment.id).pictures.length
+                expect(apartment.pictures).toHaveLength(picturesCount)
+              } else {
+                expect(apartment.pictures).toHaveLength(0)
+              }
+              expect(apartment._links).toBeDefined()
+              expect(apartment._links).toHaveLength(3)
+            }
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
+
+        let url = endpoints.toList + '?offset=1&limit=3'
+
+        return request.get(url).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+            expect(responseList.body.apartments.length).toEqual(2)
+
+            expect(responseList.body).toHaveProperty('apartments')
+            expect(responseList.body).toHaveProperty('hasNext')
+
+            for (let user of responseList.body.apartments) {
+              expect(user._links).toBeDefined()
+              expect(user._links).toHaveLength(3)
+            }
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
 
       })
 
