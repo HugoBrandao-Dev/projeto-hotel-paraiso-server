@@ -69,6 +69,30 @@ class ApartmentsTools {
 
   }
 
+  static getApartments(_offset = 0, _limit = 20) {
+
+    try {
+
+      let offset = parseInt(_offset)
+      let limit = parseInt(_limit)
+
+      let result = ApartmentCollection.apartments.data.slice(offset, (offset + limit + 1))
+
+      const hasNext = result.length > limit
+      if (hasNext)
+        result.pop()
+
+      return {
+        result,
+        hasNext
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
 }
 
 module.exports = ApartmentsTools

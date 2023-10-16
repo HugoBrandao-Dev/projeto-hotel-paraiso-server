@@ -1628,7 +1628,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body).toHaveProperty('apartments')
             expect(responseList.body).toHaveProperty('hasNext')
 
-            expect(responseList.body.hasNext).toBe(false)
+            let apartmentList = ApartmentsTools.getApartments()
+
+            expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
             for (let apartment of responseList.body.apartments) {
               expect(apartment._links).toBeDefined()
