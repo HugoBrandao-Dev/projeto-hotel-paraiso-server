@@ -1716,6 +1716,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
+            // As imagens com pictures são armazenadas por último, e o limite da listagem é 20.
             for (let apartment of responseList.body.apartments) {
               if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
                 let picturesCount = ApartmentsTools.getApartmentByID(apartment.id).pictures.length
@@ -1747,9 +1748,20 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body).toHaveProperty('apartments')
             expect(responseList.body).toHaveProperty('hasNext')
 
-            for (let user of responseList.body.apartments) {
-              expect(user._links).toBeDefined()
-              expect(user._links).toHaveLength(3)
+            let apartmentList = ApartmentsTools.getApartments()
+
+            expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
+
+            // As imagens com pictures são armazenadas por último, e o limite da listagem é 20.
+            for (let apartment of responseList.body.apartments) {
+              if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
+                let picturesCount = ApartmentsTools.getApartmentByID(apartment.id).pictures.length
+                expect(apartment.pictures).toHaveLength(picturesCount)
+              } else {
+                expect(apartment.pictures).toHaveLength(0)
+              }
+              expect(apartment._links).toBeDefined()
+              expect(apartment._links).toHaveLength(3)
             }
 
           })
