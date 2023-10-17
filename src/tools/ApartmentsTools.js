@@ -62,7 +62,10 @@ class ApartmentsTools {
         if (error){
           reject(error)
         } else {
-          resolve(response.map((picture => picture.split('&').slice(-1))).flat())
+          let result = response.map(picture => {
+            return picture.slice(picture.indexOf('&') + 1)
+          })
+          resolve(result)
         }
       })
 

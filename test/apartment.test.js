@@ -424,6 +424,70 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento onde o nome de uma das imagens contém caracter &.", async function() {
+
+        try {
+
+          let floor = (ApartmentsTools.getMinMaxFloor().max + 1).toString()
+          let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
+          let apartment = {
+            floor,
+            number,
+            rooms: [
+              {
+                room: 'sala de estar',
+                quantity: '1'
+              },
+              {
+                room: 'cozinha',
+                quantity: '1'
+              },
+              {
+                room: 'banheiro',
+                quantity: '1'
+              },
+              {
+                room: 'quarto',
+                quantity: '1'
+              }
+            ],
+            daily_price: '800'
+          }
+
+          let apartmentJSON = JSON.stringify(apartment)
+
+          let images = ['back&yard.jpg', 'kitchen.jpg']
+
+          let requestCreate = request.post(endpoints.toCreate)
+
+          requestCreate
+            .set('Authorization', accounts.admin.token)
+            .field('apartment', apartmentJSON, { contentType: 'application/json' })
+
+          for (let image of images) {
+            let src = await genPath(image)
+            requestCreate.attach('iptImages', src)
+          }
+
+          let responseCreate = await requestCreate
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          const picturesArray = await ApartmentsTools.getPictures(number)
+
+          expect(picturesArray).toEqual(
+            expect.arrayContaining(images)
+          )
+
+          idRegisteredApartmentsWithPictures.push(extractApartmentID(responseCreate.body._links[0].href))
+
+        } catch (errorCreate) {
+          fail(errorCreate)
+        }
+
+      })
+
     })
 
     describe("Testes de FALHA.", function() {
