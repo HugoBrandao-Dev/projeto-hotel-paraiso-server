@@ -720,7 +720,7 @@ class Analyzer {
             if (!item[field]) {
               result.hasError.value = true
               result.hasError.type = 2
-              result.hasError.error = "Um dos campos dos comodos informados não possui valor"
+              result.hasError.error = "Um dos campos dos cômodos informados não possui valor"
               return result
             }
           }

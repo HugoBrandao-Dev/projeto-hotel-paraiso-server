@@ -890,11 +890,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseCreate.statusCode).toEqual(400)
 
             expect(responseCreate.body.RestException.Code).toBe("2")
-            expect(responseCreate.body.RestException.Message).toBe('Um dos campos dos comodos informados não possui valor')
+            expect(responseCreate.body.RestException.Message).toBe('Um dos campos dos cômodos informados não possui valor')
             expect(responseCreate.body.RestException.Status).toBe("400")
             expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
             expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('iptRooms')
-            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('Um dos campos dos comodos informados não possui valor')
+            expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe('Um dos campos dos cômodos informados não possui valor')
 
           })
           .catch(function(errorCreate) {
@@ -1008,7 +1008,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos na quantidade de um determinado comodo.", function() {
+      test("/POST - Deve retornar 400, devido a presença de caracteres inválidos na quantidade de um determinado cômodo.", function() {
 
         let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
 
@@ -1078,7 +1078,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/POST - Deve retornar 400, devido a presença de ponto na quantidade comodo.", function() {
+      test("/POST - Deve retornar 400, devido a presença de ponto na quantidade cômodo.", function() {
 
         let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
 
@@ -1113,7 +1113,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/POST - Deve retornar 400, devido a presença de ponto na quantidade comodo.", function() {
+      test("/POST - Deve retornar 400, devido a presença de ponto na quantidade cômodo.", function() {
 
         let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
 
