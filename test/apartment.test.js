@@ -31,6 +31,10 @@ function extractApartmentID(link) {
   return link.split('/')[4]
 }
 
+function extractPictureName(src) {
+  return src.split('\\').slice(-1)
+}
+
 function genPath(img) {
   return new Promise(function(resolve, reject) {
     let src = path.resolve(__dirname, `img/${ img }`)
@@ -1901,7 +1905,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
 */
   })
-/*
+
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -2174,6 +2178,62 @@ describe("Suite de testes das rotas de Apartment.", function() {
           .catch(function(errorUpdate) {
             fail(errorUpdate)
           })
+
+      })
+
+      test("/PUT - Deve retornar 200, para atualização somente das fotos do apto.", async function() {
+
+        try {
+
+          const responseRead = await request.get(`${ endpoints.toRead }/${ idRegisteredApartmentsWithPictures[0] }`).set('Authorization', accounts.admin.token)
+
+          expect(responseRead.statusCode).toEqual(200)
+
+          const { number, pictures } = responseRead.body
+
+          try {
+
+            const requestUpdate = request.put(endpoints.toUpdate)
+
+            let apartment = {
+              id: idRegisteredApartmentsWithPictures[0],
+              picturesToBeDeleted: [extractPictureName(pictures[0])]
+            }
+
+            let apartmentJSON = JSON.stringify(apartment)
+
+            let images = ['kitchen.jpg']
+
+            requestUpdate
+              .set('Authorization', accounts.admin.token)
+              .field('apartment', apartmentJSON, { contentType: 'application/json' })
+
+            for (let image of images) {
+              let src = await genPath(image)
+              requestUpdate.attach('iptImages', src)
+            }
+
+            let responseUpdate = await requestUpdate
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            const picturesArray = await ApartmentsTools.getPictures(number)
+
+            expect(picturesArray).toEqual(
+              expect.not.arrayContaining(apartment.picturesToBeDeleted)
+            )
+
+            expect(picturesArray).toEqual(
+              expect.arrayContaining(images)
+            )
+
+          } catch (errorUpdate) {
+            fail(errorUpdate)
+          }
+
+        } catch (errorRead) {
+          fail(errorRead)
+        }
 
       })
 
@@ -2496,7 +2556,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
 
   })
-
+/*
   describe("DELETE", function() {
 
     describe("Testes de SUCESSO.", function() {

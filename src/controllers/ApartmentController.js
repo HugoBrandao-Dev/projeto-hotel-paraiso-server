@@ -218,24 +218,44 @@ class ApartmentController {
 
   async update(req, res, next) {
     try {
-      const {
-        id,
-        floor,
-        number,
-        rooms,
-        daily_price
-      } = req.body
+
+      let id = null
+      let floor = null
+      let number = null
+      let rooms = null
+      let picturesToBeDeleted = []
+      let daily_price = null
+
+      if (req.body.apartment) {
+        let parsedApartment = JSON.parse(req.body.apartment)
+        id = parsedApartment.id
+        floor = parsedApartment.floor
+        number = parsedApartment.number
+        rooms = parsedApartment.rooms
+        if (parsedApartment.picturesToBeDeleted && parsedApartment.picturesToBeDeleted.length) {
+          picturesToBeDeleted = parsedApartment.picturesToBeDeleted
+        }
+        daily_price = parsedApartment.daily_price
+      } else {
+        id = req.body.id
+        floor = req.body.floor
+        number = req.body.number
+        rooms = req.body.rooms
+        if (req.body.picturesToBeDeleted && req.body.picturesToBeDeleted.length) {
+          picturesToBeDeleted = req.body.picturesToBeDeleted
+        }
+        daily_price = req.body.daily_price
+      }
 
       let errorFields = []
       let apartment = {}
 
-      if (id) {
-        const idResult = await Analyzer.analyzeID(id, 'apartment')
-        if (idResult.hasError.value) {
+      const idResult = await Analyzer.analyzeID(id, 'apartment')
+      if (idResult.hasError.value) {
+        if (idResult.hasError.value != 4)
           errorFields.push(idResult)
-        } else {
-          apartment.id = id
-        }
+      } else {
+        apartment.id = id
       }
 
       let apartmentRegistred = await Apartment.findByNumber(number)
@@ -276,6 +296,11 @@ class ApartmentController {
           apartment.rooms = rooms
         }
       }
+
+      if (picturesToBeDeleted.length)
+        apartment.picturesToBeDeleted = picturesToBeDeleted
+      else
+        apartment.picturesToBeDeleted = []
       
       if (daily_price) {
         const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)

@@ -59,10 +59,11 @@ class ApartmentsTools {
     return new Promise((resolve, reject) => {
 
       fileSystem.readdir(path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment_number }`), (error, response) => {
-        if (error)
+        if (error){
           reject(error)
-        else
-          resolve(response)
+        } else {
+          resolve(response.map((picture => picture.split('&').slice(-1))).flat())
+        }
       })
 
     })

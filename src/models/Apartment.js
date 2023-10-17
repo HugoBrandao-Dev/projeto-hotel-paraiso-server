@@ -92,7 +92,9 @@ class Apartment {
   }
 
   async edit(apartment, updatedBy) {
+
     try {
+
       apartment.updated = {
         updatedAt: date.getDateTime(),
         updatedBy
@@ -105,11 +107,23 @@ class Apartment {
           ApartmentCollection.apartments.data[apartmentIndex][info] = apartment[info]
         }
       }
+
+      const aptoNumber = ApartmentCollection.apartments.data[apartmentIndex]['number']
+
+      if (apartment.picturesToBeDeleted.length) {
+        for (let pic of apartment.picturesToBeDeleted) {
+          let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ aptoNumber }/${ pic }`)
+          fileSystem.unlinkSync(src)
+        }
+      }
+
       return
+
     } catch (error) {
       console.log(error)
       return
     }
+
   }
 
   async delete(id) {
