@@ -127,18 +127,32 @@ class Apartment {
   }
 
   async delete(id) {
+
     try {
+
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == id)
+
       if (apartmentIndex == -1) {
         return 
       } else {
+        let aptoNumber = await ApartmentCollection.apartments.data[apartmentIndex]['number']
         let apartment = await ApartmentCollection.apartments.data.splice(apartmentIndex, 1)
+
+        // Faz a deleção da pasta de imagens do apto.
+        let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ aptoNumber }`)
+        let hasFolder = await fileSystem.existsSync(src) ? true : false
+        if (hasFolder) {
+          fileSystem.rmdirSync(src, { recursive: true, retryDelay: 1000 })
+        }
+
         return apartment
       }
+
     } catch (error) {
       console.log(error)
       return
     }
+
   }
 }
 

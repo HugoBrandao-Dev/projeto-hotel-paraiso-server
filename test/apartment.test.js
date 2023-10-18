@@ -2620,12 +2620,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
 
   })
-/*
+
   describe("DELETE", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("Deve retornar 200, na delecao de um apartamento.", function() {
+      test("/DELETE - Deve retornar 200, na delecao de um apartamento.", function() {
 
         return request.delete(`${ endpoints.toDelete }/856377c88f8fd9fc65fd3ef5`).set('Authorization', accounts.admin.token)
           .then(function(responseDelete) {
@@ -2654,9 +2654,43 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/DELETE - Deve retornar 200, na delecao do apto e da pasta de imagens do mesmo.", async function() {
+
+        try {
+          
+          const aptoNumber = ApartmentsTools.getApartmentByID(idRegisteredApartmentsWithPictures[2]).number
+
+          const responseDelete = await request.delete(`${ endpoints.toDelete }/${ idRegisteredApartmentsWithPictures[2] }`).set('Authorization', accounts.admin.token)
+
+          expect(responseDelete.statusCode).toEqual(200)
+
+          try {
+
+            const responseRead = await request.get(`${ endpoints.toRead }/${ idRegisteredApartmentsWithPictures[2] }`).set('Authorization', accounts.admin.token)
+
+            expect(responseRead.statusCode).toEqual(404)
+
+            expect(responseRead.body.RestException.Code).toBe("3")
+            expect(responseRead.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseRead.body.RestException.Status).toBe("404")
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+            let picturesArray = await ApartmentsTools.getPictures(aptoNumber)
+
+            expect(picturesArray).toHaveLength(0)
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorDelete) {
+          fail(errorDelete)
+        }
+
+      })
+
     })
-
-
+/*
     describe("Testes de FALHA.", function() {
 
       test("/DELETE - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
@@ -2773,8 +2807,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
-  })
 */
+  })
+
 })
 
 function deleteApartmentsFolder() {

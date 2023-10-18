@@ -56,20 +56,18 @@ class ApartmentsTools {
   // Pega as imagens de um apartamento, utilizando o Número informado.
   static getPictures(apartment_number) {
 
-    return new Promise((resolve, reject) => {
+    let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment_number }`)
 
-      fileSystem.readdir(path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment_number }`), (error, response) => {
-        if (error){
-          reject(error)
-        } else {
-          let result = response.map(picture => {
-            return picture.slice(picture.indexOf('&') + 1)
-          })
-          resolve(result)
-        }
+    let hasFolder = fileSystem.existsSync(src) ? true : false
+
+    if (hasFolder) {
+      let result = fileSystem.readdirSync(src).map(picture => {
+        return picture.slice(picture.indexOf('&') + 1)
       })
-
-    })
+      return result
+    } else {
+      return []
+    }
 
   }
 
