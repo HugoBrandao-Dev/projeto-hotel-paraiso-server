@@ -37,7 +37,7 @@ class ReserveController {
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
       const { apartment_id, start, end } = req.body
-      let { status, user_id } = req.body
+      let { status, client_id } = req.body
 
       let errorFields = []
 
@@ -50,7 +50,7 @@ class ReserveController {
 
       if (decodedToken.role == 0) {
         status = 'reservado'
-        user_id = decodedToken.id
+        client_id = decodedToken.id
       }
 
       const statusResult = await Analyzer.analyzeApartmentStatus(status, apartment_id)
@@ -58,7 +58,7 @@ class ReserveController {
         errorFields.push(statusResult)
       }
 
-      const clientResult = await Analyzer.analyzeID(user_id)
+      const clientResult = await Analyzer.analyzeID(client_id)
       if (clientResult.hasError.value) {
         if (clientResult.hasError.type != 4) {
           errorFields.push(clientResult)
@@ -106,12 +106,12 @@ class ReserveController {
       const reserve = {
         apartment_id,
         status,
-        user_id,
+        client_id,
         start,
         end
       }
 
-      await Reserve.save(reserve)
+      await Reserve.save(reserve, decodedToken.id)
 
       let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
 

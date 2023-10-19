@@ -4,15 +4,18 @@ let DateFormated = require('../tools/DateFormated')
 const date = new DateFormated('mongodb')
 
 class Reserve {
-  async save(reserve) {
+  async save(reserve, reservedBy) {
     try {
+      reserve.reserved = {
+        reservedBy,
+        reservedAt: date.getDateTime()
+      }
+
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == reserve.apartment_id)
 
       for (let info of Object.keys(reserve)) {
         ApartmentCollection.apartments.data[apartmentIndex].reserve[info] = reserve[info]
       }
-
-      ApartmentCollection.apartments.data[apartmentIndex].reserve.reservedIn = date.getDateTime()
 
       return
     } catch (error) {

@@ -21,7 +21,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
           case 'POST':
 
             if (path == reserveEndpoints.toCreate) {
-              if (!body.status && !body.user_id) {
+              if (!body.status && !body.client_id) {
                 allowed = true
               }
             }
@@ -37,7 +37,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
 
                   let reserve = await Reserve.findOne(params.id)
 
-                  if (decodedToken.id == reserve.user_id) {
+                  if (decodedToken.id == reserve.client_id) {
                     allowed = true
                   }
                 }
@@ -62,7 +62,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
 
                   let reserve = await Reserve.findOne(body.apartment_id)
 
-                  if (reserve.user_id == decodedToken.id) {
+                  if (reserve.client_id == decodedToken.id) {
                     if (!body.status) {
                       allowed = true
                     }
@@ -95,7 +95,7 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
                 
                 let reserve = await Reserve.findOne(params.id)
 
-                if (reserve && reserve.user_id == decodedToken.id) {
+                if (reserve && reserve.client_id == decodedToken.id) {
                   allowed = true
                 }
 
@@ -114,12 +114,12 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
           case 'POST':
 
             if (path == reserveEndpoints.toCreate) {
-              if (body.user_id) {
-                let idResult = await Analyzer.analyzeID(body.user_id)
+              if (body.client_id) {
+                let idResult = await Analyzer.analyzeID(body.client_id)
                 if (!idResult.hasError.value) {
 
                   // Usuário para o qual será reservado o apto.
-                  let user = await User.findOne(body.user_id)
+                  let user = await User.findOne(body.client_id)
 
                   if (user && decodedToken.role > user.role) {
                     allowed = true

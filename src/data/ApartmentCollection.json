@@ -27,8 +27,11 @@
         "daily_price": "200",
         "reserve": {
           "status": "reservado",
-          "user_id": "507f1f77bcf86cd799439011",
-          "reservedIn": "2023-08-12T22:49:04.421Z",
+          "client_id": "507f1f77bcf86cd799439011",
+          "reserved" : {
+            "reservedAt": "2023-08-12T22:49:04.421Z",
+            "reservedBy": "5da9ea674234635bdff45c02"
+          },
           "start": "2023-11-12",
           "end": "2024-01-12"
         },
@@ -67,8 +70,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
-          "user_id": "600f191e810c19829de900ea",
-          "reservedIn": "2022-08-12T22:49:04.421Z",
+          "client_id": "600f191e810c19829de900ea",
+          "reserved" : {
+            "reservedAt": "2022-08-12T22:49:04.421Z",
+            "reservedBy": "5da9ea674234635bdff45c02"
+          },
           "start": "2022-11-12",
           "end": "2023-01-12"
         },
@@ -107,8 +113,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -147,8 +156,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -187,8 +199,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -227,8 +242,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -267,8 +285,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -307,8 +328,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -347,8 +371,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -387,8 +414,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -427,8 +457,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -467,8 +500,11 @@
         "daily_price": "250",
         "reserve": {
           "status": "livre",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -507,8 +543,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "indisponível",
-          "user_id": "",
-          "reservedIn": "",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reserbedBy": ""
+          },
           "start": "",
           "end": ""
         },
@@ -547,8 +586,11 @@
         "daily_price": "200",
         "reserve": {
           "status": "reservado",
-          "user_id": "507f1f77bcf86cd799439011",
-          "reservedIn": "2023-08-12T22:49:04.421Z",
+          "client_id": "507f1f77bcf86cd799439011",
+          "reserved" : {
+            "reservedAt": "2023-08-12T22:49:04.421Z",
+            "reservedBy": "5da9ea674234635bdff45c02"
+          },
           "start": "2023-12-12",
           "end": "2024-01-15"
         },
@@ -587,8 +629,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
-          "user_id": "600f191e810c19829de900ea",
-          "reservedIn": "2022-08-12T22:49:04.421Z",
+          "client_id": "600f191e810c19829de900ea",
+          "reserved" : {
+            "reservedAt": "2022-08-12T22:49:04.421Z",
+            "reservedBy": "507f191e810c19729de860ea"
+          },
           "start": "2022-11-12",
           "end": "2023-01-12"
         },
@@ -627,8 +672,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
-          "user_id": "600f191e810c19829de900ea",
-          "reservedIn": "2022-08-12T22:49:04.421Z",
+          "client_id": "600f191e810c19829de900ea",
+          "reserved" : {
+            "reservedAt": "2022-08-12T22:49:04.421Z",
+            "reservedBy": "507f191e810c19729de860ea"
+          },
           "start": "2022-11-12",
           "end": "2023-01-12"
         },
@@ -667,8 +715,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
-          "user_id": "600f191e810c19829de900ea",
-          "reservedIn": "2022-08-12T22:49:04.421Z",
+          "client_id": "600f191e810c19829de900ea",
+          "reserved" : {
+            "reservedAt": "2022-08-12T22:49:04.421Z",
+            "reservedBy": "507f191e810c19729de860ea"
+          },
           "start": "2022-11-12",
           "end": "2023-01-12"
         },
@@ -707,8 +758,11 @@
         "daily_price": "500",
         "reserve": {
           "status": "ocupado",
-          "user_id": "600f191e810c19829de900ea",
-          "reservedIn": "2022-08-12T22:49:04.421Z",
+          "client_id": "600f191e810c19829de900ea",
+          "reserved" : {
+            "reservedAt": "2022-08-12T22:49:04.421Z",
+            "reservedBy": "507f191e810c19729de860ea"
+          },
           "start": "2022-11-12",
           "end": "2023-01-12"
         },
