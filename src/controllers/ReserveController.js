@@ -284,7 +284,7 @@ class ReserveController {
       const {
         apartment_id,
         status,
-        user_id,
+        client_id,
         date,
         start,
         end
@@ -313,12 +313,12 @@ class ReserveController {
         }
       }
 
-      if (user_id) {
-        let clientResult = await Analyzer.analyzeID(user_id)
+      if (client_id) {
+        let clientResult = await Analyzer.analyzeID(client_id)
         if (clientResult.hasError.value) {
           errorFields.push(clientResult)
         } else {
-          fieldsToBeUpdated.user_id = user_id
+          fieldsToBeUpdated.client_id = client_id
         }
       }
 
@@ -371,14 +371,13 @@ class ReserveController {
         fieldsToBeUpdated = {
           apartment_id,
           status: 'indisponível',
-          user_id: '',
+          client_id: '',
           start: '',
           end: '',
-          reservedIn: ''
         }
       }
 
-      await Reserve.edit(fieldsToBeUpdated)
+      await Reserve.edit(fieldsToBeUpdated, decodedToken.id)
 
       let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
       

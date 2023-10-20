@@ -5,10 +5,12 @@ const date = new DateFormated('mongodb')
 
 class Reserve {
   async save(reserve, reservedBy) {
+
     try {
+
       reserve.reserved = {
+        reservedAt: date.getDateTime(),
         reservedBy,
-        reservedAt: date.getDateTime()
       }
 
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == reserve.apartment_id)
@@ -18,26 +20,34 @@ class Reserve {
       }
 
       return
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   async findOne(id) {
+
     try {
+
       let apartment = await ApartmentCollection.apartments.data.find(apto => apto.id == id)
       let reserve = apartment.reserve
       reserve.apartment_id = id
       return reserve
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   async findMany(status = '', skip = 0, limit = 20) {
+
     try {
+
       let reserves = null
       if (status) {
 
@@ -69,6 +79,7 @@ class Reserve {
       console.log(error)
       return []
     }
+
   }
 
   async findManyByUserID(user_id, status = '', skip = 0, limit = 20) {
@@ -94,8 +105,14 @@ class Reserve {
     }
   }
 
-  async edit(reserve) {
+  async edit(reserve, reservedBy) {
+
     try {
+
+      reserve.reserved = {
+        reservedAt: date.getDateTime(),
+        reservedBy,
+      }
 
       // Encontra o index do apartamento que tenha o ID igual ao passado dentro do reserve.
       let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == reserve.apartment_id)
@@ -105,12 +122,14 @@ class Reserve {
           ApartmentCollection.apartments.data[apartmentIndex]["reserve"][info] = reserve[info]
         }
       }
-      ApartmentCollection.apartments.data[apartmentIndex]["reserve"].date = date.getDateTime()
+
       return
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   async delete(id) {

@@ -2571,4 +2571,1451 @@ describe("Suite de teste para as Reservas.", function() {
 
   })
 
+  describe("UPDATE", function() {
+
+    describe("Testes de SUCESSO.", function() {
+
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Cliente.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(3)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const { reserved, _links } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  start: reserve.start,
+                  end: reserve.end,
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.cliente.id,
+                })
+
+                expect(_links).toBeDefined()
+                expect(_links).toHaveLength(3)
+                expect(_links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(_links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(_links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(responseRead) {
+                fail(responseRead)
+              })
+
+          })
+          .catch(function(responseUpdate) {
+            fail(responseUpdate)
+          })
+
+      })
+
+      /* ################## FUNCIONÁRIO ################## */
+
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Funcionário.", function() {
+
+        let reserve = {
+          apartment_id: "48421917gjm6g8dhjj52lb7j",
+          status: "ocupado"
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.funcionario.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Funcionário.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "48421917gjm6g8dhjj52lb7j",
+          status: "ocupado",
+          start,
+          end
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                  start: reserve.start,
+                  end: reserve.end
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.funcionario.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 200, o Funcionário modifica o Status da reserva de Ocupado para Reservado.", function() {
+
+        let reserve = {
+          apartment_id: "48421917gjm6g8dhjj52lb7j",
+          status: "reservado",
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.funcionario.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      /* ################## GERENTE ################## */
+
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Gerente.", function() {
+
+        let reserve = {
+          apartment_id: "cljn205e58dcmh6fb0ffabgg",
+          status: "ocupado"
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.gerente.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Gerente.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "cljn205e58dcmh6fb0ffabgg",
+          status: "ocupado",
+          start,
+          end
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                  start: reserve.start,
+                  end: reserve.end
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.gerente.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 200, o Gerente modifica o Status da reserva de Ocupado para Reservado.", function() {
+
+        let reserve = {
+          apartment_id: "cljn205e58dcmh6fb0ffabgg",
+          status: "reservado",
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.gerente.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      /* ################## ADMIN ################## */
+
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Gerente.", function() {
+
+        let reserve = {
+          apartment_id: "n0kj2b1e0g9h22in405c9c6g",
+          status: "ocupado"
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.admin.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Admin.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "n0kj2b1e0g9h22in405c9c6g",
+          status: "ocupado",
+          start,
+          end
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                  start: reserve.start,
+                  end: reserve.end
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.admin.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 200, o Admin modifica o Status da reserva de Ocupado para Reservado.", function() {
+
+        let reserve = {
+          apartment_id: "cljn205e58dcmh6fb0ffabgg",
+          status: "reservado",
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.admin.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(3)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 200, o Admin modifica o Status da reserva para Indisponível.", function() {
+
+        let reserve = {
+          apartment_id: "cljn205e58dcmh6fb0ffabgg",
+          status: "indisponível",
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(200)
+
+            expect(responseUpdate.body._links).toBeDefined()
+            expect(responseUpdate.body._links).toHaveLength(4)
+            expect(responseUpdate.body._links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(responseUpdate.body._links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(responseUpdate.body._links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(responseUpdate.body._links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
+              .then(function(responseRead) {
+
+                expect(responseRead.statusCode).toEqual(200)
+
+                const {
+                  reserved,
+                  _links
+                } = responseRead.body
+
+                expect(responseRead.body).toMatchObject({
+                  apartment_id: reserve.apartment_id,
+                  status: reserve.status,
+                  client_id: '',
+                  start: '',
+                  end: '',
+                })
+
+                expect(reserved).toMatchObject({
+                  reservedAt: expect.any(String),
+                  reservedBy: accounts.admin.id,
+                })
+
+                expect(responseRead.body._links).toBeDefined()
+                expect(responseRead.body._links).toHaveLength(4)
+                expect(responseRead.body._links[0]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
+                  method: 'GET',
+                  rel: 'self_reserve'
+                })
+                expect(responseRead.body._links[1]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toUpdate }`,
+                  method: 'PUT',
+                  rel: 'edit_reserve'
+                })
+                expect(responseRead.body._links[2]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
+                  method: 'DELETE',
+                  rel: 'delete_reserve'
+                })
+                expect(responseUpdate.body._links[3]).toMatchObject({
+                  href: `${ baseURL }${ endpoints.toList }`,
+                  method: 'GET',
+                  rel: 'reserve_list'
+                })
+
+              })
+              .catch(function(errorRead) {
+                fail(errorRead)
+              })
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+    })
+
+    describe("Testes de FALHA.", function() {
+
+      test("/PUT - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(401)
+
+            expect(responseUpdate.body.RestException.Code).toBe('5')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseUpdate.body.RestException.Status).toBe('401')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      // Falhas no ID do apartamento escolhido.
+      test("/PUT - Deve retornar 400, por não conter o ID do apartamento a ser reservado.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "",
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("1")
+            expect(responseUpdate.body.RestException.Message).toBe("O ID do apartamento é obrigatório")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento é obrigatório')
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 400, por conter caracteres inválidos no ID do apartamento.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "sdf*q98-we7",
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do apartamento contém caracteres inválidos')
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 404, o ID informado não pertence a um apartamento.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "4d4i4kgh2ijg22led9g57nhl",
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(404)
+
+            expect(responseUpdate.body.RestException.Code).toBe("3")
+            expect(responseUpdate.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseUpdate.body.RestException.Status).toBe("404")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptApartment')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe('Nenhum apartamento com o ID informado está cadastrado')
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 403, já que o apartamento está INDISPONÍVEL.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "52bdn4eecffeh7gagdn6c4nl",
+          status: "reservado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      // Falhas no Status da reserva.
+      test("/PUT - Deve retornar 400, já que o valor de Status é inválido.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "856377c88f8fd9fc65fd3ef5",
+          status: "1",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("O valor do campo de Status é inválido")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Status é inválido')
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 403, já que o Cliente não pode alterar o Status.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        // Esse apartamento foi cadastrado para o cliente, na Suite de CREATE.
+        let reserve = {
+          apartment_id: "48421917gjm6g8dhjj52lb7j",
+          status: "ocupado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 403, o Funcionário não pode tornar um apto Indisponível.", function() {
+
+        let reserve = {
+          apartment_id: "02n07j2d1hf5a2f26djjj92a",
+          status: "indisponível"
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 403, o Gerente não pode tornar um apto Indisponível se o mesmo já estiver Ocupado.", function() {
+
+        let reserve = {
+          apartment_id: "d9d62beecdde62af82efd82c",
+          status: "indisponível",
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(403)
+
+            expect(responseUpdate.body.RestException.Code).toBe('6')
+            expect(responseUpdate.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseUpdate.body.RestException.Status).toBe('403')
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      // Falhas no ID do cliente.
+      test("/PUT - Deve retornar 400, já que ID do cliente contém caractere inválido.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "ocupado",
+          client_id: accounts.cliente.id.slice(0, -1) + "*",
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("O ID do cliente/usuário contém caracteres inválidos")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptClient')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("O ID do cliente/usuário contém caracteres inválidos")
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 404, já que ID do cliente não foi encontrado.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "ocupado",
+          client_id: "6kde3ibi8a1d4187c1ji73bj",
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(404)
+
+            expect(responseUpdate.body.RestException.Code).toBe("3")
+            expect(responseUpdate.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(responseUpdate.body.RestException.Status).toBe("404")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptClient')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("Nenhum usuário com o ID informado está cadastrado")
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      // Falhas na Data de Início da reserva.
+      test("/PUT - Deve retornar 400, devido a presença de caracteres inválidos na Data de Início da reserva.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "ocupado",
+          user_id: accounts.cliente.id,
+          start: start.slice(0, -1) + '*',
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 400, já que a Data de Início é anterior a data Atual.", function() {
+
+        let date = dateNow.getDate()
+        let start = getDateWithLastMonth(date)
+        let end = getDateWithNextMonth(date)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "ocupado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("A Data de Início escolhida é inválida")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptStartDate')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Início escolhida é inválida")
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      // Falhas na Data de Fim da reserva.
+      test("/PUT - Deve retornar 400, devido a presença de caracteres inválidos na Data de Fim da reserva.", function() {
+
+        let start = dateNow.getDate()
+        let end = getDateWithNextMonth(start)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "ocupado",
+          user_id: accounts.cliente.id,
+          start,
+          end: end.slice(0, -1) + '*'
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("A Data de Fim escolhida é inválida")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Fim escolhida é inválida")
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+      test("/PUT - Deve retornar 400, por ter informado uma Data de Fim anterior a Data de Início da reserva.", function() {
+
+        let date = dateNow.getDate()
+        let start = getDateWithNextMonth(date)
+        let end = getDateWithLastMonth(date)
+
+        let reserve = {
+          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+          status: "ocupado",
+          user_id: accounts.cliente.id,
+          start,
+          end,
+        }
+
+        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseUpdate) {
+
+            expect(responseUpdate.statusCode).toEqual(400)
+
+            expect(responseUpdate.body.RestException.Code).toBe("2")
+            expect(responseUpdate.body.RestException.Message).toBe("A Data de Fim escolhida é inválida")
+            expect(responseUpdate.body.RestException.Status).toBe("400")
+            expect(responseUpdate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseUpdate.body.RestException.ErrorFields[0].field).toBe('iptEndDate')
+            expect(responseUpdate.body.RestException.ErrorFields[0].hasError.error).toBe("A Data de Fim escolhida é inválida")
+
+          })
+          .catch(function(errorUpdate) {
+            fail(errorUpdate)
+          })
+
+      })
+
+    })
+
+  })
+
 })
