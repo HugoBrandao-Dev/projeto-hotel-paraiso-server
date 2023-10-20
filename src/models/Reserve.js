@@ -82,13 +82,13 @@ class Reserve {
 
   }
 
-  async findManyByUserID(user_id, status = '', skip = 0, limit = 20) {
+  async findManyByUserID(client_id, status = '', skip = 0, limit = 20) {
     try {
       let apartments = await ApartmentCollection.apartments.data.filter(apto => {
         if (status) {
-          return (apto.reserve.user_id == user_id && apto.reserve.status == status)
+          return (apto.reserve.client_id == client_id && apto.reserve.status == status)
         }
-        return apto.reserve.user_id == user_id
+        return apto.reserve.client_id == client_id
       })
 
       let reserves = await apartments.map(apto => {

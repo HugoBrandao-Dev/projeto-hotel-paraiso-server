@@ -1546,9 +1546,9 @@ describe("Suite de teste para as Reservas.", function() {
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
-              expect(reserved).toMatchObject({
-                reservedAt: "",
-                reservedBy: "",
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: expect.any(String),
+                reservedBy: expect.any(String),
               })
               expect(reserve.client_id).toBe(accounts.cliente.id)
             }
@@ -4010,6 +4010,182 @@ describe("Suite de teste para as Reservas.", function() {
           })
           .catch(function(errorUpdate) {
             fail(errorUpdate)
+          })
+
+      })
+
+    })
+
+  })
+
+  // A Deletação/Cancelamento de uma reserva se baseia no ID do apartamento.
+  describe("DELETE", function() {
+
+    describe("Teste de SUCESSO.", function() {
+
+      test("/DELETE - Deve retornar 200, para cancelamento a reserva pelo Cliente .", function() {
+
+        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const apartment = { id: responseList.body.reserves[0].apartment_id }
+
+            return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+              .then(function(responseDelete) {
+
+                expect(responseDelete.statusCode).toEqual(200)
+
+                return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+                  .then(function(responseRead) {
+                    expect(responseRead.statusCode).toEqual(200)
+                    expect(responseRead.body).toMatchObject({
+                      apartment_id: apartment.id,
+                      status: 'livre',
+                      user_id: '',
+                      date: '',
+                      start: '',
+                      end: ''
+                    })
+                  })
+                  .catch(function(errorRead) {
+                    fail(errorRead)
+                  })
+
+              })
+              .catch(function(errorDelete) {
+                fail(errorDelete)
+              })
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+      })
+
+      test("/DELETE - Deve retornar 200, para cancelamento a reserva pelo Cliente .", function() {
+
+        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            const apartment = { id: responseList.body.reserves[0].apartment_id }
+
+            return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+              .then(function(responseDelete) {
+
+                expect(responseDelete.statusCode).toEqual(200)
+
+                return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+                  .then(function(responseRead) {
+                    expect(responseRead.statusCode).toEqual(200)
+                    expect(responseRead.body).toMatchObject({
+                      apartment_id: apartment.id,
+                      status: 'livre',
+                      user_id: '',
+                      date: '',
+                      start: '',
+                      end: ''
+                    })
+                  })
+                  .catch(function(errorRead) {
+                    fail(errorRead)
+                  })
+              })
+              .catch(function(errorDelete) {
+                fail(errorDelete)
+              })
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+      })
+
+    })
+
+    describe("Teste de FALHA.", function() {
+
+      test("/DELETE - Deve retornar 401, o usuário não está logado.", function() {
+
+        const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
+
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(401)
+
+            expect(responseDelete.body.RestException.Code).toBe('5')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseDelete.body.RestException.Status).toBe('401')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorDelete) {
+            fail(errorDelete)
+          })
+
+      })
+
+      test("/DELETE - Deve retornar 400, já que o ID do apartamento é inválido.", function() {
+
+        const apartment = { id: '27ibm1he7gl4ei9i7jcacb*6' }
+
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+          .then(function(response) {
+
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
+
+      test("/DELETE - Deve retornar 403, o Cliente não pode cancelar uma reserva que não seja sua.", function() {
+
+        const apartment = { id: 'mmfel7oi6p43kjj6jebln8dn97' }
+
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseDelete) {
+
+            expect(responseDelete.statusCode).toEqual(403)
+
+            expect(responseDelete.body.RestException.Code).toBe('6')
+            expect(responseDelete.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseDelete.body.RestException.Status).toBe('403')
+            expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorDelete) {
+            fail(errorDelete)
+          })
+
+      })
+
+      test("/DELETE - Deve retornar 404, já que o ID informado não corresponde a um apartamento cadastrado.", function() {
+
+        const apartment = { id: '27ibm1he7gl4ei9i7jcaccc' }
+
+        return request.delete(`${ endpoints.toDelete }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+          .then(function(response) {
+
+            expect(response.statusCode).toEqual(404)
+
+            expect(response.body.RestException.Code).toBe("3")
+            expect(response.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(response.body.RestException.Status).toBe("404")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+          })
+          .catch(function(error) {
+            fail(error)
           })
 
       })
