@@ -13,20 +13,28 @@ const date = new DateFormated('mongodb')
 
 class Apartment {
   async save(apartment, createdBy) {
+
     try {
+
       apartment.id = await genID()
 
       apartment.created = {
         createdAt: date.getDateTime(),
         createdBy
       }
+      apartment.updated = {
+        updatedAt: "",
+        updatedBy: ""
+      }
       
       await ApartmentCollection.apartments.data.push(apartment)
       return
+
     } catch (error) {
       console.log(error)
       return
     }
+
   }
 
   async findOne(id) {

@@ -111,18 +111,13 @@ class ApartmentController {
       apartment.daily_price = daily_price
       apartment.reserve = {
         status: "livre",
-        user_id: "",
-        reservedIn: "",
+        client_id: "",
+        reserved: {
+          reservedAt: "",
+          reservedBy: "",
+        },
         start: "",
         end: "",
-      }
-      apartment.created = {
-        createdAt: '',
-        createdBy: ''
-      }
-      apartment.updated = {
-        updatedAt: '',
-        updatedBy: ''
       }
       
       await Apartment.save(apartment, decodedToken.id)

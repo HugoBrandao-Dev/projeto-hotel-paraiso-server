@@ -279,8 +279,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 expect(reserve).toBeDefined()
                 expect(reserve).toMatchObject({
                   status: "livre",
-                  user_id: "",
-                  reservedIn: "",
+                  client_id: "",
                   start: "",
                   end: "",
                 })
@@ -1638,8 +1637,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(reserve).toBeDefined()
             expect(reserve).toMatchObject({
               status: apartmentJSON.reserve.status,
-              user_id: apartmentJSON.reserve.user_id,
-              reservedIn: apartmentJSON.reserve.reservedIn,
+              client_id: apartmentJSON.reserve.client_id,
               start: apartmentJSON.reserve.start,
               end: apartmentJSON.reserve.end,
             })
@@ -1723,8 +1721,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           expect(reserve).toBeDefined()
           expect(reserve).toMatchObject({
             status: apartmentJSON.reserve.status,
-            user_id: apartmentJSON.reserve.user_id,
-            reservedIn: apartmentJSON.reserve.reservedIn,
+            client_id: apartmentJSON.reserve.client_id,
             start: apartmentJSON.reserve.start,
             end: apartmentJSON.reserve.end,
           })
