@@ -1,6 +1,7 @@
 const app = require('../src/app')
 const supertest = require('supertest')
 const Generator = require('../src/tools/Generator')
+const ApartmentsTools = require('../src/tools/ApartmentsTools')
 
 const DateFormated = require('../src/tools/DateFormated')
 const dateNow = new DateFormated('mongodb')
@@ -1528,6 +1529,1046 @@ describe("Suite de teste para as Reservas.", function() {
 
   })
 
+  describe("READ", function() {
 
+    describe("Testes de SUCESSO.", function() {
+
+      /* ################## CLIENTES ################## */
+
+      test("/GET - Deve retornar 200, na listagem de reservas.", function() {
+
+        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserved).toMatchObject({
+                reservedAt: "",
+                reservedBy: "",
+              })
+              expect(reserve.client_id).toBe(accounts.cliente.id)
+            }
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de reservas LIVRES para o Cliente.", function() {
+
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(0)
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS para o Cliente.", function() {
+
+        let params = {
+          status: 'reservado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.client_id).toBe(accounts.cliente.id)
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: expect.any(String),
+                reservedBy: expect.any(String)
+              })
+              expect(reserve._links).toHaveLength(3)
+            }
+
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO para o Cliente.", function() {
+
+        let params = {
+          status: 'ocupado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(0)
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      /* ################## FUNCIONÁRIO ################## */
+
+      // Busca por uma única reserva, baseada no ID do apartamento.
+      test("/GET - Deve retornar 200, na busca de uma reserva baseada no ID do apartamento.", function() {
+
+        const apartment = { id: '856377c88f8fd9fc65fd3ef5' }
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: apartment.id,
+              status: apartmentJSON.reserve.status,
+              client_id: apartmentJSON.reserve.client_id,
+              start: apartmentJSON.reserve.start,
+              end: apartmentJSON.reserve.end,
+            })
+            
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: expect.any(String)
+            })
+
+            expect(_links).toBeDefined()
+            expect(_links).toHaveLength(4)
+            expect(_links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
+              method: 'GET',
+              rel: 'self_reserve'
+            })
+            expect(_links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_reserve'
+            })
+            expect(_links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
+              method: 'DELETE',
+              rel: 'delete_reserve'
+            })
+            expect(_links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'reserve_list'
+            })
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      // Busca várias reservas.
+      test("/GET - Deve retornar 200, na listagem de reservas.", function() {
+
+        return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve._links).toHaveLength(4)
+            }
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      // Busca reservas que possuem um determinado Status.
+      test("/GET - Deve retornar 200, na listagem de reservas LIVRES para o Funcionário.", function() {
+
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: "",
+                reservedBy: "",
+              })
+              expect(reserve.status).toBe('livre')
+            }
+
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas RESERVADOS para o Funcionário.", function() {
+
+        let params = {
+          status: 'reservado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: expect.any(String),
+                reservedBy: expect.any(String),
+              })
+              expect(reserve._links).toHaveLength(4)
+            }
+
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas OCUPADO para o Funcionário.", function() {
+
+        let params = {
+          status: 'ocupado'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: expect.any(String),
+                reservedBy: expect.any(String),
+              })
+              expect(reserve.status).toBe('ocupado')
+            }
+
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, na listagem de apartamento/reservas INDISPONÍVEL.", function() {
+
+        let params = {
+          status: 'indisponível'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('indisponível')
+            }
+
+            expect(hasNext).toEqual(false)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Funcionário.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 1,
+          limit: 3,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('livre')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas RESERVADO, com offset e limit para o Funcionário.", function() {
+
+        let params = {
+          status: 'reservado',
+          offset: 1,
+          limit: 3,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('reservado')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas OCUPADO, com offset e limit para o Funcionário.", function() {
+
+        let params = {
+          status: 'ocupado',
+          offset: 2,
+          limit: 1,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('ocupado')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      /* ################## GERENTE ################## */
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Gerente.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 1,
+          limit: 3,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('livre')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas RESERVADO, com offset e limit para o Gerente.", function() {
+
+        let params = {
+          status: 'reservado',
+          offset: 1,
+          limit: 3,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('reservado')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas OCUPADO, com offset e limit para o Gerente.", function() {
+
+        let params = {
+          status: 'ocupado',
+          offset: 2,
+          limit: 1,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('ocupado')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas INDISPONÍVEL, com offset e limit para o Gerente.", function() {
+
+        let params = {
+          status: 'ocupado',
+          offset: 1,
+          limit: 2,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.gerente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('ocupado')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      /* ################## ADMIN ################## */
+
+      test("/GET - Deve retornar 200, com a listagem de apartamento/reservas LIVRE, com offset e limit para o Admin.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 1,
+          limit: 3,
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.admin.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(200)
+
+            const { reserves, hasNext } = responseList.body
+
+            expect(reserves).toHaveLength(params.limit)
+
+            for (let reserve of reserves) {
+              expect(reserve).toBeDefined()
+              expect(reserve.status).toBe('livre')
+            }
+
+            expect(hasNext).toEqual(true)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+    })
+
+    describe("Testes de FALHA.", function() {
+
+      /* ################## LEITURA DE UMA ÚNICA RESERVA ################## */
+
+      test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        const apartment = {
+          id: '856377c88f8fd9fc65fd3ef5'
+        }
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(401)
+
+            expect(responseRead.body.RestException.Code).toBe('5')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseRead.body.RestException.Status).toBe('401')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 403, o Cliente não pode acessar essa área (não está AUTENTICADO).", function() {
+
+        const apartment = {
+          id: '856377c88f8fd9fc65fd3ef5'
+        }
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(403)
+
+            expect(responseRead.body.RestException.Code).toBe('6')
+            expect(responseRead.body.RestException.Message).toBe('O usuário não está autenticado')
+            expect(responseRead.body.RestException.Status).toBe('403')
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, pelo ID do apartamento conter caracteres inválidos.", function() {
+
+        return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3e*5`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(400)
+            
+            expect(responseRead.body.RestException.Code).toBe("2")
+            expect(responseRead.body.RestException.Message).toBe("O ID do apartamento contém caracteres inválidos")
+            expect(responseRead.body.RestException.Status).toBe("400")
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, pelo ID do apartamento não pertencer a um apartamento.", function() {
+
+        return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd6666`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(404)
+            
+            expect(responseRead.body.RestException.Code).toBe("3")
+            expect(responseRead.body.RestException.Message).toBe("Nenhum apartamento com o ID informado está cadastrado")
+            expect(responseRead.body.RestException.Status).toBe("404")
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      /* ################## LISTAGEM ################## */
+
+      test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
+
+        return request.get(`${ endpoints.toList }`)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(401)
+
+            expect(responseList.body.RestException.Code).toBe('5')
+            expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
+            expect(responseList.body.RestException.Status).toBe('401')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      // Listagem para clientes com Query String
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido.", function() {
+
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `staus=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'staus\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor de Status da Query String de listagem é inválido.", function() {
+
+        let params = {
+          status: 'live'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do campo de Status é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseList.body.RestException.ErrorParams[0].field).toBe('iptStatus')
+            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do campo de Status é inválido')
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como segundo query string.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 0
+        }
+
+        let queryString = `status=livre&offse=${ params.offset }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'offse\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor de Offset da Query String de listagem é inválido.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: '1a',
+          limit: 3
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Offset é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseList.body.RestException.ErrorParams[0].field).toBe('offset')
+            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do parâmetro Offset é inválido')
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como a terceira query string.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 2,
+          limit: 2
+        }
+
+        let queryString = `status=livre&offset=${ params.offset }&limi=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'limi\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor de Limit da Query String de listagem é inválido.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 2,
+          limit: 0
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Limit é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseList.body.RestException.ErrorParams[0].field).toBe('limit')
+            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe("O valor do parâmetro Limit é inválido")
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      // Listagem para funcionários com Query String
+
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido pelo funcionario.", function() {
+
+        let params = {
+          status: 'livre'
+        }
+
+        let queryString = `staus=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'staus\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor de Status da Query String de listagem é inválido, pelo Funcionário.", function() {
+
+        let params = {
+          status: 'live'
+        }
+
+        let queryString = `status=${ params.status }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do campo de Status é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseList.body.RestException.ErrorParams[0].field).toBe('iptStatus')
+            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do campo de Status é inválido')
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como segundo query string pelo Funcionário.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 0
+        }
+
+        let queryString = `status=livre&offse=${ params.offset }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'offse\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor de Offset da Query String de listagem é inválido pelo Funcionário.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: '1a',
+          limit: 3
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Offset é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseList.body.RestException.ErrorParams[0].field).toBe('offset')
+            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do parâmetro Offset é inválido')
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como a terceira query string pelo Funcionário.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 2,
+          limit: 2
+        }
+
+        let queryString = `status=livre&offset=${ params.offset }&limi=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'limi\' é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor de Limit da Query String de listagem é inválido pelo Funcionário.", function() {
+
+        let params = {
+          status: 'livre',
+          offset: 2,
+          limit: 0
+        }
+
+        let queryString = `status=${ params.status }&offset=${ params.offset }&limit=${ params.limit }`
+
+        return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Limit é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+            expect(responseList.body.RestException.ErrorParams[0].field).toBe('limit')
+            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe("O valor do parâmetro Limit é inválido")
+
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+
+      })
+
+    })
+
+  })
 
 })
