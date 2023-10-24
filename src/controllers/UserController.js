@@ -39,7 +39,9 @@ function getDecodedToken(bearerToken) {
 
 class UserController {
   async create(req, res, next) {
+
     try {
+
       let errorFields = []
 
       /* ##### CAMPOS OBRIGATÓRIOS ##### */
@@ -212,21 +214,33 @@ class UserController {
           user.information = req.body.information
         }
 
-        await User.save(user)
+        if (req.headers['authorization']) {
+          const decodedToken = getDecodedToken(req.headers['authorization']) || ''
+
+          await User.save(user, decodedToken.id)
+        } else {
+          await User.save(user, user.id)
+        }
+
         const savedUser = await User.findByDoc({ email: req.body.email })
 
         let HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', savedUser.role > 0)
 
         res.status(201)
         res.json({ _links: HATEOAS })
+
       }
     } catch (error) {
+      console.log(error)
       next(error)
     }
+
   }
 
-  async read(req, res) {
+  async read(req, res, next) {
+
     try {
+
       let id = req.params.id
       const { role } = getDecodedToken(req.headers['authorization'])
       let idResult = await Analyzer.analyzeID(id)
@@ -251,7 +265,7 @@ class UserController {
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
       } else {
-        let user = await User.findOne(id)
+        let user = await User.findOne(id, role)
         if (user) {
 
           // Role é baseado na Função da pessoa logada (dona do token)
@@ -260,45 +274,11 @@ class UserController {
           res.json(user)
         }
       }
-    } catch (error) {
-      throw new Error(error)
-      res.sendStatus(500)
-    }
-  }
 
-  // Esta rota é utilizada para visualização de informações do cliente pelo lado de um Funcionário++
-  async view(req, res, next) {
-    try {
-      let id = req.params.id
-
-      let RestException = {}
-
-      const idResult = await Analyzer.analyzeID(id)
-      if (idResult.hasError.value) {
-        RestException.Code = `${ idResult.hasError.type }`
-        RestException.Message = `${ idResult.hasError.error }`
-        RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
-
-        switch (idResult.hasError.type) {
-          case 2:
-            RestException.Status = '400'
-            break
-          case 3:
-            RestException.Status = '404'
-            break
-        }
-
-        res.status(parseInt(RestException.Status))
-        res.json({ RestException })
-      }
-
-      const user = await User.findOne(id)
-
-      res.status(200)
-      res.json(user)
     } catch (error) {
       next(error)
     }
+
   }
 
   async list(req, res, next) {
@@ -335,7 +315,9 @@ class UserController {
 
   // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
   async readByDoc(req, res, next) {
+
     try {
+
       let { cpf, passportNumber } = req.body
 
       let RestException = {}
@@ -398,9 +380,11 @@ class UserController {
       } else {
         res.sendStatus(404)
       }
+
     } catch (error) {
       next(error)
     }
+
   }
 
   async update(req, res, next) {

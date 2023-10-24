@@ -1,15 +1,16 @@
-let UserCollection = require('../data/UserCollection.json')
-let DateFormated = require('../tools/DateFormated')
-let uuid = require('uuid')
+const UserCollection = require('../data/UserCollection.json')
+const DateFormated = require('../tools/DateFormated')
+const _ = require('lodash')
+const uuid = require('uuid')
 
 class User {
-  async save(user) {
+  async save(user, createdBy) {
     try {
       const date = new DateFormated('mongodb')
 
       user.created = {
         createdAt: date.getDateTime(),
-        createdBy: uuid.v4()
+        createdBy
       }
       user.updated = {
         updatedAt: '',
@@ -24,15 +25,57 @@ class User {
     }
   }
 
-  async findOne(id) {
+  async findOne(id, role) {
+
     try {
-      const user = await UserCollection.users.data.find(doc => doc.id == id )
+
+      const user = await UserCollection.users.data.find(doc => doc.id == id)
+
+      if (role) {
+        let result = _.cloneDeep(user)
+
+        delete result.created
+        delete result.updated
+
+        const userWhoCreated = await UserCollection.users.data.find(doc => doc.id == user.created.createdBy)
+
+        result.created = {
+          createdAt: user.created.createdAt,
+          createdBy: {
+            id: userWhoCreated.id,
+            name: userWhoCreated.name
+          }
+        }
+
+        if (user.updated.updatedBy) {
+          const userWhoUpdated = await UserCollection.users.data.find(doc => doc.id == user.updated.updatedBy)
+
+          result.updated = {
+            updatedAt: user.updated.updatedAt,
+            updatedBy: {
+              id: userWhoUpdated.id,
+              name: userWhoUpdated.name
+            }
+          }
+        } else {
+          result.updated = {
+            updatedAt: "",
+            updatedBy: {
+              id: "",
+              name: "",
+            }
+          }
+        }
+        return result
+      }
 
       return user
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   async findMany(skip = null, limit = null) {
@@ -46,18 +89,23 @@ class User {
   }
 
   async findByDoc(searchType) {
+
     try {
+
       let type = Object.keys(searchType)[0]
       let user = await UserCollection.users.data.find(doc => {
         if (doc[type]) {
           return doc[type] == searchType[type]
         }
       })
+
       return user
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   async findByRole(role) {

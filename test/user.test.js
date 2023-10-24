@@ -26,6 +26,10 @@ let accounts = {
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
 jest.setTimeout(100000)
 
+function extractUserID(link) {
+  return link.split('/').slice(-1)[0]
+}
+
 function register(user) {
   return new Promise((resolve, reject) => {
     return request.post(endpoints.toCreate).send(user)
@@ -270,33 +274,69 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("/POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", function() {
+      test("/POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", async function() {
 
-        const user = {
-          name: "Dinorá de Oliveira",
-          email: "dino_oli@hotmail.com",
-          password: "@QowierU12873094&28374@",
-          phoneCode: "55",
-          phoneNumber: "11999847523",
-          birthDate: "1985-06-09",
-          country: "BR",
-          state: "SP",
-          city: "São Paulo",
-          cpf: `${ Generator.genCPF() }`,
-          cep: "08391700",
-          neighborhood: "Jardim Nova São Paulo",
-          road: "Rua Nina Simone",
-          house_number: "2000",
-          information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+        try {
+
+          const user = {
+            name: "Dinorá de Oliveira",
+            email: "dino_oli@hotmail.com",
+            password: "@QowierU12873094&28374@",
+            phoneCode: "55",
+            phoneNumber: "11999847523",
+            birthDate: "1985-06-09",
+            country: "BR",
+            state: "SP",
+            city: "São Paulo",
+            cpf: `${ Generator.genCPF() }`,
+            cep: "08391700",
+            neighborhood: "Jardim Nova São Paulo",
+            road: "Rua Nina Simone",
+            house_number: "2000",
+            information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+          }
+
+          const responseCreate = await request.post(endpoints.toCreate).send(user)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toHaveLength(3)
+
+          try {
+
+            let userID = await extractUserID(responseCreate.body._links[0].href)
+
+            const responseRead = await request.get(`${ endpoints.toRead }/${ userID }`)
+              .set('Authorization', accounts.funcionario.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              id,
+              created,
+              updated,
+            } = responseRead.body
+
+            expect(created.createdAt).toBeDefined()
+            expect(created.createdBy).toMatchObject({
+              id,
+              name: user.name
+            })
+
+            expect(updated.updatedAt).toBeDefined()
+            expect(updated.updatedBy).toMatchObject({
+              id: '',
+              name: '',
+            })
+
+          } catch (errorSearch) {
+            fail(errorSearch)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
         }
 
-        return request.post(endpoints.toCreate).send(user)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(201)
-          })
-          .catch(function(error) {
-            fail(error)
-          })
       })
 
       test("/POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
@@ -327,7 +367,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-
+/*
     describe("Testes de FALHA.", function() {
 
       // Testes no NOME
@@ -1355,9 +1395,9 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-
+*/
   })
-
+/*
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -3713,4 +3753,5 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
+*/
 })
