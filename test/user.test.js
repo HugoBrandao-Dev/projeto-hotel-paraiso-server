@@ -274,7 +274,7 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("/POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros.", async function() {
+      test("/POST - Deve retornar 201, para inserção de dados obrigatórios + opcionais para brasileiros, inseridos pelo próprio CLIENTE.", async function() {
 
         try {
 
@@ -329,8 +329,8 @@ describe("Suite de testes das rotas User.", function() {
               name: '',
             })
 
-          } catch (errorSearch) {
-            fail(errorSearch)
+          } catch (errorRead) {
+            fail(errorRead)
           }
 
         } catch (errorCreate) {
@@ -339,31 +339,64 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("/POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros.", function() {
+      test("/POST - Deve retornar 201, para inserção dos dados obrigatórios de estrangeiros, inseridos pelo próprio CLIENTE.", async function() {
 
-        const user = {
-          name: "Josias Cruz",
-          email: "josias_cruz@hotmail.com",
-          password: "&iOupQwer238974!2",
-          phoneCode: "1",
-          phoneNumber: "2129981212",
-          birthDate: "1999-01-09",
-          country: "US",
-          state: "NY",
-          city: "New York City",
-          passportNumber: Generator.genPassportNumber(),
+        try {
+
+          const user = {
+            name: "Josias Cruz",
+            email: "josias_cruz@hotmail.com",
+            password: "&iOupQwer238974!2",
+            phoneCode: "1",
+            phoneNumber: "2129981212",
+            birthDate: "1999-01-09",
+            country: "US",
+            state: "NY",
+            city: "New York City",
+            passportNumber: Generator.genPassportNumber(),
+          }
+
+          const responseCreate = await request.post(endpoints.toCreate).send(user)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toHaveLength(3)
+
+          try {
+
+            let userID = await extractUserID(responseCreate.body._links[0].href)
+
+            const responseRead = await request.get(`${ endpoints.toRead }/${ userID }`)
+              .set('Authorization', accounts.funcionario.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              id,
+              created,
+              updated,
+            } = responseRead.body
+
+            expect(created.createdAt).toBeDefined()
+            expect(created.createdBy).toMatchObject({
+              id,
+              name: user.name
+            })
+
+            expect(updated.updatedAt).toBeDefined()
+            expect(updated.updatedBy).toMatchObject({
+              id: '',
+              name: '',
+            })
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
         }
 
-        return request.post(endpoints.toCreate).send(user)
-        .then(function(response) {
-          expect(response.statusCode).toEqual(201)
-
-          expect(response.body._links).toBeDefined()
-          expect(response.body._links).toHaveLength(3)
-        })
-        .catch(function(error) {
-          fail(error)
-        })
       })
 
     })
