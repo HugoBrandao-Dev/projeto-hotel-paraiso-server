@@ -1587,9 +1587,11 @@ describe("Suite de testes das rotas User.", function() {
           .catch(function(errorLogin) {
             fail(errorLogin)
           })
+
       })
 
       test("/GET - Deve retornar 200 e uma lista de usuários.", function() {
+
         return request.get(endpoints.toList).set('Authorization', accounts.admin.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(200)
@@ -1621,12 +1623,16 @@ describe("Suite de testes das rotas User.", function() {
           .catch(function(error) {
             fail(error)
           })
+
       })
 
       test("/GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
+
         let url = endpoints.toList + '?offset=1&limit=3'
+
         return request.get(url).set('Authorization', accounts.admin.token)
           .then(function(response) {
+
             expect(response.statusCode).toEqual(200)
             expect(response.body.users.length).toEqual(2)
 
@@ -1634,13 +1640,29 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body).toHaveProperty('hasNext')
 
             for (let user of response.body.users) {
+
+              const {
+                id,
+                created,
+                updated,
+              } = user
+
+              expect(created.createdAt).toBeDefined()
+              expect(created.createdBy).toMatchObject({
+                id: expect.any(String),
+                name: expect.any(String),
+              })
+
               expect(user._links).toBeDefined()
               expect(user._links).toHaveLength(3)
+
             }
+
           })
           .catch(function(error) {
             fail(error)
           })
+
       })
 
       test("/POST - Deve retornar 200 e o email e o nome do usuário Brasileiro que corresponda com o CPF informado.", function() {
