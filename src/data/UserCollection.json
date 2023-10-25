@@ -21,12 +21,12 @@
         "house_number": "2000",
         "information": "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique.",
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -44,12 +44,12 @@
         "city": "Rio de Janeiro",
         "cpf": "22222222222",
         "created": {
-            "createdAt": "2020-09-12T11:10:06.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2020-09-12T11:10:06.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2021-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2021-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -70,12 +70,12 @@
         "house_number": "10310",
         "information": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque viverra congue elit non elementum. Praesent fringilla lectus interdum ipsum tempor, ut commodo urna blandit. Nunc sagittis vestibulum luctus. Duis eget arcu nisi. Donec lobortis tellus at porttitor mattis. In ornare ornare posuere. Nunc eu aliquam metus, in sodales tellus. Sed eu mi mi. Nullam varius sed massa interdum vulputate. Morbi sodales justo tellus, quis luctus lorem lacinia eu. Integer efficitur eu ante ac tempus. Phasellus tincidunt fermentum metus ac dignissim.",
         "created": {
-            "createdAt": "2021-05-102T11:43:42.300Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2021-05-102T11:43:42.300Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2022-11-12T14:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2022-11-12T14:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -92,12 +92,12 @@
         "city": "Richmond",
         "passportNumber": "431276122",
         "created": {
-            "createdAt": "2022-04-222T20:41:18.365Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-04-222T20:41:18.365Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-02-12T16:06:21.145Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-02-12T16:06:21.145Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       }
     ]

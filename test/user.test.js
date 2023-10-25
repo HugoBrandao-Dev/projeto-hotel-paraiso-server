@@ -1677,16 +1677,31 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseSearch.statusCode).toEqual(200)
 
             expect(responseSearch.body).toMatchObject({
-              "name": "Macunaíma Cruz",
-              "email": "macuna_curz@hotmail.com"
+              name: "Macunaíma Cruz",
+              email: "macuna_curz@hotmail.com"
             })
 
-            expect(responseSearch.body._links).toBeDefined()
-            expect(responseSearch.body._links).toHaveLength(4)
+            const { id, created, updated, _links } = responseSearch.body
+
+            expect(created.createdAt).toBeDefined()
+            expect(created.createdBy).toMatchObject({
+              id: expect.any(String),
+              name: expect.any(String),
+            })
+
+            expect(updated.updatedAt).toBeDefined()
+            expect(updated.updatedBy).toMatchObject({
+              id: "507f1f77bcf86cd799439011",
+              name: "Macunaíma Cruz",
+            })
+
+            expect(_links).toBeDefined()
+            expect(_links).toHaveLength(4)
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorSearch) {
+            fail(errorSearch)
           })
+
       })
 
       test("/POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
@@ -1703,12 +1718,28 @@ describe("Suite de testes das rotas User.", function() {
               "email": "john_sm@hotmail.com"
             })
 
-            expect(responseSearch.body._links).toBeDefined()
-            expect(responseSearch.body._links).toHaveLength(4)
+            const { id, created, updated, _links } = responseSearch.body
+
+            expect(created.createdAt).toBeDefined()
+            expect(created.createdBy).toMatchObject({
+              id: expect.any(String),
+              name: expect.any(String),
+            })
+
+            expect(updated.updatedAt).toBeDefined()
+            expect(updated.updatedBy).toMatchObject({
+              id: "507f1f77bcf86cd799439011",
+              name: "Macunaíma Cruz",
+            })
+
+            expect(_links).toBeDefined()
+            expect(_links).toHaveLength(4)
+
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorSearch) {
+            fail(errorSearch)
           })
+
       })
 
       test("/POST - Deve retornar 200 e um Token.", function() {
