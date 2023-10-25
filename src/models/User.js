@@ -31,11 +31,12 @@ class User {
 
       const user = await UserCollection.users.data.find(doc => doc.id == id)
 
-      if (role) {
-        let result = _.cloneDeep(user)
+      let result = _.cloneDeep(user)
 
-        delete result.created
-        delete result.updated
+      delete result.created
+      delete result.updated
+
+      if (role) {
 
         const userWhoCreated = await UserCollection.users.data.find(doc => doc.id == user.created.createdBy)
 
@@ -66,10 +67,10 @@ class User {
             }
           }
         }
-        return result
+
       }
 
-      return user
+      return result
 
     } catch (error) {
       console.log(error)

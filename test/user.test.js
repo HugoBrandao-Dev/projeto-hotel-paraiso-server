@@ -1531,7 +1531,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 */
   })
-/*
+
   describe("READ", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -1574,8 +1574,8 @@ describe("Suite de testes das rotas User.", function() {
                   information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
                 })
 
-                expect(responseRead.body.created).toBeDefined()
-                expect(responseRead.body.updated).toBeDefined()
+                expect(responseRead.body.created).toBeUndefined()
+                expect(responseRead.body.updated).toBeUndefined()
 
                 expect(responseRead.body._links).toBeDefined()
                 expect(responseRead.body._links).toHaveLength(3)
@@ -1697,7 +1697,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-
+/*
     describe("Testes de FALHA.", function() {
 
       test("/POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
@@ -1946,9 +1946,9 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-
+*/
   })
-
+/*
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {

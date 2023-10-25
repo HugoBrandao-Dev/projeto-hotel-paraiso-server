@@ -259,7 +259,7 @@ class UserController {
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
       } else {
-        let user = await User.findOne(id, role)
+        let user = await User.findOne(id, role > 0)
         if (user) {
 
           // Role é baseado na Função da pessoa logada (dona do token)
