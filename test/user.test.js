@@ -13,13 +13,41 @@ const projectLinks = {
 }
 
 let accounts = {
-  admin: { id: '', token: '' },
-  gerente3: { id: '', token: '' },  
-  gerente2: { id: '', token: '' },
-  gerente: { id: '', token: '' },
-  funcionario2: { id: '', token: '' },
-  funcionario: { id: '', token: '' },
-  cliente: { id: '', token: ''  }
+  admin: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  gerente3: {
+    id: '',
+    name: '',
+    token: ''
+  },  
+  gerente2: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  gerente: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  funcionario2: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  funcionario: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  cliente: {
+    id: '',
+    name: '',
+    token: ''
+  }
 }
 
 
@@ -37,11 +65,12 @@ function register(user) {
         if (response.statusCode == 201) {
 
           let id = response.body._links[0].href.split('/').pop()
+          let name = user.name
           let login = {
             email: user.email,
             password: user.password
           }
-          resolve({ id, login })
+          resolve({ id, name, login })
 
         } else {
           reject(response.body.RestException.Message)
@@ -115,6 +144,7 @@ beforeAll(async () => {
       let adminLogin = registredAdmin.login
       let tokenAdmin = await login(adminLogin)
       accounts.admin.id = registredAdmin.id
+      accounts.admin.name = registredAdmin.name
       accounts.admin.token = `Bearer ${ tokenAdmin.token }`
     } catch (errorAdmin) {
       console.log(errorAdmin)
@@ -141,6 +171,7 @@ beforeAll(async () => {
       let clienteLogin = registredCliente.login
       let tokenCliente = await login(clienteLogin)
       accounts.cliente.id = registredCliente.id
+      accounts.cliente.name = registredCliente.name
       accounts.cliente.token = `Bearer ${ tokenCliente.token }`
     } catch (errorCliente) {
       console.log(errorCliente)
@@ -162,6 +193,7 @@ beforeAll(async () => {
       let registredFuncionario = await register(userFuncionario)
       let funcionarioLogin = registredFuncionario.login
       accounts.funcionario.id = registredFuncionario.id
+      accounts.funcionario.name = registredFuncionario.name
       await updateRole(accounts.funcionario.id, '1')
       let tokenFuncionario = await login(funcionarioLogin)
       accounts.funcionario.token = `Bearer ${ tokenFuncionario.token }`
@@ -185,6 +217,7 @@ beforeAll(async () => {
       let registredFuncionario2 = await register(userFuncionario2)
       let funcionarioLogin2 = registredFuncionario2.login
       accounts.funcionario2.id = registredFuncionario2.id
+      accounts.funcionario2.name = registredFuncionario2.name
       await updateRole(accounts.funcionario2.id, '1')
       let tokenFuncionario2 = await login(funcionarioLogin2)
       accounts.funcionario2.token = `Bearer ${ tokenFuncionario2.token }`
@@ -208,6 +241,7 @@ beforeAll(async () => {
       let registredGerente = await register(userGerente)
       let gerenteLogin = registredGerente.login
       accounts.gerente.id = registredGerente.id
+      accounts.gerente.name = registredGerente.name
       await updateRole(accounts.gerente.id, '2')
       let tokenGerente = await login(gerenteLogin)
       accounts.gerente.token = `Bearer ${ tokenGerente.token }`
@@ -231,6 +265,7 @@ beforeAll(async () => {
       let registredGerente2 = await register(userGerente2)
       let gerenteLogin2 = registredGerente2.login
       accounts.gerente2.id = registredGerente2.id
+      accounts.gerente2.name = registredGerente2.name
       await updateRole(accounts.gerente2.id, '2')
       let tokenGerente2 = await login(gerenteLogin2)
       accounts.gerente2.token = `Bearer ${ tokenGerente2.token }`
@@ -254,6 +289,7 @@ beforeAll(async () => {
       let registredGerente3 = await register(userGerente3)
       let gerenteLogin3 = registredGerente3.login
       accounts.gerente3.id = registredGerente3.id
+      accounts.gerente3.name = registredGerente3.naname
       await updateRole(accounts.gerente3.id, '2')
       let tokenGerente3 = await login(gerenteLogin3)
       accounts.gerente3.token = `Bearer ${ tokenGerente3.token }`
@@ -381,6 +417,71 @@ describe("Suite de testes das rotas User.", function() {
             expect(created.createdBy).toMatchObject({
               id,
               name: user.name
+            })
+
+            expect(updated.updatedAt).toBeDefined()
+            expect(updated.updatedBy).toMatchObject({
+              id: '',
+              name: '',
+            })
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
+        }
+
+      })
+
+      test("/POST - Deve retornar 201, para FUNCIONÁRIO que cadastra uma conta para o cliente.", async function() {
+
+        try {
+
+          const user = {
+            name: "Júnior de Oliveira",
+            email: "junior@hotmail.com",
+            password: "qWoie#$uR19@382734",
+            phoneCode: "55",
+            phoneNumber: "11999847523",
+            birthDate: "1985-06-09",
+            country: "BR",
+            state: "RJ",
+            city: "Rio de Janeiro",
+            cpf: `${ Generator.genCPF() }`,
+            cep: "08391700",
+            neighborhood: "Jardim Nova São Paulo",
+            road: "Rua Nina Simone",
+            house_number: "2000",
+            information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+          }
+
+          const responseCreate = await request.post(endpoints.toCreate).send(user).set('Authorization', accounts.funcionario.token)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toHaveLength(4)
+
+          try {
+
+            let userID = await extractUserID(responseCreate.body._links[0].href)
+
+            const responseRead = await request.get(`${ endpoints.toRead }/${ userID }`)
+              .set('Authorization', accounts.funcionario2.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              id,
+              created,
+              updated,
+            } = responseRead.body
+
+            expect(created.createdAt).toBeDefined()
+            expect(created.createdBy).toMatchObject({
+              id: accounts.funcionario.id,
+              name: accounts.funcionario.name
             })
 
             expect(updated.updatedAt).toBeDefined()

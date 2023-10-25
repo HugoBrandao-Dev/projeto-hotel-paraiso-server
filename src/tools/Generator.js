@@ -33,7 +33,7 @@ class Generator {
     }
   }
 
-  static genHATEOAS(id, plural, singular, toAdmin = false) {
+  static genHATEOAS(id, plural, singular, isAdmin = false) {
 
     let HATEOAS = [
       {
@@ -53,7 +53,7 @@ class Generator {
       },
     ]
 
-    if (toAdmin) {
+    if (isAdmin) {
       HATEOAS.push({
         href: `${ baseURL }/${ plural }`,
         method: 'GET',

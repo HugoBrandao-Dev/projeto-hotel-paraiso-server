@@ -214,24 +214,18 @@ class UserController {
           user.information = req.body.information
         }
 
-        if (req.headers['authorization']) {
-          const decodedToken = getDecodedToken(req.headers['authorization']) || ''
+        let userLogged = req.headers['authorization'] ? getDecodedToken(req.headers['authorization']) : false
 
-          await User.save(user, decodedToken.id)
-        } else {
-          await User.save(user, user.id)
-        }
-
+        let userIDWhoCreated = userLogged ? userLogged.id : user.id
+        await User.save(user, userIDWhoCreated)
         const savedUser = await User.findByDoc({ email: req.body.email })
-
-        let HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', savedUser.role > 0)
+        const HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', userLogged.role > 0)
 
         res.status(201)
         res.json({ _links: HATEOAS })
 
       }
     } catch (error) {
-      console.log(error)
       next(error)
     }
 
