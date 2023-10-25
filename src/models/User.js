@@ -1,7 +1,6 @@
 const UserCollection = require('../data/UserCollection.json')
 const DateFormated = require('../tools/DateFormated')
 const _ = require('lodash')
-const uuid = require('uuid')
 
 class User {
   async save(user, createdBy) {
@@ -81,8 +80,46 @@ class User {
 
   async findMany(skip = null, limit = null) {
     try {
-      const user = await UserCollection.users.data.slice(skip, limit)
-      return user 
+      const users = await UserCollection.users.data.slice(skip, limit)
+
+      let result = []
+
+      for (let user of users) {
+        let userClone = _.cloneDeep(user)
+
+        delete userClone.createdAt
+        delete userClone.createdBy
+
+        const userWhoCreated = await UserCollection.users.data.find(doc => doc.id == user.created.createdBy)
+
+        userClone.created = {
+          createdAt: user.created.createdAt,
+          createdBy: {
+            id: userWhoCreated.id,
+            name: userWhoCreated.name
+          }
+        }
+
+        if (userClone.updated.updatedBy) {
+          const userWhoUpdated = await UserCollection.users.data.find(doc => doc.id == user.updated.updatedBy)
+
+          if (!userWhoUpdated)
+            console.log(userClone.updated.updatedBy)
+
+          userClone.updated = {
+            updatedAt: user.updated.updatedAt,
+            updatedBy: {
+              id: userWhoUpdated.id,
+              name: userWhoUpdated.name
+            }
+          }
+        }
+
+        result.push(userClone)
+      }
+
+      return result
+
     } catch (error) {
       console.log(error)
       return []
@@ -119,13 +156,13 @@ class User {
     }
   }
 
-  async edit(user) {
+  async edit(user, updatedBy) {
     try {
       const date = new DateFormated('mongodb')
 
       user.updated = {
         updatedAt: date.getDateTime(),
-        updatedBy: uuid.v4()
+        updatedBy,
       }
       let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == user.id)
       let infos = Object.keys(user)

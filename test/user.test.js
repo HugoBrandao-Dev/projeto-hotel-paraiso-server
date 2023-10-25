@@ -1601,6 +1601,19 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body.hasNext).toBe(false)
 
             for (let user of response.body.users) {
+
+              const {
+                id,
+                created,
+                updated,
+              } = user
+
+              expect(created.createdAt).toBeDefined()
+              expect(created.createdBy).toMatchObject({
+                id: expect.any(String),
+                name: expect.any(String),
+              })
+
               expect(user._links).toBeDefined()
               expect(user._links).toHaveLength(3)
             }

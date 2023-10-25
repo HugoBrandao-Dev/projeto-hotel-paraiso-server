@@ -383,7 +383,7 @@ class UserController {
 
   async update(req, res, next) {
     try {
-      const { role: roleToken } = getDecodedToken(req.headers['authorization'])
+      const { id: userIDWhoUpdated, role: roleToken } = getDecodedToken(req.headers['authorization'])
 
       const { 
         id,
@@ -682,7 +682,7 @@ class UserController {
 
       let HATEOAS = Generator.genHATEOAS(fields.id, 'users', 'user', roleToken > 0)
 
-      await User.edit(fields)
+      await User.edit(fields, userIDWhoUpdated)
       res.status(200)
       res.json({ _links: HATEOAS })
     } catch (error) {
