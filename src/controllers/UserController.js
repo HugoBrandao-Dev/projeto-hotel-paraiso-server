@@ -265,9 +265,9 @@ class UserController {
 
         let result = await User.findOne(id)
 
-        let user = _.cloneDeep(result)
+        if (result) {
 
-        if (user) {
+          let user = _.cloneDeep(result)
 
           delete user.created
           delete user.updated
@@ -323,43 +323,7 @@ class UserController {
 
   }
 
-  async list(req, res, next) {
-
-    try {
-
-      let hasNext = false
-      let users = []
-
-      // Skip é equivalente ao offset, no mongodb.
-      let skip = req.query.offset ? parseInt(req.query.offset) : 0
-
-      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
-      let limit = req.query.limit ? parseInt(req.query.limit) : 20
-
-      // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-      users = await User.findMany(skip, limit + 1)
-
-      if (users.length) {
-        hasNext = users.length > (limit - skip)
-
-        // Retira o dado extra para cálculo do hasNext.
-        users.pop()
-
-        for (let user of users) {
-          user._links = await Generator.genHATEOAS(user.id, 'users', 'user')
-        }
-
-        res.status(200)
-        res.json({ users, hasNext })
-      }
-
-    } catch (error) {
-      next(error)
-    }
-
-  }
-
-  // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
+    // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
   async readByDoc(req, res, next) {
 
     try {
@@ -417,14 +381,88 @@ class UserController {
         }
       }
 
-      let user = await User.findByDoc(type)
+      let result = await User.findByDoc(type)
 
-      if (user) {
+      if (result) {
+
+        let user = _.cloneDeep(result)
+
+        delete user.created
+        delete user.updated
+
+        const userWhoCreated = await User.findOne(result.created.createdBy)
+
+        // Setta os valores do CREATED.
+        user.created = {
+          createdAt: result.created.createdAt,
+          createdBy: {
+            id: userWhoCreated.id,
+            name: userWhoCreated.name
+          }
+        }
+
+        if (result.updated.updatedBy) {
+          const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+
+          // Setta os valores do UPDATED.
+          user.updated = {
+            updatedAt: result.updated.updatedAt,
+            updatedBy: {
+              id: userWhoUpdated.id,
+              name: userWhoUpdated.name
+            }
+          }
+        } else {
+          user.updated = {
+            updatedAt: "",
+            updatedBy: {
+              id: "",
+              name: "",
+            }
+          }
+        }
+
         user._links = await Generator.genHATEOAS(user.id, 'users', 'user', true)
         res.status(200)
         res.json(user)
       } else {
         res.sendStatus(404)
+      }
+
+    } catch (error) {
+      next(error)
+    }
+
+  }
+
+  async list(req, res, next) {
+
+    try {
+
+      let hasNext = false
+      let users = []
+
+      // Skip é equivalente ao offset, no mongodb.
+      let skip = req.query.offset ? parseInt(req.query.offset) : 0
+
+      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
+      let limit = req.query.limit ? parseInt(req.query.limit) : 20
+
+      // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
+      users = await User.findMany(skip, limit + 1)
+
+      if (users.length) {
+        hasNext = users.length > (limit - skip)
+
+        // Retira o dado extra para cálculo do hasNext.
+        users.pop()
+
+        for (let user of users) {
+          user._links = await Generator.genHATEOAS(user.id, 'users', 'user')
+        }
+
+        res.status(200)
+        res.json({ users, hasNext })
       }
 
     } catch (error) {

@@ -108,46 +108,7 @@ class User {
         }
       })
 
-      let result = _.cloneDeep(user)
-
-      if (user) {
-
-        delete result.created
-        delete result.updated
-
-        const userWhoCreated = await UserCollection.users.data.find(doc => doc.id == user.created.createdBy)
-
-        result.created = {
-          createdAt: user.created.createdAt,
-          createdBy: {
-            id: userWhoCreated.id,
-            name: userWhoCreated.name
-          }
-        }
-
-        if (user.updated.updatedBy) {
-          const userWhoUpdated = await UserCollection.users.data.find(doc => doc.id == user.updated.updatedBy)
-
-          result.updated = {
-            updatedAt: user.updated.updatedAt,
-            updatedBy: {
-              id: userWhoUpdated.id,
-              name: userWhoUpdated.name
-            }
-          }
-        } else {
-          result.updated = {
-            updatedAt: "",
-            updatedBy: {
-              id: "",
-              name: "",
-            }
-          }
-        }
-
-      }
-
-      return result
+      return user
 
     } catch (error) {
       console.log(error)
