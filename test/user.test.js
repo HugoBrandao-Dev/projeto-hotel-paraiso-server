@@ -2014,10 +2014,11 @@ describe("Suite de testes das rotas User.", function() {
     })
 */
   })
-/*
+
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
+
       test("/PUT - Deve retornar 200 e o usuário Brasileiro com suas informações atualizadas.", function() {
 
         let user = {
@@ -2052,6 +2053,9 @@ describe("Suite de testes das rotas User.", function() {
                   state: user.state,
                   city: user.city,
                 })
+
+                expect(responseRead.body.created).toBeUndefined()
+                expect(responseRead.body.updated).toBeUndefined()
 
               })
               .catch(function(errorRead) {
@@ -2247,6 +2251,14 @@ describe("Suite de testes das rotas User.", function() {
                   road: user.road,
                   house_number: user.house_number,
                   information: user.information
+                })
+
+                const { updated } = responseRead.body
+
+                expect(updated.updatedAt).toBeDefined()
+                expect(updated.updatedBy).toMatchObject({
+                  id: accounts.funcionario.id,
+                  name: accounts.funcionario.name,
                 })
 
               })
@@ -3306,7 +3318,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-
+/*
     describe("Testes de FALHA.", function() {
       test("/PUT - Deve retornar 401, já que o usuário NÃO está AUTORIZADO.", function() {
 
@@ -3660,9 +3672,9 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-
+*/
   })
-
+/*
   describe("DELETE", function() {
 
     describe("Testes de SUCESSO.", function() {

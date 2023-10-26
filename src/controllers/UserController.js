@@ -276,7 +276,9 @@ class UserController {
   }
 
   async list(req, res, next) {
+
     try {
+
       let hasNext = false
       let users = []
 
@@ -301,10 +303,12 @@ class UserController {
 
         res.status(200)
         res.json({ users, hasNext })
-      }      
+      }
+
     } catch (error) {
       next(error)
     }
+
   }
 
   // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
@@ -382,7 +386,9 @@ class UserController {
   }
 
   async update(req, res, next) {
+
     try {
+
       const { id: userIDWhoUpdated, role: roleToken } = getDecodedToken(req.headers['authorization'])
 
       const { 
@@ -685,9 +691,11 @@ class UserController {
       await User.edit(fields, userIDWhoUpdated)
       res.status(200)
       res.json({ _links: HATEOAS })
+
     } catch (error) {
       next(error)
     }
+
   }
 
   async remove(req, res) {
