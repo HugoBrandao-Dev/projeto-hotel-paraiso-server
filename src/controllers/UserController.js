@@ -2,6 +2,7 @@ const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const _ = require('lodash')
 
 // Models
 const User = require('../models/User')
@@ -258,15 +259,62 @@ class UserController {
 
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
+
+        return
       } else {
-        let user = await User.findOne(id, role > 0)
+
+        let result = await User.findOne(id)
+
+        let user = _.cloneDeep(result)
+
         if (user) {
+
+          delete user.created
+          delete user.updated
+
+          // Os valores do created e updated só são settados em casos onde o usuário logado é um Funcionário++.
+          if (role > 0) {
+
+            const userWhoCreated = await User.findOne(result.created.createdBy)
+
+            // Setta os valores do CREATED.
+            user.created = {
+              createdAt: result.created.createdAt,
+              createdBy: {
+                id: userWhoCreated.id,
+                name: userWhoCreated.name
+              }
+            }
+
+            if (result.updated.updatedBy) {
+              const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+
+              // Setta os valores do UPDATED.
+              user.updated = {
+                updatedAt: result.updated.updatedAt,
+                updatedBy: {
+                  id: userWhoUpdated.id,
+                  name: userWhoUpdated.name
+                }
+              }
+            } else {
+              user.updated = {
+                updatedAt: "",
+                updatedBy: {
+                  id: "",
+                  name: "",
+                }
+              }
+            }
+
+          }
 
           // Role é baseado na Função da pessoa logada (dona do token)
           user._links = await Generator.genHATEOAS(user.id, 'users', 'user', role > 0)
           res.status(200)
           res.json(user)
         }
+
       }
 
     } catch (error) {

@@ -501,7 +501,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-/*
+
     describe("Testes de FALHA.", function() {
 
       // Testes no NOME
@@ -1529,7 +1529,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-*/
+
   })
 
   describe("READ", function() {
@@ -1763,7 +1763,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-/*
+
     describe("Testes de FALHA.", function() {
 
       test("/POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
@@ -1837,7 +1837,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
       // Teste na visualização das infos do cliente pelo lado do funcionário++.
-      test("Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
+      test("/POST - Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
 
         let user = { id: '5da9ea674234635bdff4+-!7' }
 
@@ -1855,21 +1855,21 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("Deve retornar 404, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
+      test("/POST - Deve retornar 404, uma vez que o usuário não existe.", function() {
 
         let user = { id: '507f1f77bcf86cd799431111' }
 
         return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.admin.token)
-          .then(function(response) {
-            expect(response.statusCode).toEqual(404)
+          .then(function(responseRead) {
+            expect(responseRead.statusCode).toEqual(404)
 
-            expect(response.body.RestException.Code).toBe("3")
-            expect(response.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
-            expect(response.body.RestException.Status).toBe("404")
-            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+            expect(responseRead.body.RestException.Code).toBe("3")
+            expect(responseRead.body.RestException.Message).toBe("Nenhum usuário com o ID informado está cadastrado")
+            expect(responseRead.body.RestException.Status).toBe("404")
+            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
           })
-          .catch(function(error) {
-            fail(error)
+          .catch(function(errorRead) {
+            fail(errorRead)
           })
       })
 
@@ -2012,7 +2012,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-*/
+
   })
 
   describe("UPDATE", function() {
@@ -3318,7 +3318,7 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-/*
+
     describe("Testes de FALHA.", function() {
       test("/PUT - Deve retornar 401, já que o usuário NÃO está AUTORIZADO.", function() {
 
@@ -3672,9 +3672,9 @@ describe("Suite de testes das rotas User.", function() {
       })
 
     })
-*/
+
   })
-/*
+
   describe("DELETE", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -3965,5 +3965,5 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
-*/
+
 })
