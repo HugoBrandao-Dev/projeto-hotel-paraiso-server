@@ -39,64 +39,6 @@ class User {
 
   }
 
-  async findMany(skip = null, limit = null) {
-
-    try {
-      const users = await UserCollection.users.data.slice(skip, limit)
-
-      let result = []
-
-      for (let user of users) {
-        let userClone = _.cloneDeep(user)
-
-        delete userClone.createdAt
-        delete userClone.createdBy
-
-        const userWhoCreated = await UserCollection.users.data.find(doc => doc.id == user.created.createdBy)
-
-        userClone.created = {
-          createdAt: user.created.createdAt,
-          createdBy: {
-            id: userWhoCreated.id,
-            name: userWhoCreated.name
-          }
-        }
-
-        if (userClone.updated.updatedBy) {
-          const userWhoUpdated = await UserCollection.users.data.find(doc => doc.id == user.updated.updatedBy)
-
-          if (!userWhoUpdated)
-            console.log(userClone.updated.updatedBy)
-
-          userClone.updated = {
-            updatedAt: user.updated.updatedAt,
-            updatedBy: {
-              id: userWhoUpdated.id,
-              name: userWhoUpdated.name
-            }
-          }
-        } else {
-          result.updated = {
-            updatedAt: "",
-            updatedBy: {
-              id: "",
-              name: "",
-            }
-          }
-        }
-
-        result.push(userClone)
-      }
-
-      return result
-
-    } catch (error) {
-      console.log(error)
-      return []
-    }
-
-  }
-
   async findByDoc(searchType) {
 
     try {
@@ -118,13 +60,32 @@ class User {
   }
 
   async findByRole(role) {
+
     try {
+
       let users = await UserCollection.users.data.filter(user => user.role == role)
       return users
+
     } catch (error) {
       console.log(error)
       return []
     }
+
+  }
+
+  async findMany(skip = null, limit = null) {
+
+    try {
+      
+      const users = await UserCollection.users.data.slice(skip, limit)
+
+      return users
+
+    } catch (error) {
+      console.log(error)
+      return []
+    }
+
   }
 
   async edit(user, updatedBy) {

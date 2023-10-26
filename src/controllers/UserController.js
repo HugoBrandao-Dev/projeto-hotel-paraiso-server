@@ -440,7 +440,6 @@ class UserController {
     try {
 
       let hasNext = false
-      let users = []
 
       // Skip é equivalente ao offset, no mongodb.
       let skip = req.query.offset ? parseInt(req.query.offset) : 0
@@ -449,21 +448,63 @@ class UserController {
       let limit = req.query.limit ? parseInt(req.query.limit) : 20
 
       // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-      users = await User.findMany(skip, limit + 1)
+      const result = await User.findMany(skip, limit + 1)
+      let users = []
 
-      if (users.length) {
-        hasNext = users.length > (limit - skip)
+      if (result.length) {
+        hasNext = result.length > (limit - skip)
 
         // Retira o dado extra para cálculo do hasNext.
-        users.pop()
+        result.pop()
 
-        for (let user of users) {
+        for (let item of result) {
+
+          let user = _.cloneDeep(item)
+
+          delete user.created
+          delete user.updated
+
+          const userWhoCreated = await User.findOne(item.created.createdBy)
+
+          // Setta os valores do CREATED.
+          user.created = {
+            createdAt: item.created.createdAt,
+            createdBy: {
+              id: userWhoCreated.id,
+              name: userWhoCreated.name
+            }
+          }
+
+          if (item.updated.updatedBy) {
+            const userWhoUpdated = await User.findOne(item.updated.updatedBy)
+
+            // Setta os valores do UPDATED.
+            user.updated = {
+              updatedAt: item.updated.updatedAt,
+              updatedBy: {
+                id: userWhoUpdated.id,
+                name: userWhoUpdated.name
+              }
+            }
+          } else {
+            user.updated = {
+              updatedAt: "",
+              updatedBy: {
+                id: "",
+                name: "",
+              }
+            }
+          }
+
           user._links = await Generator.genHATEOAS(user.id, 'users', 'user')
+
+          users.push(user)
         }
 
-        res.status(200)
-        res.json({ users, hasNext })
       }
+
+      res.status(200)
+      res.json({ users, hasNext })
 
     } catch (error) {
       next(error)
