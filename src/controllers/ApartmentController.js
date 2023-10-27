@@ -1,6 +1,9 @@
 const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
 const jwt = require('jsonwebtoken')
+const _ = require('lodash')
+
+const User = require('../models/User')
 
 let baseURL = 'http://localhost:4000'
 const projectLinks = {
@@ -133,7 +136,9 @@ class ApartmentController {
   }
 
   async read(req, res, next) {
+
     try {
+
       let id = req.params.id
 
       let idResult = await Analyzer.analyzeID(id, 'apartment')
@@ -160,12 +165,50 @@ class ApartmentController {
         return
       }
       
-      let apartment = await Apartment.findOne(id)
+      let result = await Apartment.findOne(id)
+
+      let apartment = _.cloneDeep(result)
+
       let pictures = await Apartment.findPictures(apartment.number)
       if (pictures.length)
         apartment.pictures = pictures
       else 
         apartment.pictures = []
+
+      delete apartment.created
+      delete apartment.updated
+
+      const userWhoCreated = await User.findOne(result.created.createdBy)
+
+      // Setta os valores do CREATED.
+      apartment.created = {
+        createdAt: result.created.createdAt,
+        createdBy: {
+          id: userWhoCreated.id,
+          name: userWhoCreated.name
+        }
+      }
+
+      if (result.updated.updatedBy) {
+        const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+
+        // Setta os valores do UPDATED.
+        apartment.updated = {
+          updatedAt: result.updated.updatedAt,
+          updatedBy: {
+            id: userWhoUpdated.id,
+            name: userWhoUpdated.name
+          }
+        }
+      } else {
+        apartment.updated = {
+          updatedAt: "",
+          updatedBy: {
+            id: "",
+            name: "",
+          }
+        }
+      }
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
 
@@ -173,9 +216,12 @@ class ApartmentController {
 
       res.status(200)
       res.json(apartment)
+
     } catch(error) {
+      console.log(error)
       next(error)
     }
+
   }
 
   async list(req, res, next) {

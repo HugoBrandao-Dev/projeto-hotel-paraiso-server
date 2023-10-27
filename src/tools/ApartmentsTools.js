@@ -1,6 +1,9 @@
 const ApartmentCollection = require('../data/ApartmentCollection.json')
+const UserCollection = require('../data/UserCollection.json')
+
 const fileSystem = require('fs')
 const path = require('path')
+const _ = require('lodash')
 
 class ApartmentsTools {
 
@@ -9,7 +12,39 @@ class ApartmentsTools {
 
     try {
 
-      let apartment = ApartmentCollection.apartments.data.find(apto => apto.id == id)
+      let result = ApartmentCollection.apartments.data.find(apto => apto.id == id)
+
+      let apartment = _.cloneDeep(result)
+      delete apartment.created
+      delete apartment.updated
+
+      let userWhoCreated = UserCollection.users.data.find(user => user.id == result.created.createdBy)
+      apartment.created = {
+        createdAt: result.created.createdAt,
+        createdBy: {
+          id: userWhoCreated.id,
+          name: userWhoCreated.name,
+        }
+      }
+
+      if (result.updated.updatedBy) {
+        let userWhoUpdated = UserCollection.users.data.find(user => user.id == result.updated.updatedBy)
+        apartment.updated = {
+          updatedAt: result.updated.updatedAt,
+          updatedBy: {
+            id: userWhoUpdated.id,
+            name: userWhoUpdated.name,
+          }
+        }
+      } else {
+        apartment.updated = {
+          updatedAt: "",
+          updatedBy: {
+            id: "",
+            name: "",
+          }
+        }
+      }
 
       return apartment
 

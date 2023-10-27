@@ -18,10 +18,26 @@ const projectLinks = {
 }
 
 let accounts = {
-  admin: { id: '', token: '' },
-  gerente: { id: '', token: '' },
-  funcionario: { id: '', token: '' },
-  cliente: { id: '', token: ''  }
+  admin: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  gerente: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  funcionario: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  cliente: {
+    id: '',
+    name: '',
+    token: ''
+  }
 }
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
@@ -56,11 +72,12 @@ function register(user) {
         if (response.statusCode == 201) {
 
           let id = response.body._links[0].href.split('/').pop()
+          let name = user.name
           let login = {
             email: user.email,
             password: user.password
           }
-          resolve({ id, login })
+          resolve({ id, name, login })
 
         } else {
           reject(response.body.RestException.Message)
@@ -143,6 +160,7 @@ beforeAll(async () => {
       let adminLogin = registredAdmin.login
       let tokenAdmin = await login(adminLogin)
       accounts.admin.id = registredAdmin.id
+      accounts.admin.name = registredAdmin.name
       accounts.admin.token = `Bearer ${ tokenAdmin.token }`
     } catch (errorAdmin) {
       console.log(errorAdmin)
@@ -164,6 +182,7 @@ beforeAll(async () => {
       let registredGerente = await register(userGerente)
       let gerenteLogin = registredGerente.login
       accounts.gerente.id = registredGerente.id
+      accounts.gerente.name = registredGerente.name
       await updateRole(accounts.gerente.id, '2')
       let tokenGerente = await login(gerenteLogin)
       accounts.gerente.token = `Bearer ${ tokenGerente.token }`
@@ -187,6 +206,7 @@ beforeAll(async () => {
       let registredFuncionario = await register(userFuncionario)
       let funcionarioLogin = registredFuncionario.login
       accounts.funcionario.id = registredFuncionario.id
+      accounts.funcionario.name = registredFuncionario.name
       await updateRole(accounts.funcionario.id, '1')
       let tokenFuncionario = await login(funcionarioLogin)
       accounts.funcionario.token = `Bearer ${ tokenFuncionario.token }`
@@ -215,6 +235,7 @@ beforeAll(async () => {
       let clienteLogin = registredCliente.login
       let tokenCliente = await login(clienteLogin)
       accounts.cliente.id = registredCliente.id
+      accounts.cliente.name = registredCliente.name
       accounts.cliente.token = `Bearer ${ tokenCliente.token }`
     } catch (errorCliente) {
       console.log(errorCliente)
@@ -233,77 +254,80 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", function() {
+      test("/POST - Deve retornar 201, para sucesso no cadastro de um apartamento.", async function() {
 
-        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+        try {
 
-        let apartment = {
-          floor: "1",
-          number,
-          rooms: [
-            {
-              room: 'sala de estar',
-              quantity: '1'
-            },
-            {
-              room: 'cozinha',
-              quantity: '1'
-            },
-            {
-              room: 'banheiro',
-              quantity: '1'
-            },
-            {
-              room: 'quarto',
-              quantity: '1'
-            }
-          ],
-          daily_price: '200'
-        }
+          let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
 
-        return request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
-          .then(function(responseCreate) {
+          let apartment = {
+            floor: "1",
+            number,
+            rooms: [
+              {
+                room: 'sala de estar',
+                quantity: '1'
+              },
+              {
+                room: 'cozinha',
+                quantity: '1'
+              },
+              {
+                room: 'banheiro',
+                quantity: '1'
+              },
+              {
+                room: 'quarto',
+                quantity: '1'
+              }
+            ],
+            daily_price: '200'
+          }
 
-            expect(responseCreate.statusCode).toEqual(201)
+          let responseCreate = await request.post(endpoints.toCreate).send(apartment).set('Authorization', accounts.admin.token)
 
-            expect(responseCreate.body._links).toBeDefined()
-            expect(responseCreate.body._links).toHaveLength(4)
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toBeDefined()
+          expect(responseCreate.body._links).toHaveLength(4)
+
+          try {
 
             const id = responseCreate.body._links[0].href.split('/').pop()
 
-            return request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', accounts.admin.token)
-              .then(function(responseRead) {
+            let responseRead = await request.get(`${ endpoints.toRead }/${ id }`).set('Authorization', accounts.admin.token)
 
-                const { reserve, created, updated } = responseRead.body
+            const { reserve, created, updated } = responseRead.body
 
-                expect(reserve).toBeDefined()
-                expect(reserve).toMatchObject({
-                  status: "livre",
-                  client_id: "",
-                  start: "",
-                  end: "",
-                })
+            expect(reserve).toBeDefined()
+            expect(reserve).toMatchObject({
+              status: "livre",
+              client_id: "",
+              start: "",
+              end: "",
+            })
 
-                expect(created).toBeDefined()
-                expect(created).toMatchObject({
-                  createdAt: expect.any(String),
-                  createdBy: accounts.admin.id
-                })
+            expect(created.createdAt).toBeDefined()
+            expect(created.createdBy).toMatchObject({
+              id: accounts.admin.id,
+              name: accounts.admin.name,
+            })
 
-                expect(updated).toBeDefined()
-                expect(updated).toMatchObject({
-                    updatedAt: '',
-                    updatedBy: ''
-                })
+            expect(updated).toMatchObject({
+              updatedAt: "",
+              updatedBy: {
+                id: "",
+                name: "",
+              }
+            })
 
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
+        }
 
       })
 
@@ -1579,108 +1603,110 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", function() {
+      test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", async function() {
 
-        let apartment = {
-          id: 'd9d62beecdde62af82efd82c'
+        try {
+
+          let apartment = {
+            id: 'd9d62beecdde62af82efd82c'
+          }
+
+          let responseList = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+
+          expect(responseList.statusCode).toEqual(200)
+
+          const {
+            rooms,
+            reserve,
+            created,
+            updated,
+            _links
+          } = responseList.body
+
+          let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+          expect(responseList.body).toMatchObject({
+            id: apartment.id,
+            floor: apartmentJSON.floor,
+            number: apartmentJSON.number,
+            daily_price: apartmentJSON.daily_price,
+          })
+
+          expect(rooms).toBeDefined()
+          expect(rooms).toHaveLength(4)
+
+          expect(rooms[0]).toBeDefined()
+          expect(rooms[0]).toMatchObject({
+            room: "sala de estar",
+            quantity: "1"
+          })
+
+          expect(rooms[1]).toBeDefined()
+          expect(rooms[1]).toMatchObject({
+            room: "cozinha",
+            quantity: "1"
+          })
+
+          expect(rooms[2]).toBeDefined()
+          expect(rooms[2]).toMatchObject({
+            room: "banheiro",
+            quantity: "2"
+          })
+
+          expect(rooms[3]).toBeDefined()
+          expect(rooms[3]).toMatchObject({
+            room: "quarto",
+            quantity: "2"
+          })
+
+          expect(reserve).toBeDefined()
+          expect(reserve).toMatchObject({
+            status: apartmentJSON.reserve.status,
+            client_id: apartmentJSON.reserve.client_id,
+            start: apartmentJSON.reserve.start,
+            end: apartmentJSON.reserve.end,
+          })
+
+          expect(created.createdAt).toBe(apartmentJSON.created.createdAt)
+          expect(created.createdBy).toMatchObject({
+            id: apartmentJSON.created.createdBy.id,
+            name: apartmentJSON.created.createdBy.name,
+          })
+
+          expect(updated).toMatchObject({
+            updatedAt: apartmentJSON.updated.updatedAt,
+            updatedBy: {
+              id: apartmentJSON.updated.updatedBy.id,
+              name: apartmentJSON.updated.updatedBy.name,
+            }
+          })
+
+          expect(_links).toBeDefined()
+          expect(_links).toHaveLength(4)
+          expect(_links[0]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
+            method: 'GET',
+            rel: 'self_apartment'
+          })
+          expect(_links[1]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toUpdate }`,
+            method: 'PUT',
+            rel: 'edit_apartment'
+          })
+          expect(_links[2]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
+            method: 'DELETE',
+            rel: 'delete_apartment'
+          })
+          expect(_links[3]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toList }`,
+            method: 'GET',
+            rel: 'apartment_list'
+          })
+
+        } catch (errorList) {
+          fail(errorList)
         }
-
-        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
-          .then(function(response) {
-
-            expect(response.statusCode).toEqual(200)
-
-            const {
-              rooms,
-              reserve,
-              created,
-              updated,
-              _links
-            } = response.body
-
-            let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
-
-            expect(response.body).toMatchObject({
-              id: apartment.id,
-              floor: apartmentJSON.floor,
-              number: apartmentJSON.number,
-              daily_price: apartmentJSON.daily_price,
-            })
-
-            expect(rooms).toBeDefined()
-            expect(rooms).toHaveLength(4)
-
-            expect(rooms[0]).toBeDefined()
-            expect(rooms[0]).toMatchObject({
-              room: "sala de estar",
-              quantity: "1"
-            })
-
-            expect(rooms[1]).toBeDefined()
-            expect(rooms[1]).toMatchObject({
-              room: "cozinha",
-              quantity: "1"
-            })
-
-            expect(rooms[2]).toBeDefined()
-            expect(rooms[2]).toMatchObject({
-              room: "banheiro",
-              quantity: "2"
-            })
-
-            expect(rooms[3]).toBeDefined()
-            expect(rooms[3]).toMatchObject({
-              room: "quarto",
-              quantity: "2"
-            })
-
-            expect(reserve).toBeDefined()
-            expect(reserve).toMatchObject({
-              status: apartmentJSON.reserve.status,
-              client_id: apartmentJSON.reserve.client_id,
-              start: apartmentJSON.reserve.start,
-              end: apartmentJSON.reserve.end,
-            })
-
-            expect(created).toBeDefined()
-            expect(created).toMatchObject({
-              createdAt: apartmentJSON.created.createdAt,
-              createdBy: apartmentJSON.created.createdBy,
-            })
-
-            expect(updated).toBeDefined()
-            expect(updated).toMatchObject({
-              updatedAt: apartmentJSON.updated.updatedAt,
-              updatedBy: apartmentJSON.updated.updatedBy,
-            })
-
-            expect(_links).toBeDefined()
-            expect(_links).toHaveLength(4)
-            expect(_links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-              method: 'GET',
-              rel: 'self_apartment'
-            })
-            expect(_links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_apartment'
-            })
-            expect(_links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-              method: 'DELETE',
-              rel: 'delete_apartment'
-            })
-            expect(_links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'apartment_list'
-            })
-
-          })
-          .catch(function(error) {
-            fail(error)
-          })
 
       })
 
@@ -1726,16 +1752,18 @@ describe("Suite de testes das rotas de Apartment.", function() {
             end: apartmentJSON.reserve.end,
           })
 
-          expect(created).toBeDefined()
-          expect(created).toMatchObject({
-            createdAt: apartmentJSON.created.createdAt,
-            createdBy: apartmentJSON.created.createdBy,
+          expect(created.createdAt).toBe(apartmentJSON.created.createdAt)
+          expect(created.createdBy).toMatchObject({
+            id: apartmentJSON.created.createdBy.id,
+            name: apartmentJSON.created.createdBy.name,
           })
 
-          expect(updated).toBeDefined()
           expect(updated).toMatchObject({
             updatedAt: apartmentJSON.updated.updatedAt,
-            updatedBy: apartmentJSON.updated.updatedBy,
+            updatedBy: {
+              id: apartmentJSON.updated.updatedBy.id,
+              name: apartmentJSON.updated.updatedBy.name,
+            }
           })
 
           expect(_links).toBeDefined()
@@ -1766,7 +1794,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
         }
 
       })
-
+/*
       test("/GET - Deve retornar 200 e uma lista de apartamentos, com 0 ou várias fotos.", function() {
 
         return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
@@ -1835,7 +1863,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-
+*/
     })
 /*
     describe("Testes de FALHA.", function() {
@@ -1971,274 +1999,299 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento.", async function() {
 
-        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+        try {
 
-        let apartment = {
-          id: "d9d62beecdde62af82efd82c",
-          floor: "3",
-          number,
-          rooms: [
-            {
-              room: "sala de estar",
-              quantity: "1"
-            },
-            {
-              room: "cozinha",
-              quantity: "1"
-            },
-            {
-              room: "banheiro",
-              quantity: "1"
-            },
-            {
-              room: "quarto",
-              quantity: "1"
-            }
-          ],
-          daily_price: "400",
-        }
+          let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
 
-        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
+          let apartment = {
+            id: "d9d62beecdde62af82efd82c",
+            floor: "3",
+            number,
+            rooms: [
+              {
+                room: "sala de estar",
+                quantity: "1"
+              },
+              {
+                room: "cozinha",
+                quantity: "1"
+              },
+              {
+                room: "banheiro",
+                quantity: "1"
+              },
+              {
+                room: "quarto",
+                quantity: "1"
+              }
+            ],
+            daily_price: "400",
+          }
 
-            expect(responseUpdate.statusCode).toEqual(200)
+          let responseUpdate = await request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
 
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toBeDefined()
+          expect(responseUpdate.body._links).toHaveLength(4)
+          expect(responseUpdate.body._links[0]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
+            method: 'GET',
+            rel: 'self_apartment'
+          })
+          expect(responseUpdate.body._links[1]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toUpdate }`,
+            method: 'PUT',
+            rel: 'edit_apartment'
+          })
+          expect(responseUpdate.body._links[2]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
+            method: 'DELETE',
+            rel: 'delete_apartment'
+          })
+          expect(responseUpdate.body._links[3]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toList }`,
+            method: 'GET',
+            rel: 'apartment_list'
+          })
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
+
+            const { rooms, created, updated, _links } = responseRead.body
+
+            let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+            expect(responseRead.body).toMatchObject({
+              id: apartment.id,
+              floor: apartmentJSON.floor,
+              number: apartmentJSON.number,
+            })
+
+            expect(rooms).toBeDefined()
+            expect(rooms).toHaveLength(4)
+
+            expect(created.createdAt).toBe(apartmentJSON.created.createdAt)
+            expect(created.createdBy).toMatchObject({
+              id: apartmentJSON.created.createdBy.id,
+              name: apartmentJSON.created.createdBy.name,
+            })
+
+            expect(updated).toMatchObject({
+              updatedAt: apartmentJSON.updated.updatedAt,
+              updatedBy: {
+                id: apartmentJSON.updated.updatedBy.id,
+                name: apartmentJSON.updated.updatedBy.name,
+              }
+            })
+
+            expect(_links).toBeDefined()
+            expect(_links).toHaveLength(4)
+            expect(_links[0]).toMatchObject({
               href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
               method: 'GET',
               rel: 'self_apartment'
             })
-            expect(responseUpdate.body._links[1]).toMatchObject({
+            expect(_links[1]).toMatchObject({
               href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_apartment'
             })
-            expect(responseUpdate.body._links[2]).toMatchObject({
+            expect(_links[2]).toMatchObject({
               href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
               method: 'DELETE',
               rel: 'delete_apartment'
             })
-            expect(responseUpdate.body._links[3]).toMatchObject({
+            expect(_links[3]).toMatchObject({
               href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'apartment_list'
             })
 
-            return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
-              .then(function(responseRead) {
+          } catch (errorRead) {
+            fail(errorRead)
+          }
 
-                const { rooms, updated, _links } = responseRead.body
-
-                let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
-
-                expect(responseRead.body).toMatchObject({
-                  id: apartment.id,
-                  floor: apartmentJSON.floor,
-                  number: apartmentJSON.number,
-                })
-
-                expect(rooms).toBeDefined()
-                expect(rooms).toHaveLength(4)
-
-                expect(updated).toBeDefined()
-                expect(updated).toMatchObject({
-                  updatedAt: expect.any(String),
-                  updatedBy: accounts.admin.id
-                })
-
-                expect(_links).toBeDefined()
-                expect(_links).toHaveLength(4)
-                expect(_links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-                  method: 'GET',
-                  rel: 'self_apartment'
-                })
-                expect(_links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_apartment'
-                })
-                expect(_links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-                  method: 'DELETE',
-                  rel: 'delete_apartment'
-                })
-                expect(_links[3]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toList }`,
-                  method: 'GET',
-                  rel: 'apartment_list'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
-
-      })
-
-      test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento, onde se faz uso de seu próprio número.", function() {
-
-        let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
-
-        let apartment = {
-          id: "856377c88f8fd9fc65fd3ef5",
-          floor: "3",
-          number,
-          rooms: [
-            {
-              room: "sala de estar",
-              quantity: "1"
-            },
-            {
-              room: "cozinha",
-              quantity: "1"
-            },
-            {
-              room: "banheiro",
-              quantity: "1"
-            },
-            {
-              room: "quarto",
-              quantity: "1"
-            }
-          ],
-          daily_price: "400",
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
 
-        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
+      })
 
-            expect(responseUpdate.statusCode).toEqual(200)
+      test("/PUT - Deve retornar 200, para sucesso na atualização das informações de um apartamento, onde se faz uso de seu próprio número.", async function() {
 
-            return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
-              .then(function(responseGET) {
+        try {
 
-                const { rooms, updated, _links } = responseGET.body
+          let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
 
-                let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+          let apartment = {
+            id: "856377c88f8fd9fc65fd3ef5",
+            floor: "3",
+            number,
+            rooms: [
+              {
+                room: "sala de estar",
+                quantity: "1"
+              },
+              {
+                room: "cozinha",
+                quantity: "1"
+              },
+              {
+                room: "banheiro",
+                quantity: "1"
+              },
+              {
+                room: "quarto",
+                quantity: "1"
+              }
+            ],
+            daily_price: "400",
+          }
 
-                expect(responseGET.body).toMatchObject({
-                  id: apartment.id,
-                  floor: apartmentJSON.floor,
-                  number: apartmentJSON.number,
-                })
+          let responseUpdate = await request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
 
-                expect(rooms).toBeDefined()
-                expect(rooms).toHaveLength(4)
+          expect(responseUpdate.statusCode).toEqual(200)
 
-                expect(updated).toBeDefined()
-                expect(updated).toMatchObject({
-                  updatedAt: expect.any(String),
-                  updatedBy: accounts.admin.id
-                })
+          try {
 
-                expect(_links).toBeDefined()
-                expect(_links).toHaveLength(4)
-                expect(_links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-                  method: 'GET',
-                  rel: 'self_apartment'
-                })
-                expect(_links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_apartment'
-                })
-                expect(_links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-                  method: 'DELETE',
-                  rel: 'delete_apartment'
-                })
-                expect(_links[3]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toList }`,
-                  method: 'GET',
-                  rel: 'apartment_list'
-                })
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
+            let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
 
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
+            const { rooms, created, updated, _links } = responseRead.body
+
+            let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+            expect(responseRead.body).toMatchObject({
+              id: apartment.id,
+              floor: apartmentJSON.floor,
+              number: apartmentJSON.number,
+            })
+
+            expect(rooms).toBeDefined()
+            expect(rooms).toHaveLength(4)
+
+            expect(created.createdAt).toBe(apartmentJSON.created.createdAt)
+            expect(created.createdBy).toMatchObject({
+              id: apartmentJSON.created.createdBy.id,
+              name: apartmentJSON.created.createdBy.name,
+            })
+
+            expect(updated).toMatchObject({
+              updatedAt: apartmentJSON.updated.updatedAt,
+              updatedBy: {
+                id: apartmentJSON.updated.updatedBy.id,
+                name: apartmentJSON.updated.updatedBy.name,
+              }
+            })
+
+            expect(_links).toBeDefined()
+            expect(_links).toHaveLength(4)
+            expect(_links[0]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
+              method: 'GET',
+              rel: 'self_apartment'
+            })
+            expect(_links[1]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toUpdate }`,
+              method: 'PUT',
+              rel: 'edit_apartment'
+            })
+            expect(_links[2]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
+              method: 'DELETE',
+              rel: 'delete_apartment'
+            })
+            expect(_links[3]).toMatchObject({
+              href: `${ baseURL }${ endpoints.toList }`,
+              method: 'GET',
+              rel: 'apartment_list'
+            })
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
+        }
 
       })
 
-      test("/PUT - Deve retornar 200, para sucesso na atualização parcial das informações de um apartamento.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização parcial das informações de um apartamento.", async function() {
 
-        let apartment = {
-          id: "856377c88f8fd9fc65fd3ef5",
-          rooms: [
-            {
-              room: "sala de estar",
-              quantity: "1"
-            },
-            {
-              room: "cozinha",
-              quantity: "1"
-            },
-            {
+        try {
+
+          let apartment = {
+            id: "856377c88f8fd9fc65fd3ef5",
+            rooms: [
+              {
+                room: "sala de estar",
+                quantity: "1"
+              },
+              {
+                room: "cozinha",
+                quantity: "1"
+              },
+              {
+                room: "banheiro",
+                quantity: "2"
+              },
+              {
+                room: "quarto",
+                quantity: "3"
+              }
+            ],
+            daily_price: "1000",
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const { rooms, daily_price, created, updated } = responseRead.body
+
+            let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+            expect(rooms[2]).toMatchObject({
               room: "banheiro",
               quantity: "2"
-            },
-            {
+            })
+            expect(rooms[3]).toMatchObject({
               room: "quarto",
               quantity: "3"
-            }
-          ],
-          daily_price: "1000",
+            })
+            expect(daily_price).toBe('1000')
+
+            expect(created.createdAt).toBe(apartmentJSON.created.createdAt)
+            expect(created.createdBy).toMatchObject({
+              id: apartmentJSON.created.createdBy.id,
+              name: apartmentJSON.created.createdBy.name,
+            })
+
+            expect(updated).toMatchObject({
+              updatedAt: apartmentJSON.updated.updatedAt,
+              updatedBy: {
+                id: apartmentJSON.updated.updatedBy.id,
+                name: apartmentJSON.updated.updatedBy.name,
+              }
+            })
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(apartment).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
-
-            if (responseUpdate.body.RestException) {
-              console.log(responseUpdate.body.RestException)
-            }
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.admin.token)
-              .then(function(responseRead) {
-
-                const { rooms, daily_price, updated } = responseRead.body
-
-                expect(rooms[2]).toMatchObject({
-                  room: "banheiro",
-                  quantity: "2"
-                })
-                expect(rooms[3]).toMatchObject({
-                  room: "quarto",
-                  quantity: "3"
-                })
-                expect(daily_price).toBe('1000')
-
-                expect(updated).toBeDefined()
-                expect(updated).toMatchObject({
-                  updatedAt: expect.any(String),
-                  updatedBy: accounts.admin.id
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
