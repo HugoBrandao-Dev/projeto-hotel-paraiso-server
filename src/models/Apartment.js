@@ -1,13 +1,9 @@
 let ApartmentCollection = require('../data/ApartmentCollection.json')
 let DateFormated = require('../tools/DateFormated')
+const Generator = require('../tools/Generator')
 
 let fileSystem = require('fs')
 let path = require('path')
-
-// Gera um ID (hardcoded) em Hexadecimal
-function genID() {
-  return [...Array(24)].map(() => Math.floor(Math.random() * 24).toString(24)).join('')
-}
 
 const date = new DateFormated('mongodb')
 
@@ -15,9 +11,6 @@ class Apartment {
   async save(apartment, createdBy) {
 
     try {
-
-      apartment.id = await genID()
-
       apartment.created = {
         createdAt: date.getDateTime(),
         createdBy

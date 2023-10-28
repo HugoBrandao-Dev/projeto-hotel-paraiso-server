@@ -1794,7 +1794,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
         }
 
       })
-/*
+
       test("/GET - Deve retornar 200 e uma lista de apartamentos, com 0 ou várias fotos.", function() {
 
         return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
@@ -1811,14 +1811,37 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             // As imagens com pictures são armazenadas por último, e o limite da listagem é 20.
             for (let apartment of responseList.body.apartments) {
+
               if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
-                let picturesCount = ApartmentsTools.getApartmentByID(apartment.id).pictures.length
+
+                const { created, updated } = apartment
+
+                let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+                let picturesCount = apartmentJSON.pictures.length
+
                 expect(apartment.pictures).toHaveLength(picturesCount)
+
+                expect(created.createdAt).toBe(apartmentJSON.created.createdAt)
+                expect(created.createdBy).toMatchObject({
+                  id: apartmentJSON.created.createdBy.id,
+                  name: apartmentJSON.created.createdBy.name,
+                })
+
+                expect(updated).toMatchObject({
+                  updatedAt: apartmentJSON.updated.updatedAt,
+                  updatedBy: {
+                    id: apartmentJSON.updated.updatedBy.id,
+                    name: apartmentJSON.updated.updatedBy.name,
+                  }
+                })
+
               } else {
                 expect(apartment.pictures).toHaveLength(0)
               }
+
               expect(apartment._links).toBeDefined()
               expect(apartment._links).toHaveLength(3)
+
             }
 
           })
@@ -1848,11 +1871,30 @@ describe("Suite de testes das rotas de Apartment.", function() {
             // As imagens com pictures são armazenadas por último, e o limite da listagem é 20.
             for (let apartment of responseList.body.apartments) {
               if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
+
+                const { created, updated } = apartment
+
                 let picturesCount = ApartmentsTools.getApartmentByID(apartment.id).pictures.length
                 expect(apartment.pictures).toHaveLength(picturesCount)
+
+                expect(created.createdAt).toBe(apartmentJSON.created.createdAt)
+                expect(created.createdBy).toMatchObject({
+                  id: apartmentJSON.created.createdBy.id,
+                  name: apartmentJSON.created.createdBy.name,
+                })
+
+                expect(updated).toMatchObject({
+                  updatedAt: apartmentJSON.updated.updatedAt,
+                  updatedBy: {
+                    id: apartmentJSON.updated.updatedBy.id,
+                    name: apartmentJSON.updated.updatedBy.name,
+                  }
+                })
+                
               } else {
                 expect(apartment.pictures).toHaveLength(0)
               }
+
               expect(apartment._links).toBeDefined()
               expect(apartment._links).toHaveLength(3)
             }
@@ -1863,7 +1905,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
-*/
+
     })
 /*
     describe("Testes de FALHA.", function() {

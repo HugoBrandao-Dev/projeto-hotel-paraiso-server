@@ -108,9 +108,11 @@ class ApartmentController {
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
       let apartment = {}
+      apartment.id = Generator.genID()
       apartment.floor = floor
       apartment.number = number
       apartment.rooms = rooms
+      apartment.pictures = await Apartment.findPictures(apartment.number)
       apartment.daily_price = daily_price
       apartment.reserve = {
         status: "livre",
@@ -169,12 +171,6 @@ class ApartmentController {
 
       let apartment = _.cloneDeep(result)
 
-      let pictures = await Apartment.findPictures(apartment.number)
-      if (pictures.length)
-        apartment.pictures = pictures
-      else 
-        apartment.pictures = []
-
       delete apartment.created
       delete apartment.updated
 
@@ -225,9 +221,10 @@ class ApartmentController {
   }
 
   async list(req, res, next) {
+
     try {
+
       let hasNext = false
-      let apartments = []
 
       // Skip é equivalente ao offset, no mongodb.
       let skip = req.query.offset ? parseInt(req.query.offset) : 0
@@ -236,25 +233,70 @@ class ApartmentController {
       let limit = req.query.limit ? parseInt(req.query.limit) : 20
 
       // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-      apartments = await Apartment.findMany(skip, limit + 1)
+      let results = await Apartment.findMany(skip, limit + 1)
+      let apartments = []
 
-      if (apartments.length) {
+      if (results.length) {
+
+        for (let item of results) {
+
+          let apartment = _.cloneDeep(item)
+
+          delete apartment.created
+          delete apartment.updated
+
+          const userWhoCreated = await User.findOne(item.created.createdBy)
+
+          // Setta os valores do CREATED.
+          apartment.created = {
+            createdAt: item.created.createdAt,
+            createdBy: {
+              id: userWhoCreated.id,
+              name: userWhoCreated.name
+            }
+          }
+
+          if (item.updated.updatedBy) {
+            const userWhoUpdated = await User.findOne(item.updated.updatedBy)
+
+            // Setta os valores do UPDATED.
+            apartment.updated = {
+              updatedAt: item.updated.updatedAt,
+              updatedBy: {
+                id: userWhoUpdated.id,
+                name: userWhoUpdated.name
+              }
+            }
+          } else {
+            apartment.updated = {
+              updatedAt: "",
+              updatedBy: {
+                id: "",
+                name: "",
+              }
+            }
+          }
+
+          let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartments', 'apartment', false)
+          apartment._links = HATEOAS
+
+          apartments.push(apartment)
+        }
+
         hasNext = apartments.length > (limit - skip)
 
         // Retira o dado extra para cálculo do hasNext.
-        apartments.pop()
-
-        for (let apartment of apartments) {
-          let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartments', 'apartment', false)
-          apartment._links = HATEOAS
-        }
+        if (hasNext)
+          apartments.pop()
 
         res.status(200)
         res.json({ apartments, hasNext })
-      }     
+      }
+
     } catch(error) {
       next(error)
     }
+
   }
 
   async update(req, res, next) {

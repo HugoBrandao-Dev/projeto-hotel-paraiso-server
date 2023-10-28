@@ -36,12 +36,12 @@
           "end": "2024-01-12"
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -79,61 +79,18 @@
           "end": "2023-01-12"
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
         "id": "02n07j2d1hf5a2f26djjj92a",
         "floor": "1",
         "number": "3",
-        "rooms": [
-          {
-            "room": "sala de estar",
-            "quantity": "1"
-          },
-          {
-            "room": "cozinha",
-            "quantity": "1"
-          },
-          {
-            "room": "banheiro",
-            "quantity": "2"
-          },
-          {
-            "room": "quarto",
-            "quantity": "2"
-          }
-        ],
-        "pictures": [],
-        "daily_price": "500",
-        "reserve": {
-          "status": "livre",
-          "client_id": "",
-          "reserved" : {
-            "reservedAt": "",
-            "reservedBy": ""
-          },
-          "start": "",
-          "end": ""
-        },
-        "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
-        },
-        "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
-        }
-      },
-      {
-        "id": "48421917gjm6g8dhjj52lb7j",
-        "floor": "1",
-        "number": "4",
         "rooms": [
           {
             "room": "sala de estar",
@@ -174,6 +131,49 @@
         }
       },
       {
+        "id": "48421917gjm6g8dhjj52lb7j",
+        "floor": "1",
+        "number": "4",
+        "rooms": [
+          {
+            "room": "sala de estar",
+            "quantity": "1"
+          },
+          {
+            "room": "cozinha",
+            "quantity": "1"
+          },
+          {
+            "room": "banheiro",
+            "quantity": "2"
+          },
+          {
+            "room": "quarto",
+            "quantity": "2"
+          }
+        ],
+        "pictures": [],
+        "daily_price": "500",
+        "reserve": {
+          "status": "livre",
+          "client_id": "",
+          "reserved" : {
+            "reservedAt": "",
+            "reservedBy": ""
+          },
+          "start": "",
+          "end": ""
+        },
+        "created": {
+        "createdAt": "2022-06-12T22:01:20.596Z",
+        "createdBy": "5da9ea674234635bdff45c02"
+        },
+        "updated": {
+        "updatedAt": "2023-01-12T10:25:49.045Z",
+        "updatedBy": "507f1f77bcf86cd799439011"
+        }
+      },
+      {
         "id": "n0kj2b1e0g9h22in405c9c6g",
         "floor": "2",
         "number": "5",
@@ -208,12 +208,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -251,12 +251,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -294,12 +294,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -337,12 +337,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -380,12 +380,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -423,12 +423,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -466,12 +466,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -509,12 +509,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -552,12 +552,12 @@
           "end": ""
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -595,12 +595,12 @@
           "end": "2024-01-15"
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -638,12 +638,12 @@
           "end": "2023-01-12"
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -681,12 +681,12 @@
           "end": "2023-01-12"
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -724,12 +724,12 @@
           "end": "2023-01-12"
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       },
       {
@@ -767,12 +767,12 @@
           "end": "2023-01-12"
         },
         "created": {
-            "createdAt": "2022-06-12T22:01:20.596Z",
-            "createdBy": "5da9ea674234635bdff45c02"
+          "createdAt": "2022-06-12T22:01:20.596Z",
+          "createdBy": "5da9ea674234635bdff45c02"
         },
         "updated": {
-            "updatedAt": "2023-01-12T10:25:49.045Z",
-            "updatedBy": "507f1f77bcf86cd799439011"
+          "updatedAt": "2023-01-12T10:25:49.045Z",
+          "updatedBy": "507f1f77bcf86cd799439011"
         }
       }
     ]
