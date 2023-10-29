@@ -1603,6 +1603,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
+      /* ################## CLIENTE ################## */
+      
+      // Leitura de um único apto.
       test("/GET - Deve retornar 200, para leitura de um apto LIVRE pelo usuário, utilizando o ID do apto.", async function() {
 
         try {
@@ -1664,6 +1667,53 @@ describe("Suite de testes das rotas de Apartment.", function() {
         }
 
       })
+
+      // Listagem de aptos LIVRES.
+      test("/GET - Deve retornar 200 e uma lista de aptos pelo usuário, com 0 ou várias fotos.", async function() {
+
+        try {
+
+          let responseList = await request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
+
+          expect(responseList.statusCode).toEqual(200)
+
+          expect(responseList.body).toHaveProperty('apartments')
+          expect(responseList.body).toHaveProperty('hasNext')
+
+          let apartmentList = ApartmentsTools.getApartments(true)
+
+          expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
+
+          // As imagens com pictures são armazenadas por último, e o limite da listagem é 20.
+          for (let apartment of responseList.body.apartments) {
+
+            if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
+
+              let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+              let picturesCount = apartmentJSON.pictures.length
+              expect(apartment.pictures).toHaveLength(picturesCount)
+
+              expect(apartment.reserve).toBeUndefined()
+              expect(apartment.created).toBeUndefined()
+              expect(apartment.updated).toBeUndefined()
+
+            } else {
+              expect(apartment.pictures).toHaveLength(0)
+            }
+
+            expect(apartment._links).toBeDefined()
+            expect(apartment._links).toHaveLength(3)
+
+          }
+
+        } catch (errorList) {
+          fail(errorList)
+        }
+
+      })
+
+      /* ################## FUNCIONÁRIO++ ################## */
 
       test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", async function() {
 
@@ -1913,7 +1963,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
+      test("/GET - Deve retornar 200 e uma lista de apartamentos, contendo limite de usuários.", function() {
 
         let url = endpoints.toList + '?offset=1&limit=3'
 

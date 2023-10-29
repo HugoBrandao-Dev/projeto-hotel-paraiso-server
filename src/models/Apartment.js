@@ -40,14 +40,27 @@ class Apartment {
     }
   }
 
-  async findMany(skip = 0, limit = 20) {
+  async findMany(skip = 0, limit = 20, isClient) {
+
     try {
-      let apartments = await ApartmentCollection.apartments.data.slice(skip, limit)
+
+      let apartmentsForClient = await ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == 'livre')
+
+      let apartments = null
+
+      if (isClient) {
+        apartments = apartmentsForClient.slice(skip, limit)
+      } else {
+        apartments = await ApartmentCollection.apartments.data.slice(skip, limit)
+      }
+
       return apartments
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   // Busca por um apartamento pelo seu Número

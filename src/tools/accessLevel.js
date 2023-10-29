@@ -47,6 +47,10 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
               }
             }
 
+            if (path == apartmentEndpoints.toList) {
+              allowed = true
+            }
+
             // Verifica se o ID passado no parâmetro é o mesmo do armazenado no Token.
             if (params.id && params.id === decodedToken.id) {
               allowed = true

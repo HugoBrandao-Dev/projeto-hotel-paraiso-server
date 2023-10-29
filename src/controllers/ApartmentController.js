@@ -34,7 +34,9 @@ function getDecodedToken(bearerToken) {
 const Apartment = require('../models/Apartment')
 
 class ApartmentController {
+
   async create(req, res, next) {
+
     try {
 
       let floor = null
@@ -132,9 +134,11 @@ class ApartmentController {
 
       res.status(201)
       res.json({ _links: HATEOAS })
+
     } catch(error) {
       next(error)
     }
+
   }
 
   async read(req, res, next) {
@@ -231,6 +235,8 @@ class ApartmentController {
 
     try {
 
+      const decodedToken = getDecodedToken(req.headers['authorization'])
+
       let hasNext = false
 
       // Skip é equivalente ao offset, no mongodb.
@@ -240,7 +246,7 @@ class ApartmentController {
       let limit = req.query.limit ? parseInt(req.query.limit) : 20
 
       // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-      let results = await Apartment.findMany(skip, limit + 1)
+      let results = await Apartment.findMany(skip, limit + 1, decodedToken.role == 0)
       let apartments = []
 
       if (results.length) {
@@ -252,36 +258,40 @@ class ApartmentController {
           delete apartment.created
           delete apartment.updated
 
-          const userWhoCreated = await User.findOne(item.created.createdBy)
+          if (decodedToken.role > 0) {
+            const userWhoCreated = await User.findOne(item.created.createdBy)
 
-          // Setta os valores do CREATED.
-          apartment.created = {
-            createdAt: item.created.createdAt,
-            createdBy: {
-              id: userWhoCreated.id,
-              name: userWhoCreated.name
+            // Setta os valores do CREATED.
+            apartment.created = {
+              createdAt: item.created.createdAt,
+              createdBy: {
+                id: userWhoCreated.id,
+                name: userWhoCreated.name
+              }
             }
-          }
 
-          if (item.updated.updatedBy) {
-            const userWhoUpdated = await User.findOne(item.updated.updatedBy)
+            if (item.updated.updatedBy) {
+              const userWhoUpdated = await User.findOne(item.updated.updatedBy)
 
-            // Setta os valores do UPDATED.
-            apartment.updated = {
-              updatedAt: item.updated.updatedAt,
-              updatedBy: {
-                id: userWhoUpdated.id,
-                name: userWhoUpdated.name
+              // Setta os valores do UPDATED.
+              apartment.updated = {
+                updatedAt: item.updated.updatedAt,
+                updatedBy: {
+                  id: userWhoUpdated.id,
+                  name: userWhoUpdated.name
+                }
+              }
+            } else {
+              apartment.updated = {
+                updatedAt: "",
+                updatedBy: {
+                  id: "",
+                  name: "",
+                }
               }
             }
           } else {
-            apartment.updated = {
-              updatedAt: "",
-              updatedBy: {
-                id: "",
-                name: "",
-              }
-            }
+            delete apartment.reserve
           }
 
           let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartments', 'apartment', false)
@@ -307,6 +317,7 @@ class ApartmentController {
   }
 
   async update(req, res, next) {
+
     try {
 
       let id = null
@@ -434,15 +445,20 @@ class ApartmentController {
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
       await Apartment.edit(apartment, decodedToken.id)
+
       res.status(200)
       res.json({ _links: HATEOAS })
+
     } catch(error) {
       next(error)
     }
+
   }
 
   async remove(req, res, next) {
+
     try {
+
       let id = req.params.id
 
       let RestException = {}
@@ -470,10 +486,13 @@ class ApartmentController {
 
       await Apartment.delete(id)
       res.sendStatus(200)
+
     } catch(error) {
       next(error)
     }
+
   }
+
 }
 
 module.exports = new ApartmentController()

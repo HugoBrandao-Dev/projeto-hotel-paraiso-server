@@ -106,21 +106,35 @@ class ApartmentsTools {
 
   }
 
-  static getApartments(_offset = 0, _limit = 20) {
+  static getApartments(isClient, _offset = 0, _limit = 20) {
 
     try {
 
       let offset = parseInt(_offset)
       let limit = parseInt(_limit)
 
-      let result = ApartmentCollection.apartments.data.slice(offset, (offset + limit + 1))
+      let apartmentsForClient = ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == 'livre')
 
-      const hasNext = result.length > limit
+      let result = null
+
+      if (isClient) {
+        result = apartmentsForClient.slice(_offset, limit)
+      } else {
+        result = ApartmentCollection.apartments.data.slice(_offset, limit + 1)
+      }
+
+      let apartments = []
+
+      for (let apto of result) {
+        apartments.push(_.cloneDeep(apto))
+      }
+
+      const hasNext = apartments.length > limit
       if (hasNext)
-        result.pop()
+        apartments.pop()
 
       return {
-        result,
+        apartments,
         hasNext
       }
 
