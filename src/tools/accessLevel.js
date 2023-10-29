@@ -29,17 +29,20 @@ async function isActionAllowed(decodedToken, path, method, params, body) {
             break
           case 'GET':
 
-            if (path.indexOf(reserveEndpoints.toRead) != -1) {
+            if (path.indexOf(reserveEndpoints.toRead) != -1 || path.indexOf(apartmentEndpoints.toRead) != -1) {
               if (params.id) {
                 let idResult = await Analyzer.analyzeID(params.id, 'apartment')
-
                 if (!idResult.hasError.value) {
-
                   let reserve = await Reserve.findOne(params.id)
 
-                  if (decodedToken.id == reserve.client_id) {
+                  if (reserve.status == 'livre') {
                     allowed = true
+                  } else {
+                    if (decodedToken.id == reserve.client_id) {
+                      allowed = true
+                    }
                   }
+
                 }
               }
             }

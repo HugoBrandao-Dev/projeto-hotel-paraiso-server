@@ -1603,6 +1603,68 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
+      test("/GET - Deve retornar 200, para leitura de um apto LIVRE pelo usuário, utilizando o ID do apto.", async function() {
+
+        try {
+
+          let apartment = {
+            id: idRegisteredApartmentsWithPictures[0]
+          }
+
+          let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+
+          expect(responseRead.statusCode).toEqual(200)
+
+          const {
+            pictures,
+            _links
+          } = responseRead.body
+
+          let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+          let picturesCount = apartmentJSON.pictures.length
+
+          expect(pictures).toHaveLength(picturesCount)
+
+          expect(responseRead.body).toMatchObject({
+            id: apartment.id,
+            floor: apartmentJSON.floor,
+            number: apartmentJSON.number,
+            daily_price: apartmentJSON.daily_price,
+          })
+
+          expect(responseRead.body.reserve).toBeUndefined()
+          expect(responseRead.body.created).toBeUndefined()
+          expect(responseRead.body.updated).toBeUndefined()
+
+          expect(_links).toBeDefined()
+          expect(_links).toHaveLength(4)
+          expect(_links[0]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
+            method: 'GET',
+            rel: 'self_apartment'
+          })
+          expect(_links[1]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toUpdate }`,
+            method: 'PUT',
+            rel: 'edit_apartment'
+          })
+          expect(_links[2]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
+            method: 'DELETE',
+            rel: 'delete_apartment'
+          })
+          expect(_links[3]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toList }`,
+            method: 'GET',
+            rel: 'apartment_list'
+          })
+
+        } catch (errorRead) {
+          fail(errorRead)
+        }
+
+      })
+
       test("/GET - Deve retornar 200, para busca de um apartamento pelo seu ID.", async function() {
 
         try {

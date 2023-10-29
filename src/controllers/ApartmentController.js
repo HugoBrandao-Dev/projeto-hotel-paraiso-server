@@ -162,11 +162,14 @@ class ApartmentController {
         RestException.Code = `${ idResult.hasError.type }`
         RestException.Message = `${ idResult.hasError.error }`
         RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
+
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
+
         return
       }
       
+      const decodedToken = getDecodedToken(req.headers['authorization'])
       let result = await Apartment.findOne(id)
 
       let apartment = _.cloneDeep(result)
@@ -174,36 +177,40 @@ class ApartmentController {
       delete apartment.created
       delete apartment.updated
 
-      const userWhoCreated = await User.findOne(result.created.createdBy)
+      if (decodedToken.role > 0) {
+        const userWhoCreated = await User.findOne(result.created.createdBy)
 
-      // Setta os valores do CREATED.
-      apartment.created = {
-        createdAt: result.created.createdAt,
-        createdBy: {
-          id: userWhoCreated.id,
-          name: userWhoCreated.name
+        // Setta os valores do CREATED.
+        apartment.created = {
+          createdAt: result.created.createdAt,
+          createdBy: {
+            id: userWhoCreated.id,
+            name: userWhoCreated.name
+          }
         }
-      }
 
-      if (result.updated.updatedBy) {
-        const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+        if (result.updated.updatedBy) {
+          const userWhoUpdated = await User.findOne(result.updated.updatedBy)
 
-        // Setta os valores do UPDATED.
-        apartment.updated = {
-          updatedAt: result.updated.updatedAt,
-          updatedBy: {
-            id: userWhoUpdated.id,
-            name: userWhoUpdated.name
+          // Setta os valores do UPDATED.
+          apartment.updated = {
+            updatedAt: result.updated.updatedAt,
+            updatedBy: {
+              id: userWhoUpdated.id,
+              name: userWhoUpdated.name
+            }
+          }
+        } else {
+          apartment.updated = {
+            updatedAt: "",
+            updatedBy: {
+              id: "",
+              name: "",
+            }
           }
         }
       } else {
-        apartment.updated = {
-          updatedAt: "",
-          updatedBy: {
-            id: "",
-            name: "",
-          }
-        }
+        delete apartment.reserve
       }
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
