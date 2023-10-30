@@ -18,12 +18,36 @@ const projectLinks = {
 }
 
 let accounts = {
-  admin: { id: '', token: '' },
-  gerente: { id: '', token: '' },
-  funcionario: { id: '', token: '' },
-  funcionario2: { id: '', token: '' },
-  cliente: { id: '', token: ''  },
-  cliente2: { id: '', token: '' },
+  admin: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  gerente: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  funcionario: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  funcionario2: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  cliente: {
+    id: '',
+    name: '',
+    token: ''
+     },
+  cliente2: {
+    id: '',
+    name: '',
+    token: ''
+  },
 }
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
@@ -135,11 +159,12 @@ function register(user) {
         if (response.statusCode == 201) {
 
           let id = response.body._links[0].href.split('/').pop()
+          let name = user.name
           let login = {
             email: user.email,
             password: user.password
           }
-          resolve({ id, login })
+          resolve({ id, name, login })
 
         } else {
           reject(response.body.RestException.Message)
@@ -222,6 +247,7 @@ beforeAll(async () => {
       let adminLogin = registredAdmin.login
       let tokenAdmin = await login(adminLogin)
       accounts.admin.id = registredAdmin.id
+      accounts.admin.name = registredAdmin.name
       accounts.admin.token = `Bearer ${ tokenAdmin.token }`
     } catch (errorAdmin) {
       console.log(errorAdmin)
@@ -243,6 +269,7 @@ beforeAll(async () => {
       let registredGerente = await register(userGerente)
       let gerenteLogin = registredGerente.login
       accounts.gerente.id = registredGerente.id
+      accounts.gerente.name = registredGerente.name
       await updateRole(accounts.gerente.id, '2')
       let tokenGerente = await login(gerenteLogin)
       accounts.gerente.token = `Bearer ${ tokenGerente.token }`
@@ -266,6 +293,7 @@ beforeAll(async () => {
       let registredFuncionario = await register(userFuncionario)
       let funcionarioLogin = registredFuncionario.login
       accounts.funcionario.id = registredFuncionario.id
+      accounts.funcionario.name = registredFuncionario.name
       await updateRole(accounts.funcionario.id, '1')
       let tokenFuncionario = await login(funcionarioLogin)
       accounts.funcionario.token = `Bearer ${ tokenFuncionario.token }`
@@ -289,6 +317,7 @@ beforeAll(async () => {
       let registredFuncionario2 = await register(userFuncionario2)
       let funcionarioLogin2 = registredFuncionario2.login
       accounts.funcionario2.id = registredFuncionario2.id
+      accounts.funcionario2.name = registredFuncionario2.name
       await updateRole(accounts.funcionario2.id, '1')
       let tokenFuncionario2 = await login(funcionarioLogin2)
       accounts.funcionario2.token = `Bearer ${ tokenFuncionario2.token }`
@@ -317,6 +346,7 @@ beforeAll(async () => {
       let clienteLogin = registredCliente.login
       let tokenCliente = await login(clienteLogin)
       accounts.cliente.id = registredCliente.id
+      accounts.cliente.name = registredCliente.name
       accounts.cliente.token = `Bearer ${ tokenCliente.token }`
     } catch (errorCliente) {
       console.log(errorCliente)
@@ -339,6 +369,7 @@ beforeAll(async () => {
       let clienteLogin2 = registredCliente2.login
       let tokenCliente2 = await login(clienteLogin2)
       accounts.cliente2.id = registredCliente2.id
+      accounts.cliente2.name = registredCliente2.name
       accounts.cliente2.token = `Bearer ${ tokenCliente2.token }`
     } catch (errorCliente2) {
       console.log(errorCliente2)
@@ -367,24 +398,24 @@ describe("Suite de teste para as Reservas.", function() {
           end,
         }
 
-        return request.post(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseUpdate) {
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+          .then(function(responseCreate) {
 
-            expect(responseUpdate.statusCode).toEqual(201)
+            expect(responseCreate.statusCode).toEqual(201)
 
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(3)
-            expect(responseUpdate.body._links[0]).toMatchObject({
+            expect(responseCreate.body._links).toBeDefined()
+            expect(responseCreate.body._links).toHaveLength(3)
+            expect(responseCreate.body._links[0]).toMatchObject({
               href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
               method: 'GET',
               rel: 'self_reserve'
             })
-            expect(responseUpdate.body._links[1]).toMatchObject({
+            expect(responseCreate.body._links[1]).toMatchObject({
               href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_reserve'
             })
-            expect(responseUpdate.body._links[2]).toMatchObject({
+            expect(responseCreate.body._links[2]).toMatchObject({
               href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
               method: 'DELETE',
               rel: 'delete_reserve'
@@ -437,8 +468,8 @@ describe("Suite de teste para as Reservas.", function() {
               })
 
           })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
 
       })
@@ -454,24 +485,24 @@ describe("Suite de teste para as Reservas.", function() {
           end,
         }
 
-        return request.post(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente2.token)
-          .then(function(responseUpdate) {
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente2.token)
+          .then(function(responseCreate) {
 
-            expect(responseUpdate.statusCode).toEqual(201)
+            expect(responseCreate.statusCode).toEqual(201)
 
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(3)
-            expect(responseUpdate.body._links[0]).toMatchObject({
+            expect(responseCreate.body._links).toBeDefined()
+            expect(responseCreate.body._links).toHaveLength(3)
+            expect(responseCreate.body._links[0]).toMatchObject({
               href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
               method: 'GET',
               rel: 'self_reserve'
             })
-            expect(responseUpdate.body._links[1]).toMatchObject({
+            expect(responseCreate.body._links[1]).toMatchObject({
               href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_reserve'
             })
-            expect(responseUpdate.body._links[2]).toMatchObject({
+            expect(responseCreate.body._links[2]).toMatchObject({
               href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
               method: 'DELETE',
               rel: 'delete_reserve'
@@ -524,8 +555,8 @@ describe("Suite de teste para as Reservas.", function() {
               })
 
           })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
 
       })
@@ -543,29 +574,29 @@ describe("Suite de teste para as Reservas.", function() {
           end,
         }
 
-        return request.post(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
-          .then(function(responseUpdate) {
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
+          .then(function(responseCreate) {
 
-            expect(responseUpdate.statusCode).toEqual(201)
+            expect(responseCreate.statusCode).toEqual(201)
 
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
+            expect(responseCreate.body._links).toBeDefined()
+            expect(responseCreate.body._links).toHaveLength(4)
+            expect(responseCreate.body._links[0]).toMatchObject({
               href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
               method: 'GET',
               rel: 'self_reserve'
             })
-            expect(responseUpdate.body._links[1]).toMatchObject({
+            expect(responseCreate.body._links[1]).toMatchObject({
               href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_reserve'
             })
-            expect(responseUpdate.body._links[2]).toMatchObject({
+            expect(responseCreate.body._links[2]).toMatchObject({
               href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
               method: 'DELETE',
               rel: 'delete_reserve'
             })
-            expect(responseUpdate.body._links[3]).toMatchObject({
+            expect(responseCreate.body._links[3]).toMatchObject({
               href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'reserve_list'
@@ -618,8 +649,8 @@ describe("Suite de teste para as Reservas.", function() {
               })
 
           })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
 
       })
@@ -637,29 +668,29 @@ describe("Suite de teste para as Reservas.", function() {
           end,
         }
 
-        return request.post(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
-          .then(function(responseUpdate) {
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.gerente.token)
+          .then(function(responseCreate) {
 
-            expect(responseUpdate.statusCode).toEqual(201)
+            expect(responseCreate.statusCode).toEqual(201)
 
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
+            expect(responseCreate.body._links).toBeDefined()
+            expect(responseCreate.body._links).toHaveLength(4)
+            expect(responseCreate.body._links[0]).toMatchObject({
               href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
               method: 'GET',
               rel: 'self_reserve'
             })
-            expect(responseUpdate.body._links[1]).toMatchObject({
+            expect(responseCreate.body._links[1]).toMatchObject({
               href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_reserve'
             })
-            expect(responseUpdate.body._links[2]).toMatchObject({
+            expect(responseCreate.body._links[2]).toMatchObject({
               href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
               method: 'DELETE',
               rel: 'delete_reserve'
             })
-            expect(responseUpdate.body._links[3]).toMatchObject({
+            expect(responseCreate.body._links[3]).toMatchObject({
               href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'reserve_list'
@@ -712,8 +743,8 @@ describe("Suite de teste para as Reservas.", function() {
               })
 
           })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
 
       })
@@ -731,29 +762,29 @@ describe("Suite de teste para as Reservas.", function() {
           end,
         }
 
-        return request.post(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
+        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.admin.token)
+          .then(function(responseCreate) {
 
-            expect(responseUpdate.statusCode).toEqual(201)
+            expect(responseCreate.statusCode).toEqual(201)
 
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
+            expect(responseCreate.body._links).toBeDefined()
+            expect(responseCreate.body._links).toHaveLength(4)
+            expect(responseCreate.body._links[0]).toMatchObject({
               href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
               method: 'GET',
               rel: 'self_reserve'
             })
-            expect(responseUpdate.body._links[1]).toMatchObject({
+            expect(responseCreate.body._links[1]).toMatchObject({
               href: `${ baseURL }${ endpoints.toUpdate }`,
               method: 'PUT',
               rel: 'edit_reserve'
             })
-            expect(responseUpdate.body._links[2]).toMatchObject({
+            expect(responseCreate.body._links[2]).toMatchObject({
               href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
               method: 'DELETE',
               rel: 'delete_reserve'
             })
-            expect(responseUpdate.body._links[3]).toMatchObject({
+            expect(responseCreate.body._links[3]).toMatchObject({
               href: `${ baseURL }${ endpoints.toList }`,
               method: 'GET',
               rel: 'reserve_list'
@@ -806,8 +837,8 @@ describe("Suite de teste para as Reservas.", function() {
               })
 
           })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
+          .catch(function(errorCreate) {
+            fail(errorCreate)
           })
 
       })
