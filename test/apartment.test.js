@@ -6,6 +6,9 @@ const ApartmentsTools = require('../src/tools/ApartmentsTools')
 const fileSystem = require('fs')
 const path = require('path')
 
+const DateFormated = require('../src/tools/DateFormated')
+const dateNow = new DateFormated('mongodb')
+
 const EndPoints = require('../src/routes/endpoints')
 const userEndPoints = new EndPoints({ singular: 'user', plural: 'users' })
 const endpoints = new EndPoints({ singular: 'apartment', plural: 'apartments' })
@@ -42,6 +45,102 @@ let accounts = {
 
 // Aumenta o tempo máximo para resposta - o padrão é 5000ms.
 jest.setTimeout(50000)
+
+function getDateWithNextMonth(_date) {
+  let date = null
+
+  let dateArray = _date.split('-')
+  let year = parseInt(dateArray[0])
+  let month = parseInt(dateArray[1])
+  let day = null
+
+  // Define o próximo mês.
+  let nextYear = null
+  let nextMonth = null
+  if (month == 12) {
+    nextMonth = '01'
+    nextYear = year + 1
+  } else {
+    nextYear = year
+    nextMonth = month + 1
+    if (nextMonth < 10) {
+      nextMonth = '0' + nextMonth
+    }
+  }
+
+  // Define o dia.
+  let maxDay = null
+  if (nextMonth % 2 == 0) {
+    if (nextMonth == 2) {
+      if ((nextYear % 4 == 0 && nextYear % 100 != 0) || (nextYear % 400 == 0)) {
+        maxDay = 29
+      } else {
+        maxDay = 28
+      }
+    } else {
+      maxDay = 31
+    }
+  } else {
+    maxDay = 30
+  }
+  day = Math.floor(Math.random() * maxDay) + 1
+
+
+  dateArray[0] = nextYear
+  dateArray[1] = nextMonth
+  dateArray[2] = day < 10 ? `0${ day }` : `${ day }`
+
+  date = dateArray.join('-')
+
+  return date
+}
+
+function getDateWithLastMonth(_date) {
+  let date = null
+
+  let dateArray = _date.split('-')
+  let year = parseInt(dateArray[0])
+  let month = parseInt(dateArray[1])
+  let day = null
+
+  let lastYear = null
+  let lastMonth = null
+  if (month == 1) {
+    lastYear = year - 1
+    lastMonth = '12'
+  } else {
+    lastYear = year
+    lastMonth = month - 1
+    if (lastMonth < 10) {
+      lastMonth = '0' + lastMonth
+    }
+  }
+
+  // Define o dia.
+  let maxDay = null
+  if (lastMonth % 2 == 0) {
+    if (lastMonth == 2) {
+      if ((lastYear % 4 == 0 && lastYear % 100 != 0) || (lastYear % 400 == 0)) {
+        maxDay = 29
+      } else {
+        maxDay = 28
+      }
+    } else {
+      maxDay = 31
+    }
+  } else {
+    maxDay = 30
+  }
+  day = Math.floor(Math.random() * maxDay) + 1
+
+  dateArray[0] = lastYear
+  dateArray[1] = lastMonth
+  dateArray[2] = day < 10 ? `0${ day }` : `${ day }`
+
+  date = dateArray.join('-')
+
+  return date
+}
 
 function extractApartmentID(link) {
   return link.split('/')[4]
@@ -1605,7 +1704,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       /* ################## CLIENTE ################## */
       
-      // Leitura de um único apto.
+      /* ### Leitura de um único apto. ### */
+
       test("/GET - Deve retornar 200, para leitura de um apto LIVRE pelo usuário, utilizando o ID do apto.", async function() {
 
         try {
@@ -1668,7 +1768,80 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      // Listagem de aptos LIVRES.
+      test("/GET - Deve retornar 200, para leitura de um apto do cliente.", async function() {
+
+        try {
+
+          let apartment = { id: idRegisteredApartmentsWithPictures[0] }
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: apartment.id,
+            start,
+            end,
+          }
+
+          let responseCreate = await request.post('/reserves').send(reserve).set('Authorization', accounts.cliente.token)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+
+          expect(responseRead.statusCode).toEqual(200)
+
+          const {
+            pictures,
+            _links
+          } = responseRead.body
+
+          let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+          let picturesCount = apartmentJSON.pictures.length
+
+          expect(pictures).toHaveLength(picturesCount)
+
+          expect(responseRead.body).toMatchObject({
+            id: apartment.id,
+            floor: apartmentJSON.floor,
+            number: apartmentJSON.number,
+            daily_price: apartmentJSON.daily_price,
+          })
+
+          expect(responseRead.body.reserve).toBeUndefined()
+          expect(responseRead.body.created).toBeUndefined()
+          expect(responseRead.body.updated).toBeUndefined()
+
+          expect(_links).toBeDefined()
+          expect(_links).toHaveLength(4)
+          expect(_links[0]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
+            method: 'GET',
+            rel: 'self_apartment'
+          })
+          expect(_links[1]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toUpdate }`,
+            method: 'PUT',
+            rel: 'edit_apartment'
+          })
+          expect(_links[2]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
+            method: 'DELETE',
+            rel: 'delete_apartment'
+          })
+          expect(_links[3]).toMatchObject({
+            href: `${ baseURL }${ endpoints.toList }`,
+            method: 'GET',
+            rel: 'apartment_list'
+          })
+
+        } catch (errorRead) {
+          fail(errorRead)
+        }
+
+      })
+
+      /* ### Listagem de aptos LIVRES. ### */
+
       test("/GET - Deve retornar 200 e uma lista de aptos pelo usuário, com 0 ou várias fotos.", async function() {
 
         try {
@@ -2019,7 +2192,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
-/*
+
     describe("Testes de FALHA.", function() {
 
       test("/GET - Deve retornar 401, o Cliente não está AUTORIZADO.", function() {
@@ -2122,31 +2295,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 403, o Cliente não está AUTENTICADO.", function() {
-
-        let apartment = {
-          id: 'd9d62beecdde62af82efd82c'
-        }
-
-        return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(403)
-
-            expect(responseList.body.RestException.Code).toBe('6')
-            expect(responseList.body.RestException.Message).toBe('O usuário não está autenticado')
-            expect(responseList.body.RestException.Status).toBe('403')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/6`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
     })
-*/
+
   })
 
   describe("UPDATE", function() {
@@ -2894,7 +3044,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
-/*
+
     describe("Testes de FALHA.", function() {
 
       test("/DELETE - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
@@ -3011,7 +3161,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
     })
-*/
+
   })
 
 })
