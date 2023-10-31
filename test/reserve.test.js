@@ -1420,6 +1420,42 @@ describe("Suite de teste para as Reservas.", function() {
 
       /* ################## CLIENTES ################## */
 
+      test("/GET - Deve retornar 200, na busca de uma reserva baseada no ID do apartamento.", function() {
+
+        const apartment = { id: '27ibm1he7gl4ei9i7jcacbl6' }
+
+        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+          .then(function(responseRead) {
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: apartment.id,
+              status: apartmentJSON.reserve.status,
+              client_id: apartmentJSON.reserve.client_id,
+              start: apartmentJSON.reserve.start,
+              end: apartmentJSON.reserve.end,
+            })
+            
+            expect(responseRead.body).not.toHaveProperty('reserved')
+
+            expect(responseRead.body._links).toHaveLength(4)
+            
+            const HATEOAS = Generator.genHATEOAS(apartment.id, 'reserves', 'reserve', true)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
       test("/GET - Deve retornar 200, na listagem de reservas.", function() {
 
         return request.get(endpoints.toList).set('Authorization', accounts.cliente.token)
