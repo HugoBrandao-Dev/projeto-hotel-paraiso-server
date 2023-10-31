@@ -1431,10 +1431,7 @@ describe("Suite de teste para as Reservas.", function() {
 
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
-              expect(reserve.reserved).toMatchObject({
-                reservedAt: expect.any(String),
-                reservedBy: expect.any(String),
-              })
+              expect(reserve).not.toHaveProperty('reserved')
               expect(reserve.client_id).toBe(accounts.cliente.id)
             }
             expect(hasNext).toEqual(false)
@@ -1489,10 +1486,7 @@ describe("Suite de teste para as Reservas.", function() {
             for (let reserve of reserves) {
               expect(reserve).toBeDefined()
               expect(reserve.client_id).toBe(accounts.cliente.id)
-              expect(reserve.reserved).toMatchObject({
-                reservedAt: expect.any(String),
-                reservedBy: expect.any(String)
-              })
+              expect(reserve).not.toHaveProperty('reserved')
               expect(reserve._links).toHaveLength(3)
             }
 

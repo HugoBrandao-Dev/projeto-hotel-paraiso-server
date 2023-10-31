@@ -1,5 +1,6 @@
-let ApartmentCollection = require('../data/ApartmentCollection.json')
-let DateFormated = require('../tools/DateFormated')
+const ApartmentCollection = require('../data/ApartmentCollection.json')
+const DateFormated = require('../tools/DateFormated')
+const _ = require('lodash')
 
 const date = new DateFormated('mongodb')
 
@@ -48,20 +49,20 @@ class Reserve {
 
     try {
 
-      let reserves = null
+      let results = null
       if (status) {
 
         // Faz a buscas por reservas tenham um status igual ao informado.
-        let reservesWithStatus = await ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == status)
+        let resultsWithStatus = await ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == status)
 
-        reserves = await reservesWithStatus.map(apto => {
+        results = await resultsWithStatus.map(apto => {
           return {
             apartment_id: apto.id,
             ...apto.reserve
           }
         })
       } else {
-        reserves = await ApartmentCollection.apartments.data.map(apto => {
+        results = await ApartmentCollection.apartments.data.map(apto => {
           return {
             apartment_id: apto.id,
             ...apto.reserve
@@ -70,7 +71,13 @@ class Reserve {
       }
 
       if ((skip || skip == 0) && limit) {
-        return await reserves.slice(skip, (skip + limit))
+        return await results.slice(skip, (skip + limit))
+      }
+
+      let reserves = []
+
+      for (let reserve of results) {
+        reserves.push(_.cloneDeep(reserve))
       }
 
       return reserves

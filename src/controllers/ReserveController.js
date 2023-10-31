@@ -179,7 +179,9 @@ class ReserveController {
   }
 
   async list(req, res, next) {
+
     try {
+
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
       const status = req.query.status
@@ -273,6 +275,9 @@ class ReserveController {
             }
 
             for (let reserve of reserves) {
+              if (decodedToken.role == 0) {
+                delete reserve.reserved
+              }
               let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
               reserve._links = HATEOAS
             }
@@ -287,10 +292,12 @@ class ReserveController {
       }
 
       res.sendStatus(404)
+
     } catch (error) {
       console.log(error)
       next(error)
     }
+
   }
 
   async update(req, res, next) {
