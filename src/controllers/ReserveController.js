@@ -1,5 +1,6 @@
 const Generator = require('../tools/Generator')
 const jwt = require('jsonwebtoken')
+const _ = require('lodash')
 
 const Analyzer = require('../tools/Analyzer')
 
@@ -33,7 +34,9 @@ function getDecodedToken(bearerToken) {
 
 class ReserveController {
   async create(req, res, next) {
+
     try {
+
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
       const { apartment_id, start, end } = req.body
@@ -113,17 +116,21 @@ class ReserveController {
 
       await Reserve.save(reserve, decodedToken.id)
 
-      let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
+      let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserves', 'reserve', true)
 
       res.status(201)
       res.json({ _links: HATEOAS })
+
     } catch (error) {
       next(error)
     }
+
   }
 
   async read(req, res, next) {
+
     try {
+
       const { id } = req.params
 
       const decodedToken = getDecodedToken(req.headers['authorization'])
@@ -150,16 +157,25 @@ class ReserveController {
         return
       }
 
-      let reserve = await Reserve.findOne(id)
+      let result = await Reserve.findOne(id)
 
-      let HATEOAS = Generator.genHATEOAS(id, 'reserves', 'reserve', decodedToken.role > 0)
+      let reserve = _.cloneDeep(result)
+
+      if (decodedToken.role == 0) {
+        delete reserve.reserved
+      }
+
+      let HATEOAS = Generator.genHATEOAS(id, 'reserves', 'reserve', true)
       reserve._links = HATEOAS
 
       res.status(200)
       res.json(reserve)
+
     } catch (error) {
+      throw new Error(error)
       next(error)
     }
+
   }
 
   async list(req, res, next) {
@@ -379,7 +395,7 @@ class ReserveController {
 
       await Reserve.edit(fieldsToBeUpdated, decodedToken.id)
 
-      let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
+      let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserves', 'reserve', true)
       
       res.status(200)
       res.json({ _links: HATEOAS })

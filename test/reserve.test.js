@@ -167,7 +167,7 @@ function register(user) {
           resolve({ id, name, login })
 
         } else {
-          reject(response.body.RestException.Message)
+          reject(response.text)
         }
 
       })
@@ -387,459 +387,313 @@ describe("Suite de teste para as Reservas.", function() {
 
     describe("Teste de SUCESSO", function() {
 
-      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Cliente.", function() {
+      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Cliente.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
-          start,
-          end,
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+            start,
+            end,
+          }
+
+          let responseCreate = await request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
+            expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: 'reservado',
+              client_id: accounts.cliente.id,
+              start: reserve.start,
+              end: reserve.end,
+            })
+
+            expect(responseRead.body).not.toHaveProperty('reserved')
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
         }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(201)
-
-            expect(responseCreate.body._links).toBeDefined()
-            expect(responseCreate.body._links).toHaveLength(3)
-            expect(responseCreate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseCreate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseCreate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: 'reservado',
-                  client_id: accounts.cliente.id,
-                  start: reserve.start,
-                  end: reserve.end,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.cliente.id
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
 
       })
 
-      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Cliente.", function() {
+      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Cliente.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "mmfel7oi6p43kjj6jebln8dn97",
-          start,
-          end,
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "mmfel7oi6p43kjj6jebln8dn97",
+            start,
+            end,
+          }
+
+          let responseCreate = await request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente2.token)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
+            expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente2.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: 'reservado',
+              client_id: accounts.cliente2.id,
+              start: reserve.start,
+              end: reserve.end,
+            })
+
+            expect(responseRead.body).not.toHaveProperty('reserved')
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
         }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.cliente2.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(201)
-
-            expect(responseCreate.body._links).toBeDefined()
-            expect(responseCreate.body._links).toHaveLength(3)
-            expect(responseCreate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseCreate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseCreate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente2.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: 'reservado',
-                  client_id: accounts.cliente2.id,
-                  start: reserve.start,
-                  end: reserve.end,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.cliente2.id
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
 
       })
 
-      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Funcionário.", function() {
+      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Funcionário.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "48421917gjm6g8dhjj52lb7j",
-          status: "reservado",
-          client_id: accounts.cliente.id,
-          start,
-          end,
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "48421917gjm6g8dhjj52lb7j",
+            status: "reservado",
+            client_id: accounts.cliente.id,
+            start,
+            end,
+          }
+
+          let responseCreate = await request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
+
+          expect(responseCreate.statusCode).toEqual(201)
+          
+          expect(responseCreate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
+            expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.funcionario.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: 'reservado',
+              client_id: accounts.cliente.id,
+              start: reserve.start,
+              end: reserve.end,
+            })
+
+            expect(responseRead.body).toHaveProperty('reserved')
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
         }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.funcionario.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(201)
-
-            expect(responseCreate.body._links).toBeDefined()
-            expect(responseCreate.body._links).toHaveLength(4)
-            expect(responseCreate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseCreate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseCreate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseCreate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: 'reservado',
-                  client_id: accounts.cliente.id,
-                  start: reserve.start,
-                  end: reserve.end,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.funcionario.id
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
 
       })
 
-      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Gerente.", function() {
+      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Gerente.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "cljn205e58dcmh6fb0ffabgg",
-          status: "reservado",
-          client_id: accounts.cliente.id,
-          start,
-          end,
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "cljn205e58dcmh6fb0ffabgg",
+            status: "reservado",
+            client_id: accounts.cliente.id,
+            start,
+            end,
+          }
+
+          let responseCreate = await request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.gerente.token)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
+            expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.gerente.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: 'reservado',
+              client_id: accounts.cliente.id,
+              start: reserve.start,
+              end: reserve.end,
+            })
+
+            expect(responseRead.body).toHaveProperty('reserved')
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
         }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.gerente.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(201)
-
-            expect(responseCreate.body._links).toBeDefined()
-            expect(responseCreate.body._links).toHaveLength(4)
-            expect(responseCreate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseCreate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseCreate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseCreate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: 'reservado',
-                  client_id: accounts.cliente.id,
-                  start: reserve.start,
-                  end: reserve.end,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.gerente.id
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
 
       })
 
-      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Admin.", function() {
+      test("/POST - Deve retornar 201, para sucesso no cadastrado de uma reserva pelo Admin.", async function() { 
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "n0kj2b1e0g9h22in405c9c6g",
-          status: "reservado",
-          client_id: accounts.cliente.id,
-          start,
-          end,
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "n0kj2b1e0g9h22in405c9c6g",
+            status: "reservado",
+            client_id: accounts.cliente.id,
+            start,
+            end,
+          }
+
+          let responseCreate = await request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.admin.token)
+
+          expect(responseCreate.statusCode).toEqual(201)
+
+          expect(responseCreate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
+            expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: 'reservado',
+              client_id: accounts.cliente.id,
+              start: reserve.start,
+              end: reserve.end,
+            })
+
+            expect(responseRead.body).toHaveProperty('reserved')
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorCreate) {
+          fail(errorCreate)
         }
-
-        return request.post(endpoints.toCreate).send(reserve).set('Authorization', accounts.admin.token)
-          .then(function(responseCreate) {
-
-            expect(responseCreate.statusCode).toEqual(201)
-
-            expect(responseCreate.body._links).toBeDefined()
-            expect(responseCreate.body._links).toHaveLength(4)
-            expect(responseCreate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseCreate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseCreate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseCreate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: 'reservado',
-                  client_id: accounts.cliente.id,
-                  start: reserve.start,
-                  end: reserve.end,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.admin.id
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorCreate) {
-            fail(errorCreate)
-          })
 
       })
 
@@ -2606,970 +2460,671 @@ describe("Suite de teste para as Reservas.", function() {
 
     describe("Testes de SUCESSO.", function() {
 
-      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Cliente.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Cliente.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
-          start,
-          end,
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "27ibm1he7gl4ei9i7jcacbl6",
+            start,
+            end,
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              start: reserve.start,
+              end: reserve.end,
+            })
+
+            expect(responseRead.body).not.toHaveProperty('reserved')
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.cliente.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(3)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const { reserved, _links } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  start: reserve.start,
-                  end: reserve.end,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.cliente.id,
-                })
-
-                expect(_links).toBeDefined()
-                expect(_links).toHaveLength(3)
-                expect(_links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(_links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(_links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(responseRead) {
-                fail(responseRead)
-              })
-
-          })
-          .catch(function(responseUpdate) {
-            fail(responseUpdate)
-          })
 
       })
 
       /* ################## FUNCIONÁRIO ################## */
 
-      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Funcionário.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Funcionário.", async function() {
 
-        let reserve = {
-          apartment_id: "48421917gjm6g8dhjj52lb7j",
-          status: "ocupado"
+        try {
+
+          let reserve = {
+            apartment_id: "48421917gjm6g8dhjj52lb7j",
+            status: "ocupado"
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.funcionario.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.funcionario.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.funcionario.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
-      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Funcionário.", function() {
+      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Funcionário.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "48421917gjm6g8dhjj52lb7j",
-          status: "ocupado",
-          start,
-          end
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "48421917gjm6g8dhjj52lb7j",
+            status: "ocupado",
+            start,
+            end
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.funcionario.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status,
+              start: reserve.start,
+              end: reserve.end
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.funcionario.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status,
-                  start: reserve.start,
-                  end: reserve.end
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.funcionario.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
-      test("/PUT - Deve retornar 200, o Funcionário modifica o Status da reserva de Ocupado para Reservado.", function() {
+      test("/PUT - Deve retornar 200, o Funcionário modifica o Status da reserva de Ocupado para Reservado.", async function() {
 
-        let reserve = {
-          apartment_id: "48421917gjm6g8dhjj52lb7j",
-          status: "reservado",
-        }
+        try {
 
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
-          .then(function(responseUpdate) {
+          let reserve = {
+            apartment_id: "48421917gjm6g8dhjj52lb7j",
+            status: "reservado",
+          }
 
-            expect(responseUpdate.statusCode).toEqual(200)
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.funcionario.token)
 
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.funcionario.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status,
             })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.funcionario.id,
             })
 
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
+            expect(responseRead.body._links).toHaveLength(4)
 
-                expect(responseRead.statusCode).toEqual(200)
+            const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
 
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.funcionario.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
+          } catch (errorUpdate) {
             fail(errorUpdate)
-          })
+          }
+
+        } catch (errorRead) {
+          fail(errorRead)
+        }
 
       })
 
       /* ################## GERENTE ################## */
 
-      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Gerente.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Gerente.", async function() {
 
-        let reserve = {
-          apartment_id: "cljn205e58dcmh6fb0ffabgg",
-          status: "ocupado"
+        try {
+
+          let reserve = {
+            apartment_id: "cljn205e58dcmh6fb0ffabgg",
+            status: "ocupado"
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.gerente.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.gerente.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.gerente.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
-      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Gerente.", function() {
+      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Gerente.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "cljn205e58dcmh6fb0ffabgg",
-          status: "ocupado",
-          start,
-          end
+          let start = dateNow.getDate()
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "cljn205e58dcmh6fb0ffabgg",
+            status: "ocupado",
+            start,
+            end
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.gerente.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status,
+              start: reserve.start,
+              end: reserve.end
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.gerente.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status,
-                  start: reserve.start,
-                  end: reserve.end
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.gerente.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
-      test("/PUT - Deve retornar 200, o Gerente modifica o Status da reserva de Ocupado para Reservado.", function() {
+      test("/PUT - Deve retornar 200, o Gerente modifica o Status da reserva de Ocupado para Reservado.", async function() {
 
-        let reserve = {
-          apartment_id: "cljn205e58dcmh6fb0ffabgg",
-          status: "reservado",
+        try {
+
+          let reserve = {
+            apartment_id: "cljn205e58dcmh6fb0ffabgg",
+            status: "reservado",
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.gerente.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status,
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.gerente.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.gerente.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.gerente.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
       /* ################## ADMIN ################## */
 
-      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Gerente.", function() {
+      test("/PUT - Deve retornar 200, para sucesso na atualização de uma reserva pelo Gerente.", async function() {
 
-        let reserve = {
-          apartment_id: "n0kj2b1e0g9h22in405c9c6g",
-          status: "ocupado"
+        try {
+
+          let reserve = {
+            apartment_id: "n0kj2b1e0g9h22in405c9c6g",
+            status: "ocupado"
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.admin.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.admin.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
-      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Admin.", function() {
+      test("/PUT - Deve retornar 200, para atualizar Data de Início e Fim de uma reserva pelo Admin.", async function() {
 
-        let start = dateNow.getDate()
-        let end = getDateWithNextMonth(start)
+        try {
 
-        let reserve = {
-          apartment_id: "n0kj2b1e0g9h22in405c9c6g",
-          status: "ocupado",
-          start,
-          end
+          let start = dateNow.getDate()
+          
+          let end = getDateWithNextMonth(start)
+
+          let reserve = {
+            apartment_id: "n0kj2b1e0g9h22in405c9c6g",
+            status: "ocupado",
+            start,
+            end
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status,
+              start: reserve.start,
+              end: reserve.end
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.admin.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status,
-                  start: reserve.start,
-                  end: reserve.end
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.admin.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
-      test("/PUT - Deve retornar 200, o Admin modifica o Status da reserva de Ocupado para Reservado.", function() {
+      test("/PUT - Deve retornar 200, o Admin modifica o Status da reserva de Ocupado para Reservado.", async function() {
 
-        let reserve = {
-          apartment_id: "cljn205e58dcmh6fb0ffabgg",
-          status: "reservado",
+        try {
+
+          let reserve = {
+            apartment_id: "cljn205e58dcmh6fb0ffabgg",
+            status: "reservado",
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status,
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.admin.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status,
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.admin.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(3)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
-      test("/PUT - Deve retornar 200, o Admin modifica o Status da reserva para Indisponível.", function() {
+      test("/PUT - Deve retornar 200, o Admin modifica o Status da reserva para Indisponível.", async function() {
 
-        let reserve = {
-          apartment_id: "cljn205e58dcmh6fb0ffabgg",
-          status: "indisponível",
+        try {
+
+          let reserve = {
+            apartment_id: "cljn205e58dcmh6fb0ffabgg",
+            status: "indisponível",
+          }
+
+          let responseUpdate = await request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
+
+          expect(responseUpdate.statusCode).toEqual(200)
+
+          expect(responseUpdate.body._links).toHaveLength(4)
+
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
+
+          try {
+
+            let responseRead = await request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
+
+            expect(responseRead.statusCode).toEqual(200)
+
+            const {
+              reserved,
+              _links
+            } = responseRead.body
+
+            expect(responseRead.body).toMatchObject({
+              apartment_id: reserve.apartment_id,
+              status: reserve.status,
+              client_id: '',
+              start: '',
+              end: '',
+            })
+
+            expect(reserved).toMatchObject({
+              reservedAt: expect.any(String),
+              reservedBy: accounts.admin.id,
+            })
+
+            expect(responseRead.body._links).toHaveLength(4)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
+          } catch (errorRead) {
+            fail(errorRead)
+          }
+
+        } catch (errorUpdate) {
+          fail(errorUpdate)
         }
-
-        return request.put(endpoints.toUpdate).send(reserve).set('Authorization', accounts.admin.token)
-          .then(function(responseUpdate) {
-
-            expect(responseUpdate.statusCode).toEqual(200)
-
-            expect(responseUpdate.body._links).toBeDefined()
-            expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
-
-            return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.admin.token)
-              .then(function(responseRead) {
-
-                expect(responseRead.statusCode).toEqual(200)
-
-                const {
-                  reserved,
-                  _links
-                } = responseRead.body
-
-                expect(responseRead.body).toMatchObject({
-                  apartment_id: reserve.apartment_id,
-                  status: reserve.status,
-                  client_id: '',
-                  start: '',
-                  end: '',
-                })
-
-                expect(reserved).toMatchObject({
-                  reservedAt: expect.any(String),
-                  reservedBy: accounts.admin.id,
-                })
-
-                expect(responseRead.body._links).toBeDefined()
-                expect(responseRead.body._links).toHaveLength(4)
-                expect(responseRead.body._links[0]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toRead }/${ reserve.apartment_id }`,
-                  method: 'GET',
-                  rel: 'self_reserve'
-                })
-                expect(responseRead.body._links[1]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toUpdate }`,
-                  method: 'PUT',
-                  rel: 'edit_reserve'
-                })
-                expect(responseRead.body._links[2]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toDelete }/${ reserve.apartment_id }`,
-                  method: 'DELETE',
-                  rel: 'delete_reserve'
-                })
-                expect(responseUpdate.body._links[3]).toMatchObject({
-                  href: `${ baseURL }${ endpoints.toList }`,
-                  method: 'GET',
-                  rel: 'reserve_list'
-                })
-
-              })
-              .catch(function(errorRead) {
-                fail(errorRead)
-              })
-
-          })
-          .catch(function(errorUpdate) {
-            fail(errorUpdate)
-          })
 
       })
 
