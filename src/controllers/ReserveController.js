@@ -11,6 +11,7 @@ const projectLinks = {
 
 // Models
 const Reserve = require('../models/Reserve')
+const User = require('../models/User')
 
 function getDecodedToken(bearerToken) {
 
@@ -158,11 +159,33 @@ class ReserveController {
       }
 
       let result = await Reserve.findOne(id)
+      if (!result.reserved)
+        console.log(result)
 
       let reserve = _.cloneDeep(result)
 
-      if (decodedToken.role == 0) {
-        delete reserve.reserved
+      delete reserve.reserved
+
+      if (decodedToken.role > 0) {
+        if (result.reserved.reservedBy) {
+          let userWhoReserved = await User.findOne(result.reserved.reservedBy)
+          reserve.reserved = {
+            reservedAt: result.reserved.reservedAt,
+            reservedBy: {
+              id: userWhoReserved.id,
+              name: userWhoReserved.name,
+            }
+          }
+        } else {
+          reserve.reserved = {
+            reservedAt: result.reserved.reservedAt,
+            reservedBy: {
+              id: "",
+              name: "",
+            }
+          }
+        }
+
       }
 
       let HATEOAS = Generator.genHATEOAS(id, 'reserves', 'reserve', true)
@@ -172,7 +195,7 @@ class ReserveController {
       res.json(reserve)
 
     } catch (error) {
-      throw new Error(error)
+      console.log(error)
       next(error)
     }
 

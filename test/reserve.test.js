@@ -1588,8 +1588,11 @@ describe("Suite de teste para as Reservas.", function() {
             })
             
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: expect.any(String)
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,                
+              }
             })
 
             expect(_links).toBeDefined()
@@ -2584,9 +2587,14 @@ describe("Suite de teste para as Reservas.", function() {
               status: reserve.status
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.funcionario.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,                
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -2649,9 +2657,14 @@ describe("Suite de teste para as Reservas.", function() {
               end: reserve.end
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.funcionario.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -2707,9 +2720,14 @@ describe("Suite de teste para as Reservas.", function() {
               status: reserve.status,
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.funcionario.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -2769,9 +2787,14 @@ describe("Suite de teste para as Reservas.", function() {
               status: reserve.status
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.gerente.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -2834,9 +2857,14 @@ describe("Suite de teste para as Reservas.", function() {
               end: reserve.end
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.gerente.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -2892,9 +2920,14 @@ describe("Suite de teste para as Reservas.", function() {
               status: reserve.status,
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.gerente.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -2952,9 +2985,14 @@ describe("Suite de teste para as Reservas.", function() {
               status: reserve.status
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.admin.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -3018,9 +3056,14 @@ describe("Suite de teste para as Reservas.", function() {
               end: reserve.end
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.admin.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -3076,9 +3119,14 @@ describe("Suite de teste para as Reservas.", function() {
               status: reserve.status,
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.admin.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -3137,9 +3185,14 @@ describe("Suite de teste para as Reservas.", function() {
               end: '',
             })
 
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+
             expect(reserved).toMatchObject({
-              reservedAt: expect.any(String),
-              reservedBy: accounts.admin.id,
+              reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+              reservedBy: {
+                id: apartmentJSON.reserve.reserved.reservedBy.id,
+                name: apartmentJSON.reserve.reserved.reservedBy.name,
+              }
             })
 
             expect(responseRead.body._links).toHaveLength(4)
@@ -3664,6 +3717,17 @@ describe("Suite de teste para as Reservas.", function() {
                       start: '',
                       end: ''
                     })
+
+                    const apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+                    expect(responseRead.body.reserved).toMatchObject({
+                      reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                      reservedBy: {
+                        id: apartmentJSON.reserve.reserved.reservedBy.id,
+                        name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                      }
+                    })
+
                   })
                   .catch(function(errorRead) {
                     fail(errorRead)
@@ -3694,6 +3758,7 @@ describe("Suite de teste para as Reservas.", function() {
 
                 return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
                   .then(function(responseRead) {
+
                     expect(responseRead.statusCode).toEqual(200)
                     expect(responseRead.body).toMatchObject({
                       apartment_id: apartment.id,
@@ -3703,6 +3768,17 @@ describe("Suite de teste para as Reservas.", function() {
                       start: '',
                       end: ''
                     })
+
+                    const apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+                    expect(responseRead.body.reserved).toMatchObject({
+                      reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                      reservedBy: {
+                        id: apartmentJSON.reserve.reserved.reservedBy.id,
+                        name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                      }
+                    })
+
                   })
                   .catch(function(errorRead) {
                     fail(errorRead)

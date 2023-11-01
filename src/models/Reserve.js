@@ -128,7 +128,7 @@ class Reserve {
         if (info != 'apartment_id') {
           ApartmentCollection.apartments.data[apartmentIndex]["reserve"][info] = reserve[info]
         }
-      }
+      }        
 
       return
 
@@ -149,6 +149,10 @@ class Reserve {
         "status": "livre",
         "user_id": "",
         "date": "",
+        "reserved": {
+          "reservedAt": "",
+          "reservedBy": ""
+        },
         "start": "",
         "end": ""
       }

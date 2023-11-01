@@ -46,6 +46,23 @@ class ApartmentsTools {
         }
       }
 
+      if (result.reserve.reserved.reservedBy) {
+        let reservedBy = result.reserve.reserved.reservedBy
+        let userWhoReserved = UserCollection.users.data.find(user => user.id == reservedBy)
+
+        delete apartment.reserve.reserved.reservedBy
+
+        apartment.reserve.reserved.reservedBy = {
+          id: userWhoReserved.id,
+          name: userWhoReserved.name,
+        }
+      } else {
+        apartment.reserve.reserved.reservedBy = {
+          id: "",
+          name: "",
+        }
+      }
+
       return apartment
 
     } catch (error) {
