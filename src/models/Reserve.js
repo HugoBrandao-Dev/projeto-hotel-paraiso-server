@@ -74,13 +74,7 @@ class Reserve {
         return await results.slice(skip, (skip + limit))
       }
 
-      let reserves = []
-
-      for (let reserve of results) {
-        reserves.push(_.cloneDeep(reserve))
-      }
-
-      return reserves
+      return results
 
     } catch (error) {
       console.log(error)

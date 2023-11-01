@@ -34,6 +34,7 @@ function getDecodedToken(bearerToken) {
 }
 
 class ReserveController {
+
   async create(req, res, next) {
 
     try {
@@ -276,16 +277,56 @@ class ReserveController {
             return
           } else {
 
+            let results = null
+
             if (decodedToken.role > 0) {
 
               // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-              reserves = await Reserve.findMany(status, skip, limit + 1)
+              results = await Reserve.findMany(status, skip, limit + 1)
 
             } else {
 
               // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-              reserves = await Reserve.findManyByUserID(decodedToken.id, status, skip, limit + 1)
+              results = await Reserve.findManyByUserID(decodedToken.id, status, skip, limit + 1)
 
+            }
+
+            let reserves = []
+
+            for (let res of results) {
+              let reserve = _.cloneDeep(res)
+
+              let reservedBy = res.reserved.reservedBy
+              delete reserve.reserved
+
+              if (decodedToken.role > 0) {
+
+                if (res.reserved.reservedBy) {
+                  let userWhoReserved = await User.findOne(reservedBy)
+
+                  reserve.reserved = {
+                    reservedAt: res.reserved.reservedAt,
+                    reservedBy: {
+                      id: userWhoReserved.id,
+                      name: userWhoReserved.name,
+                    }
+                  }
+                } else {
+                  reserve.reserved = {
+                    reservedAt: "",
+                    reservedBy: {
+                      id: "",
+                      name: "",
+                    }
+                  }
+                }
+
+              }
+
+              let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
+              reserve._links = HATEOAS
+
+              reserves.push(reserve)
             }
 
             if (reserves.length) {
@@ -295,14 +336,6 @@ class ReserveController {
               if (hasNext) {
                 reserves.pop()
               }
-            }
-
-            for (let reserve of reserves) {
-              if (decodedToken.role == 0) {
-                delete reserve.reserved
-              }
-              let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
-              reserve._links = HATEOAS
             }
 
             res.status(200)
@@ -324,7 +357,9 @@ class ReserveController {
   }
 
   async update(req, res, next) {
+
     try {
+
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
       const {
@@ -429,13 +464,17 @@ class ReserveController {
       
       res.status(200)
       res.json({ _links: HATEOAS })
+
     } catch (error) {
       next(error)
     }
+
   }
 
   async remove(req, res, next) {
+
     try {
+
       let RestException = {}
 
       let id = req.params.id
@@ -463,10 +502,13 @@ class ReserveController {
 
       await Reserve.delete(id)
       res.sendStatus(200)
+
     } catch (error) {
       next(error)
     }
+
   }
+
 }
 
 module.exports = new ReserveController()

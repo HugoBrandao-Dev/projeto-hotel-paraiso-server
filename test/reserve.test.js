@@ -1626,7 +1626,7 @@ describe("Suite de teste para as Reservas.", function() {
       })
 
       // Busca várias reservas.
-      test("/GET - Deve retornar 200, na listagem de reservas.", function() {
+      test("/GET - Deve retornar 200, na listagem de reservas para um Funcionário.", function() {
 
         return request.get(endpoints.toList).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
@@ -1636,8 +1636,19 @@ describe("Suite de teste para as Reservas.", function() {
             const { reserves, hasNext } = responseList.body
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve._links).toHaveLength(4)
+
             }
             expect(hasNext).toEqual(false)
 
@@ -1665,11 +1676,17 @@ describe("Suite de teste para as Reservas.", function() {
             const { reserves, hasNext } = responseList.body
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
               expect(reserve.reserved).toMatchObject({
-                reservedAt: "",
-                reservedBy: "",
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
               })
+
               expect(reserve.status).toBe('livre')
             }
 
@@ -1698,11 +1715,17 @@ describe("Suite de teste para as Reservas.", function() {
             const { reserves, hasNext } = responseList.body
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
               expect(reserve.reserved).toMatchObject({
-                reservedAt: expect.any(String),
-                reservedBy: expect.any(String),
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
               })
+
               expect(reserve._links).toHaveLength(4)
             }
 
@@ -1731,11 +1754,17 @@ describe("Suite de teste para as Reservas.", function() {
             const { reserves, hasNext } = responseList.body
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
               expect(reserve.reserved).toMatchObject({
-                reservedAt: expect.any(String),
-                reservedBy: expect.any(String),
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
               })
+
               expect(reserve.status).toBe('ocupado')
             }
 
@@ -1764,7 +1793,17 @@ describe("Suite de teste para as Reservas.", function() {
             const { reserves, hasNext } = responseList.body
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('indisponível')
             }
 
@@ -1797,7 +1836,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('livre')
             }
 
@@ -1830,7 +1879,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('reservado')
             }
 
@@ -1863,7 +1922,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('ocupado')
             }
 
@@ -1898,7 +1967,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('livre')
             }
 
@@ -1931,7 +2010,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('reservado')
             }
 
@@ -1964,7 +2053,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('ocupado')
             }
 
@@ -1997,7 +2096,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('ocupado')
             }
 
@@ -2032,7 +2141,17 @@ describe("Suite de teste para as Reservas.", function() {
             expect(reserves).toHaveLength(params.limit)
 
             for (let reserve of reserves) {
-              expect(reserve).toBeDefined()
+
+              const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
+              expect(reserve).toHaveProperty('reserved')
+              expect(reserve.reserved).toMatchObject({
+                reservedAt: apartmentJSON.reserve.reserved.reservedAt,
+                reservedBy: {
+                  id: apartmentJSON.reserve.reserved.reservedBy.id,
+                  name: apartmentJSON.reserve.reserved.reservedBy.name,                
+                }
+              })
+
               expect(reserve.status).toBe('livre')
             }
 
