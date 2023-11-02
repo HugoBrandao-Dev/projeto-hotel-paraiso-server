@@ -826,6 +826,14 @@ class Analyzer {
       return result
     }
 
+    let isInt = validator.isInt(accepts_animals)
+    if (!isInt) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor para Aceitação de Animais é inválido"
+      return result
+    }
+
     return result
   }
 

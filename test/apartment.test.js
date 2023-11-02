@@ -1784,6 +1784,70 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/POST - Deve retornar 400, foi informado um valor inválido se o Apartamento pode ou não receber animais.", async function() {
+
+        try {
+
+          let floor = (ApartmentsTools.getMinMaxFloor().max + 1).toString()
+          let number = (ApartmentsTools.getMinMaxNumber().max + 1).toString()
+
+          let apartment = {
+            floor,
+            number,
+            rooms: [
+              {
+                room: 'sala de estar',
+                quantity: '1'
+              },
+              {
+                room: 'cozinha',
+                quantity: '1'
+              },
+              {
+                room: 'banheiro',
+                quantity: '1'
+              },
+              {
+                room: 'quarto',
+                quantity: '1'
+              }
+            ],
+            daily_price: '750',
+            accepts_animals: 'asdf'
+          }
+
+          let apartmentJSON = JSON.stringify(apartment)
+
+          let imagens = ['living-room.jpg', 'bedroom.jpg']
+
+          let requestCreate = request.post(endpoints.toCreate)
+
+          requestCreate
+            .set('Authorization', accounts.admin.token)
+            .field('apartment', apartmentJSON, { contentType: 'application/json' })
+
+          for (let image of imagens) {
+            let src = await genPath(image)
+            requestCreate.attach('iptImages', src)
+          }
+
+          let responseCreate = await requestCreate
+
+          expect(responseCreate.statusCode).toEqual(400)
+
+          expect(responseCreate.body.RestException.Code).toBe("2")
+          expect(responseCreate.body.RestException.Message).toBe("O valor para Aceitação de Animais é inválido")
+          expect(responseCreate.body.RestException.Status).toBe("400")
+          expect(responseCreate.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          expect(responseCreate.body.RestException.ErrorFields[0].field).toBe('ckbAcceptsAnimals')
+          expect(responseCreate.body.RestException.ErrorFields[0].hasError.error).toBe("O valor para Aceitação de Animais é inválido")
+
+        } catch (error) {
+          fail(error)
+        }
+
+      })
+
     })
 
   })
