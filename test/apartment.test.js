@@ -380,6 +380,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 quantity: '1'
               }
             ],
+            accepts_animals: '0',
             daily_price: '200'
           }
 
@@ -458,6 +459,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 quantity: '1'
               }
             ],
+            accepts_animals: '0',
             daily_price: '800'
           }
 
@@ -516,6 +518,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 quantity: '1'
               }
             ],
+            accepts_animals: '0',
             daily_price: '800'
           }
 
@@ -574,6 +577,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
                 quantity: '1'
               }
             ],
+            accepts_animals: '0',
             daily_price: '800'
           }
 
@@ -769,6 +773,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -816,6 +821,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -864,6 +870,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -910,6 +917,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -955,6 +963,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1001,6 +1010,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1032,6 +1042,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           floor: "3",
           number,
           rooms: [],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1067,6 +1078,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1103,6 +1115,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1138,6 +1151,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1172,6 +1186,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1207,6 +1222,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: 'um'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1242,6 +1258,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '-1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1277,6 +1294,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1.2'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1312,6 +1330,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1,2'
             }
           ],
+          accepts_animals: '0',
           daily_price: '200'
         }
 
@@ -1360,6 +1379,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: ''
         }
 
@@ -1407,6 +1427,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '-800'
         }
 
@@ -1454,6 +1475,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '800a'
         }
 
@@ -1501,6 +1523,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '800,52'
         }
 
@@ -1548,6 +1571,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
               quantity: '1'
             }
           ],
+          accepts_animals: '0',
           daily_price: '800.525'
         }
 
@@ -1984,7 +2008,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
           expect(rooms).toBeDefined()
-          expect(rooms).toHaveLength(4)
+          expect(rooms).toHaveLength(apartmentJSON.rooms.length)
 
           expect(rooms[0]).toBeDefined()
           expect(rooms[0]).toMatchObject({
@@ -2008,6 +2032,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
           expect(rooms[3]).toMatchObject({
             room: "quarto",
             quantity: "2"
+          })
+
+          expect(rooms[4]).toBeDefined()
+          expect(rooms[4]).toMatchObject({
+            room: "pet room",
+            quantity: "1"
           })
 
           expect(reserve).toBeDefined()
