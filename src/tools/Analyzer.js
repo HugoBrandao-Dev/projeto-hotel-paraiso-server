@@ -816,6 +816,19 @@ class Analyzer {
     return result
   }
 
+  static analyzeApartmentAcceptsAnimals(accepts_animals = '') {
+    let result = { field: 'ckbAcceptsAnimals', hasError: { value: false, type: null, error: '' }}
+
+    if (!accepts_animals) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O valor para Aceitação de Animais é obrigatório"
+      return result
+    }
+
+    return result
+  }
+
   static async analyzeApartmentStatus(status = '', apartment_id = '') {
     try {
       let result = { field: 'iptStatus', hasError: { value: false, type: null, error: '' }}

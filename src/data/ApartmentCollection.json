@@ -25,6 +25,7 @@
         ],
         "pictures": [],
         "daily_price": "200",
+        "accepts_animals": "0",
         "reserve": {
           "status": "reservado",
           "client_id": "507f1f77bcf86cd799439011",
@@ -64,10 +65,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "ocupado",
           "client_id": "600f191e810c19829de900ea",
@@ -107,10 +113,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -150,10 +161,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -193,10 +209,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -236,10 +257,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -279,10 +305,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -322,10 +353,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -365,10 +401,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -408,10 +449,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -451,10 +497,15 @@
           {
             "room": "quarto",
             "quantity": "2"
+          },
+          {
+            "room": "pet room",
+            "quantity": "1"
           }
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "1",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -498,6 +549,7 @@
         ],
         "pictures": [],
         "daily_price": "250",
+        "accepts_animals": "0",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -541,6 +593,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "0",
         "reserve": {
           "status": "indisponível",
           "client_id": "",
@@ -584,6 +637,7 @@
         ],
         "pictures": [],
         "daily_price": "200",
+        "accepts_animals": "0",
         "reserve": {
           "status": "reservado",
           "client_id": "507f1f77bcf86cd799439011",
@@ -627,6 +681,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "0",
         "reserve": {
           "status": "ocupado",
           "client_id": "600f191e810c19829de900ea",
@@ -670,6 +725,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "0",
         "reserve": {
           "status": "ocupado",
           "client_id": "600f191e810c19829de900ea",
@@ -713,6 +769,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "0",
         "reserve": {
           "status": "ocupado",
           "client_id": "600f191e810c19829de900ea",
@@ -756,6 +813,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
+        "accepts_animals": "0",
         "reserve": {
           "status": "ocupado",
           "client_id": "600f191e810c19829de900ea",

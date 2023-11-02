@@ -43,6 +43,7 @@ class ApartmentController {
       let number = null
       let rooms = null
       let daily_price = null
+      let accepts_animals = null
 
       if (req.body.apartment) {
         let parsedApartment = JSON.parse(req.body.apartment)
@@ -50,11 +51,13 @@ class ApartmentController {
         number = parsedApartment.number
         rooms = parsedApartment.rooms
         daily_price = parsedApartment.daily_price
+        accepts_animals = parsedApartment.accepts_animals
       } else {
         floor = req.body.floor
         number = req.body.number
         rooms = req.body.rooms
         daily_price = req.body.daily_price
+        accepts_animals = req.body.accepts_animals
       }
 
       let errorFields = []
@@ -77,6 +80,11 @@ class ApartmentController {
       const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)
       if (dailyPriceResult.hasError.value) {
         errorFields.push(dailyPriceResult)
+      }
+
+      const acceptsAnimalsResult = Analyzer.analyzeApartmentAcceptsAnimals(accepts_animals)
+      if (acceptsAnimalsResult.hasError.value) {
+        errorFields.push(acceptsAnimalsResult)
       }
 
       if (errorFields.length) {
