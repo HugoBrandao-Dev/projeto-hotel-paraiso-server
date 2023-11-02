@@ -832,6 +832,13 @@ class Analyzer {
       result.hasError.type = 2
       result.hasError.error = "O valor para Aceitação de Animais é inválido"
       return result
+    } else {
+      if (accepts_animals != true && accepts_animals != false) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = "O valor para Aceitação de Animais é diferente de 0 ou 1"
+        return result
+      }
     }
 
     return result
