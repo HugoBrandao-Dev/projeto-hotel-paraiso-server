@@ -915,28 +915,45 @@ class Analyzer {
     return result
   }
 
-  static analyzeReserveListSkip(skip) {
+  static async analyzeReserveListSkip(skip, isClient = true) {
 
-    let result = { field: 'offset', hasError: { value: false, type: null, error: '' }}
+    try {
 
-    if (!skip) {
-      result.hasError.value = true
-      result.hasError.type = 2
-      result.hasError.error = "O valor do parâmetro Offset não foi informado"
+      let result = { field: 'offset', hasError: { value: false, type: null, error: '' }}
+
+      if (!skip) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = "O valor do parâmetro Offset não foi informado"
+        return result
+      }
+
+      let isInt = validator.isInt(skip, {
+        min: 0
+      })
+
+      if (!isInt) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = "O valor do parâmetro Offset é inválido"
+        return result
+      }
+
+      let skipNumber = parseInt(skip)
+      let apartments = await Apartment.findMany(skipNumber, (skipNumber + 1), isClient)
+
+      let tooHigh = apartments.length == 0
+      if (tooHigh) {
+        result.hasError.value = true
+        result.hasError.type = 3
+        result.hasError.error = "Não existe(m) apartamento(s) para o valor de Offset informado"
+      }
+
       return result
+
+    } catch (error) {
+      console.error(error)
     }
-
-    let isInt = validator.isInt(skip, {
-      min: 0
-    })
-
-    if (!isInt) {
-      result.hasError.value = true
-      result.hasError.type = 2
-      result.hasError.error = "O valor do parâmetro Offset é inválido"
-    }
-
-    return result
 
   }
 

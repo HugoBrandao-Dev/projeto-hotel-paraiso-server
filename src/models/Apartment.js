@@ -49,9 +49,9 @@ class Apartment {
       let apartments = null
 
       if (isClient) {
-        apartments = apartmentsForClient.slice(skip, limit)
+        apartments = apartmentsForClient.slice(skip, (skip + limit))
       } else {
-        apartments = await ApartmentCollection.apartments.data.slice(skip, limit)
+        apartments = await ApartmentCollection.apartments.data.slice(skip, (skip + limit))
       }
 
       return apartments

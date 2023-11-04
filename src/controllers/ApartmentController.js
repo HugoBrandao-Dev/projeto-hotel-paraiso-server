@@ -261,7 +261,7 @@ class ApartmentController {
         let queryStringArray = Object.keys(req.query)
 
         if (queryStringArray.includes('offset')) {
-          let offsetResult = Analyzer.analyzeReserveListSkip(offset)
+          let offsetResult = await Analyzer.analyzeReserveListSkip(offset, decodedToken.role == 0)
           if (offsetResult.hasError.value) {
             errorFields.push(offsetResult)
           } else {
@@ -369,6 +369,7 @@ class ApartmentController {
       }
 
     } catch(error) {
+      throw new Error(error)
       next(error)
     }
 
