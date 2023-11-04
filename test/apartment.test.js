@@ -2501,7 +2501,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
       // Listagem de apartamentos
       test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
 
-        let apartment = { id: 'd9d62beecdde62af82efd82c' }
         return request.get(endpoints.toList)
           .then(function(responseList) {
 
@@ -2511,6 +2510,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
             expect(responseList.body.RestException.Status).toBe('401')
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, um dos parâmetros da query string é inválido.", function() {
+
+        let url = endpoints.toList + '?offst=1&limit=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O parâmetro \'offst\' é inválido')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
 
           })
           .catch(function(errorRead) {

@@ -247,11 +247,46 @@ class ApartmentController {
 
       let hasNext = false
 
+      let errorFields = []
+
+      let queryStringResult = Analyzer.analyzeQueryList(req.query, 'apartments')
+      if (queryStringResult.hasError.value) {
+        errorFields.push(queryStringResult)
+      }
+
       // Skip é equivalente ao offset, no mongodb.
       let skip = req.query.offset ? parseInt(req.query.offset) : 0
 
       // A quantidade PADRÃO de itens a serem exibidos por página é 20.
       let limit = req.query.limit ? parseInt(req.query.limit) : 20
+
+      if (errorFields.length) {
+        let codes = errorFields.map(item => item.hasError.type)
+
+        // Cria um array contendo os Status codes dos erros encontrados.
+        let status = codes.map(code => {
+          switch(code) {
+            case 3:
+              return '404'
+              break
+            default:
+              return '400'
+          }
+        })
+        let messages = errorFields.map(item => item.hasError.error)
+        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
+        res.status(parseInt(status))
+        res.json({ 
+          RestException: {
+            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
+            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
+            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
+            "ErrorFields": errorFields
+          }
+        })
+        return
+      }
 
       // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
       let results = await Apartment.findMany(skip, limit + 1, decodedToken.role == 0)

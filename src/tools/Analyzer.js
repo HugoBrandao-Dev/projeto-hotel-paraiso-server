@@ -879,7 +879,7 @@ class Analyzer {
     }
   }
 
-  // Método utilizado para analise das Query Strings das Listagens.
+  // Método utilizado para analise dos identificadores dos parâmetros das Query Strings das Listagens.
   static analyzeQueryList(list = null, resource = 'users') {
     let result = { field: 'queryString', hasError: { value: false, type: null, error: '' }}
     let acceptableParams = []
@@ -896,6 +896,20 @@ class Analyzer {
             return result
           }
         }
+        break
+      case 'apartments':
+        acceptableParams = ['status', 'offset', 'limit', 'accepts_animals', 'rooms', 'lowest_daily_price', 'highest_daily_price']
+        for (let param of Object.keys(list)) {
+          let isParamValid = validator.isIn(param, acceptableParams)
+          if (!isParamValid) {
+            result.hasError.value = true
+            result.hasError.type = 2
+            result.hasError.error = `O parâmetro \'${ param }\' é inválido`
+            return result
+          }
+        }
+        break
+
     }
 
     return result
