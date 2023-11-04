@@ -244,6 +244,7 @@ class ApartmentController {
     try {
 
       let { offset, limit } = req.query
+      let skip = null
 
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
@@ -254,18 +255,22 @@ class ApartmentController {
       let queryStringResult = Analyzer.analyzeQueryList(req.query, 'apartments')
       if (queryStringResult.hasError.value) {
         errorFields.push(queryStringResult)
-      }
+      } else {
 
-      // Skip é equivalente ao offset, no mongodb.
-      let skip = null
-      if (offset) {
-        let offsetResult = Analyzer.analyzeReserveListSkip(offset)
-        if (offsetResult.hasError.value) {
-          errorFields.push(offsetResult)
-        } else {
-          skip = Number.parseInt(offset)
+        // Array de todas as Query String que foram passadas, com ou sem valor.
+        let queryStringArray = Object.keys(req.query)
+
+        if (queryStringArray.includes('offset')) {
+          let offsetResult = Analyzer.analyzeReserveListSkip(offset)
+          if (offsetResult.hasError.value) {
+            errorFields.push(offsetResult)
+          } else {
+            // Skip é equivalente ao offset, no mongodb.
+            skip = Number.parseInt(offset)
+          }
         }
       }
+
 
       // A quantidade PADRÃO de itens a serem exibidos por página é 20.
       limit = req.query.limit ? parseInt(req.query.limit) : 20

@@ -2539,7 +2539,28 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 400, um dos valores dos parâmetros da query string é inválido.", function() {
+      test("/GET - Deve retornar 400, o offset foi declarado, mas não possui valor.", function() {
+
+        let url = endpoints.toList + '?offset=&limit=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Offset não foi informado')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor do offset é inválido.", function() {
 
         let url = endpoints.toList + '?offset=1a&limit=3'
 
@@ -2559,6 +2580,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
           })
 
       })
+
+      
 
     })
 

@@ -919,6 +919,13 @@ class Analyzer {
 
     let result = { field: 'offset', hasError: { value: false, type: null, error: '' }}
 
+    if (!skip) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Offset não foi informado"
+      return result
+    }
+
     let isInt = validator.isInt(skip, {
       min: 0
     })
