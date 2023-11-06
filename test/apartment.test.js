@@ -2518,6 +2518,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, o Offset foi informado sem a presença do Limit.", function() {
+
+        let url = endpoints.toList + '?offset=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('1')
+            expect(responseList.body.RestException.Message).toBe('O parâmetro OFFSET foi informado sem a presença do LIMIT')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
       test("/GET - Deve retornar 400, um dos parâmetros da query string é inválido.", function() {
 
         let url = endpoints.toList + '?offst=1&limit=3'

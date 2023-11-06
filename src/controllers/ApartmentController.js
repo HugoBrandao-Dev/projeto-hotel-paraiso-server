@@ -248,30 +248,37 @@ class ApartmentController {
 
       const decodedToken = getDecodedToken(req.headers['authorization'])
 
-      let hasNext = false
-
       let errorFields = []
 
-      let queryStringResult = Analyzer.analyzeQueryList(req.query, 'apartments')
-      if (queryStringResult.hasError.value) {
-        errorFields.push(queryStringResult)
-      } else {
+      if (req.query) {
 
-        // Array de todas as Query String que foram passadas, com ou sem valor.
-        let queryStringArray = Object.keys(req.query)
+        let listOfQueryString = Object.keys(req.query)
+        let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments')
+        if (queryStringResult.hasError.value) {
+          errorFields.push(queryStringResult)
+        } else {
 
-        if (queryStringArray.includes('offset')) {
-          let offsetResult = await Analyzer.analyzeReserveListSkip(offset, decodedToken.role == 0)
-          if (offsetResult.hasError.value) {
-            errorFields.push(offsetResult)
-          } else {
-            // Skip é equivalente ao offset, no mongodb.
-            skip = Number.parseInt(offset)
+          // Array de todas as Query String que foram passadas, com ou sem valor.
+          let queryStringArray = Object.keys(req.query)
+
+          if (queryStringArray.includes('offset')) {
+            let offsetResult = await Analyzer.analyzeReserveListSkip(offset, decodedToken.role == 0)
+            if (offsetResult.hasError.value) {
+              errorFields.push(offsetResult)
+            } else {
+              // Skip é equivalente ao offset, no mongodb.
+              let skip = Number.parseInt(offset)
+            }
           }
         }
+
+      } else {
+
+        skip = 0
+
+
       }
-
-
+      
       // A quantidade PADRÃO de itens a serem exibidos por página é 20.
       limit = req.query.limit ? parseInt(req.query.limit) : 20
 
@@ -358,7 +365,7 @@ class ApartmentController {
           apartments.push(apartment)
         }
 
-        hasNext = apartments.length > (limit - skip)
+        let hasNext = apartments.length > (limit - skip)
 
         // Retira o dado extra para cálculo do hasNext.
         if (hasNext)

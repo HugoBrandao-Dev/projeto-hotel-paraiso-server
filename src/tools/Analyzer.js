@@ -880,14 +880,24 @@ class Analyzer {
   }
 
   // Método utilizado para analise dos identificadores dos parâmetros das Query Strings das Listagens.
-  static analyzeQueryList(list = null, resource = 'users') {
+  static analyzeQueryList(list, resource = 'users') {
     let result = { field: 'queryString', hasError: { value: false, type: null, error: '' }}
     let acceptableParams = []
+
+    let hasOffset = list.includes('offset')
+    let hasLimit = list.includes('limit')
+
+    if (hasOffset && !hasLimit) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = 'O parâmetro OFFSET foi informado sem a presença do LIMIT'
+      return result
+    }
 
     switch (resource) {
       case 'reserves':
         acceptableParams = ['status', 'offset', 'limit']
-        for (let param of Object.keys(list)) {
+        for (let param of list) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {
             result.hasError.value = true
@@ -899,7 +909,7 @@ class Analyzer {
         break
       case 'apartments':
         acceptableParams = ['status', 'offset', 'limit', 'accepts_animals', 'rooms', 'lowest_daily_price', 'highest_daily_price']
-        for (let param of Object.keys(list)) {
+        for (let param of list) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {
             result.hasError.value = true
