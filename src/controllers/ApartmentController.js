@@ -243,7 +243,7 @@ class ApartmentController {
 
     try {
 
-      let { offset, limit } = req.query
+      let { offset, limit, lowest_daily_price } = req.query
       let skip = null
 
       const decodedToken = getDecodedToken(req.headers['authorization'])
@@ -268,15 +268,23 @@ class ApartmentController {
             } else {
               // Skip é equivalente ao offset, no mongodb.
               let skip = Number.parseInt(offset)
+
+              let limitResult = Analyzer.analyzeReserveListLimit(limit)
+              if (limitResult.hasError.value) {
+                errorFields.push(limitResult)
+              } else {
+                limit = Number.parseInt(limit)
+              }
             }
           }
 
-          let limitResult = Analyzer.analyzeReserveListLimit(limit, skip)
-          if (limitResult.hasError.value) {
-            errorFields.push(limitResult)
-          } else {
-            limit = Number.parseInt(limit)
+          if (queryStringArray.includes('lowest_daily_price')) {
+            let lowestDailyPriceResult = await Analyzer.analyzeLowestDailyPrice(lowest_daily_price)
+            if (lowestDailyPriceResult.hasError.value) {
+              errorFields.push(lowestDailyPriceResult)
+            }
           }
+
         }
       } else {
         skip = 0

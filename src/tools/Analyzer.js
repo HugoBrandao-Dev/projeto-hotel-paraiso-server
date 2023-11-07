@@ -967,7 +967,7 @@ class Analyzer {
 
   }
 
-  static analyzeReserveListLimit(limit, skip) {
+  static analyzeReserveListLimit(limit) {
     let result = { field: 'limit', hasError: { value: false, type: null, error: '' }}
 
     if (!limit) {
@@ -988,6 +988,20 @@ class Analyzer {
     }
 
     return result
+  }
+
+  static analyzeLowestDailyPrice(price) {
+
+    let result = { field: 'iptLowestDailyPrice', hasError: { value: false, type: null, error: '' }}
+
+    if (!price) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O valor do parâmetro Menor Diária não foi informado"
+    }
+
+    return result
+
   }
 
   static analyzeReserveStartDate(date = '') {

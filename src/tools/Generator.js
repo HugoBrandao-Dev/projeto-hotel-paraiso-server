@@ -79,6 +79,20 @@ class Generator {
     })
 
   }
+
+  static genQueryStringFromObject(obj) {
+
+    let resultArray = []
+
+    for (let filter of Object.keys(obj)) {
+      resultArray.push(`${ filter }=${ obj[filter] }`)
+    }
+
+    // let resultJoined = 
+
+    return '?'+resultArray.join('&')
+
+  }
 }
 
 module.exports = Generator
