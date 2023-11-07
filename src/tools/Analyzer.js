@@ -925,6 +925,20 @@ class Analyzer {
     return result
   }
 
+  static analyzeApartmentFilterRooms(rooms) {
+
+    let result = { field: 'rooms', hasError: { value: false, type: null, error: '' }}
+
+    if (!rooms) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O valor do parâmetro Quantidade de Cômodos não foi informado"
+    }
+    
+    return result
+
+  }
+
   static async analyzeReserveListSkip(skip, isClient = true) {
 
     try {

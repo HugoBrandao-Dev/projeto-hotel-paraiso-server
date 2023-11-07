@@ -244,6 +244,7 @@ class ApartmentController {
     try {
 
       let {
+        rooms,
         offset,
         limit,
         lowest_daily_price,
@@ -266,6 +267,13 @@ class ApartmentController {
 
           // Array de todas as Query String que foram passadas, com ou sem valor.
           let queryStringArray = Object.keys(req.query)
+
+          if (queryStringArray.includes('rooms')) {
+            let roomsResult = await Analyzer.analyzeApartmentFilterRooms(rooms)
+            if (roomsResult.hasError.value) {
+              errorFields.push(roomsResult)
+            }
+          }
 
           if (queryStringArray.includes('offset')) {
             let offsetResult = await Analyzer.analyzeReserveListSkip(offset, decodedToken.role == 0)
