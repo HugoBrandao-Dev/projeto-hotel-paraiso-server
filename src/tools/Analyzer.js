@@ -1001,7 +1001,9 @@ class Analyzer {
       return result
     }
 
-    const isFloat = validator.isFloat(price)
+    const isFloat = validator.isFloat(price, {
+      min: 0
+    })
     if (!isFloat) {
       result.hasError.value = true
       result.hasError.type = 2
