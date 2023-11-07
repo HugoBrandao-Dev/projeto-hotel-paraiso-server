@@ -292,7 +292,7 @@ class ApartmentController {
           }
 
           if (queryStringArray.includes('highest_daily_price')) {
-            let highestDailyPriceResult = await Analyzer.analyzeHighestDailyPrice(highest_daily_price)
+            let highestDailyPriceResult = await Analyzer.analyzeHighestDailyPrice(highest_daily_price, lowest_daily_price)
             if (highestDailyPriceResult.hasError.value) {
               errorFields.push(highestDailyPriceResult)
             }

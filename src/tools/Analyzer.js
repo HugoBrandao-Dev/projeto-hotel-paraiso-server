@@ -1014,7 +1014,7 @@ class Analyzer {
 
   }
 
-  static analyzeHighestDailyPrice(price) {
+  static analyzeHighestDailyPrice(price, lowestDailyPrice = '0') {
 
     let result = { field: 'iptHighestDailyPrice', hasError: { value: false, type: null, error: '' }}
 
@@ -1032,6 +1032,17 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "O valor do parâmetro Maior Diária é inválido"
+      return result
+    }
+
+    const min = parseInt(lowestDailyPrice) + 1
+    const isBiggerThanLowestPrice = validator.isFloat(price, {
+      min
+    })
+    if (!isBiggerThanLowestPrice) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Maior Diária deve ser maior o da Menor Diária"
     }
 
     return result
