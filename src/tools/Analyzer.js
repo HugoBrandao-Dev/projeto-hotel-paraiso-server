@@ -936,7 +936,9 @@ class Analyzer {
       return result
     }
 
-    const isInt = validator.isInt(rooms)
+    const isInt = validator.isInt(rooms, {
+      min: 0
+    })
     if (!isInt) {
       result.hasError.value = true
       result.hasError.type = 2
