@@ -336,66 +336,63 @@ class ApartmentController {
       let results = await Apartment.findMany(skip, limit + 1, decodedToken.role == 0)
       let apartments = []
 
-      if (results.length) {
+      for (let item of results) {
 
-        for (let item of results) {
+        let apartment = _.cloneDeep(item)
 
-          let apartment = _.cloneDeep(item)
+        delete apartment.created
+        delete apartment.updated
 
-          delete apartment.created
-          delete apartment.updated
+        if (decodedToken.role > 0) {
+          const userWhoCreated = await User.findOne(item.created.createdBy)
 
-          if (decodedToken.role > 0) {
-            const userWhoCreated = await User.findOne(item.created.createdBy)
-
-            // Setta os valores do CREATED.
-            apartment.created = {
-              createdAt: item.created.createdAt,
-              createdBy: {
-                id: userWhoCreated.id,
-                name: userWhoCreated.name
-              }
+          // Setta os valores do CREATED.
+          apartment.created = {
+            createdAt: item.created.createdAt,
+            createdBy: {
+              id: userWhoCreated.id,
+              name: userWhoCreated.name
             }
+          }
 
-            if (item.updated.updatedBy) {
-              const userWhoUpdated = await User.findOne(item.updated.updatedBy)
+          if (item.updated.updatedBy) {
+            const userWhoUpdated = await User.findOne(item.updated.updatedBy)
 
-              // Setta os valores do UPDATED.
-              apartment.updated = {
-                updatedAt: item.updated.updatedAt,
-                updatedBy: {
-                  id: userWhoUpdated.id,
-                  name: userWhoUpdated.name
-                }
-              }
-            } else {
-              apartment.updated = {
-                updatedAt: "",
-                updatedBy: {
-                  id: "",
-                  name: "",
-                }
+            // Setta os valores do UPDATED.
+            apartment.updated = {
+              updatedAt: item.updated.updatedAt,
+              updatedBy: {
+                id: userWhoUpdated.id,
+                name: userWhoUpdated.name
               }
             }
           } else {
-            delete apartment.reserve
+            apartment.updated = {
+              updatedAt: "",
+              updatedBy: {
+                id: "",
+                name: "",
+              }
+            }
           }
-
-          let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartments', 'apartment', false)
-          apartment._links = HATEOAS
-
-          apartments.push(apartment)
+        } else {
+          delete apartment.reserve
         }
 
-        let hasNext = apartments.length > (limit - skip)
+        let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartments', 'apartment', false)
+        apartment._links = HATEOAS
 
-        // Retira o dado extra para cálculo do hasNext.
-        if (hasNext)
-          apartments.pop()
-
-        res.status(200)
-        res.json({ apartments, hasNext })
+        apartments.push(apartment)
       }
+
+      let hasNext = apartments.length > (limit - skip)
+
+      // Retira o dado extra para cálculo do hasNext.
+      if (hasNext)
+        apartments.pop()
+
+      res.status(200)
+      res.json({ apartments, hasNext })
 
     } catch(error) {
       throw new Error(error)

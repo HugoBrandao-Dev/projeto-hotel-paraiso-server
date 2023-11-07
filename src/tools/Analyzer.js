@@ -1022,6 +1022,14 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O valor do parâmetro Maior Diária não foi informado"
+      return result
+    }
+
+    const isFloat = validator.isFloat(price)
+    if (!isFloat) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Maior Diária é inválido"
     }
 
     return result
