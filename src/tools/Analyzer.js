@@ -1014,6 +1014,20 @@ class Analyzer {
 
   }
 
+  static analyzeHighestDailyPrice(price) {
+
+    let result = { field: 'iptHighestDailyPrice', hasError: { value: false, type: null, error: '' }}
+
+    if (!price) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O valor do parâmetro Maior Diária não foi informado"
+    }
+
+    return result
+
+  }
+
   static analyzeReserveStartDate(date = '') {
     let result = { field: 'iptStartDate', hasError: { value: false, type: null, error: '' }}
     

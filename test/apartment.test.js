@@ -2782,6 +2782,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, a query string Maior Diária foi declarado, mas não possui valor.", function() {
+
+        let queryStringOBJ = {
+          highest_daily_price: ''
+        }
+
+        let url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('1')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Maior Diária não foi informado')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
     })
 
   })

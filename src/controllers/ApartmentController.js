@@ -243,7 +243,13 @@ class ApartmentController {
 
     try {
 
-      let { offset, limit, lowest_daily_price } = req.query
+      let {
+        offset,
+        limit,
+        lowest_daily_price,
+        highest_daily_price
+      } = req.query
+
       let skip = null
 
       const decodedToken = getDecodedToken(req.headers['authorization'])
@@ -282,6 +288,13 @@ class ApartmentController {
             let lowestDailyPriceResult = await Analyzer.analyzeLowestDailyPrice(lowest_daily_price)
             if (lowestDailyPriceResult.hasError.value) {
               errorFields.push(lowestDailyPriceResult)
+            }
+          }
+
+          if (queryStringArray.includes('highest_daily_price')) {
+            let highestDailyPriceResult = await Analyzer.analyzeHighestDailyPrice(highest_daily_price)
+            if (highestDailyPriceResult.hasError.value) {
+              errorFields.push(highestDailyPriceResult)
             }
           }
 
