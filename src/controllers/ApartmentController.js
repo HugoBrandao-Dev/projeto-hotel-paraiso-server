@@ -276,14 +276,14 @@ class ApartmentController {
           }
 
           if (queryStringArray.includes('offset')) {
-            let offsetResult = await Analyzer.analyzeReserveListSkip(offset, decodedToken.role == 0)
+            let offsetResult = await Analyzer.analyzeFilterSkip(offset, decodedToken.role == 0)
             if (offsetResult.hasError.value) {
               errorFields.push(offsetResult)
             } else {
               // Skip é equivalente ao offset, no mongodb.
               let skip = Number.parseInt(offset)
 
-              let limitResult = Analyzer.analyzeReserveListLimit(limit)
+              let limitResult = Analyzer.analyzeFilterLimit(limit)
               if (limitResult.hasError.value) {
                 errorFields.push(limitResult)
               } else {
@@ -293,14 +293,14 @@ class ApartmentController {
           }
 
           if (queryStringArray.includes('lowest_daily_price')) {
-            let lowestDailyPriceResult = await Analyzer.analyzeLowestDailyPrice(lowest_daily_price)
+            let lowestDailyPriceResult = await Analyzer.analyzeApartmentFilterLowestDailyPrice(lowest_daily_price)
             if (lowestDailyPriceResult.hasError.value) {
               errorFields.push(lowestDailyPriceResult)
             }
           }
 
           if (queryStringArray.includes('highest_daily_price')) {
-            let highestDailyPriceResult = await Analyzer.analyzeHighestDailyPrice(highest_daily_price, lowest_daily_price)
+            let highestDailyPriceResult = await Analyzer.analyzeApartmentFilterHighestDailyPrice(highest_daily_price, lowest_daily_price)
             if (highestDailyPriceResult.hasError.value) {
               errorFields.push(highestDailyPriceResult)
             }

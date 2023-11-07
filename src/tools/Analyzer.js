@@ -949,7 +949,7 @@ class Analyzer {
 
   }
 
-  static async analyzeReserveListSkip(skip, isClient = true) {
+  static async analyzeFilterSkip(skip, isClient = true) {
 
     try {
 
@@ -991,7 +991,7 @@ class Analyzer {
 
   }
 
-  static analyzeReserveListLimit(limit) {
+  static analyzeFilterLimit(limit) {
     let result = { field: 'limit', hasError: { value: false, type: null, error: '' }}
 
     if (!limit) {
@@ -1014,7 +1014,7 @@ class Analyzer {
     return result
   }
 
-  static analyzeLowestDailyPrice(price) {
+  static analyzeApartmentFilterLowestDailyPrice(price) {
 
     let result = { field: 'iptLowestDailyPrice', hasError: { value: false, type: null, error: '' }}
 
@@ -1038,7 +1038,7 @@ class Analyzer {
 
   }
 
-  static analyzeHighestDailyPrice(price, lowestDailyPrice = '0') {
+  static analyzeApartmentFilterHighestDailyPrice(price, lowestDailyPrice = '0') {
 
     let result = { field: 'iptHighestDailyPrice', hasError: { value: false, type: null, error: '' }}
 
