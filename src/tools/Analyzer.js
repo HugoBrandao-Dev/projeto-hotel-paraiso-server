@@ -933,8 +933,16 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O valor do parâmetro Quantidade de Cômodos não foi informado"
+      return result
     }
-    
+
+    const isInt = validator.isInt(rooms)
+    if (!isInt) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Quantidade de Cômodos é inválido"
+    }
+
     return result
 
   }
