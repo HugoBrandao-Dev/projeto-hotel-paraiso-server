@@ -250,9 +250,9 @@ class ApartmentController {
 
       let errorFields = []
 
-      if (req.query) {
+      let listOfQueryString = Object.keys(req.query)
 
-        let listOfQueryString = Object.keys(req.query)
+      if (listOfQueryString.length) {
         let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments')
         if (queryStringResult.hasError.value) {
           errorFields.push(queryStringResult)
@@ -270,17 +270,18 @@ class ApartmentController {
               let skip = Number.parseInt(offset)
             }
           }
+
+          let limitResult = Analyzer.analyzeReserveListLimit(limit, skip)
+          if (limitResult.hasError.value) {
+            errorFields.push(limitResult)
+          } else {
+            limit = Number.parseInt(limit)
+          }
         }
-
       } else {
-
         skip = 0
-
-
+        limit = 20
       }
-      
-      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
-      limit = req.query.limit ? parseInt(req.query.limit) : 20
 
       if (errorFields.length) {
         let codes = errorFields.map(item => item.hasError.type)

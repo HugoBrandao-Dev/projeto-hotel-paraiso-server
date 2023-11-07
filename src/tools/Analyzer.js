@@ -967,8 +967,15 @@ class Analyzer {
 
   }
 
-  static analyzeReserveListLimit(limit) {
+  static analyzeReserveListLimit(limit, skip) {
     let result = { field: 'limit', hasError: { value: false, type: null, error: '' }}
+
+    if (!limit) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Limit não foi informado"
+      return result
+    }
 
     let isInt = validator.isInt(limit, {
       gt: 0
