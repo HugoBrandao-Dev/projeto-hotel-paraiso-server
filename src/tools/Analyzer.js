@@ -1073,6 +1073,21 @@ class Analyzer {
 
   }
 
+  static analyzeApartmentFilterAcceptsAnimals(value) {
+
+    let result = { field: 'accepts_animals', hasError: { value: false, type: null, error: '' }}
+
+    if (!value) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O valor do parâmetro de Permissão de Animais não foi informado"
+      return result
+    }
+
+    return result
+
+  }
+
   static analyzeReserveStartDate(date = '') {
     let result = { field: 'iptStartDate', hasError: { value: false, type: null, error: '' }}
     

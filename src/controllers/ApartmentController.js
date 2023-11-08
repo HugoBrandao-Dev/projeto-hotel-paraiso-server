@@ -248,7 +248,8 @@ class ApartmentController {
         offset,
         limit,
         lowest_daily_price,
-        highest_daily_price
+        highest_daily_price,
+        accepts_animals
       } = req.query
 
       let skip = null
@@ -303,6 +304,13 @@ class ApartmentController {
             let highestDailyPriceResult = await Analyzer.analyzeApartmentFilterHighestDailyPrice(highest_daily_price, lowest_daily_price)
             if (highestDailyPriceResult.hasError.value) {
               errorFields.push(highestDailyPriceResult)
+            }
+          }
+
+          if (queryStringArray.includes('accepts_animals')) {
+            let acceptsAnimalsResult = await Analyzer.analyzeApartmentFilterAcceptsAnimals(accepts_animals)
+            if (acceptsAnimalsResult.hasError.value) {
+              errorFields.push(acceptsAnimalsResult)
             }
           }
 
