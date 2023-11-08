@@ -2845,7 +2845,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 400, a query string Maior Diária foi declarado, mas não possui valor.", function() {
+      test("/GET - Deve retornar 400, a query string Maior Diária foi declarada, mas não possui valor.", function() {
 
         let queryStringOBJ = {
           highest_daily_price: ''
@@ -2946,7 +2946,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 400, o valor da Maior Diária é menor que o da Menor Diária.", function() {
+      test("/GET - Deve retornar 400, a query string Permissão de Animais foi declarada, mas não possui valor.", function() {
 
         let queryStringOBJ = {
           accepts_animals: ''
@@ -2971,7 +2971,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 400, o valor da Maior Diária é menor que o da Menor Diária.", function() {
+      test("/GET - Deve retornar 400, Permissão de Animais possui um valor inválido.", function() {
 
         let queryStringOBJ = {
           accepts_animals: '2'
