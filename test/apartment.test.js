@@ -2971,6 +2971,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, o valor da Maior Diária é menor que o da Menor Diária.", function() {
+
+        let queryStringOBJ = {
+          accepts_animals: '2'
+        }
+
+        let url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor para Aceitação de Animais é diferente de 0 ou 1')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
     })
 
   })

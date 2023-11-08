@@ -1084,6 +1084,13 @@ class Analyzer {
       return result
     }
 
+    const isBoolean = validator.isBoolean(value)
+    if (!isBoolean) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor para Aceitação de Animais é diferente de 0 ou 1"
+    }
+
     return result
 
   }
