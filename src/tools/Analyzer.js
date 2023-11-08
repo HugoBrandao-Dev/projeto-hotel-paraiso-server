@@ -1103,6 +1103,14 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O valor do parâmetro de Ordenação não foi informado"
+      return result
+    }
+
+    let hasFieldAndType = sort.split(':').length == 2
+    if (!hasFieldAndType) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "A estrutura do valor da Ordenação é inválida"
     }
 
     return result
