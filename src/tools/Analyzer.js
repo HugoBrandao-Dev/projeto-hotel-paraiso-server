@@ -1106,11 +1106,22 @@ class Analyzer {
       return result
     }
 
-    let hasFieldAndType = sort.split(':').length == 2
+    const splited = sort.split(':')
+    const hasFieldAndType = splited.length == 2
     if (!hasFieldAndType) {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "A estrutura do valor da Ordenação é inválida"
+      return result
+    } else {
+
+      let acceptableFields = ['daily_price']
+      if (!acceptableFields.includes(splited[0])) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = `O campo a ser ordenado \'${ splited[0] }\' é inválido`
+      }
+
     }
 
     return result

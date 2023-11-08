@@ -3048,6 +3048,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, o campo a ser ordenado é inválido.", function() {
+
+        let queryStringOBJ = {
+          sort: 'daily_pice:asc'
+        }
+
+        let url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe("O campo a ser ordenado \'daily_pice\' é inválido")
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
     })
 
   })
