@@ -2459,7 +2459,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      // Leituras individuais de apartamentos
+      /* ### Leituras individuais de apartamentos ### */
+
       test("/GET - Deve retornar 400, já que o ID do apartamento contém caracteres inválidos.", function() {
 
         return request.get(`${ endpoints.toRead }/856377c88f8fd9fc65fd3ef*`).set('Authorization', accounts.funcionario.token)
@@ -2498,7 +2499,8 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      // Listagem de apartamentos
+      /* ### Listagem de apartamentos ### */
+
       test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
 
         return request.get(endpoints.toList)
@@ -2770,7 +2772,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 400, a query string Menor Diária foi declarado, mas não possui valor.", function() {
+      test("/GET - Deve retornar 400, a query string Menor Diária foi declarada, mas não possui valor.", function() {
 
         let queryStringOBJ = {
           lowest_daily_price: ''
@@ -2988,6 +2990,31 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body.RestException.Message).toBe('O valor para Aceitação de Animais é diferente de 0 ou 1')
             expect(responseList.body.RestException.Status).toBe('400')
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, a query string de Ordenamento foi declarada, mas não possui valor.", function() {
+
+        let queryStringOBJ = {
+          sort: ''
+        }
+
+        let url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('1')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro de Ordenação não foi informado')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
 
           })
           .catch(function(errorRead) {

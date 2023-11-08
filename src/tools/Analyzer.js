@@ -908,7 +908,7 @@ class Analyzer {
         }
         break
       case 'apartments':
-        acceptableParams = ['status', 'offset', 'limit', 'accepts_animals', 'rooms', 'lowest_daily_price', 'highest_daily_price']
+        acceptableParams = ['status', 'offset', 'limit', 'accepts_animals', 'rooms', 'lowest_daily_price', 'highest_daily_price', 'sort']
         for (let param of list) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {
@@ -1089,6 +1089,20 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 2
       result.hasError.error = "O valor para Aceitação de Animais é diferente de 0 ou 1"
+    }
+
+    return result
+
+  }
+
+  static analyzeApartmentFilterSort(sort) {
+
+    let result = { field: 'sort', hasError: { value: false, type: null, error: '' }}
+
+    if (!sort) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O valor do parâmetro de Ordenação não foi informado"
     }
 
     return result

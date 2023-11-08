@@ -249,7 +249,8 @@ class ApartmentController {
         limit,
         lowest_daily_price,
         highest_daily_price,
-        accepts_animals
+        accepts_animals,
+        sort
       } = req.query
 
       let skip = null
@@ -311,6 +312,13 @@ class ApartmentController {
             let acceptsAnimalsResult = await Analyzer.analyzeApartmentFilterAcceptsAnimals(accepts_animals)
             if (acceptsAnimalsResult.hasError.value) {
               errorFields.push(acceptsAnimalsResult)
+            }
+          }
+
+          if (queryStringArray.includes('sort')) {
+            let sortResult = await Analyzer.analyzeApartmentFilterSort(sort)
+            if (sortResult.hasError.value) {
+              errorFields.push(sortResult)
             }
           }
 
