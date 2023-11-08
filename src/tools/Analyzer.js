@@ -1115,13 +1115,20 @@ class Analyzer {
       return result
     } else {
 
-      let acceptableFields = ['daily_price']
+      const acceptableFields = ['daily_price']
       if (!acceptableFields.includes(splited[0])) {
         result.hasError.value = true
         result.hasError.type = 2
         result.hasError.error = `O campo a ser ordenado \'${ splited[0] }\' é inválido`
+        return result
       }
 
+      const acceptableTypes = ['asc', 'desc']
+      if (!acceptableTypes.includes(splited[1])) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = `O tipo de ordenação \'${ splited[1] }\' é inválido`
+      }
     }
 
     return result
