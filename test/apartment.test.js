@@ -1932,7 +1932,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             id: idRegisteredApartmentsWithPictures[0]
           }
 
-          let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+          let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`)
 
           expect(responseRead.statusCode).toEqual(200)
 
@@ -2418,26 +2418,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
     })
 
     describe("Testes de FALHA.", function() {
-
-      test("/GET - Deve retornar 401, o Cliente não está AUTORIZADO.", function() {
-
-        let apartment = { id: 'd9d62beecdde62af82efd82c' }
-        return request.get(`${ endpoints.toRead }/${ apartment.id }`)
-          .then(function(responseRead) {
-
-            expect(responseRead.statusCode).toEqual(401)
-
-            expect(responseRead.body.RestException.Code).toBe('5')
-            expect(responseRead.body.RestException.Message).toBe('O usuário não está autorizado')
-            expect(responseRead.body.RestException.Status).toBe('401')
-            expect(responseRead.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
 
       test("/GET - Deve retornar 403, o Cliente não está AUTENTICADO.", function() {
 
