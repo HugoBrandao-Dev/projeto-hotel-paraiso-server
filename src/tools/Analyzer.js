@@ -927,6 +927,20 @@ class Analyzer {
     return result
   }
 
+  static analyzeApartmentFilterStatus(status) {
+
+    let result = { field: 'status', hasError: { value: false, type: null, error: '' }}
+
+    if (!status) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = "O valor do parâmetro Status não foi informado"
+    }
+
+    return result
+
+  }
+
   static analyzeApartmentFilterRooms(rooms) {
 
     let result = { field: 'rooms', hasError: { value: false, type: null, error: '' }}

@@ -2588,6 +2588,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, o parâmetro Status foi declarado, mas não possui valor.", function() {
+
+        let url = endpoints.toList + '?status='
+
+        return request.get(url).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('1')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Status não foi informado')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
       test("/GET - Deve retornar 400, o rooms (quantidade de cômodos) foi declarado, mas não possui valor.", function() {
 
         let url = endpoints.toList + '?rooms='

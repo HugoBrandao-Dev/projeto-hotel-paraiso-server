@@ -248,6 +248,7 @@ class ApartmentController {
     try {
 
       let {
+        status,
         rooms,
         offset,
         limit,
@@ -269,13 +270,20 @@ class ApartmentController {
       let listOfQueryString = Object.keys(req.query)
 
       if (listOfQueryString.length) {
-        let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments')
+        let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments', hasPrivs)
         if (queryStringResult.hasError.value) {
           errorFields.push(queryStringResult)
         } else {
 
           // Array de todas as Query String que foram passadas, com ou sem valor.
           let queryStringArray = Object.keys(req.query)
+
+          if (queryStringArray.includes('status')) {
+            let statusResult = await Analyzer.analyzeApartmentFilterStatus(status)
+            if (statusResult.hasError.value) {
+              errorFields.push(statusResult)
+            }
+          }
 
           if (queryStringArray.includes('rooms')) {
             let roomsResult = await Analyzer.analyzeApartmentFilterRooms(rooms)
