@@ -258,9 +258,12 @@ class ApartmentController {
       } = req.query
 
       let skip = null
-
-      const decodedToken = getDecodedToken(req.headers['authorization'])
-
+      let decodedToken = null
+      let hasPrivs = false // Funcionário++
+      if (req.headers['authorization']) {
+        decodedToken = getDecodedToken(req.headers['authorization'])
+        hasPrivs = decodedToken.role > 0
+      }
       let errorFields = []
 
       let listOfQueryString = Object.keys(req.query)
@@ -282,7 +285,7 @@ class ApartmentController {
           }
 
           if (queryStringArray.includes('offset')) {
-            let offsetResult = await Analyzer.analyzeFilterSkip(offset, decodedToken.role == 0)
+            let offsetResult = await Analyzer.analyzeFilterSkip(offset, hasPrivs)
             if (offsetResult.hasError.value) {
               errorFields.push(offsetResult)
             } else {
@@ -360,8 +363,7 @@ class ApartmentController {
         return
       }
 
-      // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-      let results = await Apartment.findMany(skip, limit + 1, decodedToken.role == 0)
+      let results = await Apartment.findMany(skip, limit + 1, hasPrivs)
       let apartments = []
 
       for (let item of results) {
@@ -371,7 +373,7 @@ class ApartmentController {
         delete apartment.created
         delete apartment.updated
 
-        if (decodedToken.role > 0) {
+        if (decodedToken && decodedToken.role > 0) {
           const userWhoCreated = await User.findOne(item.created.createdBy)
 
           // Setta os valores do CREATED.

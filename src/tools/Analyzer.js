@@ -949,7 +949,7 @@ class Analyzer {
 
   }
 
-  static async analyzeFilterSkip(skip, isClient = true) {
+  static async analyzeFilterSkip(skip, hasPrivs = true) {
 
     try {
 
@@ -974,7 +974,7 @@ class Analyzer {
       }
 
       let skipNumber = parseInt(skip)
-      let apartments = await Apartment.findMany(skipNumber, (skipNumber + 1), isClient)
+      let apartments = await Apartment.findMany(skipNumber, (skipNumber + 1), hasPrivs)
 
       let tooHigh = apartments.length == 0
       if (tooHigh) {

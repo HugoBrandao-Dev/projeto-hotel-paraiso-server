@@ -42,7 +42,7 @@ router.post(apartmentEndpoints.toCreate, authorization, authentication, multerCo
 
 // Read
 router.get(apartmentEndpoints.toRead, authentication, ApartmentController.read)
-router.get(apartmentEndpoints.toList, authorization, authentication, ApartmentController.list)
+router.get(apartmentEndpoints.toList, authentication, ApartmentController.list)
 
 // Update
 router.put(apartmentEndpoints.toUpdate, authorization, authentication, multerConfig, ApartmentController.update)

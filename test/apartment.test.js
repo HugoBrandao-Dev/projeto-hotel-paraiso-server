@@ -2060,7 +2060,51 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       /* ### Listagem de aptos LIVRES. ### */
 
-      test("/GET - Deve retornar 200 e uma lista de aptos pelo usuário, com 0 ou várias fotos.", async function() {
+      test("/GET - Deve retornar 200 e uma lista de aptos LIVRES para um usuário não logado.", async function() {
+
+        try {
+
+          let responseList = await request.get(endpoints.toList)
+
+          expect(responseList.statusCode).toEqual(200)
+
+          expect(responseList.body).toHaveProperty('apartments')
+          expect(responseList.body).toHaveProperty('hasNext')
+
+          let apartmentList = ApartmentsTools.getApartments(true)
+
+          expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
+
+          // As imagens com pictures são armazenadas por último, e o limite da listagem é 20.
+          for (let apartment of responseList.body.apartments) {
+
+            if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
+
+              let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+              let picturesCount = apartmentJSON.pictures.length
+              expect(apartment.pictures).toHaveLength(picturesCount)
+
+              expect(apartment.reserve).toBeUndefined()
+              expect(apartment.created).toBeUndefined()
+              expect(apartment.updated).toBeUndefined()
+
+            } else {
+              expect(apartment.pictures).toHaveLength(0)
+            }
+
+            expect(apartment._links).toBeDefined()
+            expect(apartment._links).toHaveLength(3)
+
+          }
+
+        } catch (errorList) {
+          fail(errorList)
+        }
+
+      })
+
+      test("/GET - Deve retornar 200 e uma lista de aptos pelo cliente, com 0 ou várias fotos.", async function() {
 
         try {
 
@@ -2480,25 +2524,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
       })
 
       /* ### Listagem de apartamentos ### */
-
-      test("/GET - Deve retornar 401, o usuário não está AUTORIZADO.", function() {
-
-        return request.get(endpoints.toList)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(401)
-
-            expect(responseList.body.RestException.Code).toBe('5')
-            expect(responseList.body.RestException.Message).toBe('O usuário não está autorizado')
-            expect(responseList.body.RestException.Status).toBe('401')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/5`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
 
       test("/GET - Deve retornar 400, o Offset foi informado sem a presença do Limit.", function() {
 

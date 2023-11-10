@@ -40,7 +40,7 @@ class Apartment {
     }
   }
 
-  async findMany(skip = 0, limit = 20, isClient) {
+  async findMany(skip = 0, limit = 20, hasPrivs) {
 
     try {
 
@@ -48,10 +48,10 @@ class Apartment {
 
       let apartments = null
 
-      if (isClient) {
-        apartments = apartmentsForClient.slice(skip, (skip + limit))
-      } else {
+      if (hasPrivs) {
         apartments = await ApartmentCollection.apartments.data.slice(skip, (skip + limit))
+      } else {
+        apartments = apartmentsForClient.slice(skip, (skip + limit))
       }
 
       return apartments

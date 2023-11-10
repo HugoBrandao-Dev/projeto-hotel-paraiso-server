@@ -296,6 +296,8 @@ async function isActionAllowed(headers, path, method, params, body) {
             } 
 
           }
+        } else {
+          allowed = true
         }
       }
     }
