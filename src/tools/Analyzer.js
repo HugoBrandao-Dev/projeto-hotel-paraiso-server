@@ -935,6 +935,16 @@ class Analyzer {
       result.hasError.value = true
       result.hasError.type = 1
       result.hasError.error = "O valor do parâmetro Status não foi informado"
+      return result
+    }
+
+    let acceptableValues = ['livre', 'reservado', 'ocupado', 'indisponível']
+    let isValid = validator.isIn(status, acceptableValues)
+    if (!isValid) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = "O valor do parâmetro Status é inválido"
+      return result
     }
 
     return result
