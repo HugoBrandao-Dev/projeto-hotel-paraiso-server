@@ -880,7 +880,7 @@ class Analyzer {
   }
 
   // Método utilizado para analise dos identificadores dos parâmetros das Query Strings das Listagens.
-  static analyzeQueryList(list, resource = 'users') {
+  static analyzeQueryList(list, resource = 'users', hasPrivs) {
     let result = { field: 'queryString', hasError: { value: false, type: null, error: '' }}
     let acceptableParams = []
 
@@ -908,7 +908,9 @@ class Analyzer {
         }
         break
       case 'apartments':
-        acceptableParams = ['status', 'offset', 'limit', 'accepts_animals', 'rooms', 'lowest_daily_price', 'highest_daily_price', 'sort']
+        acceptableParams = ['offset', 'limit', 'accepts_animals', 'rooms', 'lowest_daily_price', 'highest_daily_price', 'sort']
+        if (hasPrivs)
+          acceptableParams.unshift('status')
         for (let param of list) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {

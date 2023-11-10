@@ -2525,27 +2525,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       /* ### Listagem de apartamentos ### */
 
-      test("/GET - Deve retornar 400, o Offset foi informado sem a presença do Limit.", function() {
-
-        let url = endpoints.toList + '?offset=3'
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(400)
-
-            expect(responseList.body.RestException.Code).toBe('1')
-            expect(responseList.body.RestException.Message).toBe('O parâmetro OFFSET foi informado sem a presença do LIMIT')
-            expect(responseList.body.RestException.Status).toBe('400')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
       test("/GET - Deve retornar 400, um dos parâmetros da query string é inválido.", function() {
 
         let url = endpoints.toList + '?offst=1&limit=3'
@@ -2557,6 +2536,27 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(responseList.body.RestException.Code).toBe('2')
             expect(responseList.body.RestException.Message).toBe('O parâmetro \'offst\' é inválido')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o usuário (não logado) não pode usar o parâmetro status.", function() {
+
+        let url = endpoints.toList + '?status='
+
+        return request.get(url)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O parâmetro \'status\' é inválido')
             expect(responseList.body.RestException.Status).toBe('400')
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
 
@@ -2620,153 +2620,6 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(responseList.body.RestException.Code).toBe('2')
             expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Quantidade de Cômodos é inválido')
-            expect(responseList.body.RestException.Status).toBe('400')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
-      test("/GET - Deve retornar 400, o offset foi declarado, mas não possui valor.", function() {
-
-        let url = endpoints.toList + '?offset=&limit=3'
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(400)
-
-            expect(responseList.body.RestException.Code).toBe('2')
-            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Offset não foi informado')
-            expect(responseList.body.RestException.Status).toBe('400')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
-      test("/GET - Deve retornar 400, o valor do offset é inválido.", function() {
-
-        let url = endpoints.toList + '?offset=1a&limit=3'
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(400)
-
-            expect(responseList.body.RestException.Code).toBe('2')
-            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Offset é inválido')
-            expect(responseList.body.RestException.Status).toBe('400')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
-      test("/GET - Deve retornar 400, o valor do offset é inválido por ser negativo.", function() {
-
-        let url = endpoints.toList + '?offset=-2&limit=3'
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(400)
-
-            expect(responseList.body.RestException.Code).toBe('2')
-            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Offset é inválido')
-            expect(responseList.body.RestException.Status).toBe('400')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
-      test("/GET - Deve retornar 404, o valor do offset é maior que o último apto cadastrado.", function() {
-
-        let url = endpoints.toList + '?offset=2000&limit=3'
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(404)
-
-            expect(responseList.body.RestException.Code).toBe('3')
-            expect(responseList.body.RestException.Message).toBe('Não existe(m) apartamento(s) para o valor de Offset informado')
-            expect(responseList.body.RestException.Status).toBe('404')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
-      test("/GET - Deve retornar 400, o limit foi declarado, mas não possui valor.", function() {
-
-        let url = endpoints.toList + '?offset=1&limit='
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(400)
-
-            expect(responseList.body.RestException.Code).toBe('2')
-            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Limit não foi informado')
-            expect(responseList.body.RestException.Status).toBe('400')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
-      test("/GET - Deve retornar 400, o valor do limit é inválido.", function() {
-
-        let url = endpoints.toList + '?offset=5&limit=5a'
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(400)
-
-            expect(responseList.body.RestException.Code).toBe('2')
-            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Limit é inválido')
-            expect(responseList.body.RestException.Status).toBe('400')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-
-          })
-          .catch(function(errorRead) {
-            fail(errorRead)
-          })
-
-      })
-
-      test("/GET - Deve retornar 400, o valor do limit é inválido por ser negativo.", function() {
-
-        let url = endpoints.toList + '?offset=2&limit=-3'
-
-        return request.get(url).set('Authorization', accounts.cliente.token)
-          .then(function(responseList) {
-
-            expect(responseList.statusCode).toEqual(400)
-
-            expect(responseList.body.RestException.Code).toBe('2')
-            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Limit é inválido')
             expect(responseList.body.RestException.Status).toBe('400')
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
 
@@ -3003,6 +2856,174 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/GET - Deve retornar 400, o Offset foi informado sem a presença do Limit.", function() {
+
+        let url = endpoints.toList + '?offset=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('1')
+            expect(responseList.body.RestException.Message).toBe('O parâmetro OFFSET foi informado sem a presença do LIMIT')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o offset foi declarado, mas não possui valor.", function() {
+
+        let url = endpoints.toList + '?offset=&limit=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Offset não foi informado')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor do offset é inválido.", function() {
+
+        let url = endpoints.toList + '?offset=1a&limit=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Offset é inválido')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor do offset é inválido por ser negativo.", function() {
+
+        let url = endpoints.toList + '?offset=-2&limit=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Offset é inválido')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 404, o valor do offset é maior que o último apto cadastrado.", function() {
+
+        let url = endpoints.toList + '?offset=2000&limit=3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(404)
+
+            expect(responseList.body.RestException.Code).toBe('3')
+            expect(responseList.body.RestException.Message).toBe('Não existe(m) apartamento(s) para o valor de Offset informado')
+            expect(responseList.body.RestException.Status).toBe('404')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o limit foi declarado, mas não possui valor.", function() {
+
+        let url = endpoints.toList + '?offset=1&limit='
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Limit não foi informado')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor do limit é inválido.", function() {
+
+        let url = endpoints.toList + '?offset=5&limit=5a'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Limit é inválido')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
+      test("/GET - Deve retornar 400, o valor do limit é inválido por ser negativo.", function() {
+
+        let url = endpoints.toList + '?offset=2&limit=-3'
+
+        return request.get(url).set('Authorization', accounts.cliente.token)
+          .then(function(responseList) {
+
+            expect(responseList.statusCode).toEqual(400)
+
+            expect(responseList.body.RestException.Code).toBe('2')
+            expect(responseList.body.RestException.Message).toBe('O valor do parâmetro Limit é inválido')
+            expect(responseList.body.RestException.Status).toBe('400')
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+
+          })
+          .catch(function(errorRead) {
+            fail(errorRead)
+          })
+
+      })
+
       test("/GET - Deve retornar 400, a query string de Ordenamento foi declarada, mas não possui valor.", function() {
 
         let queryStringOBJ = {
@@ -3053,7 +3074,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 400, o campo a ser ordenado é inválido.", function() {
+      test("/GET - Deve retornar 400, o campo a ser Ordenado é inválido.", function() {
 
         let queryStringOBJ = {
           sort: 'daily_pice:asc'
