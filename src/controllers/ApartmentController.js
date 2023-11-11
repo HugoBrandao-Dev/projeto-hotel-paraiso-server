@@ -298,7 +298,7 @@ class ApartmentController {
               errorFields.push(offsetResult)
             } else {
               // Skip é equivalente ao offset, no mongodb.
-              let skip = Number.parseInt(offset)
+              skip = Number.parseInt(offset)
 
               let limitResult = Analyzer.analyzeFilterLimit(limit)
               if (limitResult.hasError.value) {
@@ -423,7 +423,7 @@ class ApartmentController {
         apartments.push(apartment)
       }
 
-      let hasNext = apartments.length > (limit - skip)
+      let hasNext = apartments.length > limit
 
       // Retira o dado extra para cálculo do hasNext.
       if (hasNext)

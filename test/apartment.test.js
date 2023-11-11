@@ -2071,7 +2071,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           expect(responseList.body).toHaveProperty('apartments')
           expect(responseList.body).toHaveProperty('hasNext')
 
-          let apartmentList = ApartmentsTools.getApartments(true)
+          let apartmentList = ApartmentsTools.getApartments()
 
           expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
@@ -2115,7 +2115,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
           expect(responseList.body).toHaveProperty('apartments')
           expect(responseList.body).toHaveProperty('hasNext')
 
-          let apartmentList = ApartmentsTools.getApartments(true)
+          let apartmentList = ApartmentsTools.getApartments()
 
           expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
@@ -2358,7 +2358,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body).toHaveProperty('apartments')
             expect(responseList.body).toHaveProperty('hasNext')
 
-            let apartmentList = ApartmentsTools.getApartments()
+            let apartmentList = ApartmentsTools.getApartments(true)
 
             expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
@@ -2406,7 +2406,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       test("/GET - Deve retornar 200 e uma lista de apartamentos, contendo limite de usuários.", function() {
 
-        let url = endpoints.toList + '?offset=1&limit=3'
+        let queryStringOBJ = {
+          offset: 1,
+          limit: 3
+        }
+
+        let url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
 
         return request.get(url).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
@@ -2417,7 +2422,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body).toHaveProperty('apartments')
             expect(responseList.body).toHaveProperty('hasNext')
 
-            let apartmentList = ApartmentsTools.getApartments()
+            let apartmentList = ApartmentsTools.getApartments(true, queryStringOBJ)
 
             expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 

@@ -123,21 +123,31 @@ class ApartmentsTools {
 
   }
 
-  static getApartments(isClient, _offset = 0, _limit = 20) {
+  static getApartments(hasPrivs = false, query = {}) {
 
     try {
 
-      let offset = parseInt(_offset)
-      let limit = parseInt(_limit)
+      let {
+        rooms,
+        offset,
+        limit,
+      } = query
+
+      if (!offset) {
+        offset = 0
+      }
+      if (!limit) {
+        limit = 20
+      }
 
       let apartmentsForClient = ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == 'livre')
 
       let result = null
 
-      if (isClient) {
-        result = apartmentsForClient.slice(_offset, limit)
+      if (hasPrivs) {
+        result = ApartmentCollection.apartments.data.slice(offset, (offset + limit + 1))
       } else {
-        result = ApartmentCollection.apartments.data.slice(_offset, limit + 1)
+        result = apartmentsForClient.slice(offset, (offset + limit + 1))
       }
 
       let apartments = []
