@@ -123,7 +123,7 @@ class ApartmentsTools {
 
   }
 
-  static getApartments(hasPrivs = false, query = {}) {
+  static getApartments(query = {}, hasPrivs = false) {
 
     try {
 

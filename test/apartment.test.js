@@ -2358,7 +2358,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body).toHaveProperty('apartments')
             expect(responseList.body).toHaveProperty('hasNext')
 
-            let apartmentList = ApartmentsTools.getApartments(true)
+            let apartmentList = ApartmentsTools.getApartments(undefined, true)
 
             expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
@@ -2422,7 +2422,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
             expect(responseList.body).toHaveProperty('apartments')
             expect(responseList.body).toHaveProperty('hasNext')
 
-            let apartmentList = ApartmentsTools.getApartments(true, queryStringOBJ)
+            let apartmentList = ApartmentsTools.getApartments(queryStringOBJ, true)
 
             expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
