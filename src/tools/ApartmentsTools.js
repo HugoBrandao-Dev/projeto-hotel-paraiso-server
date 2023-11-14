@@ -129,6 +129,7 @@ class ApartmentsTools {
 
       let {
         rooms,
+        lowest_daily_price,
         offset,
         limit,
       } = query
@@ -148,6 +149,8 @@ class ApartmentsTools {
         result = ApartmentCollection.apartments.data.slice(offset, (offset + limit + 1))
       } else {
         result = apartmentsForClient.slice(offset, (offset + limit + 1))
+        if (lowest_daily_price)
+          console.log(result)
       }
 
       let apartments = []
@@ -155,6 +158,15 @@ class ApartmentsTools {
       for (let apto of result) {
         apartments.push(_.cloneDeep(apto))
       }
+
+      if (rooms)
+        apartments = apartments.filter(apto => {
+          const roomsAmont = apto.rooms.map(room => parseInt(room.quantity)).reduce((acu, next) => acu + next)
+          return roomsAmont == rooms
+        })
+
+      if (lowest_daily_price == 0 || lowest_daily_price)
+        apartments = apartments.filter(apto => apto.daily_price >= lowest_daily_price)
 
       const hasNext = apartments.length > limit
       if (hasNext)

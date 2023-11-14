@@ -45,6 +45,8 @@ class Apartment {
     try {
 
       const {
+        rooms,
+        lowest_daily_price,
         skip,
         limit
       } = query
@@ -58,6 +60,15 @@ class Apartment {
       } else {
         apartments = apartmentsForClient.slice(skip, (skip + limit))
       }
+
+      if (rooms)
+        apartments = apartments.filter(apto => {
+          const roomsAmont = apto.rooms.map(room => parseInt(room.quantity)).reduce((acu, next) => acu + next)
+          return roomsAmont == rooms
+        })
+
+      if (lowest_daily_price == 0 || lowest_daily_price)
+        apartments = apartments.filter(apto => apto.daily_price >= lowest_daily_price)
 
       return apartments
 

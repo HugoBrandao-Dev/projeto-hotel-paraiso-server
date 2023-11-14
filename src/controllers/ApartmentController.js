@@ -288,8 +288,31 @@ class ApartmentController {
 
           if (queryStringArray.includes('rooms')) {
             let roomsResult = await Analyzer.analyzeApartmentFilterRooms(rooms)
-            if (roomsResult.hasError.value) {
+            if (roomsResult.hasError.value)
               errorFields.push(roomsResult)
+            else
+              query.rooms = rooms
+          }
+
+          if (queryStringArray.includes('lowest_daily_price')) {
+            let lowestDailyPriceResult = await Analyzer.analyzeApartmentFilterLowestDailyPrice(lowest_daily_price)
+            if (lowestDailyPriceResult.hasError.value)
+              errorFields.push(lowestDailyPriceResult)
+            else
+              query.lowest_daily_price = lowest_daily_price
+          }
+
+          if (queryStringArray.includes('highest_daily_price')) {
+            let highestDailyPriceResult = await Analyzer.analyzeApartmentFilterHighestDailyPrice(highest_daily_price, lowest_daily_price)
+            if (highestDailyPriceResult.hasError.value) {
+              errorFields.push(highestDailyPriceResult)
+            }
+          }
+
+          if (queryStringArray.includes('accepts_animals')) {
+            let acceptsAnimalsResult = await Analyzer.analyzeApartmentFilterAcceptsAnimals(accepts_animals)
+            if (acceptsAnimalsResult.hasError.value) {
+              errorFields.push(acceptsAnimalsResult)
             }
           }
 
@@ -308,27 +331,9 @@ class ApartmentController {
                 query.limit = Number.parseInt(limit) + 1
               }
             }
-          }
-
-          if (queryStringArray.includes('lowest_daily_price')) {
-            let lowestDailyPriceResult = await Analyzer.analyzeApartmentFilterLowestDailyPrice(lowest_daily_price)
-            if (lowestDailyPriceResult.hasError.value) {
-              errorFields.push(lowestDailyPriceResult)
-            }
-          }
-
-          if (queryStringArray.includes('highest_daily_price')) {
-            let highestDailyPriceResult = await Analyzer.analyzeApartmentFilterHighestDailyPrice(highest_daily_price, lowest_daily_price)
-            if (highestDailyPriceResult.hasError.value) {
-              errorFields.push(highestDailyPriceResult)
-            }
-          }
-
-          if (queryStringArray.includes('accepts_animals')) {
-            let acceptsAnimalsResult = await Analyzer.analyzeApartmentFilterAcceptsAnimals(accepts_animals)
-            if (acceptsAnimalsResult.hasError.value) {
-              errorFields.push(acceptsAnimalsResult)
-            }
+          } else {
+            query.skip = 0
+            query.limit = 20 + 1
           }
 
           if (queryStringArray.includes('sort')) {
