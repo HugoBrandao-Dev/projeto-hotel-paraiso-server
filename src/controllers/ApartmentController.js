@@ -265,6 +265,7 @@ class ApartmentController {
         decodedToken = getDecodedToken(req.headers['authorization'])
         hasPrivs = decodedToken.role > 0
       }
+      let query = {}
       let errorFields = []
 
       let listOfQueryString = Object.keys(req.query)
@@ -298,13 +299,13 @@ class ApartmentController {
               errorFields.push(offsetResult)
             } else {
               // Skip é equivalente ao offset, no mongodb.
-              skip = Number.parseInt(offset)
+              query.skip = Number.parseInt(offset)
 
               let limitResult = Analyzer.analyzeFilterLimit(limit)
               if (limitResult.hasError.value) {
                 errorFields.push(limitResult)
               } else {
-                limit = Number.parseInt(limit)
+                query.limit = Number.parseInt(limit) + 1
               }
             }
           }
@@ -339,8 +340,8 @@ class ApartmentController {
 
         }
       } else {
-        skip = 0
-        limit = 20
+        query.skip = 0
+        query.limit = 20 + 1
       }
 
       if (errorFields.length) {
@@ -371,7 +372,7 @@ class ApartmentController {
         return
       }
 
-      let results = await Apartment.findMany(skip, limit + 1, hasPrivs)
+      let results = await Apartment.findMany(query, hasPrivs)
       let apartments = []
 
       for (let item of results) {
@@ -423,7 +424,7 @@ class ApartmentController {
         apartments.push(apartment)
       }
 
-      let hasNext = apartments.length > limit
+      let hasNext = apartments.length > query.limit - 1
 
       // Retira o dado extra para cálculo do hasNext.
       if (hasNext)

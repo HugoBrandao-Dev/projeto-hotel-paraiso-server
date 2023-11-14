@@ -40,9 +40,14 @@ class Apartment {
     }
   }
 
-  async findMany(skip = 0, limit = 20, hasPrivs) {
+  async findMany(query, hasPrivs) {
 
     try {
+
+      const {
+        skip,
+        limit
+      } = query
 
       let apartmentsForClient = await ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == 'livre')
 

@@ -1000,7 +1000,7 @@ class Analyzer {
       }
 
       let skipNumber = parseInt(skip)
-      let apartments = await Apartment.findMany(skipNumber, (skipNumber + 1), hasPrivs)
+      let apartments = await Apartment.findMany({ skip: skipNumber, limit: skipNumber + 1 }, hasPrivs)
 
       let tooHigh = apartments.length == 0
       if (tooHigh) {
