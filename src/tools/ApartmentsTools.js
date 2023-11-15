@@ -128,6 +128,7 @@ class ApartmentsTools {
     try {
 
       let {
+        status,
         rooms,
         lowest_daily_price,
         offset,
@@ -141,32 +142,30 @@ class ApartmentsTools {
         limit = 20
       }
 
-      let apartmentsForClient = ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == 'livre')
+      if (!hasPrivs)
+        status = 'livre'
 
-      let result = null
+      let result = ApartmentCollection.apartments.data
 
-      if (hasPrivs) {
-        result = ApartmentCollection.apartments.data.slice(offset, (offset + limit + 1))
-      } else {
-        result = apartmentsForClient.slice(offset, (offset + limit + 1))
-        if (lowest_daily_price)
-          console.log(result)
-      }
+      if (status)
+        result = result.filter(apto => apto.reserve.status == status)
+
+      if (rooms)
+        result = result.filter(apto => {
+          const roomsAmont = apto.rooms.map(room => parseInt(room.quantity)).reduce((acu, next) => acu + next)
+          return roomsAmont == rooms
+        })
+
+      if (lowest_daily_price)
+        result = result.filter(apto => apto.daily_price >= lowest_daily_price)
+
+      result = result.slice(offset, (offset + limit + 1))
 
       let apartments = []
 
       for (let apto of result) {
         apartments.push(_.cloneDeep(apto))
       }
-
-      if (rooms)
-        apartments = apartments.filter(apto => {
-          const roomsAmont = apto.rooms.map(room => parseInt(room.quantity)).reduce((acu, next) => acu + next)
-          return roomsAmont == rooms
-        })
-
-      if (lowest_daily_price == 0 || lowest_daily_price)
-        apartments = apartments.filter(apto => apto.daily_price >= lowest_daily_price)
 
       const hasNext = apartments.length > limit
       if (hasNext)
