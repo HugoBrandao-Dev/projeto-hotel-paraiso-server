@@ -131,6 +131,7 @@ class ApartmentsTools {
         status,
         rooms,
         lowest_daily_price,
+        highest_daily_price,
         offset,
         limit,
       } = query
@@ -158,6 +159,9 @@ class ApartmentsTools {
 
       if (lowest_daily_price)
         result = result.filter(apto => apto.daily_price >= lowest_daily_price)
+
+      if (highest_daily_price)
+        result = result.filter(apto => apto.daily_price <= highest_daily_price)
 
       result = result.slice(offset, (offset + limit + 1))
 
