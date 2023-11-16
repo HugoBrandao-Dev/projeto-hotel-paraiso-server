@@ -2265,6 +2265,57 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
+      test("/GET - Deve retornar 200 e uma lista de aptos que aceitam animais.", async function() {
+
+        try {
+
+          const queryStringOBJ = {
+            accepts_animals: 1
+          }
+
+          const url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+          let responseList = await request.get(url)
+
+          expect(responseList.statusCode).toEqual(200)
+
+          expect(responseList.body).toHaveProperty('apartments')
+          expect(responseList.body).toHaveProperty('hasNext')
+
+          let apartmentList = ApartmentsTools.getApartments(queryStringOBJ)
+
+          expect(responseList.body.apartments.length).toEqual(apartmentList.apartments.length)
+          expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
+
+          // As imagens com pictures são armazenadas por último, e o limite da listagem é 20.
+          for (let apartment of responseList.body.apartments) {
+
+            if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
+
+              let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+              let picturesCount = apartmentJSON.pictures.length
+              expect(apartment.pictures).toHaveLength(picturesCount)
+
+              expect(apartment.reserve).toBeUndefined()
+              expect(apartment.created).toBeUndefined()
+              expect(apartment.updated).toBeUndefined()
+
+            } else {
+              expect(apartment.pictures).toHaveLength(0)
+            }
+
+            expect(apartment._links).toBeDefined()
+            expect(apartment._links).toHaveLength(3)
+
+          }
+
+        } catch (errorList) {
+          fail(errorList)
+        }
+
+      })
+
       test("/GET - Deve retornar 200 e uma lista de aptos pelo cliente, com 0 ou várias fotos.", async function() {
 
         try {

@@ -49,6 +49,7 @@ class Apartment {
         rooms,
         lowest_daily_price,
         highest_daily_price,
+        accepts_animals,
         skip,
         limit
       } = query
@@ -72,6 +73,9 @@ class Apartment {
 
       if (highest_daily_price)
         apartments = await apartments.filter(apto => apto.daily_price <= highest_daily_price)
+
+      if (accepts_animals)
+        apartments = await apartments.filter(apto => apto.accepts_animals == accepts_animals)
 
       apartments = await apartments.slice(skip, (skip + limit))
 

@@ -132,6 +132,7 @@ class ApartmentsTools {
         rooms,
         lowest_daily_price,
         highest_daily_price,
+        accepts_animals,
         offset,
         limit,
       } = query
@@ -162,6 +163,9 @@ class ApartmentsTools {
 
       if (highest_daily_price)
         result = result.filter(apto => apto.daily_price <= highest_daily_price)
+
+      if (accepts_animals)
+        result = result.filter(apto => apto.accepts_animals == accepts_animals)
 
       result = result.slice(offset, (offset + limit + 1))
 

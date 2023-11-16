@@ -252,9 +252,9 @@ class ApartmentController {
         rooms,
         lowest_daily_price,
         highest_daily_price,
+        accepts_animals,
         offset,
         limit,
-        accepts_animals,
         sort
       } = req.query
 
@@ -312,9 +312,10 @@ class ApartmentController {
 
           if (queryStringArray.includes('accepts_animals')) {
             let acceptsAnimalsResult = await Analyzer.analyzeApartmentFilterAcceptsAnimals(accepts_animals)
-            if (acceptsAnimalsResult.hasError.value) {
+            if (acceptsAnimalsResult.hasError.value)
               errorFields.push(acceptsAnimalsResult)
-            }
+            else
+              query.accepts_animals = accepts_animals
           }
 
           if (queryStringArray.includes('offset')) {
