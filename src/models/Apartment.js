@@ -44,31 +44,32 @@ class Apartment {
 
     try {
 
-      const {
+      let {
+        status,
         rooms,
         lowest_daily_price,
         skip,
         limit
       } = query
 
-      let apartmentsForClient = await ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == 'livre')
+      if (!hasPrivs)
+        status = 'livre'
 
-      let apartments = null
+      let apartments = await ApartmentCollection.apartments.data
 
-      if (hasPrivs) {
-        apartments = await ApartmentCollection.apartments.data.slice(skip, (skip + limit))
-      } else {
-        apartments = apartmentsForClient.slice(skip, (skip + limit))
-      }
+      if (status)
+        apartments = await apartments.filter(apto => apto.reserve.status == status)
 
       if (rooms)
-        apartments = apartments.filter(apto => {
+        apartments = await apartments.filter(apto => {
           const roomsAmont = apto.rooms.map(room => parseInt(room.quantity)).reduce((acu, next) => acu + next)
           return roomsAmont == rooms
         })
 
-      if (lowest_daily_price == 0 || lowest_daily_price)
-        apartments = apartments.filter(apto => apto.daily_price >= lowest_daily_price)
+      if (lowest_daily_price)
+        apartments = await apartments.filter(apto => apto.daily_price >= lowest_daily_price)
+
+      apartments = await apartments.slice(skip, (skip + limit))
 
       return apartments
 
