@@ -328,11 +328,10 @@ class ApartmentController {
               query.skip = Number.parseInt(offset)
 
               let limitResult = Analyzer.analyzeFilterLimit(limit)
-              if (limitResult.hasError.value) {
+              if (limitResult.hasError.value)
                 errorFields.push(limitResult)
-              } else {
+              else
                 query.limit = Number.parseInt(limit) + 1
-              }
             }
           } else {
             query.skip = 0
@@ -341,9 +340,10 @@ class ApartmentController {
 
           if (queryStringArray.includes('sort')) {
             let sortResult = await Analyzer.analyzeApartmentFilterSort(sort)
-            if (sortResult.hasError.value) {
+            if (sortResult.hasError.value)
               errorFields.push(sortResult)
-            }
+            else
+              query.sort = sort
           }
 
         }

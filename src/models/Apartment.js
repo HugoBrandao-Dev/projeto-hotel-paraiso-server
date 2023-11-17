@@ -51,7 +51,8 @@ class Apartment {
         highest_daily_price,
         accepts_animals,
         skip,
-        limit
+        limit,
+        sort
       } = query
 
       if (!hasPrivs)
@@ -78,6 +79,13 @@ class Apartment {
         apartments = await apartments.filter(apto => apto.accepts_animals == accepts_animals)
 
       apartments = await apartments.slice(skip, (skip + limit))
+
+      if (sort) {
+        const sortType = sort.split(':')[1]
+
+        if (sortType == 'asc')
+          apartments = apartments.sort((apto1, apto2) => apto1.daily_price - apto2.daily_price)
+      }
 
       return apartments
 

@@ -5,6 +5,8 @@ const fileSystem = require('fs')
 const path = require('path')
 const _ = require('lodash')
 
+const Generator = require('./Generator')
+
 class ApartmentsTools {
 
   // Busca um Apartamento pelo ID cadastrado no JSON (o ID deve estar correto).
@@ -135,6 +137,7 @@ class ApartmentsTools {
         accepts_animals,
         offset,
         limit,
+        sort
       } = query
 
       if (!offset) {
@@ -169,10 +172,21 @@ class ApartmentsTools {
 
       result = result.slice(offset, (offset + limit + 1))
 
+      if (sort) {
+        const sortType = sort.split(':')[1]
+
+        if (sortType == 'asc')
+          result = result.sort((apto1, apto2) => apto1.daily_price - apto2.daily_price)
+      }
+
       let apartments = []
 
       for (let apto of result) {
         apartments.push(_.cloneDeep(apto))
+      }
+
+      for (let apto of apartments) {
+        apto._links = Generator.genHATEOAS(apto.id, 'apartments', 'apartment', false)
       }
 
       const hasNext = apartments.length > limit
