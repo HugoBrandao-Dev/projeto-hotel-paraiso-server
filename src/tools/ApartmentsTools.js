@@ -164,7 +164,7 @@ class ApartmentsTools {
       if (highest_daily_price)
         result = result.filter(apto => apto.daily_price <= highest_daily_price)
 
-      if (accepts_animals)
+      if (accepts_animals != undefined)
         result = result.filter(apto => apto.accepts_animals == accepts_animals)
 
       result = result.slice(offset, (offset + limit + 1))
