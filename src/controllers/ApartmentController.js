@@ -124,6 +124,7 @@ class ApartmentController {
       apartment.rooms = rooms
       apartment.pictures = await Apartment.findPictures(apartment.number)
       apartment.daily_price = daily_price
+      apartment.accepts_animals = accepts_animals
       apartment.reserve = {
         status: "livre",
         client_id: "",
