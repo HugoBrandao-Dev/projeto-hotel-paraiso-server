@@ -2450,6 +2450,42 @@ describe("Suite de testes das rotas de Apartment.", function() {
           for (let cont = 0; cont < apartmentList.apartments.length; cont++) {
             expect(apartmentList.apartments[cont]).toMatchObject(responseList.body.apartments[cont])
           }
+
+        } catch (errorList) {
+          fail(errorList)
+        }
+
+      })
+
+      test("/GET - Deve retornar 200 e uma lista de aptos que aceitam animais com offset e limit ordenado pelo MENOR PREÇO.", async function() {
+
+        try {
+
+          const queryStringOBJ = {
+            accepts_animals: 1,
+            offset: 2,
+            limit: 3,
+            sort: 'daily_price:desc'
+          }
+
+          const url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+          let responseList = await request.get(url)
+
+          expect(responseList.statusCode).toEqual(200)
+
+          expect(responseList.body).toHaveProperty('apartments')
+          expect(responseList.body.apartments).toHaveLength(queryStringOBJ.limit)
+          expect(responseList.body).toHaveProperty('hasNext')
+
+          let apartmentList = ApartmentsTools.getApartments(queryStringOBJ)
+
+          expect(responseList.body.apartments).toHaveLength(apartmentList.apartments.length)
+          expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
+
+          for (let cont = 0; cont < apartmentList.apartments.length; cont++) {
+            expect(apartmentList.apartments[cont]).toMatchObject(responseList.body.apartments[cont])
+          }
           
         } catch (errorList) {
           fail(errorList)

@@ -83,8 +83,24 @@ class Apartment {
       if (sort) {
         const sortType = sort.split(':')[1]
 
-        if (sortType == 'asc')
-          apartments = apartments.sort((apto1, apto2) => apto1.daily_price - apto2.daily_price)
+        if (sortType == 'asc') {
+          apartments = await apartments.sort((apto1, apto2) => apto1.daily_price - apto2.daily_price)
+        } else {
+
+          /*
+          É preciso retirar o último item do array, caso hasNext seja true, para ordenamento 'DESC'.
+          */
+          let toBeOrdered = await apartments.slice(0, limit - 1)
+          let hasNext = apartments.length > toBeOrdered.length
+          let ordered = null
+          if (hasNext) {
+            ordered = await toBeOrdered.sort((apto1, apto2) => apto2.daily_price - apto1.daily_price)
+            ordered.push(apartments.slice(-1)[0])
+          } else {
+            ordered = await apartments.sort((apto1, apto2) => apto2.daily_price - apto1.daily_price)
+          }
+          apartments = ordered
+        }
       }
 
       return apartments

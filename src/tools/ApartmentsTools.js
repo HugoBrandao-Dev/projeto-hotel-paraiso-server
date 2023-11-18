@@ -172,13 +172,6 @@ class ApartmentsTools {
 
       result = result.slice(offset, (offset + limit + 1))
 
-      if (sort) {
-        const sortType = sort.split(':')[1]
-
-        if (sortType == 'asc')
-          result = result.sort((apto1, apto2) => apto1.daily_price - apto2.daily_price)
-      }
-
       let apartments = []
 
       for (let apto of result) {
@@ -189,9 +182,22 @@ class ApartmentsTools {
         apto._links = Generator.genHATEOAS(apto.id, 'apartments', 'apartment', false)
       }
 
+      // O hasNext é calculado antes, para ficar mais fácil trabalhar com o sort 'DESC'.
       const hasNext = apartments.length > limit
       if (hasNext)
         apartments.pop()
+
+      if (sort) {
+        const sortType = sort.split(':')[1]
+
+        if (sortType == 'asc') {
+          apartments = apartments.sort((apto1, apto2) => apto1.daily_price - apto2.daily_price)
+        } else {
+
+          // O elemento extra (do hasNext) é retirado anteriormente.
+          apartments = apartments.sort((apto1, apto2) => apto2.daily_price - apto1.daily_price)
+        }
+      }
 
       return {
         apartments,
