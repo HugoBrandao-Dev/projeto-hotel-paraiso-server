@@ -438,8 +438,12 @@ class ApartmentController {
       if (hasNext)
         apartments.pop()
 
-      res.status(200)
-      res.json({ apartments, hasNext })
+      if (apartments.length) {
+        res.status(200)
+        res.json({ apartments, hasNext })
+      } else {
+        res.sendStatus(404)
+      }
 
     } catch(error) {
       throw new Error(error)

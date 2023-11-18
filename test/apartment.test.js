@@ -2457,7 +2457,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      test("/GET - Deve retornar 200 e uma lista de aptos que aceitam animais com offset e limit ordenado pelo MENOR PREÇO.", async function() {
+      test("/GET - Deve retornar 200 e uma lista de aptos que aceitam animais com offset e limit ordenado pelo MAIOR PREÇO.", async function() {
 
         try {
 
@@ -3410,15 +3410,36 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(responseList.statusCode).toEqual(404)
 
-            expect(responseList.body.RestException.Code).toBe('3')
-            expect(responseList.body.RestException.Message).toBe('Não existe(m) apartamento(s) para o valor de Offset informado')
-            expect(responseList.body.RestException.Status).toBe('404')
-            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
-
           })
           .catch(function(errorRead) {
             fail(errorRead)
           })
+
+      })
+
+      test("/GET - Deve retornar 404, o valor do offset é maior que o último apto cadastrado.", async function() {
+
+        try {
+
+          const queryStringOBJ = {
+            rooms: 7,
+            lowest_daily_price: 420,
+            highest_daily_price: 450,
+            accepts_animals: 1,
+            offset: 2,
+            limit: 4,
+            sort: 'daily_price:desc'
+          }
+
+          const url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+          let responseList = await request.get(url)
+
+          expect(responseList.statusCode).toEqual(404)
+          
+        } catch (errorList) {
+          fail(errorList)
+        }
 
       })
 

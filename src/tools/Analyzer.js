@@ -996,18 +996,18 @@ class Analyzer {
         result.hasError.value = true
         result.hasError.type = 2
         result.hasError.error = "O valor do parâmetro Offset é inválido"
-        return result
+        // return result
       }
 
-      let skipNumber = parseInt(skip)
-      let apartments = await Apartment.findMany({ skip: skipNumber, limit: skipNumber + 1 }, hasPrivs)
+      // let skipNumber = parseInt(skip)
+      // let apartments = await Apartment.findMany({ skip: skipNumber, limit: skipNumber + 1 }, hasPrivs)
 
-      let tooHigh = apartments.length == 0
-      if (tooHigh) {
-        result.hasError.value = true
-        result.hasError.type = 3
-        result.hasError.error = "Não existe(m) apartamento(s) para o valor de Offset informado"
-      }
+      // let tooHigh = apartments.length == 0
+      // if (tooHigh) {
+      //   result.hasError.value = true
+      //   result.hasError.type = 3
+      //   result.hasError.error = "Não existe(m) apartamento(s) para o valor de Offset informado"
+      // }
 
       return result
 
