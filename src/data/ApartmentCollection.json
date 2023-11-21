@@ -169,7 +169,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
-        "accepts_animals": "1",
+        "accepts_animals": "0",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -265,7 +265,7 @@
         ],
         "pictures": [],
         "daily_price": "420",
-        "accepts_animals": "1",
+        "accepts_animals": "0",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -361,7 +361,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
-        "accepts_animals": "1",
+        "accepts_animals": "0",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -456,8 +456,8 @@
           }
         ],
         "pictures": [],
-        "daily_price": "500",
-        "accepts_animals": "1",
+        "daily_price": "600",
+        "accepts_animals": "0",
         "reserve": {
           "status": "livre",
           "client_id": "",
@@ -504,7 +504,7 @@
           }
         ],
         "pictures": [],
-        "daily_price": "500",
+        "daily_price": "600",
         "accepts_animals": "1",
         "reserve": {
           "status": "livre",
@@ -592,8 +592,8 @@
           }
         ],
         "pictures": [],
-        "daily_price": "500",
-        "accepts_animals": "0",
+        "daily_price": "700",
+        "accepts_animals": "1",
         "reserve": {
           "status": "indisponível",
           "client_id": "",
@@ -680,8 +680,8 @@
           }
         ],
         "pictures": [],
-        "daily_price": "500",
-        "accepts_animals": "0",
+        "daily_price": "400",
+        "accepts_animals": "1",
         "reserve": {
           "status": "ocupado",
           "client_id": "600f191e810c19829de900ea",
@@ -724,7 +724,7 @@
           }
         ],
         "pictures": [],
-        "daily_price": "500",
+        "daily_price": "400",
         "accepts_animals": "0",
         "reserve": {
           "status": "ocupado",
@@ -769,7 +769,7 @@
         ],
         "pictures": [],
         "daily_price": "500",
-        "accepts_animals": "0",
+        "accepts_animals": "1",
         "reserve": {
           "status": "ocupado",
           "client_id": "600f191e810c19829de900ea",

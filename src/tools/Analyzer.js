@@ -908,7 +908,7 @@ class Analyzer {
         }
         break
       case 'apartments':
-        acceptableParams = ['offset', 'limit', 'accepts_animals', 'rooms', 'lowest_daily_price', 'highest_daily_price', 'sort']
+        acceptableParams = ['rooms', 'lowest_daily_price', 'highest_daily_price', 'accepts_animals', 'offset', 'limit', 'sort']
         if (hasPrivs)
           acceptableParams.unshift('status')
         for (let param of list) {
