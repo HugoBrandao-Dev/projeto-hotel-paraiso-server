@@ -282,9 +282,10 @@ class ApartmentController {
 
           if (queryStringArray.includes('status')) {
             let statusResult = await Analyzer.analyzeApartmentFilterStatus(status)
-            if (statusResult.hasError.value) {
+            if (statusResult.hasError.value)
               errorFields.push(statusResult)
-            }
+            else
+              query.status = status
           }
 
           if (queryStringArray.includes('rooms')) {

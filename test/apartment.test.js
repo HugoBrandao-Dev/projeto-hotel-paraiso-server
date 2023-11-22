@@ -2776,7 +2776,7 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
       })
 
-      /* ### Listagem de aptos LIVRES. ### */
+      /* ### Listagem de aptos ### */
 
       test("/GET - Deve retornar 200 e uma lista de apartamentos, com 0 ou várias fotos.", function() {
 
@@ -2891,6 +2891,57 @@ describe("Suite de testes das rotas de Apartment.", function() {
           .catch(function(errorList) {
             fail(errorList)
           })
+
+      })
+
+      test("/GET - Deve retornar 200 e uma lista de aptos ocupados para o Funcionário.", async function() {
+
+        try {
+
+          const queryStringOBJ = {
+            status: 'ocupado'
+          }
+
+          const url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+          let responseList = await request.get(url).set('Authorization', accounts.funcionario.token)
+
+          expect(responseList.statusCode).toEqual(200)
+
+          expect(responseList.body).toHaveProperty('apartments')
+          expect(responseList.body).toHaveProperty('hasNext')
+
+          let apartmentList = ApartmentsTools.getApartments(queryStringOBJ, true)
+          expect(responseList.body.apartments.length).toEqual(apartmentList.apartments.length)
+          expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
+
+          for (let apartment of responseList.body.apartments) {
+
+            if (idRegisteredApartmentsWithPictures.includes(apartment.id)) {
+
+              let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+
+              let picturesCount = apartmentJSON.pictures.length
+              expect(apartment.pictures).toHaveLength(picturesCount)
+
+              expect(apartment.reserve).toBeUndefined()
+              expect(apartment.reserve.status).toBe('ocupado')
+              
+              expect(apartment.created).toBeUndefined()
+              expect(apartment.updated).toBeUndefined()
+
+            } else {
+              expect(apartment.pictures).toHaveLength(0)
+            }
+
+            expect(apartment._links).toBeDefined()
+            expect(apartment._links).toHaveLength(3)
+
+          }
+
+        } catch (errorList) {
+          fail(errorList)
+        }
 
       })
 
