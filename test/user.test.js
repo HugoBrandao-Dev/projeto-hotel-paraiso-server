@@ -1793,7 +1793,7 @@ describe("Suite de testes das rotas User.", function() {
 
       test("/POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF, Número de Passaporte ou Name.", function() {
         return request.post(endpoints.toSearch).send({
-          name: 'Tobias de Oliveira'
+          country: 'BR'
         }).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -1834,6 +1834,23 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(response.body.RestException.Code).toBe("2")
             expect(response.body.RestException.Message).toBe("Passport number contains invalid caracters")
+            expect(response.body.RestException.Status).toBe("400")
+            expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+      })
+
+      test("/POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
+        return request.post(endpoints.toSearch).send({
+          name: 'Tobias--'
+        }).set('Authorization', accounts.funcionario.token)
+          .then(function(response) {
+            expect(response.statusCode).toEqual(400)
+
+            expect(response.body.RestException.Code).toBe("2")
+            expect(response.body.RestException.Message).toBe("O campo Nome possui caracteres inválidos")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
           })

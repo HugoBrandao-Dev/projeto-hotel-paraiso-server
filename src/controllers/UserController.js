@@ -328,8 +328,8 @@ class UserController {
 
     try {
 
-      let { cpf, passportNumber } = req.body
-      
+      let { name, cpf, passportNumber } = req.body
+
       let type = {}
       let errorFields = []
 
@@ -338,7 +338,13 @@ class UserController {
       if (docResult.hasError.value) {
         errorFields.push(docResult)
       } else {
-        if (cpf) {
+        if (name) {
+          let nameResult = await Analyzer.analyzeUserName(name)
+          if (nameResult.hasError.type)
+            errorFields.push(nameResult)
+          else
+            type.name = name
+        } else if (cpf) {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
 
           // 4 indica que o CPF já foi cadastrado (irrelevante para validação).

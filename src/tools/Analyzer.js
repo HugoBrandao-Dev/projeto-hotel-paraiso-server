@@ -596,7 +596,7 @@ class Analyzer {
       return result
     }
 
-    let validFields = ['cpf', 'passportNumber']
+    let validFields = ['cpf', 'passportNumber', 'name']
 
     let isValid = validFields.includes(search[0])
     if (!isValid) {
