@@ -1766,7 +1766,7 @@ describe("Suite de testes das rotas User.", function() {
 
     describe("Testes de FALHA.", function() {
 
-      test("/POST - Deve retornar 400, por não ter informado um documento (CPF ou Número de Passaporte) para busca de um usuário.", function() {
+      test("/POST - Deve retornar 400, por não ter informado um documento (CPF, Número de Passaporte ou Name) para busca de um usuário.", function() {
         return request.post(endpoints.toSearch).send({}).set('Authorization', accounts.funcionario.token)
           .then(function(response) {
             expect(response.statusCode).toEqual(400)
@@ -1791,7 +1791,7 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      test("/POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF ou Número de Passaporte.", function() {
+      test("/POST - Deve retornar 400, por ter informado um campo inválido para busca de usuário por CPF, Número de Passaporte ou Name.", function() {
         return request.post(endpoints.toSearch).send({
           name: 'Tobias de Oliveira'
         }).set('Authorization', accounts.funcionario.token)
@@ -1812,7 +1812,7 @@ describe("Suite de testes das rotas User.", function() {
         return request.post(endpoints.toSearch).send({
           cpf: '2222222222a'
         }).set('Authorization', accounts.funcionario.token)
-          .then(function(response) {console.log(response.body)
+          .then(function(response) {
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("2")
@@ -1842,7 +1842,6 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
-      // Teste na visualização das infos do cliente pelo lado do funcionário++.
       test("/POST - Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
 
         let user = { id: '5da9ea674234635bdff4+-!7' }
