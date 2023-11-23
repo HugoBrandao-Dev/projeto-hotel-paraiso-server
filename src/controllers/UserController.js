@@ -329,56 +329,60 @@ class UserController {
     try {
 
       let { cpf, passportNumber } = req.body
-
-      let RestException = {}
+      
       let type = {}
+      let errorFields = []
 
-      if (cpf || passportNumber) {
+      let search = Object.keys(req.body)
+      let docResult = Analyzer.analyzeUserDocs(search)
+      if (docResult.hasError.value) {
+        errorFields.push(docResult)
+      } else {
         if (cpf) {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
-          if (cpfResult.hasError.type != 4) {
-            RestException.Code = `${ cpfResult.hasError.type }`
-            RestException.Message = `${ cpfResult.hasError.error }`
-            RestException.Status = '400'
-            RestException.MoreInfo = `${ projectLinks.errors }/${ cpfResult.hasError.type }`
 
-            res.status(400)
-            res.json({ RestException })
-            return
-          } else {
+          // 4 indica que o CPF já foi cadastrado (irrelevante para validação).
+          if (cpfResult.hasError.type != 4)
+            errorFields.push(cpfResult)
+          else
             type.cpf = cpf
-          }
-        }
-
-        if (passportNumber) {
+        } else if (passportNumber) {
           let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber)
-          if (passportNumberResult.hasError.type != 4) {
-            RestException.Code = `${ passportNumberResult.hasError.type }`
-            RestException.Message = `${ passportNumberResult.hasError.error }`
-            RestException.Status = '400'
-            RestException.MoreInfo = `${ projectLinks.errors }/${ passportNumberResult.hasError.type }`
 
-            res.status(400)
-            res.json({ RestException })
-            return
-          } else {
+          // 4 indica que o PASSPORT NUMBER já foi cadastrado (irrelevante para validação).
+          if (passportNumberResult.hasError.type != 4)
+            errorFields.push(passportNumberResult)
+          else
             type.passportNumber = passportNumber
-          }
         }
-      } else {
-        let search = req.body
-        let docResult = Analyzer.analyzeUserDocs(search)
-        if (docResult.hasError.value) {
-          RestException.Code = `${ docResult.hasError.type }`
-          RestException.Message = `${ docResult.hasError.error }`
-          RestException.Status = '400'
-          RestException.MoreInfo = `${ projectLinks.errors }/${ docResult.hasError.type }`
-          RestException.ErrorField = docResult
+      }
 
-          res.status(400)
-          res.json({ RestException })
-          return
-        }
+      if (errorFields.length) {
+        let codes = errorFields.map(item => item.hasError.type)
+
+        // Cria um array contendo os Status codes dos erros encontrados.
+        let status = codes.map(code => {
+          switch(code) {
+            case 3:
+              return '404'
+              break
+            default:
+              return '400'
+          }
+        })
+        let messages = errorFields.map(item => item.hasError.error)
+        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
+        res.status(400)
+        res.json({ 
+          RestException: {
+            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
+            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
+            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
+            "ErrorFields": errorFields
+          }
+        })
+        return
       }
 
       let result = await User.findByDoc(type)
@@ -430,6 +434,7 @@ class UserController {
       }
 
     } catch (error) {
+      console.error(error)
       next(error)
     }
 

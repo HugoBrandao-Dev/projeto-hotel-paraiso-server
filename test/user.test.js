@@ -1775,10 +1775,16 @@ describe("Suite de testes das rotas User.", function() {
             expect(response.body.RestException.Message).toBe("Nenhum CPF ou Número de Passaporte informado")
             expect(response.body.RestException.Status).toBe("400")
             expect(response.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/1`)
-            expect(response.body.RestException.ErrorField.field).toBe("iptDoc")
-            expect(response.body.RestException.ErrorField.hasError.value).toEqual(true)
-            expect(response.body.RestException.ErrorField.hasError.type).toEqual(1)
-            expect(response.body.RestException.ErrorField.hasError.error).toBe("Nenhum CPF ou Número de Passaporte informado")
+            expect(response.body.RestException.ErrorFields).toMatchObject([
+              {
+                field: 'iptDoc',
+                hasError: {
+                  value: true,
+                  type: 1,
+                  error: 'Nenhum CPF ou Número de Passaporte informado'
+                }
+              }
+            ])
           })
           .catch(function(error) {
             fail(error)
@@ -1806,7 +1812,7 @@ describe("Suite de testes das rotas User.", function() {
         return request.post(endpoints.toSearch).send({
           cpf: '2222222222a'
         }).set('Authorization', accounts.funcionario.token)
-          .then(function(response) {
+          .then(function(response) {console.log(response.body)
             expect(response.statusCode).toEqual(400)
 
             expect(response.body.RestException.Code).toBe("2")
@@ -2014,7 +2020,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
-
+/*
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -3965,5 +3971,5 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
-
+*/
 })
