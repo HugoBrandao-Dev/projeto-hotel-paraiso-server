@@ -54,7 +54,9 @@ class User {
         })
       } else {
         users = await UserCollection.users.data.filter(doc => {
-          return doc.name.indexOf(searchType['name']) > -1
+          let searchLower = searchType['name'].toLowerCase()
+          let docLower = doc.name.toLowerCase()
+          return docLower.indexOf(searchLower) > -1
         })
       }
 

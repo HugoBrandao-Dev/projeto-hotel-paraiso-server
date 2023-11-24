@@ -1781,10 +1781,33 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
-      test("/POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
+      test("/POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Nome informado, sendo a primeira letra MAIÚSCULA.", function() {
 
         const info = {
           name: 'Doralice'
+        }
+        
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
+          .then(function(responseSearch) {
+            expect(responseSearch.statusCode).toEqual(200)
+            expect(responseSearch.body).toHaveLength(2)
+
+            for (let user of responseSearch.body) {
+              expect(user._links).toBeDefined()
+              expect(user._links).toHaveLength(4)
+            }
+
+          })
+          .catch(function(errorSearch) {
+            fail(errorSearch)
+          })
+
+      })
+
+      test("/POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Nome informado, nome com todas as letras MINÚSCULAS.", function() {
+
+        const info = {
+          name: 'doralice'
         }
         
         return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
