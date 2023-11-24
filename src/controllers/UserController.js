@@ -219,7 +219,8 @@ class UserController {
 
         let userIDWhoCreated = userLogged ? userLogged.id : user.id
         await User.save(user, userIDWhoCreated)
-        const savedUser = await User.findByDoc({ email: req.body.email })
+        const result = await User.findByDoc({ email: req.body.email })
+        const savedUser = result[0]
         const HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', userLogged.role > 0)
 
         res.status(201)
@@ -391,50 +392,62 @@ class UserController {
         return
       }
 
-      let result = await User.findByDoc(type)
+      let results = await User.findByDoc(type)
 
-      if (result) {
+      let users = []
 
-        let user = _.cloneDeep(result)
+      for (let result of results) {
+        users.push(_.cloneDeep(result))
+      }
 
-        delete user.created
-        delete user.updated
+      if (results.length) {
 
-        const userWhoCreated = await User.findOne(result.created.createdBy)
+        for (let user of users) {
+          const createdAt = user.created.createdAt
+          const createdBy = user.created.createdBy
+          const updatedAt = user.updated.updatedAt
+          const updatedBy = user.updated.updatedBy
 
-        // Setta os valores do CREATED.
-        user.created = {
-          createdAt: result.created.createdAt,
-          createdBy: {
-            id: userWhoCreated.id,
-            name: userWhoCreated.name
-          }
-        }
+          delete user.created
+          delete user.updated
 
-        if (result.updated.updatedBy) {
-          const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+          const userWhoCreated = await User.findOne(createdBy)
 
-          // Setta os valores do UPDATED.
-          user.updated = {
-            updatedAt: result.updated.updatedAt,
-            updatedBy: {
-              id: userWhoUpdated.id,
-              name: userWhoUpdated.name
+          // Setta os valores do CREATED.
+          user.created = {
+            createdAt,
+            createdBy: {
+              id: userWhoCreated.id,
+              name: userWhoCreated.name
             }
           }
-        } else {
-          user.updated = {
-            updatedAt: "",
-            updatedBy: {
-              id: "",
-              name: "",
+
+          if (updatedBy) {
+            const userWhoUpdated = await User.findOne(updatedBy)
+
+            // Setta os valores do UPDATED.
+            user.updated = {
+              updatedAt,
+              updatedBy: {
+                id: userWhoUpdated.id,
+                name: userWhoUpdated.name
+              }
+            }
+          } else {
+            user.updated = {
+              updatedAt: "",
+              updatedBy: {
+                id: "",
+                name: "",
+              }
             }
           }
+
+          user._links = await Generator.genHATEOAS(user.id, 'users', 'user', true)
         }
 
-        user._links = await Generator.genHATEOAS(user.id, 'users', 'user', true)
         res.status(200)
-        res.json(user)
+        res.json(users)
       } else {
         res.sendStatus(404)
       }
@@ -932,7 +945,8 @@ class UserController {
         return
       }
 
-      const user = await User.findByDoc({ email })
+      let result = await User.findByDoc({ email })
+      const user = result[0]
       jwt.sign({
         id: user.id,
         email: user.email,

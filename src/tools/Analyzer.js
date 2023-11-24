@@ -55,7 +55,7 @@ class Analyzer {
       }
 
       let user = await User.findByDoc({ email })
-      if (user) {
+      if (user.length) {
         result.hasError.value = true
         result.hasError.type = 4
         result.hasError.error = 'O Email informado já foi cadastrado anteriormente'
@@ -142,7 +142,7 @@ class Analyzer {
 
       if (checkEquality.isToCheck) {
         let user = await User.findByDoc({ email: checkEquality.email })
-        let isEqual = bcrypt.compareSync(password, user.password)
+        let isEqual = bcrypt.compareSync(password, user[0].password)
         if (!isEqual) {
           result.hasError.value = true
           result.hasError.type = 2
@@ -332,7 +332,7 @@ class Analyzer {
 
       // Verificado se o CPF já está cadastrado
       let user = await User.findByDoc({ cpf })
-      if (user) {
+      if (user.length) {
         result.hasError.value = true
         result.hasError.type = 4
         result.hasError.error = 'O CPF informado já está cadastrado'
@@ -392,7 +392,7 @@ class Analyzer {
       }
 
       let user = await User.findByDoc({ passportNumber })
-      if (user) {
+      if (user.length) {
         result.hasError.value = true
         result.hasError.type = 4
         result.hasError.error = 'Passport number already registred'

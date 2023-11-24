@@ -13,27 +13,12 @@ const projectLinks = {
 }
 
 let accounts = {
-  admin: {
+  cliente: {
     id: '',
     name: '',
     token: ''
   },
-  gerente3: {
-    id: '',
-    name: '',
-    token: ''
-  },  
-  gerente2: {
-    id: '',
-    name: '',
-    token: ''
-  },
-  gerente: {
-    id: '',
-    name: '',
-    token: ''
-  },
-  funcionario2: {
+  cliente2: {
     id: '',
     name: '',
     token: ''
@@ -43,7 +28,27 @@ let accounts = {
     name: '',
     token: ''
   },
-  cliente: {
+  funcionario2: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  gerente: {
+    id: '',
+    name: '',
+    token: ''
+  },  
+  gerente2: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  gerente3: {
+    id: '',
+    name: '',
+    token: ''
+  },
+  admin: {
     id: '',
     name: '',
     token: ''
@@ -175,6 +180,33 @@ beforeAll(async () => {
       accounts.cliente.token = `Bearer ${ tokenCliente.token }`
     } catch (errorCliente) {
       console.log(errorCliente)
+    }
+
+    try {
+      const userCliente2 = {
+        name: "Doralice Cordeiro",
+        email: "dora_cordeiro@gmail.com",
+        password: "oiqwuerowq#&134890OIU@",
+        phoneCode: "1",
+        phoneNumber: "2129981212",
+        birthDate: "1955-09-09",
+        country: "BR",
+        state: "PA",
+        city: "Belém",
+        cpf: "12222222222",
+        neighborhood: "Jardim Nova São Paulo",
+        road: "Rua Nina Simone",
+        house_number: "2000",
+        information: "Curabitur in vestibulum mi. Morbi vulputate ipsum ut eros pretium mollis. Maecenas auctor justo arcu, quis luctus turpis tempor euismod. Donec placerat gravida mattis. Vestibulum ornare quam ac porta ornare. Vestibulum a ex blandit, convallis dolor non, pretium est. Donec porttitor felis in ligula eleifend, luctus vulputate purus fringilla. Integer tristique mollis ex, at varius eros pretium non. Aenean tortor nisl, pellentesque non lacinia a, fringilla sit amet mi. Nulla facilisi. Nullam vitae ornare eros."
+      }
+      let registredCliente2 = await register(userCliente2)
+      let clienteLogin2 = registredCliente2.login
+      let tokenCliente2 = await login(clienteLogin2)
+      accounts.cliente2.id = registredCliente2.id
+      accounts.cliente2.name = registredCliente2.name
+      accounts.cliente2.token = `Bearer ${ tokenCliente2.token }`
+    } catch (errorCliente2) {
+      console.log(errorCliente2)
     }
 
     try {
@@ -1675,26 +1707,29 @@ describe("Suite de testes das rotas User.", function() {
           .then(function(responseSearch) {
 
             expect(responseSearch.statusCode).toEqual(200)
+            expect(responseSearch.body).toHaveLength(1)
+            expect(responseSearch.body).toMatchObject([
+              {
+                name: "Macunaíma Cruz",
+                email: "macuna_curz@hotmail.com",
+                created: {
+                  createdAt: expect.any(String),
+                  createdBy: {
+                    id: expect.any(String),
+                    name: expect.any(String),
+                  }
+                },
+                updated: {
+                  updatedAt: expect.any(String),
+                  updatedBy: {
+                    id: "507f1f77bcf86cd799439011",
+                    name: "Macunaíma Cruz",
+                  }
+                }
+              }
+            ])
 
-            expect(responseSearch.body).toMatchObject({
-              name: "Macunaíma Cruz",
-              email: "macuna_curz@hotmail.com"
-            })
-
-            const { id, created, updated, _links } = responseSearch.body
-
-            expect(created.createdAt).toBeDefined()
-            expect(created.createdBy).toMatchObject({
-              id: expect.any(String),
-              name: expect.any(String),
-            })
-
-            expect(updated.updatedAt).toBeDefined()
-            expect(updated.updatedBy).toMatchObject({
-              id: "507f1f77bcf86cd799439011",
-              name: "Macunaíma Cruz",
-            })
-
+            let { _links } = responseSearch.body[0]
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
           })
@@ -1713,27 +1748,54 @@ describe("Suite de testes das rotas User.", function() {
         return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
           .then(function(responseSearch) {
             expect(responseSearch.statusCode).toEqual(200)
-            expect(responseSearch.body).toMatchObject({
-              "name": "John Smith",
-              "email": "john_sm@hotmail.com"
-            })
+            expect(responseSearch.body).toHaveLength(1)
+            expect(responseSearch.body).toMatchObject([
+              {
+                name: "John Smith",
+                email: "john_sm@hotmail.com",
+                created: {
+                  createdAt: expect.any(String),
+                  createdBy: {
+                    id: expect.any(String),
+                    name: expect.any(String),
+                  }
+                },
+                updated: {
+                  updatedAt: expect.any(String),
+                  updatedBy: {
+                    id: "507f1f77bcf86cd799439011",
+                    name: "Macunaíma Cruz",
+                  }
+                }
+              }
+            ])
 
-            const { id, created, updated, _links } = responseSearch.body
-
-            expect(created.createdAt).toBeDefined()
-            expect(created.createdBy).toMatchObject({
-              id: expect.any(String),
-              name: expect.any(String),
-            })
-
-            expect(updated.updatedAt).toBeDefined()
-            expect(updated.updatedBy).toMatchObject({
-              id: "507f1f77bcf86cd799439011",
-              name: "Macunaíma Cruz",
-            })
-
+            let { _links } = responseSearch.body[0]
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
+
+          })
+          .catch(function(errorSearch) {
+            fail(errorSearch)
+          })
+
+      })
+
+      test("/POST - Deve retornar 200 e o email e o nome do usuário estrangeiro que corresponda com o Numero de Passaporte informado.", function() {
+
+        const info = {
+          name: 'Doralice'
+        }
+        
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.admin.token)
+          .then(function(responseSearch) {
+            expect(responseSearch.statusCode).toEqual(200)
+            expect(responseSearch.body).toHaveLength(2)
+
+            for (let user of responseSearch.body) {
+              expect(user._links).toBeDefined()
+              expect(user._links).toHaveLength(4)
+            }
 
           })
           .catch(function(errorSearch) {

@@ -44,13 +44,21 @@ class User {
     try {
 
       let type = Object.keys(searchType)[0]
-      let user = await UserCollection.users.data.find(doc => {
-        if (doc[type]) {
-          return doc[type] == searchType[type]
-        }
-      })
+      let users = []
 
-      return user
+      if (type != 'name') {
+        users = await UserCollection.users.data.filter(doc => {
+          if (doc[type]) {
+            return doc[type] == searchType[type]
+          }
+        })
+      } else {
+        users = await UserCollection.users.data.filter(doc => {
+          return doc.name.indexOf(searchType['name']) > -1
+        })
+      }
+
+      return users
 
     } catch (error) {
       console.log(error)
