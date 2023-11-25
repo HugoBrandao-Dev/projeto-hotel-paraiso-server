@@ -466,21 +466,57 @@ class UserController {
       const { offset, limit } = req.query
 
       const listOfQueryString = Object.keys(req.query)
+
       let query = {}
+      let errorFields = []
 
       if (listOfQueryString.length) {
 
-        if (offset)
-          query.skip = offset
+        const queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'users', false)
 
-        if (limit)
-          query.limit = limit
+        if (queryStringResult.hasError.value) {
+          errorFields.push(queryStringResult)
+        } else {
+          if (offset)
+            query.skip = offset
+
+          if (limit)
+            query.limit = limit
+        }
         
       } else {
         query.skip = 0
 
         // +1 é para cálculo do hasNext.
         query.limit = 20 + 1
+      }
+
+      if (errorFields.length) {
+        let codes = errorFields.map(item => item.hasError.type)
+
+        // Cria um array contendo os Status codes dos erros encontrados.
+        let status = codes.map(code => {
+          switch(code) {
+            case 3:
+              return '404'
+              break
+            default:
+              return '400'
+          }
+        })
+        let messages = errorFields.map(item => item.hasError.error)
+        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
+        res.status(400)
+        res.json({ 
+          RestException: {
+            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
+            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
+            "Status": status.length > 1 ? status.join(';') : status.toString(),
+            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
+            "ErrorFields": errorFields
+          }
+        })
+        return
       }
 
       const result = await User.findMany(query)

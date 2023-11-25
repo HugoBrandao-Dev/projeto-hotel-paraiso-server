@@ -870,7 +870,7 @@ class Analyzer {
   }
 
   // Método utilizado para analise dos identificadores dos parâmetros das Query Strings das Listagens.
-  static analyzeQueryList(list, resource = 'users', hasPrivs) {
+  static analyzeQueryList(list, resource = 'users', hasPrivs = false) {
     let result = { field: 'queryString', hasError: { value: false, type: null, error: '' }}
     let acceptableParams = []
 
@@ -911,7 +911,18 @@ class Analyzer {
           }
         }
         break
-
+      case 'users':
+        acceptableParams = ['offset', 'limit']
+        for (let param of list) {
+          let isParamValid = validator.isIn(param, acceptableParams)
+          if (!isParamValid) {
+            result.hasError.value = true
+            result.hasError.type = 2
+            result.hasError.error = `O parâmetro \'${ param }\' é inválido`
+            return result
+          }
+        }
+        break
     }
 
     return result
