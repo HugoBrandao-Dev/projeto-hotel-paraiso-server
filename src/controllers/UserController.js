@@ -463,23 +463,34 @@ class UserController {
 
     try {
 
-      let hasNext = false
+      const { offset, limit } = req.query
 
-      // Skip é equivalente ao offset, no mongodb.
-      let skip = req.query.offset ? parseInt(req.query.offset) : 0
+      const listOfQueryString = Object.keys(req.query)
+      let query = {}
 
-      // A quantidade PADRÃO de itens a serem exibidos por página é 20.
-      let limit = req.query.limit ? parseInt(req.query.limit) : 20
+      if (listOfQueryString.length) {
 
-      // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-      const result = await User.findMany(skip, limit + 1)
+        if (offset)
+          query.skip = offset
+
+        if (limit)
+          query.limit = limit
+        
+      } else {
+        query.skip = 0
+
+        // +1 é para cálculo do hasNext.
+        query.limit = 20 + 1
+      }
+
+      const result = await User.findMany(query)
+      const hasNext = result.length > query.limit - 1
+      if (hasNext)
+        result.pop()
+
       let users = []
 
       if (result.length) {
-        hasNext = result.length > (limit - skip)
-
-        // Retira o dado extra para cálculo do hasNext.
-        result.pop()
 
         for (let item of result) {
 

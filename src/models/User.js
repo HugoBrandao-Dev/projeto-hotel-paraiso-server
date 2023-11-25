@@ -83,9 +83,11 @@ class User {
 
   }
 
-  async findMany(skip = null, limit = null) {
+  async findMany(query) {
 
     try {
+
+      const { skip, limit } = query
       
       const users = await UserCollection.users.data.slice(skip, limit)
 
