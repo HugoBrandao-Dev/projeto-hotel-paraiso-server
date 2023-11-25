@@ -912,7 +912,7 @@ class Analyzer {
         }
         break
       case 'users':
-        acceptableParams = ['offset', 'limit']
+        acceptableParams = ['name', 'offset', 'limit']
         for (let param of list) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {

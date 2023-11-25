@@ -463,8 +463,6 @@ class UserController {
 
     try {
 
-      const { offset, limit } = req.query
-
       const listOfQueryString = Object.keys(req.query)
 
       let query = {}
@@ -477,6 +475,15 @@ class UserController {
         if (queryStringResult.hasError.value) {
           errorFields.push(queryStringResult)
         } else {
+
+          const { name, offset, limit } = req.query
+
+          if (listOfQueryString.includes('name')) {
+            const nameResult = Analyzer.analyzeUserName(name)
+            if (nameResult.hasError.value)
+              errorFields.push(nameResult)
+          }
+
           if (offset)
             query.skip = offset
 
