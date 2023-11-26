@@ -485,17 +485,26 @@ class UserController {
           }
 
           if (listOfQueryString.includes('offset')) {
-            const offsetLimit = await Analyzer.analyzeFilterSkip(offset)
-            if (offsetLimit.hasError.value)
-              errorFields.push(offsetLimit)
+            const offsetResult = await Analyzer.analyzeFilterSkip(offset)
+            if (offsetResult.hasError.value)
+              errorFields.push(offsetResult)
             else
               query.skip = offset
           } else {
             query.skip = 0
           }
 
-          if (limit) 
-            query.limit = limit
+          if (listOfQueryString.includes('limit')) {
+            const limitResult = Analyzer.analyzeFilterLimit(limit)
+            if (limitResult.hasError.value)
+              errorFields.push(limitResult)
+            else
+              query.limit = limit
+          } else {
+
+            // +1 é para cálculo do hasNext.
+            query.limit = 20 + 1
+          }
         }
         
       } else {
