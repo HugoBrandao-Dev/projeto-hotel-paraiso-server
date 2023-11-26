@@ -87,9 +87,15 @@ class User {
 
     try {
 
-      const { skip, limit } = query
+      const { name, skip, limit } = query
+
+      let users = await UserCollection.users.data
+
+      if (name) {
+        users = await users.filter(user => user.name.includes(name))
+      }
       
-      const users = await UserCollection.users.data.slice(skip, limit)
+      users = await users.slice(skip, limit)
 
       return users
 

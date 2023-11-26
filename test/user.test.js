@@ -1658,6 +1658,33 @@ describe("Suite de testes das rotas User.", function() {
 
       })
 
+      test("/GET - Deve retornar 200 e uma lista de usuários que contém nome Doralice.", function() {
+
+        const queryStringOBJ = {
+          name: 'Doralice'
+        }
+
+        let url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+        return request.get(url).set('Authorization', accounts.admin.token)
+          .then(function(response) {
+
+            expect(response.statusCode).toEqual(200)
+            expect(response.body.users).toHaveLength(2)
+
+            for (let user of response.body.users) {
+
+              expect(user.name).toEqual(expect.stringContaining(queryStringOBJ.name))
+
+            }
+
+          })
+          .catch(function(error) {
+            fail(error)
+          })
+
+      })
+
       test("/GET - Deve retornar 200 e uma lista de usuários, contendo limite de usuários.", function() {
 
         let url = endpoints.toList + '?offset=1&limit=3'

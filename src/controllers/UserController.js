@@ -482,6 +482,8 @@ class UserController {
             const nameResult = Analyzer.analyzeUserName(name)
             if (nameResult.hasError.value)
               errorFields.push(nameResult)
+            else
+              query.name = name
           }
 
           if (listOfQueryString.includes('offset')) {
