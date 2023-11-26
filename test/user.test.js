@@ -2185,6 +2185,28 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
+      test("/POST - Deve retornar 400, o filtro Offset foi declarado mas possui um valor inválido.", function() {
+
+        const queryStringOBJ = {
+          offset: '1a',
+          limit: '3'
+        }
+
+        const url = endpoints.toList + Generator.genQueryStringFromObject(queryStringOBJ)
+
+        return request.get(url).set('Authorization', accounts.funcionario.token)
+          .then(function(responseList) {
+            expect(responseList.statusCode).toEqual(400)
+            expect(responseList.body.RestException.Code).toBe("2")
+            expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Offset é inválido")
+            expect(responseList.body.RestException.Status).toBe("400")
+            expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
+          })
+          .catch(function(errorList) {
+            fail(errorList)
+          })
+      })
+
       // Testes para busca por documentação
       test("/POST - Deve retornar 401, por tentar buscar um Usuários pelo CPF sem estar AUTORIZADO.", function() {
 
