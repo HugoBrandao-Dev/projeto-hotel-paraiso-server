@@ -484,10 +484,17 @@ class UserController {
               errorFields.push(nameResult)
           }
 
-          if (offset)
-            query.skip = offset
+          if (listOfQueryString.includes('offset')) {
+            const offsetLimit = await Analyzer.analyzeFilterSkip(offset)
+            if (offsetLimit.hasError.value)
+              errorFields.push(offsetLimit)
+            else
+              query.skip = offset
+          } else {
+            query.skip = 0
+          }
 
-          if (limit)
+          if (limit) 
             query.limit = limit
         }
         
@@ -585,6 +592,7 @@ class UserController {
       res.json({ users, hasNext })
 
     } catch (error) {
+      console.error(error)
       next(error)
     }
 
