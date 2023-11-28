@@ -125,7 +125,14 @@ class User {
       let infos = Object.keys(user)
       for (let info of infos) {
         if (info != 'id') {
-          UserCollection.users.data[userIndex][info] = user[info]
+          if (info == 'address') {
+            let address_infos = Object.keys(user.address)
+            for (let address_info of address_infos) {
+              UserCollection.users.data[userIndex][info][address_info] = user[info][address_info]
+            }
+          } else {
+            UserCollection.users.data[userIndex][info] = user[info]
+          }
         }
       }
       return

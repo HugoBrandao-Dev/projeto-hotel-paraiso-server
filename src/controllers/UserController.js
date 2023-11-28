@@ -169,7 +169,6 @@ class UserController {
         })
         return
       } else {
-        let user = {}
 
         let salt = bcrypt.genSaltSync(5)
         let hash = bcrypt.hashSync(req.body.password, salt)
@@ -180,6 +179,8 @@ class UserController {
         // Se não houver admin, será criado um, caso contrário será criado uma conta de cliente.
         const role = adminUsers.length > 0 ? '0' : '4'
 
+        let user = { address: {} }
+
         // OBRIGATÓRIOS
         user.id = Generator.genID()
         user.name = req.body.name
@@ -189,30 +190,30 @@ class UserController {
         user.phoneCode = req.body.phoneCode
         user.phoneNumber = req.body.phoneNumber
         user.birthDate = req.body.birthDate
-        user.country = req.body.country
-        user.state = req.body.state
-        user.city = req.body.city
+        user.address.country = req.body.country
+        user.address.state = req.body.state
+        user.address.city = req.body.city
         if (req.body.cpf) {
-          user.cpf = req.body.cpf
+          user.address.cpf = req.body.cpf
         } else {
-          user.passportNumber = req.body.passportNumber
+          user.address.passportNumber = req.body.passportNumber
         }
 
         // OPCIONAIS/CONDICINAIS
         if (req.body.cep) {
-          user.cep = req.body.cep
+          user.address.cep = req.body.cep
         }
         if (req.body.neighborhood) {
-          user.neighborhood = req.body.neighborhood
+          user.address.neighborhood = req.body.neighborhood
         }
         if (req.body.road) {
-          user.road = req.body.road
+          user.address.road = req.body.road
         }
         if (req.body.house_number) {
-          user.house_number = req.body.house_number
+          user.address.house_number = req.body.house_number
         }
         if (req.body.information) {
-          user.information = req.body.information
+          user.address.information = req.body.information
         }
 
         let userLogged = req.headers['authorization'] ? getDecodedToken(req.headers['authorization']) : false
@@ -636,7 +637,7 @@ class UserController {
         information
       } = req.body
       let errorFields = []
-      let fields = {}
+      let fields = { address: {} }
       let userRegistred = null
 
       let idResult = await Analyzer.analyzeID(id)
@@ -661,15 +662,15 @@ class UserController {
         userRegistred = await User.findOne(id)
       }
 
-      /* ############ CAMPOS OBRIGATÓRIOS ############ */
-
-      let nameResult = Analyzer.analyzeUserName(name)
-      if (nameResult.hasError.value) {
-        if (nameResult.hasError.type != 1) {
-          errorFields.push(nameResult)
+      if (name) {
+        let nameResult = Analyzer.analyzeUserName(name)
+        if (nameResult.hasError.value) {
+          if (nameResult.hasError.type != 1) {
+            errorFields.push(nameResult)
+          }
+        } else {
+          fields.name = name
         }
-      } else {
-        fields.name = name
       }
 
       if (birthDate) {
@@ -750,21 +751,10 @@ class UserController {
         } else {
           fields.phoneNumber = phoneNumber
         }
-      }      
-
-      if (country) {
-        let countryResult = Analyzer.analyzeUserCountry(country)
-        if (countryResult.hasError.value) {
-          if (countryResult.hasError.type != 1) {
-            errorFields.push(countryResult)
-          }
-        } else {
-          fields.country = country
-        }
       }
 
       if (cpf) {
-        if (country == 'BR' || userRegistred.country == 'BR') {
+        if (country == 'BR' || userRegistred.address.country == 'BR') {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
           if (cpfResult.hasError.value) {
 
@@ -790,8 +780,8 @@ class UserController {
       }
 
       if (passportNumber) {
-        if ((country && country != 'BR') || (userRegistred.country && userRegistred.country != 'BR')) {
-          let countryCode = country || userRegistred.country
+        if ((country && country != 'BR') || (userRegistred.address.country && userRegistred.address.country != 'BR')) {
+          let countryCode = country || userRegistred.address.country
           let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber, countryCode)
           if (passportNumberResult.hasError.value) {
 
@@ -816,6 +806,27 @@ class UserController {
         }
       }
 
+      if (country) {
+        let countryResult = Analyzer.analyzeUserCountry(country)
+        if (countryResult.hasError.value) {
+          if (countryResult.hasError.type != 1) {
+            errorFields.push(countryResult)
+          }
+        } else {
+          fields.address.country = country
+
+          if (country == 'BR') {
+            let cepResult = await Analyzer.analyzeUserCEP(cep)
+            if (cepResult.hasError.value)
+              errorFields.push(cepResult)
+            else
+              fields.address.cep = cep
+          } else {
+            fields.address.cep = ''
+          }
+        }
+      }
+
       if (state) {
         let stateResult = await Analyzer.analyzeUserState(country, state)
         if (stateResult.hasError.value) {
@@ -823,7 +834,7 @@ class UserController {
             errorFields.push(stateResult)
           }
         } else {
-          fields.state = state
+          fields.address.state = state
         }
       }
 
@@ -834,7 +845,7 @@ class UserController {
             errorFields.push(cityResult)
           }
         } else {
-          fields.city = city
+          fields.address.city = city
         }
       }
 
@@ -845,7 +856,7 @@ class UserController {
             errorFields.push(neighborhoodResult)
           }
         } else {
-          fields.neighborhood = neighborhood
+          fields.address.neighborhood = neighborhood
         }
       }
       
@@ -856,7 +867,7 @@ class UserController {
             errorFields.push(roadResult)
           }
         } else {
-          fields.road = road
+          fields.address.road = road
         }
       }      
 
@@ -867,7 +878,7 @@ class UserController {
             errorFields.push(houseNumberResult)
           }
         } else {
-          fields.house_number = house_number
+          fields.address.house_number = house_number
         }
       }      
 
@@ -878,7 +889,7 @@ class UserController {
             errorFields.push(informationsResult)
           }
         } else {
-          fields.information = information
+          fields.address.information = information
         }
       }  
 

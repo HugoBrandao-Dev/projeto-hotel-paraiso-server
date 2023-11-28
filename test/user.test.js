@@ -1596,14 +1596,16 @@ describe("Suite de testes das rotas User.", function() {
                   phoneCode: "55",
                   phoneNumber: "11999847523",
                   birthDate: "1985-06-09",
-                  country: "BR",
-                  state: "SP",
-                  city: "São Paulo",
-                  cep: "08391700",
-                  neighborhood: "Jardim Nova São Paulo",
-                  road: "Rua Nina Simone",
-                  house_number: "2000",
-                  information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+                  address: {
+                    country: "BR",
+                    state: "SP",
+                    city: "São Paulo",
+                    cep: "08391700",
+                    neighborhood: "Jardim Nova São Paulo",
+                    road: "Rua Nina Simone",
+                    house_number: "2000",
+                    information: "Nunc eleifend ante elit, a ornare risus gravida quis. Suspendisse venenatis felis ac tellus rutrum convallis. Integer tincidunt vehicula turpis, vel semper arcu mollis a. Proin auctor, ipsum ut finibus fringilla, orci sapien mattis mauris, et congue sapien metus vel augue. Nullam id ullamcorper neque. Integer dictum pharetra sapien non congue. Fusce libero elit, eleifend vitae viverra a, viverra id purus. Suspendisse sed nulla mauris. Sed venenatis tortor id nisi dictum tristique."
+                  },
                 })
 
                 expect(responseRead.body.created).toBeUndefined()
@@ -2349,7 +2351,7 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
-/*
+
   describe("UPDATE", function() {
 
     describe("Testes de SUCESSO.", function() {
@@ -2384,9 +2386,11 @@ describe("Suite de testes das rotas User.", function() {
                   id: user.id,
                   email: user.email,
                   phoneNumber: user.phoneNumber,
-                  country: user.country,
-                  state: user.state,
-                  city: user.city,
+                  address: {
+                    country: user.country,
+                    state: user.state,
+                    city: user.city,
+                  }
                 })
 
                 expect(responseRead.body.created).toBeUndefined()
@@ -2527,8 +2531,8 @@ describe("Suite de testes das rotas User.", function() {
           phoneNumber: "994755654",
           birthDate: "1995-08-03",
           country: "BR",
-          state: "RJ",
           cep: "21051990",
+          state: "RJ",
           city: "Rio de Janeiro",
           cpf: `${ fixedCPF }`,
           neighborhood: "Bairro: Março 29",
@@ -2577,15 +2581,17 @@ describe("Suite de testes das rotas User.", function() {
                   phoneCode: user.phoneCode,
                   phoneNumber: user.phoneNumber,
                   birthDate: user.birthDate,
-                  country: user.country,
-                  state: user.state,
-                  cep: user.cep,
-                  city: user.city,
                   cpf: user.cpf,
-                  neighborhood: user.neighborhood,
-                  road: user.road,
-                  house_number: user.house_number,
-                  information: user.information
+                  address: {
+                    country: user.country,
+                    state: user.state,
+                    cep: user.cep,
+                    city: user.city,
+                    neighborhood: user.neighborhood,
+                    road: user.road,
+                    house_number: user.house_number,
+                    information: user.information
+                  }
                 })
 
                 const { updated } = responseRead.body
@@ -2664,9 +2670,11 @@ describe("Suite de testes das rotas User.", function() {
                   phoneCode: user.phoneCode,
                   phoneNumber: user.phoneNumber,
                   birthDate: user.birthDate,
-                  country: user.country,
-                  state: user.state,
-                  city: user.city,
+                  address: {
+                    country: user.country,
+                    state: user.state,
+                    city: user.city,
+                  }
                 })
 
               })
@@ -3220,11 +3228,13 @@ describe("Suite de testes das rotas User.", function() {
                 expect(responseRead.body).toMatchObject({
                   name: user.name,
                   email: user.email,
-                  country: user.country,
-                  state: user.state,
-                  city: user.city,
-                  cpf: '',
                   passportNumber: user.passportNumber,
+                  cpf: '',
+                  address: {
+                    country: user.country,
+                    state: user.state,
+                    city: user.city,
+                  }
                 })
 
               })
@@ -3307,10 +3317,10 @@ describe("Suite de testes das rotas User.", function() {
           id: "507f191e810c19729de860ea",
           name: "John Smith",
           email: "john_sm@hotmail.com",
+          cpf: fixedForeignCPF,
           country: "BR",
           state: "AM",
           city: "Manaus",
-          cpf: fixedForeignCPF,
         }
 
         return request.put(endpoints.toUpdate).send(user).set('Authorization', accounts.admin.token)
@@ -3349,11 +3359,13 @@ describe("Suite de testes das rotas User.", function() {
                 expect(responseRead.body).toMatchObject({
                   name: user.name,
                   email: user.email,
-                  country: user.country,
-                  state: user.state,
-                  city: user.city,
                   cpf: user.cpf,
                   passportNumber: '',
+                  address: {
+                    country: user.country,
+                    state: user.state,
+                    city: user.city,
+                  }
                 })
 
               })
@@ -3364,112 +3376,6 @@ describe("Suite de testes das rotas User.", function() {
           })
           .catch(function(errorUpdate) {
             fail(errorUpdate)
-          })
-
-      })
-
-      test("/PUT - Deve retornar 200 para Funcionário que busca um usuário pelo CPF.", function() {
-
-        let info = {
-          cpf: fixedCPF
-        }
-
-        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.funcionario.token)
-          .then(function(responseSearch) {
-
-            expect(responseSearch.statusCode).toEqual(200)
-
-            expect(responseSearch.body).toMatchObject({
-              id: "507f1f77bcf86cd799439011",
-              name: "Macunaíma Cruz",
-              email: "macuna_cruz@hotmail.com",
-              cpf: info.cpf,
-            })
-
-          })
-          .catch(function(errorSearch) {
-            fail(errorSearch)
-          })
-
-      })
-
-      test("/PUT - Deve retornar 200 para Funcionário que busca um usuário pelo Número do Passaporte.", function() {
-
-        let info = {
-          passportNumber: fixedPassportNumber
-        }
-
-        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.funcionario.token)
-          .then(function(responseSearch) {
-
-            expect(responseSearch.statusCode).toEqual(200)
-
-            expect(responseSearch.body).toMatchObject({
-              id: "5da9ea674234635bdff45c02",
-              name: "Jeremias de Oliveira",
-              email: "jere_oli@yahoo.com",
-              country: "US",
-              state: "MN",
-              city: "Saint Paul",
-              passportNumber: info.passportNumber,
-            })
-
-          })
-          .catch(function(errorSearch) {
-            fail(errorSearch)
-          })
-
-      })
-
-      test("/PUT - Deve retornar 200 para Gerente que busca um usuário pelo CPF.", function() {
-
-        let info = {
-          cpf: fixedCPF
-        }
-
-        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.gerente.token)
-          .then(function(responseSearch) {
-
-            expect(responseSearch.statusCode).toEqual(200)
-
-            expect(responseSearch.body).toMatchObject({
-              id: "507f1f77bcf86cd799439011",
-              name: "Macunaíma Cruz",
-              email: "macuna_cruz@hotmail.com",
-              cpf: info.cpf,
-            })
-
-          })
-          .catch(function(errorSearch) {
-            fail(errorSearch)
-          })
-
-      })
-
-      test("/PUT - Deve retornar 200 para Gerente que busca um usuário pelo Número do Passaporte.", function() {
-
-        let info = {
-          passportNumber: fixedPassportNumber
-        }
-
-        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.gerente.token)
-          .then(function(responseSearch) {
-
-            expect(responseSearch.statusCode).toEqual(200)
-
-            expect(responseSearch.body).toMatchObject({
-              id: "5da9ea674234635bdff45c02",
-              name: "Jeremias de Oliveira",
-              email: "jere_oli@yahoo.com",
-              country: "US",
-              state: "MN",
-              city: "Saint Paul",
-              passportNumber: info.passportNumber,
-            })
-
-          })
-          .catch(function(errorSearch) {
-            fail(errorSearch)
           })
 
       })
@@ -4300,5 +4206,5 @@ describe("Suite de testes das rotas User.", function() {
     })
 
   })
-*/
+
 })
