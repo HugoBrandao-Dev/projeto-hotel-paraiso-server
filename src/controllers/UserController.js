@@ -332,7 +332,7 @@ class UserController {
 
       let { name, cpf, passportNumber } = req.body
 
-      let type = {}
+      let searchBy = {}
       let errorFields = []
 
       let search = Object.keys(req.body)
@@ -345,23 +345,25 @@ class UserController {
           if (nameResult.hasError.type)
             errorFields.push(nameResult)
           else
-            type.name = name
+            searchBy.name = name
         } else if (cpf) {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
 
           // 4 indica que o CPF já foi cadastrado (irrelevante para validação).
-          if (cpfResult.hasError.type != 4)
-            errorFields.push(cpfResult)
+          if (cpfResult.hasError.value)
+            if (cpfResult.hasError.type != 4)
+              errorFields.push(cpfResult)
           else
-            type.cpf = cpf
+            searchBy.cpf = cpf
         } else if (passportNumber) {
           let passportNumberResult = await Analyzer.analyzeUserPassportNumber(passportNumber)
 
           // 4 indica que o PASSPORT NUMBER já foi cadastrado (irrelevante para validação).
-          if (passportNumberResult.hasError.type != 4)
-            errorFields.push(passportNumberResult)
+          if (passportNumberResult.hasError.value)
+            if (passportNumberResult.hasError.type != 4)
+              errorFields.push(passportNumberResult)
           else
-            type.passportNumber = passportNumber
+            searchBy.passportNumber = passportNumber
         }
       }
 
@@ -393,7 +395,7 @@ class UserController {
         return
       }
 
-      let results = await User.findByDoc(type)
+      let results = await User.findByDoc(searchBy)
 
       let users = []
 

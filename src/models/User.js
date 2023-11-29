@@ -39,22 +39,22 @@ class User {
 
   }
 
-  async findByDoc(searchType) {
+  async findByDoc(searchBy) {
 
     try {
 
-      let type = Object.keys(searchType)[0]
+      let type = Object.keys(searchBy)[0]
       let users = []
 
       if (type != 'name') {
         users = await UserCollection.users.data.filter(doc => {
           if (doc[type]) {
-            return doc[type] == searchType[type]
+            return doc[type] == searchBy[type]
           }
         })
       } else {
         users = await UserCollection.users.data.filter(doc => {
-          let searchLower = searchType['name'].toLowerCase()
+          let searchLower = searchBy['name'].toLowerCase()
           let docLower = doc.name.toLowerCase()
           return docLower.indexOf(searchLower) > -1
         })

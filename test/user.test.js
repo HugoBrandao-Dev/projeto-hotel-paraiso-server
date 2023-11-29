@@ -1968,6 +1968,24 @@ describe("Suite de testes das rotas User.", function() {
           })
       })
 
+      test("/POST - Deve retornar 404, por não existir um usuário com o CPF informado.", function() {
+
+        let info = {
+          cpf: fixedCPF
+        }
+
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.gerente.token)
+          .then(function(responseSearch) {
+
+            expect(responseSearch.statusCode).toEqual(404)
+
+          })
+          .catch(function(errorSearch) {
+            fail(errorSearch)
+          })
+
+      })
+
       test("/POST - Deve retornar 400, por ter informado um valor de Número de Passaporte inválido.", function() {
         return request.post(endpoints.toSearch).send({
           passportNumber: 'C100100--'
@@ -2000,6 +2018,24 @@ describe("Suite de testes das rotas User.", function() {
           .catch(function(error) {
             fail(error)
           })
+      })
+
+      test("/POST - Deve retornar 404, por não existir um usuário com o Número de Passaporte informado.", function() {
+
+        let info = {
+          passportNumber: fixedPassportNumber
+        }
+
+        return request.post(endpoints.toSearch).send(info).set('Authorization', accounts.funcionario.token)
+          .then(function(responseSearch) {
+
+            expect(responseSearch.statusCode).toEqual(404)
+
+          })
+          .catch(function(errorSearch) {
+            fail(errorSearch)
+          })
+
       })
 
       test("/POST - Deve retornar 400, uma vez que o ID do usuário a ser buscado contém caracteres inválidos.", function() {
