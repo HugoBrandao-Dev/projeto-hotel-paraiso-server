@@ -4209,8 +4209,8 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseDelete.body.RestException.Message).toBe('Nenhum usuário com o ID informado está cadastrado')
             expect(responseDelete.body.RestException.Status).toBe('404')
             expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/3`)
-            expect(responseDelete.body.RestException.ErrorFields.field).toBe('iptClient')
-            expect(responseDelete.body.RestException.ErrorFields.hasError.error).toBe('Nenhum usuário com o ID informado está cadastrado')
+            expect(responseDelete.body.RestException.ErrorFields[0].field).toBe('iptClient')
+            expect(responseDelete.body.RestException.ErrorFields[0].hasError.error).toBe('Nenhum usuário com o ID informado está cadastrado')
 
           })
           .catch(function(errorDelete) {
@@ -4229,8 +4229,8 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseDelete.body.RestException.Message).toBe('O ID do cliente/usuário contém caracteres inválidos')
             expect(responseDelete.body.RestException.Status).toBe('400')
             expect(responseDelete.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseDelete.body.RestException.ErrorFields.field).toBe('iptClient')
-            expect(responseDelete.body.RestException.ErrorFields.hasError.error).toBe('O ID do cliente/usuário contém caracteres inválidos')
+            expect(responseDelete.body.RestException.ErrorFields[0].field).toBe('iptClient')
+            expect(responseDelete.body.RestException.ErrorFields[0].hasError.error).toBe('O ID do cliente/usuário contém caracteres inválidos')
 
           })
           .catch(function(errorDelete) {

@@ -3,6 +3,10 @@ const baseURL = 'http://localhost:4000'
 const path = require('path')
 const fileSystem = require('fs')
 
+const projectLinks = {
+  errors: 'https://projetohotelparaiso.dev/docs/erros'
+}
+
 class Generator {
   static genID() {
     try {
@@ -93,6 +97,42 @@ class Generator {
     return '?'+resultArray.join('&')
 
   }
+
+  static genRestException(errorFields) {
+
+    let codeArray = errorFields.map(item => item.hasError.type)
+
+    // Cria um array contendo os Status codes dos erros encontrados.
+    let statusArray = codeArray.map(code => {
+      switch(code) {
+        case 3:
+          return '404'
+          break
+        default:
+          return '400'
+      }
+    })
+
+    let firstStatus = statusArray[0]
+
+    // Caso encontre erros com HTTP Status Code diferentes, o status final será '400'.
+    let status = statusArray.every(item => item == firstStatus) ? firstStatus : '400'
+
+    let messageArray = errorFields.map(item => item.hasError.error)
+    let moreinfoArray = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
+
+    let RestException = {
+      "Code": codeArray.length > 1 ? codeArray.join(';') : codeArray.toString(),
+      "Message": messageArray.length > 1 ? messageArray.join(';') : messageArray.toString(),
+      "Status": status,
+      "MoreInfo": moreinfoArray.length > 1 ? moreinfoArray.join(';') : moreinfoArray.toString(),
+      "ErrorFields": errorFields
+    }
+
+    return RestException
+
+  }
+
 }
 
 module.exports = Generator

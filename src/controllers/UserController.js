@@ -7,9 +7,6 @@ const _ = require('lodash')
 // Models
 const User = require('../models/User')
 
-const projectLinks = {
-  errors: 'https://projetohotelparaiso.dev/docs/erros'
-}
 const secret = 'k372gkhcfmhg6l9nj19i51ng'
 
 const roles = {
@@ -39,6 +36,7 @@ function getDecodedToken(bearerToken) {
 }
 
 class UserController {
+
   async create(req, res, next) {
 
     try {
@@ -143,91 +141,69 @@ class UserController {
       }
 
       if (errorFields.length) {
-        let codes = errorFields.map(item => item.hasError.type)
-
-        // Cria um array contendo os Status codes dos erros encontrados.
-        let status = codes.map(code => {
-          switch(code) {
-            case 3:
-              return '404'
-              break
-            default:
-              return '400'
-          }
-        })
-        let messages = errorFields.map(item => item.hasError.error)
-        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(400)
-        res.json({ 
-          RestException: {
-            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": status.length > 1 ? status.join(';') : status.toString(),
-            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-            "ErrorFields": errorFields
-          }
-        })
+        const RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         return
-      } else {
-
-        let salt = bcrypt.genSaltSync(5)
-        let hash = bcrypt.hashSync(req.body.password, salt)
-
-        // Busca por usuários com privilégio de Admin.
-        const adminUsers = await User.findByRole(roles.admin)
-
-        // Se não houver admin, será criado um, caso contrário será criado uma conta de cliente.
-        const role = adminUsers.length > 0 ? '0' : '4'
-
-        let user = { address: {} }
-
-        // OBRIGATÓRIOS
-        user.id = Generator.genID()
-        user.name = req.body.name
-        user.email = req.body.email
-        user.password = hash
-        user.role = role
-        user.phoneCode = req.body.phoneCode
-        user.phoneNumber = req.body.phoneNumber
-        user.birthDate = req.body.birthDate
-        user.address.country = req.body.country
-        user.address.state = req.body.state
-        user.address.city = req.body.city
-        if (req.body.cpf) {
-          user.address.cpf = req.body.cpf
-        } else {
-          user.address.passportNumber = req.body.passportNumber
-        }
-
-        // OPCIONAIS/CONDICINAIS
-        if (req.body.cep) {
-          user.address.cep = req.body.cep
-        }
-        if (req.body.neighborhood) {
-          user.address.neighborhood = req.body.neighborhood
-        }
-        if (req.body.road) {
-          user.address.road = req.body.road
-        }
-        if (req.body.house_number) {
-          user.address.house_number = req.body.house_number
-        }
-        if (req.body.information) {
-          user.address.information = req.body.information
-        }
-
-        let userLogged = req.headers['authorization'] ? getDecodedToken(req.headers['authorization']) : false
-
-        let userIDWhoCreated = userLogged ? userLogged.id : user.id
-        await User.save(user, userIDWhoCreated)
-        const result = await User.findByDoc({ email: req.body.email })
-        const savedUser = result[0]
-        const HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', userLogged.role > 0)
-
-        res.status(201)
-        res.json({ _links: HATEOAS })
-
       }
+
+      let salt = bcrypt.genSaltSync(5)
+      let hash = bcrypt.hashSync(req.body.password, salt)
+
+      // Busca por usuários com privilégio de Admin.
+      const adminUsers = await User.findByRole(roles.admin)
+
+      // Se não houver admin, será criado um, caso contrário será criado uma conta de cliente.
+      const role = adminUsers.length > 0 ? '0' : '4'
+
+      let user = { address: {} }
+
+      // OBRIGATÓRIOS
+      user.id = Generator.genID()
+      user.name = req.body.name
+      user.email = req.body.email
+      user.password = hash
+      user.role = role
+      user.phoneCode = req.body.phoneCode
+      user.phoneNumber = req.body.phoneNumber
+      user.birthDate = req.body.birthDate
+      user.address.country = req.body.country
+      user.address.state = req.body.state
+      user.address.city = req.body.city
+      if (req.body.cpf) {
+        user.address.cpf = req.body.cpf
+      } else {
+        user.address.passportNumber = req.body.passportNumber
+      }
+
+      // OPCIONAIS/CONDICINAIS
+      if (req.body.cep) {
+        user.address.cep = req.body.cep
+      }
+      if (req.body.neighborhood) {
+        user.address.neighborhood = req.body.neighborhood
+      }
+      if (req.body.road) {
+        user.address.road = req.body.road
+      }
+      if (req.body.house_number) {
+        user.address.house_number = req.body.house_number
+      }
+      if (req.body.information) {
+        user.address.information = req.body.information
+      }
+
+      let userLogged = req.headers['authorization'] ? getDecodedToken(req.headers['authorization']) : false
+
+      let userIDWhoCreated = userLogged ? userLogged.id : user.id
+      await User.save(user, userIDWhoCreated)
+      const result = await User.findByDoc({ email: req.body.email })
+      const savedUser = result[0]
+      const HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', userLogged.role > 0)
+
+      res.status(201)
+      res.json({ _links: HATEOAS })
+
     } catch (error) {
       next(error)
     }
@@ -240,83 +216,70 @@ class UserController {
 
       let id = req.params.id
       const { role } = getDecodedToken(req.headers['authorization'])
+
+      let errorFields = []
+
       let idResult = await Analyzer.analyzeID(id)
+      if (idResult.hasError.value)
+        errorFields.push(idResult)
 
-      if (idResult.hasError.value) {
-
-        let RestException = {
-          Code: `${ idResult.hasError.type }`,
-          Message: idResult.hasError.error,
-          Status: null,
-          MoreInfo: `${ projectLinks.errors }/${ idResult.hasError.type }`
-        }
-
-        switch (idResult.hasError.type) {
-          case 3:
-            RestException.Status = '404'
-            break
-          default:
-            RestException.Status = '400'
-        }
-
+      if (errorFields.length) {
+        const RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
-
         return
-      } else {
+      }
 
-        let result = await User.findOne(id)
+      let result = await User.findOne(id)
 
-        if (result) {
+      if (result) {
 
-          let user = _.cloneDeep(result)
+        let user = _.cloneDeep(result)
 
-          delete user.created
-          delete user.updated
+        delete user.created
+        delete user.updated
 
-          // Os valores do created e updated só são settados em casos onde o usuário logado é um Funcionário++.
-          if (role > 0) {
+        // Os valores do created e updated só são settados em casos onde o usuário logado é um Funcionário++.
+        if (role > 0) {
 
-            const userWhoCreated = await User.findOne(result.created.createdBy)
+          const userWhoCreated = await User.findOne(result.created.createdBy)
 
-            // Setta os valores do CREATED.
-            user.created = {
-              createdAt: result.created.createdAt,
-              createdBy: {
-                id: userWhoCreated.id,
-                name: userWhoCreated.name
-              }
+          // Setta os valores do CREATED.
+          user.created = {
+            createdAt: result.created.createdAt,
+            createdBy: {
+              id: userWhoCreated.id,
+              name: userWhoCreated.name
             }
-
-            if (result.updated.updatedBy) {
-              const userWhoUpdated = await User.findOne(result.updated.updatedBy)
-
-              // Setta os valores do UPDATED.
-              user.updated = {
-                updatedAt: result.updated.updatedAt,
-                updatedBy: {
-                  id: userWhoUpdated.id,
-                  name: userWhoUpdated.name
-                }
-              }
-            } else {
-              user.updated = {
-                updatedAt: "",
-                updatedBy: {
-                  id: "",
-                  name: "",
-                }
-              }
-            }
-
           }
 
-          // Role é baseado na Função da pessoa logada (dona do token)
-          user._links = await Generator.genHATEOAS(user.id, 'users', 'user', role > 0)
-          res.status(200)
-          res.json(user)
+          if (result.updated.updatedBy) {
+            const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+
+            // Setta os valores do UPDATED.
+            user.updated = {
+              updatedAt: result.updated.updatedAt,
+              updatedBy: {
+                id: userWhoUpdated.id,
+                name: userWhoUpdated.name
+              }
+            }
+          } else {
+            user.updated = {
+              updatedAt: "",
+              updatedBy: {
+                id: "",
+                name: "",
+              }
+            }
+          }
+
         }
 
+        // Role é baseado na Função da pessoa logada (dona do token)
+        user._links = await Generator.genHATEOAS(user.id, 'users', 'user', role > 0)
+        res.status(200)
+        res.json(user)
       }
 
     } catch (error) {
@@ -368,30 +331,9 @@ class UserController {
       }
 
       if (errorFields.length) {
-        let codes = errorFields.map(item => item.hasError.type)
-
-        // Cria um array contendo os Status codes dos erros encontrados.
-        let status = codes.map(code => {
-          switch(code) {
-            case 3:
-              return '404'
-              break
-            default:
-              return '400'
-          }
-        })
-        let messages = errorFields.map(item => item.hasError.error)
-        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(400)
-        res.json({ 
-          RestException: {
-            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": status.length > 1 ? status.join(';') : status.toString(),
-            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-            "ErrorFields": errorFields
-          }
-        })
+        const RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         return
       }
 
@@ -520,30 +462,9 @@ class UserController {
       }
 
       if (errorFields.length) {
-        let codes = errorFields.map(item => item.hasError.type)
-
-        // Cria um array contendo os Status codes dos erros encontrados.
-        let status = codes.map(code => {
-          switch(code) {
-            case 3:
-              return '404'
-              break
-            default:
-              return '400'
-          }
-        })
-        let messages = errorFields.map(item => item.hasError.error)
-        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(400)
-        res.json({ 
-          RestException: {
-            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": status.length > 1 ? status.join(';') : status.toString(),
-            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-            "ErrorFields": errorFields
-          }
-        })
+        const RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         return
       }
 
@@ -638,6 +559,7 @@ class UserController {
         house_number,
         information
       } = req.body
+      let RestException = null
       let errorFields = []
       let fields = { address: {} }
       let userRegistred = null
@@ -645,18 +567,10 @@ class UserController {
       let idResult = await Analyzer.analyzeID(id)
       if (idResult.hasError.value) {
         errorFields.push(idResult)
-        if (idResult.hasError.type == 3) {
-          res.status(404)
-          res.json({
-            RestException: {
-              "Code": "3",
-              "Message": idResult.hasError.error,
-              "Status": "404",
-              "MoreInfo": `${ projectLinks.errors }/3`
-            }
-          })
-          return
-        }
+        RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
+        return
       } else {
         fields.id = id
 
@@ -896,30 +810,9 @@ class UserController {
       }  
 
       if (errorFields.length) {
-        let codes = errorFields.map(item => item.hasError.type)
-
-        // Cria um array contendo os Status codes dos erros encontrados.
-        let status = codes.map(code => {
-          switch(code) {
-            case 3:
-              return '404'
-              break
-            default:
-              return '400'
-          }
-        })
-        let messages = errorFields.map(item => item.hasError.error)
-        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(400)
-        res.json({ 
-          RestException: {
-            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": status.length > 1 ? status.join(';') : status.toString(),
-            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-            "ErrorFields": errorFields
-          }
-        })
+        RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         return
       }
 
@@ -936,55 +829,40 @@ class UserController {
   }
 
   async remove(req, res) {
+
     try {
+      
       let { id } = req.params
-      if (id) {
-        let idResult = await Analyzer.analyzeID(id)
-        idResult.id = id
-        if (idResult.hasError.value) {
-          switch (idResult.hasError.type) {
-            case 2:
-              res.status(400)
-              res.json({ 
-                RestException: {
-                  "Code": `${ idResult.hasError.type }`,
-                  "Message": `${ idResult.hasError.error }`,
-                  "Status": "400",
-                  "MoreInfo": `${ projectLinks.errors }/${ idResult.hasError.type }`,
-                  "ErrorFields": idResult
-                }
-              })
-              break
-            case 3:
-              res.status(404)
-              res.json({ 
-                RestException: {
-                  "Code": `${ idResult.hasError.type }`,
-                  "Message": `${ idResult.hasError.error }`,
-                  "Status": "404",
-                  "MoreInfo": `${ projectLinks.errors }/${ idResult.hasError.type }`,
-                  "ErrorFields": idResult
-                }
-              })
-              break
-          }
-          return
-        } else {
-          let user = await User.delete(id)
-          if (user)  {
-            res.status(200)
-            res.json({})
-          }
-        }
+
+      let errorFields = []
+
+      let idResult = await Analyzer.analyzeID(id)
+      if (idResult.hasError.value)
+        errorFields.push(idResult)
+
+      if (errorFields.length) {
+        const RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
+        return
       }
+
+      let user = await User.delete(id)
+      if (user)  {
+        res.status(200)
+        res.json({})
+      }
+
     } catch (error) {
-      throw new Error(error)
-      res.sendStatus(500)
+      next(error)
     }
+
   }
 
   async login(req, res, next) {
+
     try {
+
       const { email, password } = req.body
 
       let errorFields = []
@@ -1004,30 +882,9 @@ class UserController {
       }
 
       if (errorFields.length) {
-        let codes = errorFields.map(item => item.hasError.type)
-
-        // Cria um array contendo os Status codes dos erros encontrados.
-        let status = codes.map(code => {
-          switch(code) {
-            case 3:
-              return '404'
-              break
-            default:
-              return '400'
-          }
-        })
-        let messages = errorFields.map(item => item.hasError.error)
-        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(parseInt(status))
-        res.json({ 
-          RestException: {
-            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": status.length > 1 ? status.join(';') : status.toString(),
-            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-            "ErrorFields": errorFields
-          }
-        })
+        const RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         return
       }
 
@@ -1051,10 +908,13 @@ class UserController {
           res.json(response)
         }
       })
+
     } catch (error) {
       next(error)
     }
+
   }
+
 }
 
 module.exports = new UserController()
