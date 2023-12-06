@@ -529,61 +529,88 @@ class Analyzer {
     return result
   }
 
-  static async analyzeID(id = '', resource = 'user') {
-    try {
-      let acceptableChars = '-'
-      let result = { field: '', hasError: { value: false, type: null, error: '' }}
+  static async analyzeUserID(id) {
 
-      result.field = resource == 'user' ? 'iptClient' : 'iptApartment'
+    let acceptableChars = '-'
+    let result = { field: 'iptClient', hasError: { value: false, type: null, error: '' } }
 
-      if (!id) {
-        let error = ''
-        if (resource == 'user') {
-          error = 'O ID do cliente/usuário é obrigatório'
-        } else {
-          error = 'O ID do apartamento é obrigatório'
-        }
-        result.hasError.value = true
-        result.hasError.type = 1
-        result.hasError.error = error
-        return result
-      }
-
-      let itsAlphanumeric = validator.isAlphanumeric(id, ['en-US'], {
-        ignore: acceptableChars
-      })
-
-      let itsHexadecimal = validator.isHexadecimal(id)
-
-      if (!itsAlphanumeric && !itsHexadecimal) {
-        result.hasError.value = true
-        result.hasError.type = 2
-        result.hasError.error = resource == 'user' ? 'O ID do cliente/usuário contém caracteres inválidos' : 'O ID do apartamento contém caracteres inválidos'
-        return result
-      } else {
-        let registred = null
-        let msg = ''
-        switch(resource) {
-          case 'user':
-            registred = await User.findOne(id)
-            msg = 'Nenhum usuário com o ID informado está cadastrado'
-            break
-          case 'apartment':
-            registred = await Apartment.findOne(id)
-            msg = 'Nenhum apartamento com o ID informado está cadastrado'
-            break
-        }
-        if (!registred) {
-          result.hasError.value = true
-          result.hasError.type = 3
-          result.hasError.error = msg
-        }
-      }
-
+    if (!id) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = 'O ID do cliente/usuário é obrigatório'
       return result
-    } catch (error) {
-      console.log(error)
     }
+
+    let itsAlphanumeric = validator.isAlphanumeric(id, ['en-US'], {
+      ignore: acceptableChars
+    })
+
+    let itsHexadecimal = validator.isHexadecimal(id)
+
+    if (!itsAlphanumeric && !itsHexadecimal) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = 'O ID do cliente/usuário contém caracteres inválidos'
+      return result
+    }
+
+    try {
+
+      let isRegistred = await User.findOne(id)
+      if (!isRegistred) {
+        result.hasError.value = true
+        result.hasError.type = 3
+        result.hasError.error = 'Nenhum usuário com o ID informado está cadastrado'
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
+
+    return result
+
+  }
+
+  static async analyzeApartmentID(id = '') {
+
+    let acceptableChars = '-'
+    let result = { field: 'iptApartment', hasError: { value: false, type: null, error: '' }}
+
+    if (!id) {
+      result.hasError.value = true
+      result.hasError.type = 1
+      result.hasError.error = 'O ID do apartamento é obrigatório'
+      return result
+    }
+
+    let itsAlphanumeric = validator.isAlphanumeric(id, ['en-US'], {
+      ignore: acceptableChars
+    })
+
+    let itsHexadecimal = validator.isHexadecimal(id)
+
+    if (!itsAlphanumeric && !itsHexadecimal) {
+      result.hasError.value = true
+      result.hasError.type = 2
+      result.hasError.error = 'O ID do apartamento contém caracteres inválidos'
+      return result
+    }
+
+    try {
+
+      let isRegistred = await Apartment.findOne(id)
+      if (!isRegistred) {
+        result.hasError.value = true
+        result.hasError.type = 3
+        result.hasError.error = 'Nenhum apartamento com o ID informado está cadastrado'
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
+
+    return result
+
   }
 
   static analyzeUserDocs(search = []) {

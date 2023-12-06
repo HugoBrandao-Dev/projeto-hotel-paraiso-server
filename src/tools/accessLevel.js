@@ -43,7 +43,7 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   if (path.indexOf(reserveEndpoints.toRead) != -1 || path.indexOf(apartmentEndpoints.toRead) != -1) {
                     if (params.id) {
-                      let idResult = await Analyzer.analyzeID(params.id, 'apartment')
+                      let idResult = await Analyzer.analyzeApartmentID(params.id)
                       if (!idResult.hasError.value) {
                         let reserve = await Reserve.findOne(params.id)
 
@@ -75,7 +75,7 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                     if (body.apartment_id) {
 
-                      let idResult = await Analyzer.analyzeID(body.apartment_id, 'apartment')
+                      let idResult = await Analyzer.analyzeApartmentID(body.apartment_id)
 
                       if (!idResult.hasError.value) {
 
@@ -108,7 +108,7 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   if (path.indexOf(reserveEndpoints.toDelete) >= 0) {
 
-                    let idResult = await Analyzer.analyzeID(params.id, 'apartment')
+                    let idResult = await Analyzer.analyzeApartmentID(params.id)
 
                     if (!idResult.hasError.value) {
                       
@@ -134,7 +134,7 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   if (path == reserveEndpoints.toCreate) {
                     if (body.client_id) {
-                      let idResult = await Analyzer.analyzeID(body.client_id)
+                      let idResult = await Analyzer.analyzeUserID(body.client_id)
                       if (!idResult.hasError.value) {
 
                         // Usuário para o qual será reservado o apto.
@@ -163,7 +163,7 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                     if (body.apartment_id) {
 
-                      let idResult = await Analyzer.analyzeID(body.apartment_id, 'apartment')
+                      let idResult = await Analyzer.analyzeApartmentID(body.apartment_id)
                       if (!idResult.hasError.value) {
 
                         let reserve = await Reserve.findOne(body.apartment_id)
@@ -195,7 +195,7 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   if (path.indexOf(apartmentEndpoints.toDelete) == -1) {
                     // Analisa o ID do parâmetro.
-                    let idResult = await Analyzer.analyzeID(params.id)
+                    let idResult = await Analyzer.analyzeUserID(params.id)
 
                     // Verifica se o ID passado no parâmetro tem algum erro.
                     if (!idResult.hasError.value) {
@@ -233,7 +233,7 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   if (path == reserveEndpoints.toUpdate) {
 
-                      let idResult = await Analyzer.analyzeID(body.apartment_id, 'apartment')
+                      let idResult = await Analyzer.analyzeApartmentID(body.apartment_id)
 
                       if (!idResult.hasError.value) {
 
@@ -287,7 +287,7 @@ async function isActionAllowed(headers, path, method, params, body) {
     } else {
       if (path.includes('/apartments') && path.indexOf('/apartments') == 0) {
         if (params.id) {
-          let idResult = await Analyzer.analyzeID(params.id, 'apartment')
+          let idResult = await Analyzer.analyzeApartmentID(params.id)
           if (!idResult.hasError.value) {
             let reserve = await Reserve.findOne(params.id)
 

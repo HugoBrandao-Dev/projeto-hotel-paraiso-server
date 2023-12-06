@@ -219,7 +219,7 @@ class UserController {
 
       let errorFields = []
 
-      let idResult = await Analyzer.analyzeID(id)
+      let idResult = await Analyzer.analyzeUserID(id)
       if (idResult.hasError.value)
         errorFields.push(idResult)
 
@@ -564,7 +564,7 @@ class UserController {
       let fields = { address: {} }
       let userRegistred = null
 
-      let idResult = await Analyzer.analyzeID(id)
+      let idResult = await Analyzer.analyzeUserID(id)
       if (idResult.hasError.value) {
         errorFields.push(idResult)
         RestException = Generator.genRestException(errorFields)
@@ -836,7 +836,7 @@ class UserController {
 
       let errorFields = []
 
-      let idResult = await Analyzer.analyzeID(id)
+      let idResult = await Analyzer.analyzeUserID(id)
       if (idResult.hasError.value)
         errorFields.push(idResult)
 
