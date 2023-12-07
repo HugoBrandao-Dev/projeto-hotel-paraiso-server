@@ -2318,8 +2318,8 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.Message).toBe("O valor do campo de Status é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseList.body.RestException.ErrorParams[0].field).toBe('iptStatus')
-            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do campo de Status é inválido')
+            expect(responseList.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseList.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Status é inválido')
 
           })
           .catch(function(errorList) {
@@ -2373,8 +2373,8 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Offset é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseList.body.RestException.ErrorParams[0].field).toBe('offset')
-            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do parâmetro Offset é inválido')
+            expect(responseList.body.RestException.ErrorFields[0].field).toBe('offset')
+            expect(responseList.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do parâmetro Offset é inválido')
 
           })
           .catch(function(errorList) {
@@ -2391,7 +2391,7 @@ describe("Suite de teste para as Reservas.", function() {
           limit: 2
         }
 
-        let queryString = `status=livre&offset=${ params.offset }&limi=${ params.limit }`
+        let queryString = `statu=livre&offset=${ params.offset }&limit=${ params.limit }`
 
         return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.cliente.token)
           .then(function(responseList) {
@@ -2399,7 +2399,7 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.statusCode).toEqual(400)
 
             expect(responseList.body.RestException.Code).toBe("2")
-            expect(responseList.body.RestException.Message).toBe("O parâmetro \'limi\' é inválido")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'statu\' é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
 
@@ -2429,8 +2429,8 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Limit é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseList.body.RestException.ErrorParams[0].field).toBe('limit')
-            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe("O valor do parâmetro Limit é inválido")
+            expect(responseList.body.RestException.ErrorFields[0].field).toBe('limit')
+            expect(responseList.body.RestException.ErrorFields[0].hasError.error).toBe("O valor do parâmetro Limit é inválido")
 
           })
           .catch(function(errorList) {
@@ -2483,8 +2483,8 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.Message).toBe("O valor do campo de Status é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseList.body.RestException.ErrorParams[0].field).toBe('iptStatus')
-            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do campo de Status é inválido')
+            expect(responseList.body.RestException.ErrorFields[0].field).toBe('iptStatus')
+            expect(responseList.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do campo de Status é inválido')
 
           })
           .catch(function(errorList) {
@@ -2538,8 +2538,8 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Offset é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseList.body.RestException.ErrorParams[0].field).toBe('offset')
-            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe('O valor do parâmetro Offset é inválido')
+            expect(responseList.body.RestException.ErrorFields[0].field).toBe('offset')
+            expect(responseList.body.RestException.ErrorFields[0].hasError.error).toBe('O valor do parâmetro Offset é inválido')
 
           })
           .catch(function(errorList) {
@@ -2551,12 +2551,12 @@ describe("Suite de teste para as Reservas.", function() {
       test("/GET - Deve retornar 400, informado o parâmetro de consulta inválido, como a terceira query string pelo Funcionário.", function() {
 
         let params = {
-          status: 'livre',
+          statu: 'livre',
           offset: 2,
           limit: 2
         }
 
-        let queryString = `status=livre&offset=${ params.offset }&limi=${ params.limit }`
+        let queryString = `statu=livre&offset=${ params.offset }&limit=${ params.limit }`
 
         return request.get(`${ endpoints.toList }?${ queryString }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseList) {
@@ -2564,7 +2564,7 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.statusCode).toEqual(400)
 
             expect(responseList.body.RestException.Code).toBe("2")
-            expect(responseList.body.RestException.Message).toBe("O parâmetro \'limi\' é inválido")
+            expect(responseList.body.RestException.Message).toBe("O parâmetro \'statu\' é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
 
@@ -2594,8 +2594,8 @@ describe("Suite de teste para as Reservas.", function() {
             expect(responseList.body.RestException.Message).toBe("O valor do parâmetro Limit é inválido")
             expect(responseList.body.RestException.Status).toBe("400")
             expect(responseList.body.RestException.MoreInfo).toBe(`${ projectLinks.errors }/2`)
-            expect(responseList.body.RestException.ErrorParams[0].field).toBe('limit')
-            expect(responseList.body.RestException.ErrorParams[0].hasError.error).toBe("O valor do parâmetro Limit é inválido")
+            expect(responseList.body.RestException.ErrorFields[0].field).toBe('limit')
+            expect(responseList.body.RestException.ErrorFields[0].hasError.error).toBe("O valor do parâmetro Limit é inválido")
 
           })
           .catch(function(errorList) {

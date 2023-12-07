@@ -46,7 +46,7 @@ class ReserveController {
 
       let errorFields = []
 
-      const idResult = await Analyzer.analyzeID(apartment_id, 'apartment')
+      const idResult = await Analyzer.analyzeApartmentID(apartment_id)
       if (idResult.hasError.value) {
         if (idResult.hasError.type != 4) {
           errorFields.push(idResult)
@@ -63,7 +63,7 @@ class ReserveController {
         errorFields.push(statusResult)
       }
 
-      const clientResult = await Analyzer.analyzeID(client_id)
+      const clientResult = await Analyzer.analyzeUserID(client_id)
       if (clientResult.hasError.value) {
         if (clientResult.hasError.type != 4) {
           errorFields.push(clientResult)
@@ -81,30 +81,9 @@ class ReserveController {
         }
 
       if (errorFields.length) {
-        let codes = errorFields.map(item => item.hasError.type)
-
-        // Cria um array contendo os Status codes dos erros encontrados.
-        let statusCodes = codes.map(code => {
-          switch(code) {
-            case 3:
-              return '404'
-              break
-            default:
-              return '400'
-          }
-        })
-        let messages = errorFields.map(item => item.hasError.error)
-        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(parseInt(statusCodes))
-        res.json({ 
-          RestException: {
-            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": statusCodes.length > 1 ? statusCodes.join(';') : statusCodes.toString(),
-            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-            "ErrorFields": errorFields
-          }
-        })
+        const RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         return
       }
 
@@ -136,24 +115,15 @@ class ReserveController {
       const { id } = req.params
 
       const decodedToken = getDecodedToken(req.headers['authorization'])
-      let idResult = await Analyzer.analyzeID(id, 'apartment')
 
-      if (idResult.hasError.value) {
-        let RestException = {
-          Code: `${ idResult.hasError.type }`,
-          Message: idResult.hasError.error,
-          Status: null,
-          MoreInfo: `${ projectLinks.errors }/${ idResult.hasError.type }`
-        }
+      let errorFields = []
 
-        switch (idResult.hasError.type) {
-          case 3:
-            RestException.Status = '404'
-            break
-          default:
-            RestException.Status = '400'
-        }
+      let idResult = await Analyzer.analyzeApartmentID(id)
+      if (idResult.hasError.value)
+        errorFields.push(idResult)
 
+      if (errorFields.length) {
+        const RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
         return
@@ -214,23 +184,21 @@ class ReserveController {
       let hasNext = false
       let reserves = []
 
-      if (req.query) {
+      let RestException = null
+      let errorParams = []
 
-        let queryStringResult = Analyzer.analyzeQueryList(req.query, 'reserves')
+      if (req.query) {
+        let queryList = Object.keys(req.query)
+
+        let queryStringResult = Analyzer.analyzeQueryList(queryList, 'reserves')
         if (queryStringResult.hasError.value) {
-          res.status(400)
-          res.json({ 
-            RestException: {
-              "Code": `${ queryStringResult.hasError.type }`,
-              "Message": queryStringResult.hasError.error,
-              "Status": "400",
-              "MoreInfo": `${ projectLinks.errors }/${ queryStringResult.hasError.type }`
-            }
-          })
+          errorParams.push(queryStringResult)
+
+          RestException = Generator.genRestException(errorParams)
+          res.status(parseInt(RestException.Status))
+          res.json({ RestException })
           return
         } else {
-
-          let errorParams = []
 
           // Verifica se o valor passado no Status é valido.
           let statusResult = await Analyzer.analyzeApartmentStatus(status)
@@ -241,14 +209,14 @@ class ReserveController {
           }
 
           if ((skip || skip == 0) && limit) {
-            let skipResult = Analyzer.analyzeReserveListSkip(skip)
+            let skipResult = Analyzer.analyzeFilterSkip(skip)
             if (skipResult.hasError.value) {
               errorParams.push(skipResult)
             } else {
               skip = parseInt(skip)
             }
 
-            let limitResult = Analyzer.analyzeReserveListLimit(limit)
+            let limitResult = Analyzer.analyzeFilterLimit(limit)
             if (limitResult.hasError.value) {
               errorParams.push(limitResult)
             } else {
@@ -260,20 +228,9 @@ class ReserveController {
           }
 
           if (errorParams.length) {
-            let codes = errorParams.map(item => item.hasError.type)
-
-            let messages = errorParams.map(item => item.hasError.error)
-            let moreinfos = errorParams.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-            res.status(400)
-            res.json({ 
-              RestException: {
-                "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-                "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-                "Status": "400",
-                "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-                "ErrorParams": errorParams
-              }
-            })
+            RestException = Generator.genRestException(errorParams)
+            res.status(parseInt(RestException.Status))
+            res.json({ RestException })
             return
           } else {
 
@@ -374,7 +331,7 @@ class ReserveController {
       let errorFields = []
       let fieldsToBeUpdated = {}
 
-      let apartmentIDResult = await Analyzer.analyzeID(apartment_id, 'apartment')
+      let apartmentIDResult = await Analyzer.analyzeApartmentID(apartment_id)
       if (apartmentIDResult.hasError.value) {
         errorFields.push(apartmentIDResult)
       } else {
@@ -395,7 +352,7 @@ class ReserveController {
       }
 
       if (client_id) {
-        let clientResult = await Analyzer.analyzeID(client_id)
+        let clientResult = await Analyzer.analyzeUserID(client_id)
         if (clientResult.hasError.value) {
           errorFields.push(clientResult)
         } else {
@@ -421,30 +378,9 @@ class ReserveController {
       }
 
       if (errorFields.length) {
-        let codes = errorFields.map(item => item.hasError.type)
-
-        // Cria um array contendo os Status codes dos erros encontrados.
-        let statusCodes = codes.map(code => {
-          switch(code) {
-            case 3:
-              return '404'
-              break
-            default:
-              return '400'
-          }
-        })
-        let messages = errorFields.map(item => item.hasError.error)
-        let moreinfos = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
-        res.status(parseInt(statusCodes))
-        res.json({ 
-          RestException: {
-            "Code": codes.length > 1 ? codes.join(';') : codes.toString(),
-            "Message": messages.length > 1 ? messages.join(';') : messages.toString(),
-            "Status": statusCodes.length > 1 ? statusCodes.join(';') : statusCodes.toString(),
-            "MoreInfo": moreinfos.length > 1 ? moreinfos.join(';') : moreinfos.toString(),
-            "ErrorFields": errorFields
-          }
-        })
+        const RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
         return
       }
 
@@ -475,26 +411,18 @@ class ReserveController {
 
     try {
 
-      let RestException = {}
-
       let id = req.params.id
 
-      let idResult = await Analyzer.analyzeID(id, 'apartment')
+      let errorFields = []
+
+      let idResult = await Analyzer.analyzeApartmentID(id)
       if (idResult.hasError.value) {
-        if (idResult.hasError.type != 4) {
-          switch (idResult.hasError.type) {
-            case 2:
-              RestException.Status = "400"
-              break
-            default:
-              RestException.Status = "404"
-          }
+        if (idResult.hasError.type != 4)
+          errorFields.push(idResult)
+      }
 
-          RestException.Code = `${ idResult.hasError.type }`
-          RestException.Message = idResult.hasError.error
-          RestException.MoreInfo = `${ projectLinks.errors }/${ idResult.hasError.type }`
-        }
-
+      if (errorFields.length) {
+        const RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
         return

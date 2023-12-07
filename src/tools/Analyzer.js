@@ -1003,7 +1003,7 @@ class Analyzer {
 
   }
 
-  static async analyzeFilterSkip(skip) {
+  static analyzeFilterSkip(skip) {
 
     try {
 
@@ -1035,6 +1035,7 @@ class Analyzer {
   }
 
   static analyzeFilterLimit(limit) {
+
     let result = { field: 'limit', hasError: { value: false, type: null, error: '' }}
 
     if (!limit) {
@@ -1055,6 +1056,7 @@ class Analyzer {
     }
 
     return result
+
   }
 
   static analyzeApartmentFilterLowestDailyPrice(price) {
