@@ -16,15 +16,14 @@ function authorization(req, res, next) {
 
     jwt.verify(token, secret, function(error, decoded) {
       if (error) {
-        let RestException = {
-          Code: '5',
-          Message: 'O Token é inválido',
-          Status: '401',
-          MoreInfo: `${ projectLinks.errors }/5`
-        }
+
+        let errors = [{
+          hasError: { value: true, type: 5, error: 'O Token é inválido' }
+        }]
+        const RestException = Generator.genRestException(errors, false)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
-        console.log(error)
+
       } else {
         next()
       }

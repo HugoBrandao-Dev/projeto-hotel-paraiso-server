@@ -108,6 +108,9 @@ class Generator {
         case 3:
           return '404'
           break
+        case 5:
+          return '401'
+          break
         case 6:
           return '403'
           break
