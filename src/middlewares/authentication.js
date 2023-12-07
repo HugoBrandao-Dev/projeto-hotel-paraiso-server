@@ -1,8 +1,5 @@
 const isActionAllowed = require('../tools/accessLevel')
-
-const projectLinks = {
-  errors: 'https://projetohotelparaiso.dev/docs/erros'
-}
+const Generator = require('../tools/Generator')
 
 function authentication(req, res, next) {
   try {
@@ -11,13 +8,10 @@ function authentication(req, res, next) {
         if (isAllowed) {
           next()
         } else {
-          let RestException = {
-            Code: '6',
-            Message: 'O usuário não está autenticado',
-            Status: '403',
-            MoreInfo: `${ projectLinks.errors }/6`
-          }
-
+          let errors = [{
+            hasError: { value: true, type: 6, error: 'O usuário não está autenticado' }
+          }]
+          const RestException = Generator.genRestException(errors, false)
           res.status(parseInt(RestException.Status))
           res.json({ RestException })
         }

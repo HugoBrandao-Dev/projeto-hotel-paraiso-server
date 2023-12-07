@@ -98,15 +98,18 @@ class Generator {
 
   }
 
-  static genRestException(errorFields) {
+  static genRestException(errors, returnWithErrorFields = true) {
 
-    let codeArray = errorFields.map(item => item.hasError.type)
+    let codeArray = errors.map(item => item.hasError.type)
 
     // Cria um array contendo os Status codes dos erros encontrados.
     let statusArray = codeArray.map(code => {
       switch(code) {
         case 3:
           return '404'
+          break
+        case 6:
+          return '403'
           break
         default:
           return '400'
@@ -118,16 +121,18 @@ class Generator {
     // Caso encontre erros com HTTP Status Code diferentes, o status final será '400'.
     let status = statusArray.every(item => item == firstStatus) ? firstStatus : '400'
 
-    let messageArray = errorFields.map(item => item.hasError.error)
-    let moreinfoArray = errorFields.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
+    let messageArray = errors.map(item => item.hasError.error)
+    let moreinfoArray = errors.map(item => `${ projectLinks.errors }/${ item.hasError.type }`)
 
     let RestException = {
       "Code": codeArray.length > 1 ? codeArray.join(';') : codeArray.toString(),
       "Message": messageArray.length > 1 ? messageArray.join(';') : messageArray.toString(),
       "Status": status,
       "MoreInfo": moreinfoArray.length > 1 ? moreinfoArray.join(';') : moreinfoArray.toString(),
-      "ErrorFields": errorFields
     }
+
+    if (returnWithErrorFields)
+      RestException["ErrorFields"] = errors
 
     return RestException
 
