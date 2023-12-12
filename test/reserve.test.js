@@ -406,7 +406,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseCreate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
             expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -467,7 +467,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseCreate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
             expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -531,7 +531,7 @@ describe("Suite de teste para as Reservas.", function() {
           
           expect(responseCreate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
             expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -594,7 +594,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseCreate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
             expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -656,7 +656,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseCreate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
             expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -1422,17 +1422,17 @@ describe("Suite de teste para as Reservas.", function() {
 
       test("/GET - Deve retornar 200, na busca de uma reserva baseada no ID do apartamento.", function() {
 
-        const apartment = { id: '27ibm1he7gl4ei9i7jcacbl6' }
+        const reserve = { apartment_id: '27ibm1he7gl4ei9i7jcacbl6' }
 
-        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.cliente.token)
+        return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.cliente.token)
           .then(function(responseRead) {
 
             expect(responseRead.statusCode).toEqual(200)
 
-            const apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
 
             expect(responseRead.body).toMatchObject({
-              apartment_id: apartment.id,
+              apartment_id: reserve.apartment_id,
               status: apartmentJSON.reserve.status,
               client_id: apartmentJSON.reserve.client_id,
               start: apartmentJSON.reserve.start,
@@ -1443,7 +1443,7 @@ describe("Suite de teste para as Reservas.", function() {
 
             expect(responseRead.body._links).toHaveLength(4)
             
-            const HATEOAS = Generator.genHATEOAS(apartment.id, 'reserves', 'reserve', true)
+            const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
             for (let cont = 0; cont < responseRead.body._links.length; cont++) {
               expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -1565,14 +1565,14 @@ describe("Suite de teste para as Reservas.", function() {
       // Busca por uma única reserva, baseada no ID do apartamento.
       test("/GET - Deve retornar 200, na busca de uma reserva baseada no ID do apartamento.", function() {
 
-        const apartment = { id: '856377c88f8fd9fc65fd3ef5' }
+        const reserve = { apartment_id: '856377c88f8fd9fc65fd3ef5' }
 
-        return request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+        return request.get(`${ endpoints.toRead }/${ reserve.apartment_id }`).set('Authorization', accounts.funcionario.token)
           .then(function(responseRead) {
 
             expect(responseRead.statusCode).toEqual(200)
 
-            const apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
+            const apartmentJSON = ApartmentsTools.getApartmentByID(reserve.apartment_id)
 
             const {
               reserved,
@@ -1580,7 +1580,7 @@ describe("Suite de teste para as Reservas.", function() {
             } = responseRead.body
 
             expect(responseRead.body).toMatchObject({
-              apartment_id: apartment.id,
+              apartment_id: reserve.apartment_id,
               status: apartmentJSON.reserve.status,
               client_id: apartmentJSON.reserve.client_id,
               start: apartmentJSON.reserve.start,
@@ -1597,26 +1597,12 @@ describe("Suite de teste para as Reservas.", function() {
 
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
-            expect(_links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-              method: 'GET',
-              rel: 'self_reserve'
-            })
-            expect(_links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_reserve'
-            })
-            expect(_links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-              method: 'DELETE',
-              rel: 'delete_reserve'
-            })
-            expect(_links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'reserve_list'
-            })
+
+            const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(_links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
           })
           .catch(function(errorRead) {
@@ -2631,7 +2617,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -2684,7 +2670,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -2752,7 +2738,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -2817,7 +2803,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -2851,7 +2837,7 @@ describe("Suite de teste para as Reservas.", function() {
 
             expect(responseRead.body._links).toHaveLength(4)
 
-            const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+            const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
             for (let cont = 0; cont < responseRead.body._links.length; cont++) {
               expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -2884,7 +2870,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -2952,7 +2938,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -3017,7 +3003,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -3082,7 +3068,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -3151,7 +3137,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -3216,7 +3202,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
@@ -3279,7 +3265,7 @@ describe("Suite de teste para as Reservas.", function() {
 
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', true)
+          const HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', true)
 
           for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
             expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])

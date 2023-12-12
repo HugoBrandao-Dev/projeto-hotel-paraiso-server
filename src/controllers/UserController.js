@@ -199,7 +199,7 @@ class UserController {
       await User.save(user, userIDWhoCreated)
       const result = await User.findByDoc({ email: req.body.email })
       const savedUser = result[0]
-      const HATEOAS = Generator.genHATEOAS(savedUser.id, 'users', 'user', userLogged.role > 0)
+      const HATEOAS = Generator.genHATEOAS(savedUser.id, 'user', 'users', userLogged.role > 0)
 
       res.status(201)
       res.json({ _links: HATEOAS })
@@ -277,7 +277,7 @@ class UserController {
         }
 
         // Role é baseado na Função da pessoa logada (dona do token)
-        user._links = await Generator.genHATEOAS(user.id, 'users', 'user', role > 0)
+        user._links = await Generator.genHATEOAS(user.id, 'user', 'users', role > 0)
         res.status(200)
         res.json(user)
       }
@@ -388,7 +388,7 @@ class UserController {
             }
           }
 
-          user._links = await Generator.genHATEOAS(user.id, 'users', 'user', true)
+          user._links = await Generator.genHATEOAS(user.id, 'user', 'users', true)
         }
 
         res.status(200)
@@ -516,7 +516,7 @@ class UserController {
             }
           }
 
-          user._links = await Generator.genHATEOAS(user.id, 'users', 'user')
+          user._links = await Generator.genHATEOAS(user.id, 'user', 'users')
 
           users.push(user)
         }
@@ -816,7 +816,7 @@ class UserController {
         return
       }
 
-      let HATEOAS = Generator.genHATEOAS(fields.id, 'users', 'user', roleToken > 0)
+      let HATEOAS = Generator.genHATEOAS(fields.id, 'user', 'users', roleToken > 0)
 
       await User.edit(fields, userIDWhoUpdated)
       res.status(200)
@@ -902,7 +902,7 @@ class UserController {
         } else {
           let response = { token }
 
-          response._links = Generator.genHATEOAS(user.id, 'users', 'user', user.role > 0)
+          response._links = Generator.genHATEOAS(user.id, 'user', 'users', user.role > 0)
 
           res.status(200)
           res.json(response)

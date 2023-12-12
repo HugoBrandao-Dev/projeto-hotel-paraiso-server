@@ -115,7 +115,7 @@ class ApartmentController {
       await Apartment.save(apartment, decodedToken.id)
       const savedApartment = await Apartment.findByNumber(number)
 
-      let HATEOAS = Generator.genHATEOAS(savedApartment.id, 'apartments', 'apartment', true)
+      let HATEOAS = Generator.genHATEOAS(savedApartment.id, 'apartment', 'apartments', true)
 
       res.status(201)
       res.json({ _links: HATEOAS })
@@ -193,7 +193,7 @@ class ApartmentController {
         delete apartment.reserve
       }
 
-      let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
+      let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
 
       apartment._links = HATEOAS
 
@@ -368,8 +368,8 @@ class ApartmentController {
         } else {
           delete apartment.reserve
         }
-
-        let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartments', 'apartment', false)
+        
+        let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', false)
         apartment._links = HATEOAS
 
         apartments.push(apartment)
@@ -498,7 +498,7 @@ class ApartmentController {
         return
       }
 
-      let HATEOAS = Generator.genHATEOAS(id, 'apartments', 'apartment', true)
+      let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
 
       const decodedToken = getDecodedToken(req.headers['authorization'])
 

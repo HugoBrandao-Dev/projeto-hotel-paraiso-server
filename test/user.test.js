@@ -2584,26 +2584,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -2673,26 +2658,12 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -2746,26 +2717,11 @@ describe("Suite de testes das rotas User.", function() {
           expect(responseUpdate.body._links).toBeDefined()
           expect(responseUpdate.body._links).toHaveLength(4)
 
-          expect(responseUpdate.body._links[0]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-            method: 'GET',
-            rel: 'self_user'
-          })
-          expect(responseUpdate.body._links[1]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toUpdate }`,
-            method: 'PUT',
-            rel: 'edit_user'
-          })
-          expect(responseUpdate.body._links[2]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-            method: 'DELETE',
-            rel: 'delete_user'
-          })
-          expect(responseUpdate.body._links[3]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toList }`,
-            method: 'GET',
-            rel: 'user_list'
-          })
+          const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
 
           return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
             .then(function(responseGET) {
@@ -2813,26 +2769,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -2877,26 +2818,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseGET) {
@@ -2938,26 +2864,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -2997,26 +2908,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -3053,26 +2949,12 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -3110,26 +2992,12 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -3170,26 +3038,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -3235,26 +3088,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -3302,26 +3140,11 @@ describe("Suite de testes das rotas User.", function() {
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
 
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {
@@ -3366,26 +3189,12 @@ describe("Suite de testes das rotas User.", function() {
 
             expect(responseUpdate.body._links).toBeDefined()
             expect(responseUpdate.body._links).toHaveLength(4)
-            expect(responseUpdate.body._links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ user.id }`,
-              method: 'GET',
-              rel: 'self_user'
-            })
-            expect(responseUpdate.body._links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_user'
-            })
-            expect(responseUpdate.body._links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ user.id }`,
-              method: 'DELETE',
-              rel: 'delete_user'
-            })
-            expect(responseUpdate.body._links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'user_list'
-            })
+
+            const HATEOAS = Generator.genHATEOAS(user.id, 'user', 'users', true)
+
+            for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+              expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
             return request.get(`${ endpoints.toRead }/${ user.id }`).set('Authorization', accounts.funcionario.token)
               .then(function(responseRead) {

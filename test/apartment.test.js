@@ -1959,26 +1959,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
           expect(_links).toBeDefined()
           expect(_links).toHaveLength(4)
-          expect(_links[0]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-            method: 'GET',
-            rel: 'self_apartment'
-          })
-          expect(_links[1]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toUpdate }`,
-            method: 'PUT',
-            rel: 'edit_apartment'
-          })
-          expect(_links[2]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-            method: 'DELETE',
-            rel: 'delete_apartment'
-          })
-          expect(_links[3]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toList }`,
-            method: 'GET',
-            rel: 'apartment_list'
-          })
+
+          const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', true)
+
+          for (let cont = 0; cont < _links.length; cont++) {
+            expect(_links[cont]).toMatchObject(HATEOAS[cont])
+          }
 
         } catch (errorRead) {
           fail(errorRead)
@@ -2031,26 +2017,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
           expect(_links).toBeDefined()
           expect(_links).toHaveLength(4)
-          expect(_links[0]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-            method: 'GET',
-            rel: 'self_apartment'
-          })
-          expect(_links[1]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toUpdate }`,
-            method: 'PUT',
-            rel: 'edit_apartment'
-          })
-          expect(_links[2]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-            method: 'DELETE',
-            rel: 'delete_apartment'
-          })
-          expect(_links[3]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toList }`,
-            method: 'GET',
-            rel: 'apartment_list'
-          })
+
+          const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', true)
+
+          for (let cont = 0; cont < _links.length; cont++) {
+            expect(_links[cont]).toMatchObject(HATEOAS[cont])
+          }
 
         } catch (errorRead) {
           fail(errorRead)
@@ -2095,6 +2067,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(apartment._links).toBeDefined()
             expect(apartment._links).toHaveLength(3)
+
+            const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', false)
+
+            for (let cont = 0; cont < apartment._links.length; cont++) {
+              expect(apartment._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
           }
 
@@ -2447,8 +2425,16 @@ describe("Suite de testes das rotas de Apartment.", function() {
           expect(responseList.body.apartments).toHaveLength(apartmentList.apartments.length)
           expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
-          for (let cont = 0; cont < apartmentList.apartments.length; cont++) {
-            expect(apartmentList.apartments[cont]).toMatchObject(responseList.body.apartments[cont])
+          for (let apartment of responseList.body.apartments) {
+
+            let { _links } = apartment
+
+            let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', false)
+
+            for (let cont = 0; cont < _links.length; cont++) {
+              expect(_links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
           }
 
         } catch (errorList) {
@@ -2483,8 +2469,16 @@ describe("Suite de testes das rotas de Apartment.", function() {
           expect(responseList.body.apartments).toHaveLength(apartmentList.apartments.length)
           expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
-          for (let cont = 0; cont < apartmentList.apartments.length; cont++) {
-            expect(apartmentList.apartments[cont]).toMatchObject(responseList.body.apartments[cont])
+          for (let apartment of responseList.body.apartments) {
+
+            let { _links } = apartment
+
+            let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', false)
+
+            for (let cont = 0; cont < _links.length; cont++) {
+              expect(_links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
           }
           
         } catch (errorList) {
@@ -2520,8 +2514,16 @@ describe("Suite de testes das rotas de Apartment.", function() {
           expect(responseList.body.apartments).toHaveLength(apartmentList.apartments.length)
           expect(responseList.body.hasNext).toBe(apartmentList.hasNext)
 
-          for (let cont = 0; cont < apartmentList.apartments.length; cont++) {
-            expect(apartmentList.apartments[cont]).toMatchObject(responseList.body.apartments[cont])
+          for (let apartment of responseList.body.apartments) {
+
+            let { _links } = apartment
+
+            let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', false)
+
+            for (let cont = 0; cont < _links.length; cont++) {
+              expect(_links[cont]).toMatchObject(HATEOAS[cont])
+            }
+
           }
           
         } catch (errorList) {
@@ -2586,9 +2588,9 @@ describe("Suite de testes das rotas de Apartment.", function() {
             id: 'd9d62beecdde62af82efd82c'
           }
 
-          let responseList = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
+          let responseRead = await request.get(`${ endpoints.toRead }/${ apartment.id }`).set('Authorization', accounts.funcionario.token)
 
-          expect(responseList.statusCode).toEqual(200)
+          expect(responseRead.statusCode).toEqual(200)
 
           const {
             rooms,
@@ -2596,11 +2598,11 @@ describe("Suite de testes das rotas de Apartment.", function() {
             created,
             updated,
             _links
-          } = responseList.body
+          } = responseRead.body
 
           let apartmentJSON = ApartmentsTools.getApartmentByID(apartment.id)
 
-          expect(responseList.body).toMatchObject({
+          expect(responseRead.body).toMatchObject({
             id: apartment.id,
             floor: apartmentJSON.floor,
             number: apartmentJSON.number,
@@ -2664,26 +2666,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
           expect(_links).toBeDefined()
           expect(_links).toHaveLength(4)
-          expect(_links[0]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-            method: 'GET',
-            rel: 'self_apartment'
-          })
-          expect(_links[1]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toUpdate }`,
-            method: 'PUT',
-            rel: 'edit_apartment'
-          })
-          expect(_links[2]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-            method: 'DELETE',
-            rel: 'delete_apartment'
-          })
-          expect(_links[3]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toList }`,
-            method: 'GET',
-            rel: 'apartment_list'
-          })
+
+          const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', true)
+
+          for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+            expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
 
         } catch (errorList) {
           fail(errorList)
@@ -2749,26 +2737,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
           expect(_links).toBeDefined()
           expect(_links).toHaveLength(4)
-          expect(_links[0]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-            method: 'GET',
-            rel: 'self_apartment'
-          })
-          expect(_links[1]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toUpdate }`,
-            method: 'PUT',
-            rel: 'edit_apartment'
-          })
-          expect(_links[2]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-            method: 'DELETE',
-            rel: 'delete_apartment'
-          })
-          expect(_links[3]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toList }`,
-            method: 'GET',
-            rel: 'apartment_list'
-          })
+
+          const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', true)
+
+          for (let cont = 0; cont < responseCreate.body._links.length; cont++) {
+            expect(responseCreate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
 
         } catch (error) {
           fail(error)
@@ -3739,26 +3713,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
           expect(responseUpdate.body._links).toBeDefined()
           expect(responseUpdate.body._links).toHaveLength(4)
-          expect(responseUpdate.body._links[0]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-            method: 'GET',
-            rel: 'self_apartment'
-          })
-          expect(responseUpdate.body._links[1]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toUpdate }`,
-            method: 'PUT',
-            rel: 'edit_apartment'
-          })
-          expect(responseUpdate.body._links[2]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-            method: 'DELETE',
-            rel: 'delete_apartment'
-          })
-          expect(responseUpdate.body._links[3]).toMatchObject({
-            href: `${ baseURL }${ endpoints.toList }`,
-            method: 'GET',
-            rel: 'apartment_list'
-          })
+
+          const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', true)
+
+          for (let cont = 0; cont < responseUpdate.body._links.length; cont++) {
+            expect(responseUpdate.body._links[cont]).toMatchObject(HATEOAS[cont])
+          }
 
           try {
 
@@ -3793,26 +3753,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
-            expect(_links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-              method: 'GET',
-              rel: 'self_apartment'
-            })
-            expect(_links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_apartment'
-            })
-            expect(_links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-              method: 'DELETE',
-              rel: 'delete_apartment'
-            })
-            expect(_links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'apartment_list'
-            })
+
+            const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', true)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
           } catch (errorRead) {
             fail(errorRead)
@@ -3892,26 +3838,12 @@ describe("Suite de testes das rotas de Apartment.", function() {
 
             expect(_links).toBeDefined()
             expect(_links).toHaveLength(4)
-            expect(_links[0]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toRead }/${ apartment.id }`,
-              method: 'GET',
-              rel: 'self_apartment'
-            })
-            expect(_links[1]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toUpdate }`,
-              method: 'PUT',
-              rel: 'edit_apartment'
-            })
-            expect(_links[2]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toDelete }/${ apartment.id }`,
-              method: 'DELETE',
-              rel: 'delete_apartment'
-            })
-            expect(_links[3]).toMatchObject({
-              href: `${ baseURL }${ endpoints.toList }`,
-              method: 'GET',
-              rel: 'apartment_list'
-            })
+
+            const HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', true)
+
+            for (let cont = 0; cont < responseRead.body._links.length; cont++) {
+              expect(responseRead.body._links[cont]).toMatchObject(HATEOAS[cont])
+            }
 
           } catch (errorRead) {
             fail(errorRead)

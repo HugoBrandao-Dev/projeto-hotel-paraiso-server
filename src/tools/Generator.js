@@ -37,7 +37,7 @@ class Generator {
     }
   }
 
-  static genHATEOAS(id, plural, singular, addListLink = false) {
+  static genHATEOAS(id, singular, plural, addListLink = false) {
 
     let HATEOAS = [
       {

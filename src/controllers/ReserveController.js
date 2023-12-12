@@ -97,7 +97,7 @@ class ReserveController {
 
       await Reserve.save(reserve, decodedToken.id)
 
-      let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserves', 'reserve', true)
+      let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
 
       res.status(201)
       res.json({ _links: HATEOAS })
@@ -159,7 +159,7 @@ class ReserveController {
 
       }
 
-      let HATEOAS = Generator.genHATEOAS(id, 'reserves', 'reserve', true)
+      let HATEOAS = Generator.genHATEOAS(id, 'reserve', 'reserves', true)
       reserve._links = HATEOAS
 
       res.status(200)
@@ -280,7 +280,7 @@ class ReserveController {
 
               }
 
-              let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserves', 'reserve', decodedToken.role > 0)
+              let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', decodedToken.role > 0)
               reserve._links = HATEOAS
 
               reserves.push(reserve)
@@ -396,7 +396,7 @@ class ReserveController {
 
       await Reserve.edit(fieldsToBeUpdated, decodedToken.id)
 
-      let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserves', 'reserve', true)
+      let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserve', 'reserves', true)
       
       res.status(200)
       res.json({ _links: HATEOAS })
