@@ -1,27 +1,34 @@
 const UserCollection = require('../data/UserCollection.json')
 const DateFormated = require('../tools/DateFormated')
 const _ = require('lodash')
+const mongoose = require('mongoose')
+
+const UserSchema = require('../schemas/UserSchema')
+const UserModel = mongoose.model('users', UserSchema)
 
 class User {
-  async save(user, createdBy) {
+  async save(_user, _createdBy) {
+
     try {
-      const date = new DateFormated('mongodb')
 
-      user.created = {
-        createdAt: date.getDateTime(),
-        createdBy
-      }
-      user.updated = {
-        updatedAt: '',
-        updatedBy: ''
+      const obj = {
+        ..._user,
+        created: {
+          createdBy: _createdBy
+        }
       }
 
-      await UserCollection.users.data.push(user)
-      return
+      const user = new UserModel(obj)
+
+      const result = await user.save()
+
+      return result._id
+      
     } catch (error) {
       console.log(error)
       return
     }
+
   }
 
   async findOne(id) {

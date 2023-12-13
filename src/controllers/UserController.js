@@ -159,7 +159,6 @@ class UserController {
       let user = { address: {} }
 
       // OBRIGATÓRIOS
-      user.id = Generator.genID()
       user.name = req.body.name
       user.email = req.body.email
       user.password = hash
@@ -196,10 +195,8 @@ class UserController {
       let userLogged = req.headers['authorization'] ? getDecodedToken(req.headers['authorization']) : false
 
       let userIDWhoCreated = userLogged ? userLogged.id : user.id
-      await User.save(user, userIDWhoCreated)
-      const result = await User.findByDoc({ email: req.body.email })
-      const savedUser = result[0]
-      const HATEOAS = Generator.genHATEOAS(savedUser.id, 'user', 'users', userLogged.role > 0)
+      const userID = await User.save(user, userIDWhoCreated)
+      const HATEOAS = Generator.genHATEOAS(userID, 'user', 'users', userLogged.role > 0)
 
       res.status(201)
       res.json({ _links: HATEOAS })

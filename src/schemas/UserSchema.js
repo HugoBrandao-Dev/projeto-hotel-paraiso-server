@@ -1,5 +1,10 @@
 const mongoose = require('mongoose')
 
+/*
+Por padrão, mongoose coloca o valor do updateAt o mesmo do createAt, mesmo durante a CRIAÇÃO do 
+objeto.
+*/
+
 const UserSchema = new mongoose.Schema({
   name: String,
   email: String,
@@ -18,19 +23,20 @@ const UserSchema = new mongoose.Schema({
     neighborhood: String,
     road: String,
     house_number: String,
-    information: String
+    information: String,
   },
   created: {
-    createdBy: String
+    createdAt: Date,
+    createdBy: mongoose.Schema.Types.ObjectId
   },
   updated: {
-    updatedBy: String
+    updatedAt: Date,
+    updatedBy: mongoose.Schema.Types.ObjectId
   }
-}, 
-{
+}, {
   timestamps: {
-    createdAt: "created",
-    updatedAt: "updated"
+    createdAt: 'created.createdAt',
+    updatedAt: 'updated.updatedAt'
   }
 })
 
