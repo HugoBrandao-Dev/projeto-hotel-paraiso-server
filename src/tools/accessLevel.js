@@ -28,7 +28,7 @@ async function isActionAllowed(headers, path, method, params, body) {
         try {
 
           switch (decodedToken.role) {
-            case '0':
+            case 0:
               switch (upperMethod) {
                 case 'POST':
 
@@ -128,7 +128,7 @@ async function isActionAllowed(headers, path, method, params, body) {
                   break
               }
               break
-            case '1':
+            case 1:
               switch (upperMethod) {
                 case 'POST':
 
@@ -219,7 +219,7 @@ async function isActionAllowed(headers, path, method, params, body) {
                   break
               }
               break
-            case '2':
+            case 2:
               switch (upperMethod) {
                 case 'POST':
                   if (path != apartmentEndpoints.toCreate && !(body.role >= 2)) {
@@ -272,7 +272,7 @@ async function isActionAllowed(headers, path, method, params, body) {
                   break
               }
               break
-            case '4':
+            case 4:
               allowed = true
               break
           }

@@ -158,8 +158,10 @@ class UserController {
 
       let user = { address: {} }
 
-      // OBRIGATÓRIOS
-      user.name = req.body.name
+      /* ################## OBRIGATÓRIOS ################## */
+
+      // O nome do cliente é armazenado em MINÚSCULOS.
+      user.name = req.body.name.toLowerCase()
       user.email = req.body.email
       user.password = hash
       user.role = role
@@ -175,7 +177,8 @@ class UserController {
         user.address.passportNumber = req.body.passportNumber
       }
 
-      // OPCIONAIS/CONDICINAIS
+      /* ################## OPCIONAIS/CONDICINAIS ################## */
+
       if (req.body.cep) {
         user.address.cep = req.body.cep
       }
@@ -305,7 +308,7 @@ class UserController {
           if (nameResult.hasError.type)
             errorFields.push(nameResult)
           else
-            searchBy.name = name
+            searchBy.name = name.toLowerCase()
         } else if (cpf) {
           let cpfResult = await Analyzer.analyzeUserCPF(cpf)
 
@@ -873,6 +876,7 @@ class UserController {
       
       let checkEquality = { isToCheck: !errorFields.length, email }
       
+      // A comparação entre a senha informada e a armazenada é feita dentro do analyzer.
       let passwordResult = await Analyzer.analyzeUserPassword(password, checkEquality)
       if (passwordResult.hasError.value) {
         errorFields.push(passwordResult)
@@ -888,7 +892,7 @@ class UserController {
       let result = await User.findByDoc({ email })
       const user = result[0]
       jwt.sign({
-        id: user.id,
+        id: user._id,
         email: user.email,
         role: user.role
       }, secret, {
@@ -899,7 +903,7 @@ class UserController {
         } else {
           let response = { token }
 
-          response._links = Generator.genHATEOAS(user.id, 'user', 'users', user.role > 0)
+          response._links = Generator.genHATEOAS(user._id, 'user', 'users', user.role > 0)
 
           res.status(200)
           res.json(response)
