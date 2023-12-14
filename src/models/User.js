@@ -31,12 +31,11 @@ class User {
 
   }
 
-  async findOne(id) {
+  async findOne(_id) {
 
     try {
 
-      const user = await UserCollection.users.data.find(doc => doc.id == id)
-
+      const user = await UserModel.findById(_id)
       return user
 
     } catch (error) {

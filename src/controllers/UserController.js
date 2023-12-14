@@ -230,46 +230,49 @@ class UserController {
         return
       }
 
-      let result = await User.findOne(id)
+      let user = await User.findOne(id)
 
-      if (result) {
+      if (user) {
 
-        let user = _.cloneDeep(result)
+        // O operador delete NÃO funciona.
+        user.password = ''
 
-        delete user.created
-        delete user.updated
+        const createdAt = user.created.createdAt || ''
+        const createdBy = user.created.createdBy || ''
+        const updatedAt = user.updated.updatedAt || ''
+        const updatedBy = user.updated.updatedBy || ''
 
         // Os valores do created e updated só são settados em casos onde o usuário logado é um Funcionário++.
         if (role > 0) {
+          user.created = {}
+          user.updated = {}
 
-          const userWhoCreated = await User.findOne(result.created.createdBy)
+          if (createdAt)
+            user.created.createdAt = createdAt
 
-          // Setta os valores do CREATED.
-          user.created = {
-            createdAt: result.created.createdAt,
-            createdBy: {
-              id: userWhoCreated.id,
-              name: userWhoCreated.name
+          if (createdBy) {
+            const userWhoCreated = await User.findOne(createdBy)
+
+            // Setta os valores do CREATED.
+            user.created = {
+              createdBy: {
+                id: userWhoCreated._id,
+                name: userWhoCreated.name
+              }
             }
           }
 
-          if (result.updated.updatedBy) {
-            const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+          if (updatedAt)
+            user.updated.updatedAt = updatedAt
+
+          if (updatedBy) {
+            const userWhoUpdated = await User.findOne(updatedBy)
 
             // Setta os valores do UPDATED.
             user.updated = {
-              updatedAt: result.updated.updatedAt,
               updatedBy: {
-                id: userWhoUpdated.id,
+                id: userWhoUpdated._id,
                 name: userWhoUpdated.name
-              }
-            }
-          } else {
-            user.updated = {
-              updatedAt: "",
-              updatedBy: {
-                id: "",
-                name: "",
               }
             }
           }
