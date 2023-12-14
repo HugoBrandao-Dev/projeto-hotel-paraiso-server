@@ -59,11 +59,11 @@ class User {
 
   }
 
-  async findByRole(role) {
+  async findByRole(_role) {
 
     try {
 
-      let users = await UserCollection.users.data.filter(user => user.role == role)
+      let users = await UserModel.find({ role: _role })
       return users
 
     } catch (error) {
