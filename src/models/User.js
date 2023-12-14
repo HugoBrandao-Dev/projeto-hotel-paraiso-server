@@ -105,19 +105,18 @@ class User {
 
   }
 
-  async delete(id) {
+  async delete(_id) {
+
     try {
-      let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == id)
-      if (userIndex == -1) {
-        return 
-      } else {
-        let user = await UserCollection.users.data.splice(userIndex, 1)
-        return user
-      }
+
+      await UserModel.findByIdAndDelete(`${ _id }`)
+      return
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 }
 

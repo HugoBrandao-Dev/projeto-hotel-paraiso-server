@@ -857,10 +857,9 @@ class UserController {
       }
 
       let user = await User.delete(id)
-      if (user)  {
-        res.status(200)
-        res.json({})
-      }
+      
+      res.status(200)
+      res.json({})
 
     } catch (error) {
       next(error)
