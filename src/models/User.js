@@ -90,33 +90,19 @@ class User {
 
   }
 
-  async edit(user, updatedBy) {
-    try {
-      const date = new DateFormated('mongodb')
+  async edit(_userToBeUpdated, _user) {
 
-      user.updated = {
-        updatedAt: date.getDateTime(),
-        updatedBy,
-      }
-      let userIndex = await UserCollection.users.data.findIndex(doc => doc.id == user.id)
-      let infos = Object.keys(user)
-      for (let info of infos) {
-        if (info != 'id') {
-          if (info == 'address') {
-            let address_infos = Object.keys(user.address)
-            for (let address_info of address_infos) {
-              UserCollection.users.data[userIndex][info][address_info] = user[info][address_info]
-            }
-          } else {
-            UserCollection.users.data[userIndex][info] = user[info]
-          }
-        }
-      }
+    try {
+
+      await UserModel.findByIdAndUpdate(`${ _userToBeUpdated }`, _user)
+
       return
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   async delete(id) {

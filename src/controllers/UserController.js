@@ -565,6 +565,7 @@ class UserController {
         house_number,
         information
       } = req.body
+
       let RestException = null
       let errorFields = []
       let fields = { address: {} }
@@ -578,8 +579,6 @@ class UserController {
         res.json({ RestException })
         return
       } else {
-        fields.id = id
-
         // Busca pelo usuário que tem o mesmo ID informado.
         userRegistred = await User.findOne(id)
       }
@@ -822,9 +821,13 @@ class UserController {
         return
       }
 
+      fields.updated = {
+        updatedBy: userIDWhoUpdated
+      }
+
       let HATEOAS = Generator.genHATEOAS(fields.id, 'user', 'users', roleToken > 0)
 
-      await User.edit(fields, userIDWhoUpdated)
+      await User.edit(id, fields)
       res.status(200)
       res.json({ _links: HATEOAS })
 
