@@ -73,26 +73,13 @@ class User {
 
   }
 
-  async findMany(query) {
+  async findMany(_query) {
 
     try {
 
-      const { name, skip, limit } = query
+      const { name, skip, limit } = _query
 
-      let users = await UserCollection.users.data
-
-      if (name) {
-        users = await users.filter(user => {
-          // Nome que já está cadastrado.
-          let userNameLower = user.name.toLowerCase()
-
-          // Nome informado na query string.
-          let nameLower = name.toLowerCase()
-          return userNameLower.includes(nameLower)
-        })
-      }
-      
-      users = await users.slice(skip, limit)
+      const users = await UserModel.find({}).skip(skip).limit(limit)
 
       return users
 

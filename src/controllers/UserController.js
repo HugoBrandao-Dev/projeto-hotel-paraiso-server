@@ -482,46 +482,49 @@ class UserController {
 
         for (let item of result) {
 
-          let user = _.cloneDeep(item)
+          const createdAt = item.created.createdAt
+          const createdBy = item.created.createdBy
+          const updatedAt = item.updated.updatedAt
+          const updatedBy = item.updated.updatedBy
 
-          delete user.created
-          delete user.updated
+          item.password = ''
 
-          const userWhoCreated = await User.findOne(item.created.createdBy)
+          item.created = {}
+          item.updated = {}
 
-          // Setta os valores do CREATED.
-          user.created = {
-            createdAt: item.created.createdAt,
-            createdBy: {
-              id: userWhoCreated.id,
-              name: userWhoCreated.name
+          if (createdAt)
+            item.created.createdAt = createdAt
+
+          if (createdBy) {
+            const userWhoCreated = await User.findOne(createdBy)
+
+            // Setta os valores do CREATED.
+            item.created = {
+              createdBy: {
+                id: userWhoCreated._id,
+                name: userWhoCreated.name
+              }
             }
           }
 
-          if (item.updated.updatedBy) {
-            const userWhoUpdated = await User.findOne(item.updated.updatedBy)
+          if (updatedAt)
+            item.updated.updatedAt = updatedAt
+
+          if (updatedBy) {
+            const userWhoUpdated = await User.findOne(updatedBy)
 
             // Setta os valores do UPDATED.
-            user.updated = {
-              updatedAt: item.updated.updatedAt,
+            item.updated = {
               updatedBy: {
-                id: userWhoUpdated.id,
+                id: userWhoUpdated._id,
                 name: userWhoUpdated.name
               }
             }
-          } else {
-            user.updated = {
-              updatedAt: "",
-              updatedBy: {
-                id: "",
-                name: "",
-              }
-            }
           }
 
-          user._links = await Generator.genHATEOAS(user.id, 'user', 'users')
+          item._links = await Generator.genHATEOAS(item._id, 'user', 'users')
 
-          users.push(user)
+          users.push(item)
         }
 
       }
