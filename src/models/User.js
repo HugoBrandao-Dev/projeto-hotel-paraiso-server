@@ -35,7 +35,7 @@ class User {
 
     try {
 
-      const user = await UserModel.findById(_id)
+      const user = await UserModel.findById(_id).lean()
       return user
 
     } catch (error) {
@@ -49,7 +49,7 @@ class User {
 
     try {
 
-      const users = await UserModel.find(_searchBy)
+      const users = await UserModel.find(_searchBy).lean()
       return users
 
     } catch (error) {
@@ -79,7 +79,7 @@ class User {
 
       const { name, skip, limit } = _query
 
-      const users = await UserModel.find({}).skip(skip).limit(limit)
+      const users = await UserModel.find({}).skip(skip).limit(limit).lean()
 
       return users
 

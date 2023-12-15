@@ -235,7 +235,7 @@ class UserController {
       if (user) {
 
         // O operador delete NÃO funciona.
-        user.password = ''
+        delete user.password
 
         const createdAt = user.created.createdAt || ''
         const createdBy = user.created.createdBy || ''
@@ -280,7 +280,7 @@ class UserController {
         }
 
         // Role é baseado na Função da pessoa logada (dona do token)
-        user._links = await Generator.genHATEOAS(user.id, 'user', 'users', role > 0)
+        user._links = await Generator.genHATEOAS(user._id, 'user', 'users', role > 0)
         res.status(200)
         res.json(user)
       }
@@ -291,7 +291,7 @@ class UserController {
 
   }
 
-    // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
+  // Realiza busca por um usuário, baseado no seu CPF ou Número de Passaporte.
   async readByDoc(req, res, next) {
 
     try {
@@ -340,58 +340,40 @@ class UserController {
         return
       }
 
-      let results = await User.findByDoc(searchBy)
+      let users = await User.findByDoc(searchBy)
 
-      let users = []
-
-      for (let result of results) {
-        users.push(_.cloneDeep(result))
-      }
-
-      if (results.length) {
+      if (users.length) {
 
         for (let user of users) {
-          const createdAt = user.created.createdAt
-          const createdBy = user.created.createdBy
-          const updatedAt = user.updated.updatedAt
-          const updatedBy = user.updated.updatedBy
 
-          delete user.created
-          delete user.updated
+          let createdBy = user.created.createdBy
+          let updatedBy = user.updated.updatedBy
 
-          const userWhoCreated = await User.findOne(createdBy)
+          delete user.password
 
-          // Setta os valores do CREATED.
-          user.created = {
-            createdAt,
-            createdBy: {
-              id: userWhoCreated.id,
+          /* Setta os valores do CREATED. */
+
+          if (createdBy) {
+            const userWhoCreated = await User.findOne(createdBy)
+
+            user.created.createdBy = {
+              id: userWhoCreated._id,
               name: userWhoCreated.name
             }
           }
 
+          /* Setta os valores do UPDATED. */
+
           if (updatedBy) {
             const userWhoUpdated = await User.findOne(updatedBy)
 
-            // Setta os valores do UPDATED.
-            user.updated = {
-              updatedAt,
-              updatedBy: {
-                id: userWhoUpdated.id,
-                name: userWhoUpdated.name
-              }
-            }
-          } else {
-            user.updated = {
-              updatedAt: "",
-              updatedBy: {
-                id: "",
-                name: "",
-              }
+            user.updated.updatedBy = {
+              id: userWhoUpdated._id,
+              name: userWhoUpdated.name
             }
           }
 
-          user._links = await Generator.genHATEOAS(user.id, 'user', 'users', true)
+          user._links = await Generator.genHATEOAS(user._id, 'user', 'users', true)
         }
 
         res.status(200)
@@ -471,60 +453,43 @@ class UserController {
         return
       }
 
-      const result = await User.findMany(query)
-      const hasNext = result.length > query.limit - 1
+      const users = await User.findMany(query)
+      const hasNext = users.length > query.limit - 1
       if (hasNext)
-        result.pop()
+        users.pop()
 
-      let users = []
+      if (users.length) {
 
-      if (result.length) {
+        for (let user of users) {
 
-        for (let item of result) {
+          let createdBy = user.created.createdBy
+          let updatedBy = user.updated.updatedBy
 
-          const createdAt = item.created.createdAt
-          const createdBy = item.created.createdBy
-          const updatedAt = item.updated.updatedAt
-          const updatedBy = item.updated.updatedBy
+          delete user.password
 
-          item.password = ''
-
-          item.created = {}
-          item.updated = {}
-
-          if (createdAt)
-            item.created.createdAt = createdAt
+          /* Setta os valores do CREATED. */
 
           if (createdBy) {
             const userWhoCreated = await User.findOne(createdBy)
 
-            // Setta os valores do CREATED.
-            item.created = {
-              createdBy: {
-                id: userWhoCreated._id,
-                name: userWhoCreated.name
-              }
+            user.created.createdBy = {
+              id: userWhoCreated._id,
+              name: userWhoCreated.name
             }
           }
 
-          if (updatedAt)
-            item.updated.updatedAt = updatedAt
+          /* Setta os valores do UPDATED. */
 
           if (updatedBy) {
             const userWhoUpdated = await User.findOne(updatedBy)
 
-            // Setta os valores do UPDATED.
-            item.updated = {
-              updatedBy: {
-                id: userWhoUpdated._id,
-                name: userWhoUpdated.name
-              }
+            user.updated.updatedBy = {
+              id: userWhoUpdated._id,
+              name: userWhoUpdated.name
             }
           }
 
-          item._links = await Generator.genHATEOAS(item._id, 'user', 'users')
-
-          users.push(item)
+          user._links = await Generator.genHATEOAS(user._id, 'user', 'users')
         }
 
       }
