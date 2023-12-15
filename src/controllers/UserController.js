@@ -172,9 +172,9 @@ class UserController {
       user.address.state = req.body.state
       user.address.city = req.body.city
       if (req.body.cpf) {
-        user.address.cpf = req.body.cpf
+        user.cpf = req.body.cpf
       } else {
-        user.address.passportNumber = req.body.passportNumber
+        user.passportNumber = req.body.passportNumber
       }
 
       /* ################## OPCIONAIS/CONDICINAIS ################## */

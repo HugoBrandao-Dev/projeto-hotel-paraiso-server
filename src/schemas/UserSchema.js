@@ -14,12 +14,12 @@ const UserSchema = new mongoose.Schema({
   phoneNumber: String,
   birthDate: Date,
   cpf: String,
+  passportNumber: String,
   address: {
     country: String,
     state: String,
     cep: String,
     city: String,
-    passportNumber: String,
     neighborhood: String,
     road: String,
     house_number: String,
