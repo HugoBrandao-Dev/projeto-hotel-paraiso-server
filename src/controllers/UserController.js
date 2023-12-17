@@ -234,50 +234,44 @@ class UserController {
 
       if (user) {
 
-        // O operador delete NÃO funciona.
-        delete user.password
-
-        const createdAt = user.created.createdAt || ''
-        const createdBy = user.created.createdBy || ''
-        const updatedAt = user.updated.updatedAt || ''
-        const updatedBy = user.updated.updatedBy || ''
+        const createdBy = user.CREATED_BY.length ? user.CREATED_BY[0] : {}
+        const updatedBy = user.UPDATED_BY.length ? user.UPDATED_BY[0] : {}
 
         // Os valores do created e updated só são settados em casos onde o usuário logado é um Funcionário++.
         if (role > 0) {
-          user.created = {}
-          user.updated = {}
 
-          if (createdAt)
-            user.created.createdAt = createdAt
+          /* Modificação da estrutura do CREATED. */
+
+          // Transforma o formato da data de criação da conta em um formato mais inteligível.
+          user.created.createdAt = new Date(user.created.createdAt).toLocaleString()
 
           if (createdBy) {
-            const userWhoCreated = await User.findOne(createdBy)
-
-            // Setta os valores do CREATED.
-            user.created = {
-              createdBy: {
-                id: userWhoCreated._id,
-                name: userWhoCreated.name
-              }
+            user.created.createdBy = {
+              id: createdBy._id,
+              name: createdBy.name
             }
           }
 
-          if (updatedAt)
-            user.updated.updatedAt = updatedAt
+          /* Modificação da estrutura do UPDATED. */
+
+          // Transforma o formato da data de atualização da conta em um formato mais inteligível.
+          user.updated.updatedAt = new Date(user.updated.updatedAt).toLocaleString()
 
           if (updatedBy) {
-            const userWhoUpdated = await User.findOne(updatedBy)
-
-            // Setta os valores do UPDATED.
-            user.updated = {
-              updatedBy: {
-                id: userWhoUpdated._id,
-                name: userWhoUpdated.name
-              }
+            user.updated.updatedBy = {
+              id: updatedBy._id,
+              name: updatedBy.name
             }
           }
 
         }
+
+        // Transforma o formato da data de nascimento do cliente em um formato mais inteligível.
+        user.birthDate = new Date(user.birthDate).toLocaleDateString()
+
+        delete user.password
+        delete user.CREATED_BY
+        delete user.UPDATED_BY      
 
         // Role é baseado na Função da pessoa logada (dona do token)
         user._links = await Generator.genHATEOAS(user._id, 'user', 'users', role > 0)

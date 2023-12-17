@@ -1,10 +1,12 @@
 const UserCollection = require('../data/UserCollection.json')
 const DateFormated = require('../tools/DateFormated')
 const _ = require('lodash')
+
 const mongoose = require('mongoose')
 
 const UserSchema = require('../schemas/UserSchema')
 const UserModel = mongoose.model('users', UserSchema)
+const ObjectId = mongoose.Types.ObjectId
 
 class User {
   async save(_user, _createdBy) {
@@ -35,8 +37,40 @@ class User {
 
     try {
 
-      const user = await UserModel.findById(_id).lean()
-      return user
+      const user = await UserModel.aggregate([
+        {
+          // O ObjectId é um tipo de dado do mongoose e precisa ser importado.
+          $match: { _id: ObjectId(_id) }
+        },
+        {
+          // Faz o link entre o cliente buscado e quem o criou, caso haja.
+          $lookup: {
+            localField: 'created.createdBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'CREATED_BY',
+            pipeline: [
+              // Só retornará o nome de quem o criou (_id retorna por padrão).
+              { $project: { "name": true } }
+            ]
+          }
+        },
+        {
+          // Faz o link entre o cliente buscado e quem fez a última alteração, caso haja.
+          $lookup: {
+            localField: 'updated.updatedBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'UPDATED_BY',
+            pipeline: [
+              // Só retornará o nome de quem fez a última alteração (_id retorna por padrão).
+              { $project: { "name": true } }
+            ]
+          }
+        }
+      ])
+
+      return user[0]
 
     } catch (error) {
       console.log(error)
