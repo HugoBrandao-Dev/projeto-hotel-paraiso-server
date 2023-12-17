@@ -1,10 +1,6 @@
 const jwt = require('jsonwebtoken')
-
+const Generator = require('../tools/Generator')
 const secret = 'k372gkhcfmhg6l9nj19i51ng'
-
-const projectLinks = {
-  errors: 'https://projetohotelparaiso.dev/docs/erros'
-}
 
 function authorization(req, res, next) {
   const authToken = req.headers['authorization']
@@ -29,14 +25,14 @@ function authorization(req, res, next) {
       }
     })
   } else {
-    let RestException = {
-      Code: '5',
-      Message: 'O usuário não está autorizado',
-      Status: '401',
-      MoreInfo: `${ projectLinks.errors }/5`
-    }
+
+    let errors = [{
+      hasError: { value: true, type: 5, error: 'O usuário não está autorizado' }
+    }]
+    const RestException = Generator.genRestException(errors, false)    
     res.status(parseInt(RestException.Status))
     res.json({ RestException })
+
   }
 }
 
