@@ -270,6 +270,8 @@ class UserController {
         user.birthDate = new Date(user.birthDate).toLocaleDateString()
 
         delete user.password
+        if (!role)
+          delete user.role
         delete user.CREATED_BY
         delete user.UPDATED_BY      
 
