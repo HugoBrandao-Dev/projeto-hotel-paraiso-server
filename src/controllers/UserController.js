@@ -340,32 +340,39 @@ class UserController {
 
         for (let user of users) {
 
-          let createdBy = user.created.createdBy
-          let updatedBy = user.updated.updatedBy
+          const createdBy = user.CREATED_BY.length ? user.CREATED_BY[0] : {}
+          const updatedBy = user.UPDATED_BY.length ? user.UPDATED_BY[0] : {}
 
-          delete user.password
+          /* Modificação da estrutura do CREATED. */
 
-          /* Setta os valores do CREATED. */
+          // Transforma o formato da data de criação da conta em um formato mais inteligível.
+          user.created.createdAt = new Date(user.created.createdAt).toLocaleString()
 
           if (createdBy) {
-            const userWhoCreated = await User.findOne(createdBy)
-
             user.created.createdBy = {
-              id: userWhoCreated._id,
-              name: userWhoCreated.name
+              id: createdBy._id,
+              name: createdBy.name
             }
           }
 
-          /* Setta os valores do UPDATED. */
+          /* Modificação da estrutura do UPDATED. */
+
+          // Transforma o formato da data de atualização da conta em um formato mais inteligível.
+          user.updated.updatedAt = new Date(user.updated.updatedAt).toLocaleString()
 
           if (updatedBy) {
-            const userWhoUpdated = await User.findOne(updatedBy)
-
             user.updated.updatedBy = {
-              id: userWhoUpdated._id,
-              name: userWhoUpdated.name
+              id: updatedBy._id,
+              name: updatedBy.name
             }
           }
+
+          // Transforma o formato da data de nascimento do cliente em um formato mais inteligível.
+          user.birthDate = new Date(user.birthDate).toLocaleDateString()
+
+          delete user.password
+          delete user.CREATED_BY
+          delete user.UPDATED_BY
 
           user._links = await Generator.genHATEOAS(user._id, 'user', 'users', true)
         }

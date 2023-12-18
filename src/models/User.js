@@ -83,7 +83,38 @@ class User {
 
     try {
 
-      const users = await UserModel.find(_searchBy).lean()
+      const users = await UserModel.aggregate([
+        {
+          $match: { ..._searchBy }
+        },
+        {
+          $lookup: {
+            localField: 'created.createdBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'CREATED_BY',
+            pipeline: [
+              {
+                $project: { "name": true }
+              }
+            ]
+          }
+        },
+        {
+          $lookup: {
+            localField: 'updated.updatedBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'UPDATED_BY',
+            pipeline: [
+              {
+                $project: { "name": true }
+              }
+            ]
+          }
+        }
+      ])
+
       return users
 
     } catch (error) {
