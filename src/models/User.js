@@ -128,7 +128,34 @@ class User {
 
     try {
 
-      let users = await UserModel.find({ role: _role })
+      let users = await UserModel.aggregate([
+        {
+          $match: { role: _role }
+        },
+        {
+          $lookup: {
+            localField: 'created.createdBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'CREATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
+          }
+        },
+        {
+          $lookup: {
+            localField: 'updated.updatedBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'UPDATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
+          }
+        }
+      ])
+
       return users
 
     } catch (error) {
