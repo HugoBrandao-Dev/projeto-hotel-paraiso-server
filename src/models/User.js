@@ -171,7 +171,34 @@ class User {
 
       const { name, skip, limit } = _query
 
-      const users = await UserModel.find({}).skip(skip).limit(limit).lean()
+      const users = await UserModel.aggregate([
+        {
+          $lookup: {
+            localField: 'created.createdBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'CREATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
+          }
+        },
+        {
+          $lookup: {
+            localField: 'updated.updatedBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'UPDATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
+          }
+        },
+        { $skip: skip },
+        { $limit: limit }
+      ])
+
+      // find({}).skip(skip).limit(limit).lean()
 
       return users
 
