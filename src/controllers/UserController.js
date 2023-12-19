@@ -1,38 +1,17 @@
 const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
-const jwt = require('jsonwebtoken')
+const Token = require('../tools/TokenTools')
 const bcrypt = require('bcryptjs')
-const _ = require('lodash')
 
 // Models
 const User = require('../models/User')
 
-const secret = 'k372gkhcfmhg6l9nj19i51ng'
-
 const roles = {
   cliente: 0,
-  funcionário: 1,
+  funcionario: 1,
   gerente: 2,
   proprietário: 3,
   admin: 4
-}
-
-function getDecodedToken(bearerToken) {
-
-  let token = bearerToken.split(' ')[1]
-  let decodedToken = null
-  jwt.verify(token, secret, function(error, decoded) {
-
-    if (error) {
-      console.log(error)
-      return ''
-    } else {
-      decodedToken = decoded
-    }
-
-  })
-  return decodedToken
-
 }
 
 class UserController {
@@ -195,7 +174,10 @@ class UserController {
         user.address.information = req.body.information
       }
 
-      let userLogged = req.headers['authorization'] ? getDecodedToken(req.headers['authorization']) : false
+      const token = req.headers['authorization']
+      let decodedToken = Token.getDecodedToken(token)
+
+      let userLogged = req.headers['authorization'] ? decodedToken : false
 
       let userIDWhoCreated = userLogged ? userLogged.id : user.id
       const userID = await User.save(user, userIDWhoCreated)
@@ -215,7 +197,8 @@ class UserController {
     try {
 
       let id = req.params.id
-      const { role } = getDecodedToken(req.headers['authorization'])
+      const token = req.headers['authorization']
+      const { role } = Token.getDecodedToken(token)
 
       let errorFields = []
 
@@ -520,7 +503,9 @@ class UserController {
 
     try {
 
-      const { id: userIDWhoUpdated, role: roleToken } = getDecodedToken(req.headers['authorization'])
+      const token = req.headers['authorization']
+
+      const { id: userIDWhoUpdated, role: roleToken } = Token.getDecodedToken(token)
 
       const { 
         id,
@@ -875,25 +860,28 @@ class UserController {
       }
 
       let result = await User.findByDoc({ email })
+
       const user = result[0]
-      jwt.sign({
+
+      const objectForSignature = {
         id: user._id,
         email: user.email,
         role: user.role
-      }, secret, {
-        expiresIn: '24h'
-      }, function(error, token) {
-        if (error) {
-          console.log(error)
-        } else {
-          let response = { token }
+      }
 
-          response._links = Generator.genHATEOAS(user._id, 'user', 'users', user.role > 0)
+      let token = Token.gen(objectForSignature)
 
-          res.status(200)
-          res.json(response)
-        }
-      })
+      if (token) {
+        let response = { token }
+
+        response._links = Generator.genHATEOAS(user._id, 'user', 'users', user.role > 0)
+
+        res.status(200)
+        res.json(response)
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)
