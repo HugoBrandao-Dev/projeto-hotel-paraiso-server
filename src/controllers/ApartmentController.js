@@ -1,31 +1,9 @@
 const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
-const jwt = require('jsonwebtoken')
+const Token = require('../tools/TokenTools')
 const _ = require('lodash')
 
 const User = require('../models/User')
-
-let baseURL = 'http://localhost:4000'
-
-function getDecodedToken(bearerToken) {
-
-  const secret = 'k372gkhcfmhg6l9nj19i51ng'
-  let token = bearerToken.split(' ')[1]
-  let decodedToken = null
-  jwt.verify(token, secret, function(error, decoded) {
-
-    if (error) {
-      console.log(error)
-      return ''
-    } else {
-      decodedToken = decoded
-    }
-
-  })
-
-  return decodedToken
-
-}
 
 // Models
 const Apartment = require('../models/Apartment')
@@ -34,13 +12,20 @@ class ApartmentController {
 
   async create(req, res, next) {
 
+    /*
+      
+      Uma vez que é utilizada a ferramenta/middleware Multer para manipulação das imagens dos aptos,
+      o código que salva as imagens está no arquivo "multerConfig.js", na pasta "middleware".
+
+    */
+
     try {
 
       let floor = null
       let number = null
       let rooms = null
       let daily_price = null
-      let accepts_animals = null
+      let accepts_animals = false
 
       if (req.body.apartment) {
         let parsedApartment = JSON.parse(req.body.apartment)
@@ -91,31 +76,22 @@ class ApartmentController {
         return
       }
 
-      const decodedToken = getDecodedToken(req.headers['authorization'])
+      const token = req.headers['authorization']
+      const decodedToken = Token.getDecodedToken(token)
 
       let apartment = {}
-      apartment.id = Generator.genID()
       apartment.floor = floor
       apartment.number = number
       apartment.rooms = rooms
-      apartment.pictures = await Apartment.findPictures(apartment.number)
       apartment.daily_price = daily_price
       apartment.accepts_animals = accepts_animals
       apartment.reserve = {
-        status: "livre",
-        client_id: "",
-        reserved: {
-          reservedAt: "",
-          reservedBy: "",
-        },
-        start: "",
-        end: "",
+        status: "livre"
       }
       
-      await Apartment.save(apartment, decodedToken.id)
-      const savedApartment = await Apartment.findByNumber(number)
+      let idApto = await Apartment.save(apartment, decodedToken.id)
 
-      let HATEOAS = Generator.genHATEOAS(savedApartment.id, 'apartment', 'apartments', true)
+      let HATEOAS = Generator.genHATEOAS(idApto, 'apartment', 'apartments', true)
 
       res.status(201)
       res.json({ _links: HATEOAS })

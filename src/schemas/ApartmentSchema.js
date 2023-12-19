@@ -4,29 +4,30 @@ const ApartmentSchema = new mongoose.Schema({
   floor: String,
   number: String,
   rooms: Array,
-  pictures: Array,
   daily_price: Number,
   accepts_animals: Boolean,
   reserve: {
     status: String,
-    client_id: String,
+    clientId: mongoose.Schema.Types.ObjectId,
     reserved: {
-      reservedAt: String,
-      reservedBy: String
+      reservedAt: Date,
+      reservedBy: mongoose.Schema.Types.ObjectId
     },
     start: Date,
     end: Date
   },
   created: {
-    createdBy: String
+    createdAt: Date,
+    createdBy: mongoose.Schema.Types.ObjectId
   },
   updated: {
-    updatedBy: String
+    updatedAt: Date,
+    updatedBy: mongoose.Schema.Types.ObjectId
   }
 }, {
   timestamps: {
-    createdAt: "created",
-    updatedAt: "updated"
+    createdAt: "created.createdAt",
+    updatedAt: "updated.updatedAt"
   }
 })
 

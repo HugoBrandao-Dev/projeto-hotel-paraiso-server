@@ -1,27 +1,30 @@
 let ApartmentCollection = require('../data/ApartmentCollection.json')
 let DateFormated = require('../tools/DateFormated')
 const Generator = require('../tools/Generator')
+let mongoose = require('mongoose')
 
 let fileSystem = require('fs')
 let path = require('path')
 
+const ApartmentSchema = require('../schemas/ApartmentSchema')
+const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
+
 const date = new DateFormated('mongodb')
 
 class Apartment {
-  async save(apartment, createdBy) {
+  async save(_apartment, _createdBy) {
 
     try {
-      apartment.created = {
-        createdAt: date.getDateTime(),
-        createdBy
+
+      _apartment.created = {
+        createdBy: _createdBy
       }
-      apartment.updated = {
-        updatedAt: "",
-        updatedBy: ""
-      }
+
+      const apartment = new ApartmentModel(_apartment)
       
-      await ApartmentCollection.apartments.data.push(apartment)
-      return
+      let result = await apartment.save()
+
+      return result._id
 
     } catch (error) {
       console.log(error)
