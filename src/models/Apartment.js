@@ -77,7 +77,7 @@ class Apartment {
 
   }
 
-  async findMany(query, hasPrivs) {
+  async findMany(_query) {
 
     try {
 
@@ -90,55 +90,37 @@ class Apartment {
         skip,
         limit,
         sort
-      } = query
+      } = _query
 
-      if (!hasPrivs)
-        status = 'livre'
-
-      let apartments = await ApartmentCollection.apartments.data
-
-      if (status)
-        apartments = await apartments.filter(apto => apto.reserve.status == status)
-
-      if (rooms)
-        apartments = await apartments.filter(apto => {
-          const roomsAmont = apto.rooms.map(room => parseInt(room.quantity)).reduce((acu, next) => acu + next)
-          return roomsAmont == rooms
-        })
-
-      if (lowest_daily_price)
-        apartments = await apartments.filter(apto => apto.daily_price >= lowest_daily_price)
-
-      if (highest_daily_price)
-        apartments = await apartments.filter(apto => apto.daily_price <= highest_daily_price)
-
-      if (accepts_animals)
-        apartments = await apartments.filter(apto => apto.accepts_animals == accepts_animals)
-
-      apartments = await apartments.slice(skip, (skip + limit))
-
-      if (sort) {
-        const sortType = sort.split(':')[1]
-
-        if (sortType == 'asc') {
-          apartments = await apartments.sort((apto1, apto2) => apto1.daily_price - apto2.daily_price)
-        } else {
-
-          /*
-          É preciso retirar o último item do array, caso hasNext seja true, para ordenamento 'DESC'.
-          */
-          let toBeOrdered = await apartments.slice(0, limit - 1)
-          let hasNext = apartments.length > toBeOrdered.length
-          let ordered = null
-          if (hasNext) {
-            ordered = await toBeOrdered.sort((apto1, apto2) => apto2.daily_price - apto1.daily_price)
-            ordered.push(apartments.slice(-1)[0])
-          } else {
-            ordered = await apartments.sort((apto1, apto2) => apto2.daily_price - apto1.daily_price)
+      let apartments = await ApartmentModel.aggregate([
+        {
+          $match: { status }
+        },
+        {
+          $lookup: {
+            localField: 'created.createdBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'CREATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
           }
-          apartments = ordered
-        }
-      }
+        },
+        {
+          $lookup: {
+            localField: 'updated.updatedBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'UPDATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
+          }
+        },
+        { $skip: skip },
+        { $limit: limit }
+      ])
 
       return apartments
 

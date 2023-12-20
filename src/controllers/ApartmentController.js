@@ -163,6 +163,7 @@ class ApartmentController {
       }
 
       delete apartment.CREATED_BY
+      delete apartment.UPDATED_BY
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
 
@@ -193,14 +194,15 @@ class ApartmentController {
         sort
       } = req.query
 
-      let skip = null
-      let decodedToken = null
-      let hasPrivs = false // Funcionário++
-      if (req.headers['authorization']) {
-        decodedToken = getDecodedToken(req.headers['authorization'])
-        hasPrivs = decodedToken.role > 0
-      }
       let query = {}
+      let decodedToken = { role: 0 }
+      if (req.headers['authorization']) {
+        let token = req.headers['authorization']
+        decodedToken = Token.getDecodedToken(token)
+        if (decodedToken.role == 0)
+          query.status = 'livre'
+      }
+
       let errorFields = []
 
       let listOfQueryString = Object.keys(req.query)
@@ -294,56 +296,46 @@ class ApartmentController {
         return
       }
 
-      let results = await Apartment.findMany(query, hasPrivs)
-      let apartments = []
+      let apartments = await Apartment.findMany(query)
 
-      for (let item of results) {
+      for (let apartment of apartments) {
 
-        let apartment = _.cloneDeep(item)
+        const createdBy = apartment.CREATED_BY.length ? apartment.CREATED_BY[0] : {}
+        const updatedBy = apartment.UPDATED_BY.length ? apartment.UPDATED_BY[0] : {}
 
-        delete apartment.created
-        delete apartment.updated
+        if (decodedToken.role > 0) {
 
-        if (decodedToken && decodedToken.role > 0) {
-          const userWhoCreated = await User.findOne(item.created.createdBy)
+          /* Modificação da estrutura do CREATED. */
 
-          // Setta os valores do CREATED.
-          apartment.created = {
-            createdAt: item.created.createdAt,
-            createdBy: {
-              id: userWhoCreated.id,
-              name: userWhoCreated.name
-            }
+          // Transforma o formato da data de criação do apto em um formato mais inteligível.
+          apartment.created.createdAt = new Date(apartment.created.createdAt).toLocaleString()
+
+          apartment.created.createdBy = {
+            id: createdBy._id,
+            name: createdBy.name
           }
 
-          if (item.updated.updatedBy) {
-            const userWhoUpdated = await User.findOne(item.updated.updatedBy)
+          /* Modificação da estrutura do UPDATED. */
 
-            // Setta os valores do UPDATED.
-            apartment.updated = {
-              updatedAt: item.updated.updatedAt,
-              updatedBy: {
-                id: userWhoUpdated.id,
-                name: userWhoUpdated.name
-              }
-            }
-          } else {
-            apartment.updated = {
-              updatedAt: "",
-              updatedBy: {
-                id: "",
-                name: "",
-              }
-            }
+          // Transforma o formato da data de atualização de um apto em um formato mais inteligível.
+          apartment.updated.updatedAt = new Date(apartment.updated.updatedAt).toLocaleString()
+
+          apartment.updated.updatedBy = {
+            id: updatedBy._id,
+            name: updatedBy.name
           }
+
         } else {
           delete apartment.reserve
+          delete apartment.created
+          delete apartment.updated
         }
+
+        delete apartment.CREATED_BY
+        delete apartment.UPDATED_BY
         
         let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', false)
         apartment._links = HATEOAS
-
-        apartments.push(apartment)
       }
 
       let hasNext = apartments.length > query.limit - 1
