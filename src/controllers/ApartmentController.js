@@ -121,8 +121,7 @@ class ApartmentController {
         return
       }
       
-      let result = await Apartment.findOne(id)
-      let apartment = result[0]
+      let apartment = await Apartment.findOne(id)
 
       if (req.headers['authorization']) {
         const token = req.headers['authorization']

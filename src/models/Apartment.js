@@ -51,7 +51,7 @@ class Apartment {
             foreignField: '_id',
             as: 'CREATED_BY',
             pipeline: [
-              { $project: { "name": true } }
+              { $project: { 'name': true } }
             ]
           }
         },
@@ -62,13 +62,13 @@ class Apartment {
             foreignField: '_id',
             as: 'UPDATED_BY',
             pipeline: [
-              { $project: { "name": true } }
+              { $project: { 'name': true } }
             ]
           }
         }
       ])
 
-      return apartment
+      return apartment[0]
 
     } catch (error) {
       console.log(error)
@@ -132,14 +132,45 @@ class Apartment {
   }
 
   // Busca por um apartamento pelo seu Número
-  async findByNumber(number) {
+  async findByNumber(_number) {
+
     try {
-      let apartment = await ApartmentCollection.apartments.data.find(ap => ap.number == number)
-      return apartment
+
+      let apartment = await ApartmentModel.aggregate([
+        {
+          $match: { number: _number }
+        },
+        {
+          $lookup: {
+            localField: 'created.createdBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'CREATED_BY',
+            pipeline: [
+              { $project: { 'name': true } }
+            ]
+          }
+        },
+        {
+          $lookup: {
+            localField: 'updated.updatedBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'UPDATED_BY',
+            pipeline: [
+              { $project: { 'name': true } }
+            ]
+          }
+        }
+      ])
+
+      return apartment[0]
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   // Faz a busca das imagens de um apartamento, baseado em seu número.
