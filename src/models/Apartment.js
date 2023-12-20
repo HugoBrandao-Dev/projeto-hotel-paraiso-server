@@ -1,5 +1,3 @@
-let ApartmentCollection = require('../data/ApartmentCollection.json')
-let DateFormated = require('../tools/DateFormated')
 const Generator = require('../tools/Generator')
 let mongoose = require('mongoose')
 
@@ -11,8 +9,6 @@ const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
 
 // Necessário para verificação de igualdade entre IDs.
 const ObjectId = mongoose.Types.ObjectId
-
-const date = new DateFormated('mongodb')
 
 class Apartment {
   async save(_apartment, _createdBy) {
@@ -219,27 +215,20 @@ class Apartment {
 
   }
 
-  async delete(id) {
+  async delete(_id) {
 
     try {
 
-      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == id)
+      let apartment = await ApartmentModel.findByIdAndDelete(_id)
 
-      if (apartmentIndex == -1) {
-        return 
-      } else {
-        let aptoNumber = await ApartmentCollection.apartments.data[apartmentIndex]['number']
-        let apartment = await ApartmentCollection.apartments.data.splice(apartmentIndex, 1)
-
-        // Faz a deleção da pasta de imagens do apto.
-        let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ aptoNumber }`)
-        let hasFolder = await fileSystem.existsSync(src) ? true : false
-        if (hasFolder) {
-          fileSystem.rmdirSync(src, { recursive: true, retryDelay: 1000 })
-        }
-
-        return apartment
+      // Faz a deleção da pasta de imagens do apto.
+      let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment.number }`)
+      let hasFolder = await fileSystem.existsSync(src) ? true : false
+      if (hasFolder) {
+        fileSystem.rmdirSync(src, { recursive: true, retryDelay: 1000 })
       }
+
+      return
 
     } catch (error) {
       console.log(error)

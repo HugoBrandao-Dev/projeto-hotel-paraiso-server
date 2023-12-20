@@ -503,7 +503,7 @@ class ApartmentController {
         const RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
-        result
+        return
       }
 
       await Apartment.delete(id)
