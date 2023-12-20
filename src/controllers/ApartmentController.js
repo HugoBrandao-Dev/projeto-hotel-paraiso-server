@@ -122,52 +122,47 @@ class ApartmentController {
       }
       
       let result = await Apartment.findOne(id)
-
-      let apartment = _.cloneDeep(result)
-
-      delete apartment.created
-      delete apartment.updated
+      let apartment = result[0]
 
       if (req.headers['authorization']) {
-        const decodedToken = getDecodedToken(req.headers['authorization'])
+        const token = req.headers['authorization']
+        const decodedToken = Token.getDecodedToken(token)
         if (decodedToken.role > 0) {
-          const userWhoCreated = await User.findOne(result.created.createdBy)
 
-          // Setta os valores do CREATED.
-          apartment.created = {
-            createdAt: result.created.createdAt,
-            createdBy: {
-              id: userWhoCreated.id,
-              name: userWhoCreated.name
-            }
+          const createdBy = apartment.CREATED_BY.length ? apartment.CREATED_BY[0] : {}
+          const updatedBy = apartment.UPDATED_BY.length ? apartment.UPDATED_BY[0] : {}
+
+          /* Modificação da estrutura do CREATED. */
+
+          // Transforma o formato da data de criação do apto em um formato mais inteligível.
+          apartment.created.createdAt = new Date(apartment.created.createdAt).toLocaleString()
+
+          apartment.created.createdBy = {
+            id: createdBy._id,
+            name: createdBy.name
           }
 
-          if (result.updated.updatedBy) {
-            const userWhoUpdated = await User.findOne(result.updated.updatedBy)
+          /* Modificação da estrutura do UPDATED. */
 
-            // Setta os valores do UPDATED.
-            apartment.updated = {
-              updatedAt: result.updated.updatedAt,
-              updatedBy: {
-                id: userWhoUpdated.id,
-                name: userWhoUpdated.name
-              }
-            }
-          } else {
-            apartment.updated = {
-              updatedAt: "",
-              updatedBy: {
-                id: "",
-                name: "",
-              }
-            }
+          // Transforma o formato da data de atualização de um apto em um formato mais inteligível.
+          apartment.updated.updatedAt = new Date(apartment.updated.updatedAt).toLocaleString()
+
+          apartment.updated.updatedBy = {
+            id: updatedBy._id,
+            name: updatedBy.name
           }
+
+        // Para cliente logado.
         } else {
           delete apartment.reserve
         }
+
+      // Para usuário que acessam o site.
       } else {
         delete apartment.reserve
       }
+
+      delete apartment.CREATED_BY
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
 

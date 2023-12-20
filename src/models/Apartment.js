@@ -9,6 +9,9 @@ let path = require('path')
 const ApartmentSchema = require('../schemas/ApartmentSchema')
 const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
 
+// Necessário para verificação de igualdade entre IDs.
+const ObjectId = mongoose.Types.ObjectId
+
 const date = new DateFormated('mongodb')
 
 class Apartment {
@@ -33,14 +36,45 @@ class Apartment {
 
   }
 
-  async findOne(id) {
+  async findOne(_id) {
+
     try {
-      let apartment = await ApartmentCollection.apartments.data.find(ap => ap.id == id)
+
+      let apartment = await ApartmentModel.aggregate([
+        {
+          $match: { _id: ObjectId(_id) }
+        },
+        {
+          $lookup: {
+            localField: 'created.createdBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'CREATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
+          }
+        },
+        {
+          $lookup: {
+            localField: 'updated.updatedBy',
+            from: 'users',
+            foreignField: '_id',
+            as: 'UPDATED_BY',
+            pipeline: [
+              { $project: { "name": true } }
+            ]
+          }
+        }
+      ])
+
       return apartment
+
     } catch (error) {
       console.log(error)
       return []
     }
+
   }
 
   async findMany(query, hasPrivs) {
