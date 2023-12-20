@@ -1,9 +1,6 @@
 const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
 const Token = require('../tools/TokenTools')
-const _ = require('lodash')
-
-const User = require('../models/User')
 
 // Models
 const Apartment = require('../models/Apartment')
@@ -358,6 +355,13 @@ class ApartmentController {
   }
 
   async update(req, res, next) {
+
+    /*
+      
+      Uma vez que é utilizada a ferramenta/middleware Multer para manipulação das imagens dos aptos,
+      o código que salva as imagens está no arquivo "multerConfig.js", na pasta "middleware".
+
+    */
 
     try {
 
