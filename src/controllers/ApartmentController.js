@@ -396,8 +396,6 @@ class ApartmentController {
       if (idResult.hasError.value) {
         if (idResult.hasError.value != 4)
           errorFields.push(idResult)
-      } else {
-        apartment.id = id
       }
 
       let apartmentRegistred = await Apartment.findByNumber(number)
@@ -445,7 +443,7 @@ class ApartmentController {
         apartment.picturesToBeDeleted = []
       
       if (daily_price) {
-        const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)
+        const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice((daily_price).toString())
         if (dailyPriceResult.hasError.value) {
           errorFields.push(dailyPriceResult)
         } else {
@@ -460,11 +458,17 @@ class ApartmentController {
         return
       }
 
+
+      const token = req.headers['authorization']
+      const decodedToken = Token.getDecodedToken(token)
+
+      apartment.updated = {
+        updatedBy: decodedToken.id
+      }
+
+      await Apartment.edit(id, apartment)
+
       let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
-
-      const decodedToken = getDecodedToken(req.headers['authorization'])
-
-      await Apartment.edit(apartment, decodedToken.id)
 
       res.status(200)
       res.json({ _links: HATEOAS })

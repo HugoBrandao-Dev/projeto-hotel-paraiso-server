@@ -204,33 +204,13 @@ class Apartment {
 
   }
 
-  async edit(apartment, updatedBy) {
+  async edit(_apartmentToBeUpdated, _apartment) {
 
     try {
 
-      apartment.updated = {
-        updatedAt: date.getDateTime(),
-        updatedBy
-      }
+      let apartment = await ApartmentModel.findByIdAndUpdate(_apartmentToBeUpdated, _apartment)
 
-      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(doc => doc.id == apartment.id)
-      let infos = Object.keys(apartment)
-      for (let info of infos) {
-        if (info != 'id') {
-          ApartmentCollection.apartments.data[apartmentIndex][info] = apartment[info]
-        }
-      }
-
-      const aptoNumber = ApartmentCollection.apartments.data[apartmentIndex]['number']
-
-      if (apartment.picturesToBeDeleted.length) {
-        for (let pic of apartment.picturesToBeDeleted) {
-          let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ aptoNumber }/${ pic }`)
-          fileSystem.unlinkSync(src)
-        }
-      }
-
-      return
+      return apartment._id
 
     } catch (error) {
       console.log(error)
