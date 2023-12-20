@@ -367,6 +367,7 @@ class ApartmentController {
       let rooms = null
       let picturesToBeDeleted = []
       let daily_price = null
+      let accepts_animals = null
 
       if (req.body.apartment) {
         let parsedApartment = JSON.parse(req.body.apartment)
@@ -378,6 +379,7 @@ class ApartmentController {
           picturesToBeDeleted = parsedApartment.picturesToBeDeleted
         }
         daily_price = parsedApartment.daily_price
+        accepts_animals = parsedApartment.accepts_animals
       } else {
         id = req.body.id
         floor = req.body.floor
@@ -387,6 +389,7 @@ class ApartmentController {
           picturesToBeDeleted = req.body.picturesToBeDeleted
         }
         daily_price = req.body.daily_price
+        accepts_animals = req.body.accepts_animals
       }
 
       let errorFields = []
@@ -402,11 +405,10 @@ class ApartmentController {
 
       if (floor) {
         const floorResult = Analyzer.analyzeApartmentFloor(floor)
-        if (floorResult.hasError.value) {
+        if (floorResult.hasError.value)
           errorFields.push(floorResult)
-        } else {
+        else
           apartment.floor = floor
-        }
       }
       
       if (number) {
@@ -419,9 +421,8 @@ class ApartmentController {
             // Verifica se o número do apartamento já pertence a ele próprio.
             let isTheSameApartment = apartmentRegistred.id == id
 
-            if (!isTheSameApartment) {
+            if (!isTheSameApartment)
               errorFields.push(numberResult)
-            }
           }
         } else {
           apartment.number = number
@@ -430,11 +431,10 @@ class ApartmentController {
       
       if (rooms) {
         const roomsResult = Analyzer.analyzeApartmentRooms(rooms)
-        if (roomsResult.hasError.value) {
+        if (roomsResult.hasError.value)
           errorFields.push(roomsResult)
-        } else {
+        else
           apartment.rooms = rooms
-        }
       }
 
       if (picturesToBeDeleted.length)
@@ -444,11 +444,18 @@ class ApartmentController {
       
       if (daily_price) {
         const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice((daily_price).toString())
-        if (dailyPriceResult.hasError.value) {
+        if (dailyPriceResult.hasError.value)
           errorFields.push(dailyPriceResult)
-        } else {
-          apartment.daily_price = daily_price        
-        }
+        else
+          apartment.daily_price = daily_price
+      }
+
+      if (accepts_animals || accepts_animals == 0) {
+        const acceptsAnimalsResult = Analyzer.analyzeApartmentAcceptsAnimals((accepts_animals).toString())
+        if (acceptsAnimalsResult.hasError.value)
+          errorFields.push(acceptsAnimalsResult)
+        else
+          apartment.accepts_animals = accepts_animals
       }
       
       if (errorFields.length) {
@@ -457,7 +464,6 @@ class ApartmentController {
         res.json({ RestException })
         return
       }
-
 
       const token = req.headers['authorization']
       const decodedToken = Token.getDecodedToken(token)
