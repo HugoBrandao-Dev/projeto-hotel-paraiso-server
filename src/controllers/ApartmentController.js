@@ -204,7 +204,7 @@ class ApartmentController {
       let listOfQueryString = Object.keys(req.query)
 
       if (listOfQueryString.length) {
-        let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments', hasPrivs)
+        let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments', decodedToken.role > 0)
         if (queryStringResult.hasError.value) {
           errorFields.push(queryStringResult)
         } else {
@@ -225,7 +225,7 @@ class ApartmentController {
             if (roomsResult.hasError.value)
               errorFields.push(roomsResult)
             else
-              query.rooms = rooms
+              query.rooms = parseInt(rooms)
           }
 
           if (queryStringArray.includes('lowest_daily_price')) {
@@ -233,7 +233,7 @@ class ApartmentController {
             if (lowestDailyPriceResult.hasError.value)
               errorFields.push(lowestDailyPriceResult)
             else
-              query.lowest_daily_price = lowest_daily_price
+              query.lowest_daily_price = parseFloat(lowest_daily_price)
           }
 
           if (queryStringArray.includes('highest_daily_price')) {
@@ -241,7 +241,7 @@ class ApartmentController {
             if (highestDailyPriceResult.hasError.value)
               errorFields.push(highestDailyPriceResult)
             else
-              query.highest_daily_price = highest_daily_price
+              query.highest_daily_price = parseFloat(highest_daily_price)
           }
 
           if (queryStringArray.includes('accepts_animals')) {
@@ -249,11 +249,11 @@ class ApartmentController {
             if (acceptsAnimalsResult.hasError.value)
               errorFields.push(acceptsAnimalsResult)
             else
-              query.accepts_animals = accepts_animals
+              query.accepts_animals = accepts_animals == 1
           }
 
           if (queryStringArray.includes('offset')) {
-            let offsetResult = await Analyzer.analyzeFilterSkip(offset, hasPrivs)
+            let offsetResult = await Analyzer.analyzeFilterSkip(offset, decodedToken.role > 0)
             if (offsetResult.hasError.value) {
               errorFields.push(offsetResult)
             } else {
@@ -273,10 +273,32 @@ class ApartmentController {
 
           if (queryStringArray.includes('sort')) {
             let sortResult = await Analyzer.analyzeApartmentFilterSort(sort)
-            if (sortResult.hasError.value)
+            if (sortResult.hasError.value) {
               errorFields.push(sortResult)
-            else
-              query.sort = sort
+            } else {
+              query.sort = {}
+
+              // Separa todos os parâmetros de ordenamento.
+              let toSort = sort.split(',')
+
+              /*
+              Estrutura os parâmetros em um único objeto, para que seja passado diretamente para o Mongo.
+              { $sort: { <field_1>: <value_1>, <field_2>: <value_2>, ... } }
+              */ 
+              for (let item of toSort) {
+                let field = item.split(':')[0]
+                let sortOrder = item.split(':')[1]
+
+                // No mongo, 1 é ASC e -1 é DESC.
+                query.sort[field] = sortOrder == 'asc' ? 1 : -1
+              }
+
+            }
+          } else {
+
+            // Valor PADRÃO de ordenamento (Obrigatório para o Mongo DB).
+            query.sort = { 'daily_price': 1 }
+
           }
 
         }
@@ -348,7 +370,6 @@ class ApartmentController {
       }
 
     } catch(error) {
-      throw new Error(error)
       next(error)
     }
 

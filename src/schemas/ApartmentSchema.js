@@ -3,7 +3,13 @@ const mongoose = require('mongoose')
 const ApartmentSchema = new mongoose.Schema({
   floor: String,
   number: String,
-  rooms: Array,
+  rooms: [
+    {
+      _id: false,
+      room: String,
+      quantity: Number
+    }
+  ],
   daily_price: Number,
   accepts_animals: Boolean,
   reserve: {

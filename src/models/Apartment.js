@@ -83,40 +83,102 @@ class Apartment {
         lowest_daily_price,
         highest_daily_price,
         accepts_animals,
+        sort,
         skip,
-        limit,
-        sort
+        limit
       } = _query
 
-      let apartments = await ApartmentModel.aggregate([
+      let query = [
         {
-          $match: { status }
-        },
-        {
-          $lookup: {
-            localField: 'created.createdBy',
-            from: 'users',
-            foreignField: '_id',
-            as: 'CREATED_BY',
-            pipeline: [
-              { $project: { "name": true } }
-            ]
+          $redact: {
+            $cond: [{ $and: [] }, '$$KEEP', '$$PRUNE']
           }
-        },
-        {
-          $lookup: {
-            localField: 'updated.updatedBy',
-            from: 'users',
-            foreignField: '_id',
-            as: 'UPDATED_BY',
-            pipeline: [
-              { $project: { "name": true } }
-            ]
+        }
+      ]
+
+      /* DEFINE OS VALORES INFORMADOS PELO NA URL */
+
+      if (status) {
+        query[0].$redact.$cond[0].$and.push({
+          'status': status
+        })
+      }
+
+      // Soma a quantidade de dos cômodos do apto.
+      let calcRooms = {
+        $sum: {
+          $map: {
+            input: '$rooms',
+            as: 'total_rooms',
+            in: '$$total_rooms.quantity'
           }
-        },
-        { $skip: skip },
-        { $limit: limit }
-      ])
+        }
+      }
+
+      if (rooms) {
+        query[0].$redact.$cond[0].$and.push({
+          $eq: [calcRooms, rooms]
+        })
+      }
+
+      if (lowest_daily_price) {
+        query[0].$redact.$cond[0].$and.push({
+          $gte: ['$daily_price', lowest_daily_price]
+        })
+      }
+
+      if (highest_daily_price) {
+        query[0].$redact.$cond[0].$and.push({
+          $lte: ['$daily_price', highest_daily_price]
+        })
+      }
+
+      if (accepts_animals == 0 || accepts_animals == 0) {
+        query[0].$redact.$cond[0].$and.push({
+          'accepts_animals': accepts_animals
+        })
+      }
+
+      /* JOIN PARA ACESSO AOS IDs DE QUEM CRIOU E QUE ATUALIZOU O APTO */
+
+      // Created
+      query.push({
+        $lookup: {
+          localField: 'created.createdBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'CREATED_BY',
+          pipeline: [
+            { $project: { "name": true } }
+          ]
+        }
+      })
+
+      // Updated
+      query.push({
+        $lookup: {
+          localField: 'updated.updatedBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'UPDATED_BY',
+          pipeline: [
+            { $project: { "name": true } }
+          ]
+        }
+      })
+
+      /* DEFINE A ESTRUTRUA DO sort, skip e limit */
+      
+      if (skip)
+        query.push({ $skip: skip })
+
+      if (limit)
+        query.push({ $limit: limit })
+
+      if (sort)
+        query.push({ $sort: sort })
+
+      let apartments = await ApartmentModel.aggregate(query)
 
       return apartments
 
