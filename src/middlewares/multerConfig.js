@@ -23,30 +23,35 @@ function fileFilter (req, file, callback) {
   } else {
     callback(null, true)
   }
+
 }
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    let apartment = JSON.parse(req.body.apartment)
-    let aptoNumber = null
+    if (!req.body.apartment) {
+      callback(new Error('format'))
+    } else {
+      let apartment = JSON.parse(req.body.apartment)
+      let aptoNumber = null
 
-    if (apartment.number)
-      aptoNumber = apartment.number
-    else if (apartment.id)
-      aptoNumber = ApartmentsTools.getApartmentByID(apartment.id).number
+      if (apartment.number)
+        aptoNumber = apartment.number
+      else if (apartment.id)
+        aptoNumber = ApartmentsTools.getApartmentByID(apartment.id).number
 
-    let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ aptoNumber }`)
+      let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ aptoNumber }`)
 
-    // Cria uma pasta com o nome do número do apto, para armazenar as imagens.
-    fileSystem.mkdir(src, { recursive: true }, (error, response) => {
+      // Cria uma pasta com o nome do número do apto, para armazenar as imagens.
+      fileSystem.mkdir(src, { recursive: true }, (error, response) => {
 
-      if (error) {
-        console.log(error)
-      } else {
-        callback(null, src)
-      }
+        if (error) {
+          console.log(error)
+        } else {
+          callback(null, src)
+        }
 
-    })
+      })
+    }
   },
   filename: function (req, file, callback) {
     let extension = path.extname(file.originalname)
@@ -65,17 +70,16 @@ function multerFiles(req, res, next) {
   upload(req, res, async function(error) {
     try {
       if (error) {
-        let RestException = {}
-        RestException.Code = '2'
-        RestException.Message = 'A extensão das imagens é inválida'
-        RestException.Status = '400'
-        RestException.MoreInfo = `${ projectLinks.errors }/2`
-        RestException.ErrorFields = [{
-          field: 'iptImages',
-          hasError: {
-            error: "A extensão das imagens é inválida"
-          }
-        }]
+        let result = { field: '', hasError: { value: true, type: 2, error: '' }}
+
+        if (error.message == 'format') {
+          result.hasError.error = 'A estrutura enviada é inválida'
+        } else {
+          result.field = 'iptImages'
+          result.hasError.error = 'A extensão das imagens é inválida'
+        }
+
+        let RestException = Generator.genRestException([result], !!result.field)
         res.status(400)
         res.json({ RestException })
         return
