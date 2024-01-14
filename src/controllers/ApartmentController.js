@@ -2,6 +2,9 @@ const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
 const Token = require('../tools/TokenTools')
 
+const fileSystem = require('fs')
+const path = require('path')
+
 // Models
 const Apartment = require('../models/Apartment')
 
@@ -67,6 +70,19 @@ class ApartmentController {
       }
 
       if (errorFields.length) {
+
+        /*
+        Faz a deleção das imagens enviadas, caso haja algum erro no formulário, já que o multer armazena as imagens INDEPENDENTEMENTE do formulário do apto estiver CERTO OU NÃO.
+        */
+        if (number && req.files.length) {
+          for (let item of req.files) {
+
+            // O item.filename é o nome da img JÁ COM A HASH.
+            let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ number }/${ item.filename }`)
+            fileSystem.unlinkSync(src)
+          }
+        }
+
         const RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
