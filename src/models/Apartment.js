@@ -23,6 +23,17 @@ class Apartment {
       
       let result = await apartment.save()
 
+      if (_apartment.pictures.length) {
+        let dest = path.resolve(__dirname, `../../src/data/apartments/${ result.number }`)
+        fileSystem.mkdirSync(dest, { recursive: true })
+        for (let file of _apartment.pictures) {
+          let src = path.resolve(__dirname, `../../src/tmp/uploads/pictures/${ file }`)
+          let destWithFileName = path.resolve(dest, file)
+          fileSystem.copyFileSync(src, destWithFileName)
+          fileSystem.unlinkSync(src)
+        }
+      }
+
       return result._id
 
     } catch (error) {
@@ -267,6 +278,24 @@ class Apartment {
     try {
 
       let apartment = await ApartmentModel.findByIdAndUpdate(_apartmentToBeUpdated, _apartment)
+
+      if (_apartment.pictures.length) {
+        let dest = path.resolve(__dirname, `../../src/data/apartments/${ apartment.number }`)
+        fileSystem.mkdirSync(dest, { recursive: true })
+        for (let file of _apartment.pictures) {
+          let src = path.resolve(__dirname, `../../src/tmp/uploads/pictures/${ file }`)
+          let destWithFileName = path.resolve(dest, file)
+          fileSystem.copyFileSync(src, destWithFileName)
+          fileSystem.unlinkSync(src)
+        }
+      }
+
+      if (_apartment.picturesToBeDeleted.length) {
+        for (let file of _apartment.picturesToBeDeleted) {
+          let src = path.resolve(__dirname, `../../src/data/apartments/${ apartment.number }/${ file }.jpg`)
+          fileSystem.unlinkSync(src)
+        }
+      }
 
       return apartment._id
 

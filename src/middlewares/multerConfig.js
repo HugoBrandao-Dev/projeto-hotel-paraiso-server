@@ -1,6 +1,5 @@
 const multer = require('multer')
 const Generator = require('../tools/Generator')
-const ApartmentsTools = require('../tools/ApartmentsTools')
 
 const path = require('path')
 const fileSystem = require('fs')
@@ -31,15 +30,8 @@ const storage = multer.diskStorage({
     if (!req.body.apartment) {
       callback(new Error('format'))
     } else {
-      let apartment = JSON.parse(req.body.apartment)
-      let aptoNumber = null
 
-      if (apartment.number)
-        aptoNumber = apartment.number
-      else if (apartment.id)
-        aptoNumber = ApartmentsTools.getApartmentByID(apartment.id).number
-
-      let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ aptoNumber }`)
+      let src = path.resolve(__dirname, `../tmp/uploads/pictures`)
 
       // Cria uma pasta com o nome do número do apto, para armazenar as imagens.
       fileSystem.mkdir(src, { recursive: true }, (error, response) => {

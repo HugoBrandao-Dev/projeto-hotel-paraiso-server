@@ -70,19 +70,6 @@ class ApartmentController {
       }
 
       if (errorFields.length) {
-
-        /*
-        Faz a deleção das imagens enviadas, caso haja algum erro no formulário, já que o multer armazena as imagens INDEPENDENTEMENTE do formulário do apto estiver CERTO OU NÃO.
-        */
-        if (number && req.files.length) {
-          for (let item of req.files) {
-
-            // O item.filename é o nome da img JÁ COM A HASH.
-            let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ number }/${ item.filename }`)
-            fileSystem.unlinkSync(src)
-          }
-        }
-
         const RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
@@ -96,6 +83,7 @@ class ApartmentController {
       apartment.floor = floor
       apartment.number = number
       apartment.rooms = rooms
+      apartment.pictures = req.files.map(file => file.filename)
       apartment.daily_price = daily_price
       apartment.accepts_animals = accepts_animals
       apartment.reserve = {
@@ -409,24 +397,27 @@ class ApartmentController {
       let picturesToBeDeleted = []
       let daily_price = null
       let accepts_animals = null
+      let declaredFields = null
 
       if (req.body.apartment) {
         let parsedApartment = JSON.parse(req.body.apartment)
+        declaredFields = Object.keys(parsedApartment)
         id = parsedApartment.id
         floor = parsedApartment.floor
         number = parsedApartment.number
         rooms = parsedApartment.rooms
-        if (parsedApartment.picturesToBeDeleted && parsedApartment.picturesToBeDeleted.length) {
+        if (declaredFields.includes('picturesToBeDeleted') && parsedApartment.picturesToBeDeleted.length) {
           picturesToBeDeleted = parsedApartment.picturesToBeDeleted
         }
         daily_price = parsedApartment.daily_price
         accepts_animals = parsedApartment.accepts_animals
       } else {
+        declaredFields = Object.keys(req.body)
         id = req.body.id
         floor = req.body.floor
         number = req.body.number
         rooms = req.body.rooms
-        if (req.body.picturesToBeDeleted && req.body.picturesToBeDeleted.length) {
+        if (declaredFields.includes('picturesToBeDeleted') && req.body.picturesToBeDeleted.length) {
           picturesToBeDeleted = req.body.picturesToBeDeleted
         }
         daily_price = req.body.daily_price
@@ -509,6 +500,7 @@ class ApartmentController {
       const token = req.headers['authorization']
       const decodedToken = Token.getDecodedToken(token)
 
+      apartment.pictures = req.files.map(file => file.filename)
       apartment.updated = {
         updatedBy: decodedToken.id
       }
