@@ -273,16 +273,22 @@ class Apartment {
 
   }
 
-  async edit(_apartmentToBeUpdated, _apartment) {
+  async edit(_apartmentToBeUpdated, _apartment, _others) {
 
     try {
 
       let apartment = await ApartmentModel.findByIdAndUpdate(_apartmentToBeUpdated, _apartment)
 
-      if (_apartment.pictures.length) {
-        let dest = path.resolve(__dirname, `../../src/data/apartments/${ apartment.number }`)
+      if (_others.oldNumber) {
+        let oldSrc = path.resolve(__dirname, `../../src/data/apartments/${ _others.oldNumber }`)
+        let newSrc = path.resolve(__dirname, `../../src/data/apartments/${ _apartment.number }`)
+        fileSystem.renameSync(oldSrc, newSrc)
+      }
+
+      if (_others.pictures.length) {
+        let dest = path.resolve(__dirname, `../../src/data/apartments/${ _apartment.number }`)
         fileSystem.mkdirSync(dest, { recursive: true })
-        for (let file of _apartment.pictures) {
+        for (let file of _others.pictures) {
           let src = path.resolve(__dirname, `../../src/tmp/uploads/pictures/${ file }`)
           let destWithFileName = path.resolve(dest, file)
           fileSystem.copyFileSync(src, destWithFileName)
@@ -290,9 +296,9 @@ class Apartment {
         }
       }
 
-      if (_apartment.picturesToBeDeleted.length) {
-        for (let file of _apartment.picturesToBeDeleted) {
-          let src = path.resolve(__dirname, `../../src/data/apartments/${ apartment.number }/${ file }.jpg`)
+      if (_others.picturesToBeDeleted.length) {
+        for (let file of _others.picturesToBeDeleted) {
+          let src = path.resolve(__dirname, `../../src/data/apartments/${ _apartment.number }/${ file }.jpg`)
           fileSystem.unlinkSync(src)
         }
       }

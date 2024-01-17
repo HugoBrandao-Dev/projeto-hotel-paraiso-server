@@ -399,6 +399,9 @@ class ApartmentController {
       let accepts_animals = null
       let declaredFields = null
 
+      // Armazenará as informações que vem da req, mas não são armazenadas no Mongo (imagens).
+      let others = {}
+
       if (req.body.apartment) {
         let parsedApartment = JSON.parse(req.body.apartment)
         declaredFields = Object.keys(parsedApartment)
@@ -451,11 +454,14 @@ class ApartmentController {
           if (numberResult.hasError.type == 4) {
 
             // Verifica se o número do apartamento já pertence a ele próprio.
-            let isTheSameApartment = apartmentRegistred.id == id
+            let isTheSameApartment = apartmentRegistred._id == id
 
-            if (!isTheSameApartment)
+            if (!isTheSameApartment) {
               errorFields.push(numberResult)
+            }
+
           }
+
         } else {
           apartment.number = number
         }
@@ -470,9 +476,9 @@ class ApartmentController {
       }
 
       if (picturesToBeDeleted.length)
-        apartment.picturesToBeDeleted = picturesToBeDeleted
+        others.picturesToBeDeleted = picturesToBeDeleted
       else
-        apartment.picturesToBeDeleted = []
+        others.picturesToBeDeleted = []
       
       if (daily_price) {
         const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice((daily_price).toString())
@@ -500,12 +506,16 @@ class ApartmentController {
       const token = req.headers['authorization']
       const decodedToken = Token.getDecodedToken(token)
 
-      apartment.pictures = req.files.map(file => file.filename)
+      others.pictures = req.files.map(file => file.filename)
+      if (apartment.number) {
+        let registred = await Apartment.findOne(id)
+        others.oldNumber = registred.number
+      }
       apartment.updated = {
         updatedBy: decodedToken.id
       }
 
-      await Apartment.edit(id, apartment)
+      await Apartment.edit(id, apartment, others)
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
 
