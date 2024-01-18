@@ -319,7 +319,7 @@ class Apartment {
       let apartment = await ApartmentModel.findByIdAndDelete(_id)
 
       // Faz a deleção da pasta de imagens do apto.
-      let src = path.resolve(__dirname, `../tmp/uploads/apartments/${ apartment.number }`)
+      let src = path.resolve(__dirname, `../../src/data/apartments/${ apartment.number }`)
       let hasFolder = await fileSystem.existsSync(src) ? true : false
       if (hasFolder) {
         fileSystem.rmdirSync(src, { recursive: true, retryDelay: 1000 })
