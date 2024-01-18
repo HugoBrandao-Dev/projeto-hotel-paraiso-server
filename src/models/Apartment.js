@@ -75,6 +75,20 @@ class Apartment {
         }
       ])
 
+      let src = path.resolve(__dirname, `../../src/data/apartments/${ apartment[0].number }`)
+
+      let hasFolder = fileSystem.existsSync(src)
+
+      let pictures = []
+      if (hasFolder) {
+        let dir = fileSystem.readdirSync(src)
+
+        for (let file of dir) {
+          pictures.push(path.resolve(__dirname, `../../src/data/apartments/${ apartment[0].number }/${ file }`))
+        }  
+      }
+      apartment[0].pictures = pictures
+      
       return apartment[0]
 
     } catch (error) {
@@ -190,6 +204,23 @@ class Apartment {
         query.push({ $sort: sort })
 
       let apartments = await ApartmentModel.aggregate(query)
+
+      for (let apto of apartments) {
+        let src = path.resolve(__dirname, `../../src/data/apartments/${ apto.number }`)
+
+        let hasFolder = fileSystem.existsSync(src) ? true : false
+
+        let pictures = []
+        if (hasFolder) {
+          let dir = fileSystem.readdirSync(src)
+
+          for (let file of dir) {
+            pictures.push(path.resolve(__dirname, `../../src/data/apartments/${ apto.number }/${ file }`))
+          }
+        }
+
+        apto.pictures = pictures
+      }
 
       return apartments
 
