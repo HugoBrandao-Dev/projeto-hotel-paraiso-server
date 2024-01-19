@@ -123,7 +123,7 @@ class ApartmentController {
       }
       
       let apartment = await Apartment.findOne(id)
-
+      apartment.pictures = await Apartment.findPictures(apartment.number)
       if (req.headers['authorization']) {
         const token = req.headers['authorization']
         const decodedToken = Token.getDecodedToken(token)
@@ -166,7 +166,6 @@ class ApartmentController {
       delete apartment.UPDATED_BY
 
       let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
-
       apartment._links = HATEOAS
 
       res.status(200)
@@ -321,7 +320,7 @@ class ApartmentController {
       let apartments = await Apartment.findMany(query)
 
       for (let apartment of apartments) {
-
+        apartment.pictures = await Apartment.findPictures(apartment.number)
         const createdBy = apartment.CREATED_BY.length ? apartment.CREATED_BY[0] : {}
         const updatedBy = apartment.UPDATED_BY.length ? apartment.UPDATED_BY[0] : {}
 

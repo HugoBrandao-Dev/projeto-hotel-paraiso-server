@@ -3,6 +3,7 @@ let mongoose = require('mongoose')
 
 let fileSystem = require('fs')
 let path = require('path')
+let rootApartments = path.resolve(__dirname, '../../src/data/apartments')
 
 const ApartmentSchema = require('../schemas/ApartmentSchema')
 const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
@@ -74,20 +75,6 @@ class Apartment {
           }
         }
       ])
-
-      let src = path.resolve(__dirname, `../../src/data/apartments/${ apartment[0].number }`)
-
-      let hasFolder = fileSystem.existsSync(src)
-
-      let pictures = []
-      if (hasFolder) {
-        let dir = fileSystem.readdirSync(src)
-
-        for (let file of dir) {
-          pictures.push(path.resolve(__dirname, `../../src/data/apartments/${ apartment[0].number }/${ file }`))
-        }  
-      }
-      apartment[0].pictures = pictures
       
       return apartment[0]
 
@@ -205,23 +192,6 @@ class Apartment {
 
       let apartments = await ApartmentModel.aggregate(query)
 
-      for (let apto of apartments) {
-        let src = path.resolve(__dirname, `../../src/data/apartments/${ apto.number }`)
-
-        let hasFolder = fileSystem.existsSync(src) ? true : false
-
-        let pictures = []
-        if (hasFolder) {
-          let dir = fileSystem.readdirSync(src)
-
-          for (let file of dir) {
-            pictures.push(path.resolve(__dirname, `../../src/data/apartments/${ apto.number }/${ file }`))
-          }
-        }
-
-        apto.pictures = pictures
-      }
-
       return apartments
 
     } catch (error) {
@@ -274,28 +244,29 @@ class Apartment {
   }
 
   // Faz a busca das imagens de um apartamento, baseado em seu número.
-  async findPictures(number) {
+  async findPictures(_number) {
 
     try {
 
-      let src = await path.resolve(__dirname, `../tmp/uploads/apartments/${ number }`)
+      let src = await path.resolve(rootApartments, `${ _number }`)
 
       // Verifica se a pasta do apto existe.
       // OBS: Os métodos accessSync() e statSync() NÃO ACEITAM OPERADORES TERNÁRIOS.
       let hasFolder = await fileSystem.existsSync(src) ? true : false
 
+      let pictures = []
+
       if (hasFolder) {
         let pictureNames = await fileSystem.readdirSync(src)
 
-        if (!pictureNames.length)
-          return []
+        for (let file of pictureNames) {
+          let fileSrc = path.resolve(rootApartments, `${ _number }/${ file }`)
+          pictures.push(fileSrc)
+        }
 
-        let pictures = pictureNames.map(name => path.resolve(__dirname, `..\\tmp\\uploads\\apartments\\${ number }`, name))
-
-        return pictures
       }
 
-      return []
+      return pictures
 
     } catch (error) {
       console.log(error)
