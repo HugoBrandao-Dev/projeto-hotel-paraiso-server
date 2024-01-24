@@ -135,7 +135,7 @@ class UserController {
       // Se não houver admin, será criado um, caso contrário será criado uma conta de cliente.
       const role = adminUsers.length > 0 ? '0' : '4'
 
-      let user = { address: {} }
+      let user = { address: {}, created: {} }
 
       /* ################## OBRIGATÓRIOS ################## */
 
@@ -180,6 +180,8 @@ class UserController {
       let userLogged = req.headers['authorization'] ? decodedToken : false
 
       let userIDWhoCreated = userLogged ? userLogged.id : user.id
+      user.created.createdBy = userIDWhoCreated
+
       const userID = await User.save(user, userIDWhoCreated)
       const HATEOAS = Generator.genHATEOAS(userID, 'user', 'users', userLogged.role > 0)
 

@@ -76,21 +76,22 @@ class ApartmentController {
         return
       }
 
-      const token = req.headers['authorization']
-      const decodedToken = Token.getDecodedToken(token)
-
-      let apartment = {}
+      let apartment = { created: {} }
       apartment.floor = floor
       apartment.number = number
       apartment.rooms = rooms
-      apartment.pictures = req.files.map(file => file.filename)
+      apartment.pictures = req.files ? req.files.map(file => file.filename) : []
       apartment.daily_price = daily_price
       apartment.accepts_animals = accepts_animals
       apartment.reserve = {
         status: "livre"
       }
+
+      const token = req.headers['authorization']
+      const decodedToken = Token.getDecodedToken(token)
+      apartment.created.createdBy = decodedToken.id
       
-      let idApto = await Apartment.save(apartment, decodedToken.id)
+      let idApto = await Apartment.save(apartment)
 
       let HATEOAS = Generator.genHATEOAS(idApto, 'apartment', 'apartments', true)
 

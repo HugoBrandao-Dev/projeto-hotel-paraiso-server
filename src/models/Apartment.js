@@ -12,13 +12,9 @@ const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
 const ObjectId = mongoose.Types.ObjectId
 
 class Apartment {
-  async save(_apartment, _createdBy) {
+  async save(_apartment) {
 
     try {
-
-      _apartment.created = {
-        createdBy: _createdBy
-      }
 
       const apartment = new ApartmentModel(_apartment)
       

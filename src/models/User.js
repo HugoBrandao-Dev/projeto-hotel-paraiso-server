@@ -9,18 +9,11 @@ const UserModel = mongoose.model('users', UserSchema)
 const ObjectId = mongoose.Types.ObjectId
 
 class User {
-  async save(_user, _createdBy) {
+  async save(_user) {
 
     try {
 
-      const obj = {
-        ..._user,
-        created: {
-          createdBy: _createdBy
-        }
-      }
-
-      const user = new UserModel(obj)
+      const user = new UserModel(_user)
 
       const result = await user.save()
 
