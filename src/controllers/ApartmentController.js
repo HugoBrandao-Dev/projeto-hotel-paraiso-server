@@ -2,8 +2,7 @@ const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
 const Token = require('../tools/TokenTools')
 
-const fileSystem = require('fs')
-const path = require('path')
+const ApartmentPictures = require('../tools/ApartmentPictures')
 
 // Models
 const Apartment = require('../models/Apartment')
@@ -80,7 +79,6 @@ class ApartmentController {
       apartment.floor = floor
       apartment.number = number
       apartment.rooms = rooms
-      apartment.pictures = req.files ? req.files.map(file => file.filename) : []
       apartment.daily_price = daily_price
       apartment.accepts_animals = accepts_animals
       apartment.reserve = {
@@ -93,13 +91,32 @@ class ApartmentController {
       
       let idApto = await Apartment.save(apartment)
 
-      let HATEOAS = Generator.genHATEOAS(idApto, 'apartment', 'apartments', true)
+      // Em caso de sucesso de cadastro do apto.
+      if (idApto) {
 
-      res.status(201)
-      res.json({ _links: HATEOAS })
+        // Verifica se foram passadas imagens do apto.
+        if (req.files) {
+
+          // Copia as fotos da pasta tmp para a pasta do apto de forma definitiva.
+          let pictures = req.files.map(file => file.filename)
+          ApartmentPictures.movePicturesFromTempToApartmentFolder(pictures, apartment.number)
+        }
+
+        let HATEOAS = Generator.genHATEOAS(idApto, 'apartment', 'apartments', true)
+
+        res.status(201)
+        res.json({ _links: HATEOAS })
+        return
+
+      }
+
+      res.sendStatus(500)
 
     } catch(error) {
       next(error)
+    } finally {
+      if (req.files)
+        ApartmentPictures.deletePicturesFromTemp(req.files.map(file => file.filename))
     }
 
   }
@@ -124,7 +141,7 @@ class ApartmentController {
       }
       
       let apartment = await Apartment.findOne(id)
-      apartment.pictures = await Apartment.findPictures(apartment.number)
+      apartment.pictures = ApartmentPictures.readPicturesFromApartment(apartment.number)
       if (req.headers['authorization']) {
         const token = req.headers['authorization']
         const decodedToken = Token.getDecodedToken(token)
@@ -399,9 +416,6 @@ class ApartmentController {
       let accepts_animals = null
       let declaredFields = null
 
-      // Armazenará as informações que vem da req, mas não são armazenadas no Mongo (imagens).
-      let others = {}
-
       if (req.body.apartment) {
         let parsedApartment = JSON.parse(req.body.apartment)
         declaredFields = Object.keys(parsedApartment)
@@ -474,11 +488,6 @@ class ApartmentController {
         else
           apartment.rooms = rooms
       }
-
-      if (picturesToBeDeleted.length)
-        others.picturesToBeDeleted = picturesToBeDeleted
-      else
-        others.picturesToBeDeleted = []
       
       if (daily_price) {
         const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice((daily_price).toString())
@@ -506,24 +515,52 @@ class ApartmentController {
       const token = req.headers['authorization']
       const decodedToken = Token.getDecodedToken(token)
 
-      others.pictures = req.files.map(file => file.filename)
-      if (apartment.number) {
-        let registred = await Apartment.findOne(id)
-        others.oldNumber = registred.number
-      }
       apartment.updated = {
         updatedBy: decodedToken.id
       }
 
-      await Apartment.edit(id, apartment, others)
+      let registred = await Apartment.findOne(id)
 
-      let HATEOAS = Generator.genHATEOAS(id, 'apartment', 'apartments', true)
+      let idApto = await Apartment.edit(id, apartment)
 
-      res.status(200)
-      res.json({ _links: HATEOAS })
+      // Em caso de sucesso da atualização dos dados do apto.
+      if (idApto) {
+
+        // Verifica se foi informado um número de apto.
+        if (apartment.number) {
+
+          // Verifica se o número informado é DIFERENTE do cadastrado.
+          if (registred.number != apartment.number)
+            ApartmentPictures.changeApartmentNumber(registred.number, apartment.number)
+        }
+
+        // Verifica se foram passadas imagens do apto.
+        if (req.files) {
+
+          let pictures = req.files.map(file => file.filename)
+
+          // Copia as fotos da pasta tmp para a pasta do apto de forma definitiva.
+          ApartmentPictures.movePicturesFromTempToApartmentFolder(pictures, apartment.number)
+
+          // Verifica se há fotos a serem deletadas
+          if (picturesToBeDeleted.length)
+            ApartmentPictures.deletePicturesFromApartment(apartment.number, picturesToBeDeleted)
+        }
+
+        let HATEOAS = Generator.genHATEOAS(idApto, 'apartment', 'apartments', true)
+
+        res.status(200)
+        res.json({ _links: HATEOAS })
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch(error) {
       next(error)
+    } finally {
+      if (req.files)
+        ApartmentPictures.deletePicturesFromTemp(req.files.map(file => file.filename))
     }
 
   }
@@ -549,7 +586,8 @@ class ApartmentController {
         return
       }
 
-      await Apartment.delete(id)
+      let apartmentNumber = await Apartment.delete(id)
+      ApartmentPictures.deleteApartmentFolder(apartmentNumber)
       res.sendStatus(200)
 
     } catch(error) {

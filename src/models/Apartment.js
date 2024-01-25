@@ -1,10 +1,6 @@
 const Generator = require('../tools/Generator')
 let mongoose = require('mongoose')
 
-let fileSystem = require('fs')
-let path = require('path')
-let rootApartments = path.resolve(__dirname, '../../src/data/apartments')
-
 const ApartmentSchema = require('../schemas/ApartmentSchema')
 const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
 
@@ -19,17 +15,6 @@ class Apartment {
       const apartment = new ApartmentModel(_apartment)
       
       let result = await apartment.save()
-
-      if (_apartment.pictures.length) {
-        let dest = path.resolve(__dirname, `../../src/data/apartments/${ result.number }`)
-        fileSystem.mkdirSync(dest, { recursive: true })
-        for (let file of _apartment.pictures) {
-          let src = path.resolve(__dirname, `../../src/tmp/uploads/pictures/${ file }`)
-          let destWithFileName = path.resolve(dest, file)
-          fileSystem.copyFileSync(src, destWithFileName)
-          fileSystem.unlinkSync(src)
-        }
-      }
 
       return result._id
 
@@ -239,67 +224,11 @@ class Apartment {
 
   }
 
-  // Faz a busca das imagens de um apartamento, baseado em seu número.
-  async findPictures(_number) {
-
-    try {
-
-      let src = await path.resolve(rootApartments, `${ _number }`)
-
-      // Verifica se a pasta do apto existe.
-      // OBS: Os métodos accessSync() e statSync() NÃO ACEITAM OPERADORES TERNÁRIOS.
-      let hasFolder = await fileSystem.existsSync(src) ? true : false
-
-      let pictures = []
-
-      if (hasFolder) {
-        let pictureNames = await fileSystem.readdirSync(src)
-
-        for (let file of pictureNames) {
-          let fileSrc = path.resolve(rootApartments, `${ _number }/${ file }`)
-          pictures.push(fileSrc)
-        }
-
-      }
-
-      return pictures
-
-    } catch (error) {
-      console.log(error)
-      return []
-    }
-
-  }
-
-  async edit(_apartmentToBeUpdated, _apartment, _others) {
+  async edit(_apartmentToBeUpdated, _apartment) {
 
     try {
 
       let apartment = await ApartmentModel.findByIdAndUpdate(_apartmentToBeUpdated, _apartment)
-
-      if (_others.oldNumber) {
-        let oldSrc = path.resolve(__dirname, `../../src/data/apartments/${ _others.oldNumber }`)
-        let newSrc = path.resolve(__dirname, `../../src/data/apartments/${ _apartment.number }`)
-        fileSystem.renameSync(oldSrc, newSrc)
-      }
-
-      if (_others.pictures.length) {
-        let dest = path.resolve(__dirname, `../../src/data/apartments/${ _apartment.number }`)
-        fileSystem.mkdirSync(dest, { recursive: true })
-        for (let file of _others.pictures) {
-          let src = path.resolve(__dirname, `../../src/tmp/uploads/pictures/${ file }`)
-          let destWithFileName = path.resolve(dest, file)
-          fileSystem.copyFileSync(src, destWithFileName)
-          fileSystem.unlinkSync(src)
-        }
-      }
-
-      if (_others.picturesToBeDeleted.length) {
-        for (let file of _others.picturesToBeDeleted) {
-          let src = path.resolve(__dirname, `../../src/data/apartments/${ _apartment.number }/${ file }.jpg`)
-          fileSystem.unlinkSync(src)
-        }
-      }
 
       return apartment._id
 
@@ -316,14 +245,7 @@ class Apartment {
 
       let apartment = await ApartmentModel.findByIdAndDelete(_id)
 
-      // Faz a deleção da pasta de imagens do apto.
-      let src = path.resolve(__dirname, `../../src/data/apartments/${ apartment.number }`)
-      let hasFolder = await fileSystem.existsSync(src) ? true : false
-      if (hasFolder) {
-        fileSystem.rmdirSync(src, { recursive: true, retryDelay: 1000 })
-      }
-
-      return
+      return apartment.number
 
     } catch (error) {
       console.log(error)
