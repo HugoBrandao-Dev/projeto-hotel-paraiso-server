@@ -1,24 +1,25 @@
 const ApartmentCollection = require('../data/ApartmentCollection.json')
 const DateFormated = require('../tools/DateFormated')
-const _ = require('lodash')
+const mongoose = require('mongoose')
 
 const date = new DateFormated('mongodb')
 
+const ApartmentSchema = require('../schemas/ApartmentSchema')
+const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
+
+// Necessário para verificação de igualdade entre IDs.
+const ObjectId = mongoose.Types.ObjectId
+
 class Reserve {
-  async save(reserve, reservedBy) {
+  async save(_apartment_id, _reserve) {
 
     try {
 
-      reserve.reserved = {
-        reservedAt: date.getDateTime(),
-        reservedBy,
-      }
-
-      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == reserve.apartment_id)
-
-      for (let info of Object.keys(reserve)) {
-        ApartmentCollection.apartments.data[apartmentIndex].reserve[info] = reserve[info]
-      }
+      /*
+        Como a criação de uma reserva se dá sempre em um apartamento (documento) já cadastrado, 
+        utiliza-se o método findByIdAndUpdate.
+      */
+      await ApartmentModel.findByIdAndUpdate(_apartment_id, _reserve)
 
       return
 

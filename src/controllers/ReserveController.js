@@ -1,37 +1,16 @@
 const Generator = require('../tools/Generator')
+const Token = require('../tools/TokenTools')
 const jwt = require('jsonwebtoken')
 const _ = require('lodash')
 
-const Analyzer = require('../tools/Analyzer')
+const DateFormated = require('../tools/DateFormated')
+const date = new DateFormated('mongodb')
 
-let baseURL = 'http://localhost:4000'
-const projectLinks = {
-  errors: 'https://projetohotelparaiso.dev/docs/erros'
-}
+const Analyzer = require('../tools/Analyzer')
 
 // Models
 const Reserve = require('../models/Reserve')
 const User = require('../models/User')
-
-function getDecodedToken(bearerToken) {
-
-  const secret = 'k372gkhcfmhg6l9nj19i51ng'
-  let token = bearerToken.split(' ')[1]
-  let decodedToken = null
-  jwt.verify(token, secret, function(error, decoded) {
-
-    if (error) {
-      console.log(error)
-      return ''
-    } else {
-      decodedToken = decoded
-    }
-
-  })
-
-  return decodedToken
-
-}
 
 class ReserveController {
 
@@ -39,7 +18,7 @@ class ReserveController {
 
     try {
 
-      const decodedToken = getDecodedToken(req.headers['authorization'])
+      const decodedToken = Token.getDecodedToken(req.headers['authorization'])
 
       const { apartment_id, start, end } = req.body
       let { status, client_id } = req.body
@@ -87,15 +66,20 @@ class ReserveController {
         return
       }
 
-      const reserve = {
-        apartment_id,
-        status,
-        client_id,
-        start,
-        end
+      const apartment = {
+        reserve: {
+          status,
+          client_id,
+          start,
+          end,
+          reserved: {
+            reservedAt: date.getDateTime(),
+            reservedBy: decodedToken.id
+          }
+        }
       }
 
-      await Reserve.save(reserve, decodedToken.id)
+      await Reserve.save(apartment_id, apartment, decodedToken.id)
 
       let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
 

@@ -14,7 +14,7 @@ const ApartmentSchema = new mongoose.Schema({
   accepts_animals: Boolean,
   reserve: {
     status: String,
-    clientId: mongoose.Schema.Types.ObjectId,
+    client_id: mongoose.Schema.Types.ObjectId,
     reserved: {
       reservedAt: Date,
       reservedBy: mongoose.Schema.Types.ObjectId
