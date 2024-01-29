@@ -30,14 +30,54 @@ class Reserve {
 
   }
 
-  async findOne(id) {
+  async findOne(_id) {
 
     try {
 
-      let apartment = await ApartmentCollection.apartments.data.find(apto => apto.id == id)
-      let reserve = apartment.reserve
-      reserve.apartment_id = id
-      return reserve
+      let filter = {
+        $match: { "_id": ObjectId(_id) }
+      }
+
+      // Faz o join com a collection USERS para saber PARA QUEM FOI RESERVADO.
+      let joinClient = {
+        $lookup: {
+          localField: 'reserve.client_id',
+          from: 'users',
+          foreignField: '_id',
+          as: 'reserve.CLIENT_ID',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
+        }
+      }
+
+      // Faz o join com a collection USERS para saber QUEM RESERVOU.
+      let joinReservedBy = {
+        $lookup: {
+          localField: 'reserve.reserved.reservedBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'reserve.reserved.RESERVED_BY',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
+        }
+      }
+
+      let onlyReserve = {
+        $project: {
+          'reserve': true
+        }
+      }
+
+      let reserve = await ApartmentModel.aggregate([
+        filter,
+        joinClient,
+        joinReservedBy,
+        onlyReserve
+      ])
+
+      return reserve[0]
 
     } catch (error) {
       console.log(error)

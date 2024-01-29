@@ -98,7 +98,7 @@ class ReserveController {
 
       const { id } = req.params
 
-      const decodedToken = getDecodedToken(req.headers['authorization'])
+      const decodedToken = Token.getDecodedToken(req.headers['authorization'])
 
       let errorFields = []
 
@@ -113,35 +113,10 @@ class ReserveController {
         return
       }
 
-      let result = await Reserve.findOne(id)
-      if (!result.reserved)
-        console.log(result)
+      let reserve = await Reserve.findOne(id)
 
-      let reserve = _.cloneDeep(result)
-
-      delete reserve.reserved
-
-      if (decodedToken.role > 0) {
-        if (result.reserved.reservedBy) {
-          let userWhoReserved = await User.findOne(result.reserved.reservedBy)
-          reserve.reserved = {
-            reservedAt: result.reserved.reservedAt,
-            reservedBy: {
-              id: userWhoReserved.id,
-              name: userWhoReserved.name,
-            }
-          }
-        } else {
-          reserve.reserved = {
-            reservedAt: result.reserved.reservedAt,
-            reservedBy: {
-              id: "",
-              name: "",
-            }
-          }
-        }
-
-      }
+      delete reserve.reserve.client_id
+      delete reserve.reserve.reserved.reservedBy
 
       let HATEOAS = Generator.genHATEOAS(id, 'reserve', 'reserves', true)
       reserve._links = HATEOAS
