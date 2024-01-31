@@ -135,132 +135,117 @@ class ReserveController {
 
     try {
 
-      const decodedToken = getDecodedToken(req.headers['authorization'])
+      const decodedToken = Token.getDecodedToken(req.headers['authorization'])
 
       const status = req.query.status
       let { offset: skip, limit } = req.query
+      let query = {}
 
       let hasNext = false
-      let reserves = []
 
       let RestException = null
       let errorParams = []
 
-      if (req.query) {
-        let queryList = Object.keys(req.query)
+      let reserves = []
 
-        let queryStringResult = Analyzer.analyzeQueryList(queryList, 'reserves')
-        if (queryStringResult.hasError.value) {
-          errorParams.push(queryStringResult)
+      // Se o usuário logado for um cliente, só retornará as reservas dele próprio.
+      if (decodedToken.role == 0) {
+        query.client_id = decodedToken.id
+        reserves = await Reserve.findMany(query)
 
-          RestException = Generator.genRestException(errorParams)
-          res.status(parseInt(RestException.Status))
-          res.json({ RestException })
-          return
-        } else {
+        for (let reserve of reserves) {
 
-          // Verifica se o valor passado no Status é valido.
-          let statusResult = await Analyzer.analyzeApartmentStatus(status)
-          if (statusResult.hasError.value) {
-            if (statusResult.hasError.type != 4 && statusResult.hasError.type != 1) {
-              errorParams.push(statusResult)
-            }
-          }
+          /*
+            FORMATAR AS DATAS DE INÍCIO E TÉRMINO DA RESERVA.
+          */
 
-          if ((skip || skip == 0) && limit) {
-            let skipResult = Analyzer.analyzeFilterSkip(skip)
-            if (skipResult.hasError.value) {
-              errorParams.push(skipResult)
-            } else {
-              skip = parseInt(skip)
-            }
+          delete reserve.reserve.reserved
+          delete reserve.reserve.client_id
 
-            let limitResult = Analyzer.analyzeFilterLimit(limit)
-            if (limitResult.hasError.value) {
-              errorParams.push(limitResult)
-            } else {
-              limit = parseInt(limit)
-            }
-          } else {
-            skip = 0
-            limit = 20
-          }
+          let HATEOAS = Generator.genHATEOAS(reserve._id, 'reserve', 'reserves', decodedToken.role > 0)
+          reserve._links = HATEOAS
 
-          if (errorParams.length) {
+        }
+      } else {
+        if (req.query) {
+          let queryList = Object.keys(req.query)
+
+          let queryStringResult = Analyzer.analyzeQueryList(queryList, 'reserves')
+          if (queryStringResult.hasError.value) {
+            errorParams.push(queryStringResult)
+
             RestException = Generator.genRestException(errorParams)
             res.status(parseInt(RestException.Status))
             res.json({ RestException })
             return
           } else {
 
-            let results = null
+            // Verifica se o valor passado no Status é valido.
+            let statusResult = await Analyzer.analyzeApartmentStatus(status)
+            if (statusResult.hasError.value) {
+              if (statusResult.hasError.type != 4 && statusResult.hasError.type != 1)
+                errorParams.push(statusResult)
+              else
+                query.status = status
+            } else {
+              query.status = status
+            }
 
-            if (decodedToken.role > 0) {
+            if ((skip || skip == 0) && limit) {
+              let skipResult = Analyzer.analyzeFilterSkip(skip)
+              if (skipResult.hasError.value)
+                errorParams.push(skipResult)
+              else
+                query.skip = parseInt(skip)
 
-              // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-              results = await Reserve.findMany(status, skip, limit + 1)
+              let limitResult = Analyzer.analyzeFilterLimit(limit)
+              if (limitResult.hasError.value)
+                errorParams.push(limitResult)
+              else
+                query.limit = parseInt(limit) + 1
+            } else {
+              query.skip = 0
+              query.limit = 20 + 1
+            }
 
+            if (errorParams.length) {
+              RestException = Generator.genRestException(errorParams)
+              res.status(parseInt(RestException.Status))
+              res.json({ RestException })
+              return
             } else {
 
-              // + 1 é para verificar se há mais item(s) a serem exibidos (para usar no hasNext).
-              results = await Reserve.findManyByUserID(decodedToken.id, status, skip, limit + 1)
+              reserves = await Reserve.findMany(query)
 
-            }
+              for (let reserve of reserves) {
 
-            let reserves = []
+                delete reserve.reserve.reserved.reservedBy
+                delete reserve.reserve.client_id
 
-            for (let res of results) {
-              let reserve = _.cloneDeep(res)
+                reserve.reserve.reserved.reservedAt = new Date(reserve.reserve.reserved.reservedAt).toLocaleString()
 
-              let reservedBy = res.reserved.reservedBy
-              delete reserve.reserved
+                let HATEOAS = Generator.genHATEOAS(reserve._id, 'reserve', 'reserves', decodedToken.role > 0)
+                reserve._links = HATEOAS
 
-              if (decodedToken.role > 0) {
+              }
 
-                if (res.reserved.reservedBy) {
-                  let userWhoReserved = await User.findOne(reservedBy)
+              if (reserves.length) {
+                hasNext = reserves.length > limit
 
-                  reserve.reserved = {
-                    reservedAt: res.reserved.reservedAt,
-                    reservedBy: {
-                      id: userWhoReserved.id,
-                      name: userWhoReserved.name,
-                    }
-                  }
-                } else {
-                  reserve.reserved = {
-                    reservedAt: "",
-                    reservedBy: {
-                      id: "",
-                      name: "",
-                    }
-                  }
+                // Retira o dado extra para cálculo do hasNext.
+                if (hasNext) {
+                  reserves.pop()
                 }
-
               }
 
-              let HATEOAS = Generator.genHATEOAS(reserve.apartment_id, 'reserve', 'reserves', decodedToken.role > 0)
-              reserve._links = HATEOAS
-
-              reserves.push(reserve)
             }
 
-            if (reserves.length) {
-              hasNext = reserves.length > limit
-
-              // Retira o dado extra para cálculo do hasNext.
-              if (hasNext) {
-                reserves.pop()
-              }
-            }
-
-            res.status(200)
-            res.json({ reserves, hasNext })
-            return
           }
-
         }
 
+        res.status(200)
+        res.json({ reserves, hasNext })
+        return
       }
 
       res.sendStatus(404)

@@ -853,12 +853,14 @@ class Analyzer {
         return result
       }
 
-      let apartment = await Apartment.findOne(apartment_id)
-      if (apartment) {
-        if (apartment.reserve.status != 'livre') {
-          result.hasError.value = true
-          result.hasError.type = 4
-          result.hasError.error = "O apartamento escolhido já está Reservado, Ocupado ou Indisponível"
+      if (apartment_id) {
+        let apartment = await Apartment.findOne(apartment_id)
+        if (apartment) {
+          if (apartment.reserve.status != 'livre') {
+            result.hasError.value = true
+            result.hasError.type = 4
+            result.hasError.error = "O apartamento escolhido já está Reservado, Ocupado ou Indisponível"
+          }
         }
       }
 

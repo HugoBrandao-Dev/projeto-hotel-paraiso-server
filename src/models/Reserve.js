@@ -86,65 +86,92 @@ class Reserve {
 
   }
 
-  async findMany(status = '', skip = 0, limit = 20) {
+  async findMany(_query) {
 
     try {
 
-      let results = null
-      if (status) {
+      const {
+        client_id,
+        status,
+        skip,
+        limit
+      } = _query
 
-        // Faz a buscas por reservas tenham um status igual ao informado.
-        let resultsWithStatus = await ApartmentCollection.apartments.data.filter(apto => apto.reserve.status == status)
+      let query = []
 
-        results = await resultsWithStatus.map(apto => {
-          return {
-            apartment_id: apto.id,
-            ...apto.reserve
-          }
+      let filter = {
+        $match: { $and: [] }
+      }
+
+      if (client_id) {
+        filter.$match.$and.push({
+          'reserve.client_id': ObjectId(client_id)
+        })
+      }
+
+      if (!status) {
+        filter.$match.$and.push({
+          $or: [
+            { 'reserve.status': 'reservado' },
+            { 'reserve.status': 'ocupado' },
+          ]
         })
       } else {
-        results = await ApartmentCollection.apartments.data.map(apto => {
-          return {
-            apartment_id: apto.id,
-            ...apto.reserve
-          }
+        filter.$match.$and.push({
+          'reserve.status': status
         })
       }
 
-      if ((skip || skip == 0) && limit) {
-        return await results.slice(skip, (skip + limit))
-      }
+      query.push(filter)
 
-      return results
+      // Faz o join com a collection USERS para saber PARA QUEM FOI RESERVADO.
+      query.push({
+        $lookup: {
+          localField: 'reserve.client_id',
+          from: 'users',
+          foreignField: '_id',
+          as: 'reserve.CLIENT_ID',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
+        }
+      })
+
+      // Faz o join com a collection USERS para saber QUEM RESERVOU.
+      query.push({
+        $lookup: {
+          localField: 'reserve.reserved.reservedBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'reserve.reserved.RESERVED_BY',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
+        }
+      })
+
+      if (skip || skip == 0)
+        query.push({ $skip: skip })
+
+      if (limit)
+        query.push({ $limit: limit })
+
+      // Faz com que se retorne somente as informações da reserva do apartamento.
+      query.push({
+        $project: {
+          'reserve': true
+        }
+      })
+
+      let reserve = await ApartmentModel.aggregate(query)
+
+      return reserve
 
     } catch (error) {
       console.log(error)
       return []
     }
 
-  }
-
-  async findManyByUserID(client_id, status = '', skip = 0, limit = 20) {
-    try {
-      let apartments = await ApartmentCollection.apartments.data.filter(apto => {
-        if (status) {
-          return (apto.reserve.client_id == client_id && apto.reserve.status == status)
-        }
-        return apto.reserve.client_id == client_id
-      })
-
-      let reserves = await apartments.map(apto => {
-        return {
-          apartment_id: apto.id,
-          ...apto.reserve
-        }
-      })
-
-      return reserves
-    } catch (error) {
-      console.log(error)
-      return []
-    }
   }
 
   async edit(reserve, reservedBy) {
