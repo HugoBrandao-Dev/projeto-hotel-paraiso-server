@@ -217,23 +217,17 @@ class Reserve {
 
   }
 
-  async delete(id) {
+  async delete(_id) {
     try {
 
-      // Encontra o index do apartamento que tenha o ID igual ao passado para o método.
-      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == id)
-
-      ApartmentCollection.apartments.data[apartmentIndex].reserve = {
-        "status": "livre",
-        "user_id": "",
-        "date": "",
-        "reserved": {
-          "reservedAt": "",
-          "reservedBy": ""
-        },
-        "start": "",
-        "end": ""
+      let apartament = {
+        reserve: {
+          status: 'livre'
+        }
       }
+
+      await ApartmentModel.findByIdAndUpdate(_id, apartament)
+
     } catch (error) {
       console.log(error)
       return
