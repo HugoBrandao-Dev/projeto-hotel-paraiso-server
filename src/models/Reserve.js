@@ -174,23 +174,39 @@ class Reserve {
 
   }
 
-  async edit(reserve, reservedBy) {
+  async edit(_apartment_id, _apartment) {
 
     try {
 
-      reserve.reserved = {
-        reservedAt: date.getDateTime(),
-        reservedBy,
-      }
+      const {
+        status,
+        client_id,
+        start,
+        end,
+        reserved
+      } = _apartment.reserve
 
-      // Encontra o index do apartamento que tenha o ID igual ao passado dentro do reserve.
-      let apartmentIndex = await ApartmentCollection.apartments.data.findIndex(apto => apto.id == reserve.apartment_id)
-      let infos = Object.keys(reserve)
-      for (let info of infos) {
-        if (info != 'apartment_id') {
-          ApartmentCollection.apartments.data[apartmentIndex]["reserve"][info] = reserve[info]
-        }
-      }        
+      let reserve = { $set: {} }
+
+      if (status)
+        reserve.$set['reserve.status'] = status
+
+      if (client_id)
+        reserve.$set['reserve.client_id'] = client_id
+
+      if (start)
+        reserve.$set['reserve.start'] = start
+
+      if (end)
+        reserve.$set['reserve.end'] = end
+
+      if (reserved && reserved.reservedAt)
+        reserve.$set['reserve.reserved.reservedAt'] = reserved.reservedAt
+
+      if (reserved && reserved.reservedBy)
+        reserve.$set['reserve.reserved.reservedBy'] = reserved.reservedBy
+
+      await ApartmentModel.findByIdAndUpdate(_apartment_id, reserve)
 
       return
 

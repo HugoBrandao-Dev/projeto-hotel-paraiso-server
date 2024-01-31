@@ -79,7 +79,7 @@ class ReserveController {
         }
       }
 
-      await Reserve.save(apartment_id, apartment, decodedToken.id)
+      await Reserve.save(apartment_id, apartment)
 
       let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
 
@@ -261,25 +261,22 @@ class ReserveController {
 
     try {
 
-      const decodedToken = getDecodedToken(req.headers['authorization'])
+      const decodedToken = Token.getDecodedToken(req.headers['authorization'])
 
       const {
         apartment_id,
         status,
         client_id,
-        date,
         start,
         end
       } = req.body
 
       let errorFields = []
-      let fieldsToBeUpdated = {}
+      let reserve = {}
 
       let apartmentIDResult = await Analyzer.analyzeApartmentID(apartment_id)
       if (apartmentIDResult.hasError.value) {
         errorFields.push(apartmentIDResult)
-      } else {
-        fieldsToBeUpdated.apartment_id = apartment_id
       }
 
       if (status) {
@@ -288,10 +285,10 @@ class ReserveController {
           if (statusResult.hasError.type != 4) {
             errorFields.push(statusResult)
           } else {
-            fieldsToBeUpdated.status = status
+            reserve.status = status
           }
         } else {
-          fieldsToBeUpdated.status = status
+          reserve.status = status
         }
       }
 
@@ -300,7 +297,7 @@ class ReserveController {
         if (clientResult.hasError.value) {
           errorFields.push(clientResult)
         } else {
-          fieldsToBeUpdated.client_id = client_id
+          reserve.client_id = client_id
         }
       }
 
@@ -309,13 +306,13 @@ class ReserveController {
         if (startDateResult.hasError.value) {
           errorFields.push(startDateResult)
         } else {
-          fieldsToBeUpdated.start = start
+          reserve.start = start
           if (end) {
             let endDateResult = Analyzer.analyzeReserveEndDate(end, start)
             if (endDateResult.hasError.value) {
               errorFields.push(endDateResult)
             } else {
-              fieldsToBeUpdated.end = end
+              reserve.end = end
             }
           }
         }
@@ -328,20 +325,24 @@ class ReserveController {
         return
       }
 
-      if (status == 'indisponível') {
-        fieldsToBeUpdated = {
-          apartment_id,
-          status: 'indisponível',
-          client_id: '',
-          start: '',
-          end: '',
-        }
+      reserve.reserved = {
+        reservedAt: date.getDateTime(),
+        reservedBy: decodedToken.id
       }
 
-      await Reserve.edit(fieldsToBeUpdated, decodedToken.id)
+      let apartment = {
+        reserve: reserve
+      }
 
-      let HATEOAS = Generator.genHATEOAS(fieldsToBeUpdated.apartment_id, 'reserve', 'reserves', true)
-      
+      if (status == 'indisponível' || status == 'livre') {
+        apartment.reserve = {}
+        apartment.reserve.status = status
+      }
+
+      await Reserve.edit(apartment_id, apartment)
+
+      let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
+
       res.status(200)
       res.json({ _links: HATEOAS })
 
