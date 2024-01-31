@@ -186,27 +186,37 @@ class Reserve {
         reserved
       } = _apartment.reserve
 
-      let reserve = { $set: {} }
+      let apartment = { $set: {} }
 
-      if (status)
-        reserve.$set['reserve.status'] = status
+      /*
+      Caso a apto seja colocado como livre ou indisponível, os outros campos da reserva serão 
+      limpos.
+      */
+      let isToClearFields = (status == 'indisponível' || status == 'livre')
 
-      if (client_id)
-        reserve.$set['reserve.client_id'] = client_id
+      if (isToClearFields) {
+        apartment = { reserve: { status } }
+      } else {
+        if (status)
+          apartment.$set['reserve.status'] = status
 
-      if (start)
-        reserve.$set['reserve.start'] = start
+        if (client_id)
+          apartment.$set['reserve.client_id'] = client_id
 
-      if (end)
-        reserve.$set['reserve.end'] = end
+        if (start)
+          apartment.$set['reserve.start'] = start
 
-      if (reserved && reserved.reservedAt)
-        reserve.$set['reserve.reserved.reservedAt'] = reserved.reservedAt
+        if (end)
+          apartment.$set['reserve.end'] = end
 
-      if (reserved && reserved.reservedBy)
-        reserve.$set['reserve.reserved.reservedBy'] = reserved.reservedBy
+        if (reserved && reserved.reservedAt)
+          apartment.$set['reserve.reserved.reservedAt'] = reserved.reservedAt
 
-      await ApartmentModel.findByIdAndUpdate(_apartment_id, reserve)
+        if (reserved && reserved.reservedBy)
+          apartment.$set['reserve.reserved.reservedBy'] = reserved.reservedBy
+      }
+
+      await ApartmentModel.findByIdAndUpdate(_apartment_id, apartment)
 
       return
 

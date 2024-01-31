@@ -330,14 +330,7 @@ class ReserveController {
         reservedBy: decodedToken.id
       }
 
-      let apartment = {
-        reserve: reserve
-      }
-
-      if (status == 'indisponível' || status == 'livre') {
-        apartment.reserve = {}
-        apartment.reserve.status = status
-      }
+      let apartment = { reserve }
 
       await Reserve.edit(apartment_id, apartment)
 
