@@ -833,7 +833,7 @@ class Analyzer {
     return result
   }
 
-  static async analyzeApartmentStatus(status = '', apartment_id = '') {
+  static async analyzeApartmentStatus(status = '', apartment_id = '', toUpdate = false) {
     try {
       let result = { field: 'iptStatus', hasError: { value: false, type: null, error: '' }}
       let acceptableValues = ['livre', 'reservado', 'ocupado', 'indisponível']
@@ -855,11 +855,18 @@ class Analyzer {
 
       if (apartment_id) {
         let apartment = await Apartment.findOne(apartment_id)
+        let statusStored = apartment.reserve.status
         if (apartment) {
-          if (apartment.reserve.status != 'livre') {
+          if (statusStored != 'livre') {
             result.hasError.value = true
             result.hasError.type = 4
             result.hasError.error = "O apartamento escolhido já está Reservado, Ocupado ou Indisponível"
+
+          // Impede que uma reserva seja ATUALIZADA, caso esteja livre.
+          } else if (statusStored == 'livre' && toUpdate) {
+            result.hasError.value = true
+            result.hasError.type = 2
+            result.hasError.error = "O valor do campo de Status é inválido"
           }
         }
       }
