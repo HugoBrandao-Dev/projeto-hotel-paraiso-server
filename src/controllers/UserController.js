@@ -254,14 +254,16 @@ class UserController {
             }
           }
 
+        } else {
+          delete user.role
+          delete user.updated
+          delete user.created
         }
 
         // Transforma o formato da data de nascimento do cliente em um formato mais inteligível.
         user.birthDate = new Date(user.birthDate).toLocaleDateString()
 
         delete user.password
-        if (!role)
-          delete user.role
         delete user.CREATED_BY
         delete user.UPDATED_BY      
 
