@@ -338,7 +338,7 @@ class ApartmentController {
       let apartments = await Apartment.findMany(query)
 
       for (let apartment of apartments) {
-        apartment.pictures = await Apartment.findPictures(apartment.number)
+        apartment.pictures = ApartmentPictures.readPicturesFromApartment(apartment.number)
         const createdBy = apartment.CREATED_BY.length ? apartment.CREATED_BY[0] : {}
         const updatedBy = apartment.UPDATED_BY.length ? apartment.UPDATED_BY[0] : {}
 
@@ -373,7 +373,7 @@ class ApartmentController {
         delete apartment.CREATED_BY
         delete apartment.UPDATED_BY
         
-        let HATEOAS = Generator.genHATEOAS(apartment.id, 'apartment', 'apartments', false)
+        let HATEOAS = Generator.genHATEOAS(apartment._id, 'apartment', 'apartments', false)
         apartment._links = HATEOAS
       }
 
