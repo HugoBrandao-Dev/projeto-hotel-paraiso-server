@@ -795,7 +795,7 @@ class UserController {
         updatedBy: userIDWhoUpdated
       }
 
-      let HATEOAS = Generator.genHATEOAS(fields.id, 'user', 'users', roleToken > 0)
+      let HATEOAS = Generator.genHATEOAS(id, 'user', 'users', roleToken > 0)
 
       let userBeforeModified = await User.edit(id, fields)
 
