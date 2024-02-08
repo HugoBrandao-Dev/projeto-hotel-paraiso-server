@@ -175,17 +175,16 @@ class UserController {
       }
 
       const token = req.headers['authorization']
-      let decodedToken = Token.getDecodedToken(token)
+      let decodedToken = { role: roles.cliente }
+      if (token) {
+        decodedToken = Token.getDecodedToken(token)
+        user.created.createdBy = decodedToken.id
+      }
 
-      let userLogged = req.headers['authorization'] ? decodedToken : false
-
-      let userIDWhoCreated = userLogged ? userLogged.id : user.id
-      user.created.createdBy = userIDWhoCreated
-
-      const userRegistred = await User.save(user, userIDWhoCreated)
+      const userRegistred = await User.save(user)
 
       if (userRegistred) {
-        const HATEOAS = Generator.genHATEOAS(userRegistred._id, 'user', 'users', userLogged.role > 0)
+        const HATEOAS = Generator.genHATEOAS(userRegistred._id, 'user', 'users', decodedToken.role > 0)
 
         res.status(201)
         res.json({ _links: HATEOAS })
