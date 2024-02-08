@@ -1,7 +1,5 @@
 const Generator = require('../tools/Generator')
 const Token = require('../tools/TokenTools')
-const jwt = require('jsonwebtoken')
-const _ = require('lodash')
 
 const DateFormated = require('../tools/DateFormated')
 const date = new DateFormated('mongodb')
@@ -79,12 +77,17 @@ class ReserveController {
         }
       }
 
-      await Reserve.save(apartment_id, apartment)
+      let reserveRegistred = await Reserve.save(apartment_id, apartment)
 
-      let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
+      if (reserveRegistred) {
+        let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
 
-      res.status(201)
-      res.json({ _links: HATEOAS })
+        res.status(201)
+        res.json({ _links: HATEOAS })
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)
@@ -115,14 +118,19 @@ class ReserveController {
 
       let reserve = await Reserve.findOne(id)
 
-      delete reserve.reserve.client_id
-      delete reserve.reserve.reserved.reservedBy
+      if (reserve) {
+        delete reserve.reserve.client_id
+        delete reserve.reserve.reserved.reservedBy
 
-      let HATEOAS = Generator.genHATEOAS(id, 'reserve', 'reserves', true)
-      reserve._links = HATEOAS
+        let HATEOAS = Generator.genHATEOAS(id, 'reserve', 'reserves', true)
+        reserve._links = HATEOAS
 
-      res.status(200)
-      res.json(reserve)
+        res.status(200)
+        res.json(reserve)
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch (error) {
       console.log(error)
@@ -153,18 +161,19 @@ class ReserveController {
         query.client_id = decodedToken.id
         reserves = await Reserve.findMany(query)
 
-        for (let reserve of reserves) {
+        if (reserves.length) {
+          for (let reserve of reserves) {
 
-          /*
-            FORMATAR AS DATAS DE INÍCIO E TÉRMINO DA RESERVA.
-          */
+            /*
+              FORMATAR AS DATAS DE INÍCIO E TÉRMINO DA RESERVA.
+            */
 
-          delete reserve.reserve.reserved
-          delete reserve.reserve.client_id
+            delete reserve.reserve.reserved
+            delete reserve.reserve.client_id
 
-          let HATEOAS = Generator.genHATEOAS(reserve._id, 'reserve', 'reserves', decodedToken.role > 0)
-          reserve._links = HATEOAS
-
+            let HATEOAS = Generator.genHATEOAS(reserve._id, 'reserve', 'reserves', decodedToken.role > 0)
+            reserve._links = HATEOAS
+          }
         }
       } else {
         if (req.query) {
@@ -217,24 +226,26 @@ class ReserveController {
 
               reserves = await Reserve.findMany(query)
 
-              for (let reserve of reserves) {
-
-                delete reserve.reserve.reserved.reservedBy
-                delete reserve.reserve.client_id
-
-                reserve.reserve.reserved.reservedAt = new Date(reserve.reserve.reserved.reservedAt).toLocaleString()
-
-                let HATEOAS = Generator.genHATEOAS(reserve._id, 'reserve', 'reserves', decodedToken.role > 0)
-                reserve._links = HATEOAS
-
-              }
-
               if (reserves.length) {
-                hasNext = reserves.length > limit
+                for (let reserve of reserves) {
 
-                // Retira o dado extra para cálculo do hasNext.
-                if (hasNext) {
-                  reserves.pop()
+                  delete reserve.reserve.reserved.reservedBy
+                  delete reserve.reserve.client_id
+
+                  reserve.reserve.reserved.reservedAt = new Date(reserve.reserve.reserved.reservedAt).toLocaleString()
+
+                  let HATEOAS = Generator.genHATEOAS(reserve._id, 'reserve', 'reserves', decodedToken.role > 0)
+                  reserve._links = HATEOAS
+
+                }
+
+                if (reserves.length) {
+                  hasNext = reserves.length > limit
+
+                  // Retira o dado extra para cálculo do hasNext.
+                  if (hasNext) {
+                    reserves.pop()
+                  }
                 }
               }
 
@@ -242,13 +253,10 @@ class ReserveController {
 
           }
         }
-
-        res.status(200)
-        res.json({ reserves, hasNext })
-        return
       }
 
-      res.sendStatus(404)
+      res.status(200)
+      res.json({ reserves, hasNext })
 
     } catch (error) {
       console.log(error)
@@ -332,12 +340,17 @@ class ReserveController {
 
       let apartment = { reserve }
 
-      await Reserve.edit(apartment_id, apartment)
+      let reserveBeforeModified = await Reserve.edit(apartment_id, apartment)
 
-      let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
+      if (reserveBeforeModified) {
+        let HATEOAS = Generator.genHATEOAS(apartment_id, 'reserve', 'reserves', true)
 
-      res.status(200)
-      res.json({ _links: HATEOAS })
+        res.status(200)
+        res.json({ _links: HATEOAS })
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)
@@ -366,8 +379,15 @@ class ReserveController {
         return
       }
 
-      await Reserve.delete(id)
-      res.sendStatus(200)
+      let reserveDeleted = await Reserve.delete(id)
+
+      if (reserveDeleted) {
+        res.status(200)
+        res.json({})
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)

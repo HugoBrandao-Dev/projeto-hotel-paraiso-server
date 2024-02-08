@@ -19,9 +19,9 @@ class Reserve {
         Como a criação de uma reserva se dá sempre em um apartamento (documento) já cadastrado, 
         utiliza-se o método findByIdAndUpdate.
       */
-      await ApartmentModel.findByIdAndUpdate(_apartment_id, _reserve)
+      let apartmentBeforeModified = await ApartmentModel.findByIdAndUpdate(_apartment_id, _reserve)
 
-      return
+      return apartmentBeforeModified.reserve
 
     } catch (error) {
       console.log(error)
@@ -163,9 +163,9 @@ class Reserve {
         }
       })
 
-      let reserve = await ApartmentModel.aggregate(query)
+      let reservesFound = await ApartmentModel.aggregate(query)
 
-      return reserve
+      return reservesFound
 
     } catch (error) {
       console.log(error)
@@ -216,9 +216,9 @@ class Reserve {
           apartment.$set['reserve.reserved.reservedBy'] = reserved.reservedBy
       }
 
-      await ApartmentModel.findByIdAndUpdate(_apartment_id, apartment)
+      let apartmentBeforeModified = await ApartmentModel.findByIdAndUpdate(_apartment_id, apartment)
 
-      return
+      return apartmentBeforeModified.reserve
 
     } catch (error) {
       console.log(error)
@@ -236,7 +236,10 @@ class Reserve {
         }
       }
 
-      await ApartmentModel.findByIdAndUpdate(_id, apartament)
+      // Foi utilizado o método de atualização porque a reserva é um obj dentro do apartmento.
+      let apartmentBeforeModified = await ApartmentModel.findByIdAndUpdate(_id, apartament)
+
+      return apartmentBeforeModified.reserve
 
     } catch (error) {
       console.log(error)

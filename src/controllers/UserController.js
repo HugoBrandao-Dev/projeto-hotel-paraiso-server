@@ -182,11 +182,17 @@ class UserController {
       let userIDWhoCreated = userLogged ? userLogged.id : user.id
       user.created.createdBy = userIDWhoCreated
 
-      const userID = await User.save(user, userIDWhoCreated)
-      const HATEOAS = Generator.genHATEOAS(userID, 'user', 'users', userLogged.role > 0)
+      const userRegistred = await User.save(user, userIDWhoCreated)
 
-      res.status(201)
-      res.json({ _links: HATEOAS })
+      if (userRegistred) {
+        const HATEOAS = Generator.genHATEOAS(userRegistred._id, 'user', 'users', userLogged.role > 0)
+
+        res.status(201)
+        res.json({ _links: HATEOAS })
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)
@@ -264,7 +270,10 @@ class UserController {
         user._links = await Generator.genHATEOAS(user._id, 'user', 'users', role > 0)
         res.status(200)
         res.json(user)
+        return
       }
+
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)
@@ -363,12 +372,10 @@ class UserController {
 
           user._links = await Generator.genHATEOAS(user._id, 'user', 'users', true)
         }
-
-        res.status(200)
-        res.json(users)
-      } else {
-        res.sendStatus(404)
       }
+
+      res.status(200)
+      res.json(users)
 
     } catch (error) {
       console.error(error)
@@ -791,9 +798,15 @@ class UserController {
 
       let HATEOAS = Generator.genHATEOAS(fields.id, 'user', 'users', roleToken > 0)
 
-      await User.edit(id, fields)
-      res.status(200)
-      res.json({ _links: HATEOAS })
+      let userBeforeModified = await User.edit(id, fields)
+
+      if (userBeforeModified) {
+        res.status(200)
+        res.json({ _links: HATEOAS })
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)
@@ -820,10 +833,15 @@ class UserController {
         return
       }
 
-      let user = await User.delete(id)
+      let userDeleted = await User.delete(id)
+
+      if (userDeleted) {
+        res.status(200)
+        res.json({})
+        return
+      }
       
-      res.status(200)
-      res.json({})
+      res.sendStatus(500)
 
     } catch (error) {
       next(error)

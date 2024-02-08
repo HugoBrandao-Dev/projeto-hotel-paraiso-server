@@ -15,9 +15,9 @@ class User {
 
       const user = new UserModel(_user)
 
-      const result = await user.save()
+      const userRegistred = await user.save()
 
-      return result._id
+      return userRegistred
       
     } catch (error) {
       console.log(error)
@@ -30,7 +30,7 @@ class User {
 
     try {
 
-      const user = await UserModel.aggregate([
+      const usersFound = await UserModel.aggregate([
         {
           // O ObjectId é um tipo de dado do mongoose e precisa ser importado.
           $match: { _id: ObjectId(_id) }
@@ -63,7 +63,7 @@ class User {
         }
       ])
 
-      return user[0]
+      return usersFound[0]
 
     } catch (error) {
       console.log(error)
@@ -76,7 +76,7 @@ class User {
 
     try {
 
-      const users = await UserModel.aggregate([
+      const usersFound = await UserModel.aggregate([
         {
           $match: { ..._searchBy }
         },
@@ -108,7 +108,7 @@ class User {
         }
       ])
 
-      return users
+      return usersFound
 
     } catch (error) {
       console.log(error)
@@ -121,7 +121,7 @@ class User {
 
     try {
 
-      let users = await UserModel.aggregate([
+      let usersFound = await UserModel.aggregate([
         {
           $match: { role: _role }
         },
@@ -149,7 +149,7 @@ class User {
         }
       ])
 
-      return users
+      return usersFound
 
     } catch (error) {
       console.log(error)
@@ -164,7 +164,7 @@ class User {
 
       const { name, skip, limit } = _query
 
-      const users = await UserModel.aggregate([
+      const usersFound = await UserModel.aggregate([
         {
           $lookup: {
             localField: 'created.createdBy',
@@ -191,9 +191,7 @@ class User {
         { $limit: limit }
       ])
 
-      // find({}).skip(skip).limit(limit).lean()
-
-      return users
+      return usersFound
 
     } catch (error) {
       console.log(error)
@@ -206,9 +204,9 @@ class User {
 
     try {
 
-      await UserModel.findByIdAndUpdate(`${ _userToBeUpdated }`, _user)
+      let userBeforeModified = await UserModel.findByIdAndUpdate(`${ _userToBeUpdated }`, _user)
 
-      return
+      return userBeforeModified
 
     } catch (error) {
       console.log(error)
@@ -221,8 +219,9 @@ class User {
 
     try {
 
-      await UserModel.findByIdAndDelete(`${ _id }`)
-      return
+      let userDeleted = await UserModel.findByIdAndDelete(`${ _id }`)
+
+      return userDeleted
 
     } catch (error) {
       console.log(error)

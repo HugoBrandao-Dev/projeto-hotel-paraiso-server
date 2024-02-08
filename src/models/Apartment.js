@@ -14,9 +14,9 @@ class Apartment {
 
       const apartment = new ApartmentModel(_apartment)
       
-      let result = await apartment.save()
+      let apartmentRegistred = await apartment.save()
 
-      return result._id
+      return apartmentRegistred
 
     } catch (error) {
       console.log(error)
@@ -29,7 +29,7 @@ class Apartment {
 
     try {
 
-      let apartment = await ApartmentModel.aggregate([
+      let apartmentsFound = await ApartmentModel.aggregate([
         {
           $match: { _id: ObjectId(_id) }
         },
@@ -57,7 +57,7 @@ class Apartment {
         }
       ])
       
-      return apartment[0]
+      return apartmentsFound[0]
 
     } catch (error) {
       console.log(error)
@@ -171,9 +171,9 @@ class Apartment {
       if (sort)
         query.push({ $sort: sort })
 
-      let apartments = await ApartmentModel.aggregate(query)
+      let apartmentsFound = await ApartmentModel.aggregate(query)
 
-      return apartments
+      return apartmentsFound
 
     } catch (error) {
       console.log(error)
@@ -182,12 +182,12 @@ class Apartment {
 
   }
 
-  // Busca por um apartamento pelo seu Número
+  // Busca por um apartamento pelo seu Número.
   async findByNumber(_number) {
 
     try {
 
-      let apartment = await ApartmentModel.aggregate([
+      let apartmentsFound = await ApartmentModel.aggregate([
         {
           $match: { number: _number }
         },
@@ -215,7 +215,7 @@ class Apartment {
         }
       ])
 
-      return apartment[0]
+      return apartmentsFound[0]
 
     } catch (error) {
       console.log(error)
@@ -228,9 +228,9 @@ class Apartment {
 
     try {
 
-      let apartment = await ApartmentModel.findByIdAndUpdate(_apartmentToBeUpdated, _apartment)
+      let apartmentBeforeModified = await ApartmentModel.findByIdAndUpdate(_apartmentToBeUpdated, _apartment)
 
-      return apartment._id
+      return apartmentBeforeModified
 
     } catch (error) {
       console.log(error)
@@ -243,9 +243,9 @@ class Apartment {
 
     try {
 
-      let apartment = await ApartmentModel.findByIdAndDelete(_id)
+      let apartmentDeleted = await ApartmentModel.findByIdAndDelete(_id)
 
-      return apartment.number
+      return apartmentDeleted
 
     } catch (error) {
       console.log(error)

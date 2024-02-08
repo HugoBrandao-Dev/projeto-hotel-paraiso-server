@@ -89,20 +89,20 @@ class ApartmentController {
       const decodedToken = Token.getDecodedToken(token)
       apartment.created.createdBy = decodedToken.id
       
-      let idApto = await Apartment.save(apartment)
+      let apartmentRegistred = await Apartment.save(apartment)
 
       // Em caso de sucesso de cadastro do apto.
-      if (idApto) {
+      if (apartmentRegistred) {
 
         // Verifica se foram passadas imagens do apto.
         if (req.files) {
 
           // Copia as fotos da pasta tmp para a pasta do apto de forma definitiva.
           let pictures = req.files.map(file => file.filename)
-          ApartmentPictures.movePicturesFromTempToApartmentFolder(pictures, apartment.number)
+          ApartmentPictures.movePicturesFromTempToApartmentFolder(pictures, apartmentRegistred.number)
         }
 
-        let HATEOAS = Generator.genHATEOAS(idApto, 'apartment', 'apartments', true)
+        let HATEOAS = Generator.genHATEOAS(apartmentRegistred._id, 'apartment', 'apartments', true)
 
         res.status(201)
         res.json({ _links: HATEOAS })
@@ -383,12 +383,8 @@ class ApartmentController {
       if (hasNext)
         apartments.pop()
 
-      if (apartments.length) {
-        res.status(200)
-        res.json({ apartments, hasNext })
-      } else {
-        res.sendStatus(404)
-      }
+      res.status(200)
+      res.json({ apartments, hasNext })
 
     } catch(error) {
       next(error)
@@ -450,7 +446,7 @@ class ApartmentController {
           errorFields.push(idResult)
       }
 
-      let apartmentRegistred = await Apartment.findByNumber(number)
+      let apartmentFound = await Apartment.findByNumber(number)
 
       if (floor) {
         const floorResult = Analyzer.analyzeApartmentFloor(floor)
@@ -468,7 +464,7 @@ class ApartmentController {
           if (numberResult.hasError.type == 4) {
 
             // Verifica se o número do apartamento já pertence a ele próprio.
-            let isTheSameApartment = apartmentRegistred._id == id
+            let isTheSameApartment = apartmentFound._id == id
 
             if (!isTheSameApartment) {
               errorFields.push(numberResult)
@@ -521,17 +517,17 @@ class ApartmentController {
 
       let registred = await Apartment.findOne(id)
 
-      let idApto = await Apartment.edit(id, apartment)
+      let apartmentBeforeModified = await Apartment.edit(id, apartment)
 
       // Em caso de sucesso da atualização dos dados do apto.
-      if (idApto) {
+      if (apartmentBeforeModified) {
 
         // Verifica se foi informado um número de apto.
         if (apartment.number) {
 
           // Verifica se o número informado é DIFERENTE do cadastrado.
-          if (registred.number != apartment.number)
-            ApartmentPictures.changeApartmentNumber(registred.number, apartment.number)
+          if (apartmentBeforeModified.number != apartment.number)
+            ApartmentPictures.changeApartmentNumber(apartmentBeforeModified.number, apartment.number)
         }
 
         // Verifica se foram passadas imagens do apto.
@@ -547,7 +543,7 @@ class ApartmentController {
             ApartmentPictures.deletePicturesFromApartment(apartment.number, picturesToBeDeleted)
         }
 
-        let HATEOAS = Generator.genHATEOAS(idApto, 'apartment', 'apartments', true)
+        let HATEOAS = Generator.genHATEOAS(apartmentBeforeModified._id, 'apartment', 'apartments', true)
 
         res.status(200)
         res.json({ _links: HATEOAS })
@@ -586,9 +582,16 @@ class ApartmentController {
         return
       }
 
-      let apartmentNumber = await Apartment.delete(id)
-      ApartmentPictures.deleteApartmentFolder(apartmentNumber)
-      res.sendStatus(200)
+      let apartmentDeleted = await Apartment.delete(id)
+
+      if (apartmentDeleted) {
+        ApartmentPictures.deleteApartmentFolder(apartmentDeleted.number)
+        res.status(200)
+        res.json({})
+        return
+      }
+
+      res.sendStatus(500)
 
     } catch(error) {
       next(error)
