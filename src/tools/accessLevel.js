@@ -45,12 +45,12 @@ async function isActionAllowed(headers, path, method, params, body) {
                     if (params.id) {
                       let idResult = await Analyzer.analyzeApartmentID(params.id)
                       if (!idResult.hasError.value) {
-                        let reserve = await Reserve.findOne(params.id)
+                        let result = await Reserve.findOne(params.id)
 
-                        if (reserve.status == 'livre') {
+                        if (result.reserve.status == 'livre') {
                           allowed = true
                         } else {
-                          if (decodedToken.id == reserve.client_id) {
+                          if (decodedToken.id == result.reserve.client_id) {
                             allowed = true
                           }
                         }
