@@ -97,6 +97,16 @@ class Reserve {
         limit
       } = _query
 
+      /*
+      
+      Criar consultas para os seguintes filtros:
+        Menor -> Maior (diária)
+        Maior -> Menor (diária)
+        Quantidade de cômodos
+        Aceita animais?
+
+      */
+
       let query = []
 
       let filter = {
@@ -107,19 +117,19 @@ class Reserve {
         filter.$match.$and.push({
           'reserve.client_id': ObjectId(client_id)
         })
-      }
-
-      if (!status) {
-        filter.$match.$and.push({
-          $or: [
-            { 'reserve.status': 'reservado' },
-            { 'reserve.status': 'ocupado' },
-          ]
-        })
       } else {
-        filter.$match.$and.push({
-          'reserve.status': status
-        })
+        if (!status) {
+          filter.$match.$and.push({
+            $or: [
+              { 'reserve.status': 'reservado' },
+              { 'reserve.status': 'ocupado' },
+            ]
+          })
+        } else {
+          filter.$match.$and.push({
+            'reserve.status': status
+          })
+        }
       }
 
       query.push(filter)

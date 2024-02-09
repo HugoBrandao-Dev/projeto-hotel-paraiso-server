@@ -216,116 +216,120 @@ class ApartmentController {
       if (req.headers['authorization']) {
         let token = req.headers['authorization']
         decodedToken = Token.getDecodedToken(token)
-        if (decodedToken.role == 0)
+        if (decodedToken.role == 0) {
           query.status = 'livre'
+          query.client_id = decodedToken.id
+        }
       }
 
       let errorFields = []
 
-      let listOfQueryString = Object.keys(req.query)
+      if (!query.client_id) {
+        let listOfQueryString = Object.keys(req.query)
 
-      if (listOfQueryString.length) {
-        let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments', decodedToken.role > 0)
-        if (queryStringResult.hasError.value) {
-          errorFields.push(queryStringResult)
-        } else {
+        if (listOfQueryString.length) {
+          let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments', decodedToken.role > 0)
+          if (queryStringResult.hasError.value) {
+            errorFields.push(queryStringResult)
+          } else {
 
-          // Array de todas as Query String que foram passadas, com ou sem valor.
-          let queryStringArray = Object.keys(req.query)
+            // Array de todas as Query String que foram passadas, com ou sem valor.
+            let queryStringArray = Object.keys(req.query)
 
-          if (queryStringArray.includes('status')) {
-            let statusResult = await Analyzer.analyzeApartmentFilterStatus(status)
-            if (statusResult.hasError.value)
-              errorFields.push(statusResult)
-            else
-              query.status = status
-          }
-
-          if (queryStringArray.includes('rooms')) {
-            let roomsResult = await Analyzer.analyzeApartmentFilterRooms(rooms)
-            if (roomsResult.hasError.value)
-              errorFields.push(roomsResult)
-            else
-              query.rooms = parseInt(rooms)
-          }
-
-          if (queryStringArray.includes('lowest_daily_price')) {
-            let lowestDailyPriceResult = await Analyzer.analyzeApartmentFilterLowestDailyPrice(lowest_daily_price)
-            if (lowestDailyPriceResult.hasError.value)
-              errorFields.push(lowestDailyPriceResult)
-            else
-              query.lowest_daily_price = parseFloat(lowest_daily_price)
-          }
-
-          if (queryStringArray.includes('highest_daily_price')) {
-            let highestDailyPriceResult = await Analyzer.analyzeApartmentFilterHighestDailyPrice(highest_daily_price, lowest_daily_price)
-            if (highestDailyPriceResult.hasError.value)
-              errorFields.push(highestDailyPriceResult)
-            else
-              query.highest_daily_price = parseFloat(highest_daily_price)
-          }
-
-          if (queryStringArray.includes('accepts_animals')) {
-            let acceptsAnimalsResult = await Analyzer.analyzeApartmentFilterAcceptsAnimals(accepts_animals)
-            if (acceptsAnimalsResult.hasError.value)
-              errorFields.push(acceptsAnimalsResult)
-            else
-              query.accepts_animals = accepts_animals == 1
-          }
-
-          if (queryStringArray.includes('offset')) {
-            let offsetResult = await Analyzer.analyzeFilterSkip(offset, decodedToken.role > 0)
-            if (offsetResult.hasError.value) {
-              errorFields.push(offsetResult)
-            } else {
-              // Skip é equivalente ao offset, no mongodb.
-              query.skip = Number.parseInt(offset)
-
-              let limitResult = Analyzer.analyzeFilterLimit(limit)
-              if (limitResult.hasError.value)
-                errorFields.push(limitResult)
+            if (queryStringArray.includes('status')) {
+              let statusResult = await Analyzer.analyzeApartmentFilterStatus(status)
+              if (statusResult.hasError.value)
+                errorFields.push(statusResult)
               else
-                query.limit = Number.parseInt(limit) + 1
+                query.status = status
             }
-          } else {
-            query.skip = 0
-            query.limit = 20 + 1
-          }
 
-          if (queryStringArray.includes('sort')) {
-            let sortResult = await Analyzer.analyzeApartmentFilterSort(sort)
-            if (sortResult.hasError.value) {
-              errorFields.push(sortResult)
-            } else {
-              query.sort = {}
+            if (queryStringArray.includes('rooms')) {
+              let roomsResult = await Analyzer.analyzeApartmentFilterRooms(rooms)
+              if (roomsResult.hasError.value)
+                errorFields.push(roomsResult)
+              else
+                query.rooms = parseInt(rooms)
+            }
 
-              // Separa todos os parâmetros de ordenamento.
-              let toSort = sort.split(',')
+            if (queryStringArray.includes('lowest_daily_price')) {
+              let lowestDailyPriceResult = await Analyzer.analyzeApartmentFilterLowestDailyPrice(lowest_daily_price)
+              if (lowestDailyPriceResult.hasError.value)
+                errorFields.push(lowestDailyPriceResult)
+              else
+                query.lowest_daily_price = parseFloat(lowest_daily_price)
+            }
 
-              /*
-              Estrutura os parâmetros em um único objeto, para que seja passado diretamente para o Mongo.
-              { $sort: { <field_1>: <value_1>, <field_2>: <value_2>, ... } }
-              */ 
-              for (let item of toSort) {
-                let field = item.split(':')[0]
-                let sortOrder = item.split(':')[1]
+            if (queryStringArray.includes('highest_daily_price')) {
+              let highestDailyPriceResult = await Analyzer.analyzeApartmentFilterHighestDailyPrice(highest_daily_price, lowest_daily_price)
+              if (highestDailyPriceResult.hasError.value)
+                errorFields.push(highestDailyPriceResult)
+              else
+                query.highest_daily_price = parseFloat(highest_daily_price)
+            }
 
-                // No mongo, 1 é ASC e -1 é DESC.
-                query.sort[field] = sortOrder == 'asc' ? 1 : -1
+            if (queryStringArray.includes('accepts_animals')) {
+              let acceptsAnimalsResult = await Analyzer.analyzeApartmentFilterAcceptsAnimals(accepts_animals)
+              if (acceptsAnimalsResult.hasError.value)
+                errorFields.push(acceptsAnimalsResult)
+              else
+                query.accepts_animals = accepts_animals == 1
+            }
+
+            if (queryStringArray.includes('offset')) {
+              let offsetResult = await Analyzer.analyzeFilterSkip(offset, decodedToken.role > 0)
+              if (offsetResult.hasError.value) {
+                errorFields.push(offsetResult)
+              } else {
+                // Skip é equivalente ao offset, no mongodb.
+                query.skip = Number.parseInt(offset)
+
+                let limitResult = Analyzer.analyzeFilterLimit(limit)
+                if (limitResult.hasError.value)
+                  errorFields.push(limitResult)
+                else
+                  query.limit = Number.parseInt(limit) + 1
               }
+            } else {
+              query.skip = 0
+              query.limit = 20 + 1
+            }
+
+            if (queryStringArray.includes('sort')) {
+              let sortResult = await Analyzer.analyzeApartmentFilterSort(sort)
+              if (sortResult.hasError.value) {
+                errorFields.push(sortResult)
+              } else {
+                query.sort = {}
+
+                // Separa todos os parâmetros de ordenamento.
+                let toSort = sort.split(',')
+
+                /*
+                Estrutura os parâmetros em um único objeto, para que seja passado diretamente para o Mongo.
+                { $sort: { <field_1>: <value_1>, <field_2>: <value_2>, ... } }
+                */ 
+                for (let item of toSort) {
+                  let field = item.split(':')[0]
+                  let sortOrder = item.split(':')[1]
+
+                  // No mongo, 1 é ASC e -1 é DESC.
+                  query.sort[field] = sortOrder == 'asc' ? 1 : -1
+                }
+
+              }
+            } else {
+
+              // Valor PADRÃO de ordenamento (Obrigatório para o Mongo DB).
+              query.sort = { 'daily_price': 1 }
 
             }
-          } else {
-
-            // Valor PADRÃO de ordenamento (Obrigatório para o Mongo DB).
-            query.sort = { 'daily_price': 1 }
 
           }
-
+        } else {
+          query.skip = 0
+          query.limit = 20 + 1
         }
-      } else {
-        query.skip = 0
-        query.limit = 20 + 1
       }
 
       if (errorFields.length) {
