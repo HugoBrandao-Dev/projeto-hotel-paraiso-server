@@ -43,12 +43,12 @@ class ApartmentController {
 
       let errorFields = []
 
-      const floorResult = Analyzer.analyzeApartmentFloor(floor)
+      const floorResult = Analyzer.analyzeApartmentFloor((floor).toString())
       if (floorResult.hasError.value) {
         errorFields.push(floorResult)
       }
 
-      const numberResult = await Analyzer.analyzeApartmentNumber(number)
+      const numberResult = await Analyzer.analyzeApartmentNumber((number).toString())
       if (numberResult.hasError.value) {
         errorFields.push(numberResult)
       }
@@ -449,7 +449,7 @@ class ApartmentController {
       let apartmentFound = await Apartment.findByNumber(number)
 
       if (floor) {
-        const floorResult = Analyzer.analyzeApartmentFloor(floor)
+        const floorResult = Analyzer.analyzeApartmentFloor((floor).toString())
         if (floorResult.hasError.value)
           errorFields.push(floorResult)
         else
@@ -457,7 +457,7 @@ class ApartmentController {
       }
       
       if (number) {
-        const numberResult = await Analyzer.analyzeApartmentNumber(number)
+        const numberResult = await Analyzer.analyzeApartmentNumber((number).toString())
         if (numberResult.hasError.value) {
 
           // Verifica se está tentando atualizar com um número de apartamento que já está cadastrado.
