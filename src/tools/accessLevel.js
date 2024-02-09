@@ -79,9 +79,9 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                       if (!idResult.hasError.value) {
 
-                        let reserve = await Reserve.findOne(body.apartment_id)
+                        let result = await Reserve.findOne(body.apartment_id)
 
-                        if (reserve.client_id == decodedToken.id) {
+                        if (result.reserve.client_id == decodedToken.id) {
                           if (!body.status) {
                             allowed = true
                           }
