@@ -119,8 +119,14 @@ class ReserveController {
       let reserve = await Reserve.findOne(id)
 
       if (reserve) {
-        delete reserve.reserve.client_id
-        delete reserve.reserve.reserved.reservedBy
+
+        if (decodedToken.role == 0) {
+          delete reserve.reserve.reserved
+        } else {
+          delete reserve.reserve.client_id
+          delete reserve.reserve.reserved.reservedBy
+        }
+
 
         let HATEOAS = Generator.genHATEOAS(id, 'reserve', 'reserves', true)
         reserve._links = HATEOAS
