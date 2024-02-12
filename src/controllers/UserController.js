@@ -414,28 +414,23 @@ class UserController {
 
           if (listOfQueryString.includes('offset')) {
             const offsetResult = await Analyzer.analyzeFilterSkip(offset)
-            if (offsetResult.hasError.value)
+            if (offsetResult.hasError.value) {
               errorFields.push(offsetResult)
-            else
+            } else {
               query.skip = parseInt(offset)
-          } else {
-            query.skip = 0
-          }
 
-          if (listOfQueryString.includes('limit')) {
-            const limitResult = Analyzer.analyzeFilterLimit(limit)
-            if (limitResult.hasError.value)
-              errorFields.push(limitResult)
-            else
-              query.limit = parseInt(limit) + 1
-          } else {
-
-            // +1 é para cálculo do hasNext.
-            query.limit = 20 + 1
+              const limitResult = Analyzer.analyzeFilterLimit(limit)
+              if (limitResult.hasError.value)
+                errorFields.push(limitResult)
+              else
+                query.limit = parseInt(limit) + 1
+            }
           }
         }
         
-      } else {
+      }
+
+      if (!listOfQueryString.includes('offset')) {
         query.skip = 0
 
         // +1 é para cálculo do hasNext.

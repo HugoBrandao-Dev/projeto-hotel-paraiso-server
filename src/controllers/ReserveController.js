@@ -146,13 +146,14 @@ class ReserveController {
       const decodedToken = Token.getDecodedToken(req.headers['authorization'])
 
       const status = req.query.status
-      let { offset: skip, limit } = req.query
+      let { offset, limit } = req.query
       let query = {}
 
       let hasNext = false
 
       let RestException = null
       let errorParams = []
+      let listOfQueryString = []
 
       let reserves = []
 
@@ -177,9 +178,9 @@ class ReserveController {
         }
       } else {
         if (req.query) {
-          let queryList = Object.keys(req.query)
+          listOfQueryString = Object.keys(req.query)
 
-          let queryStringResult = Analyzer.analyzeQueryList(queryList, 'reserves')
+          let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'reserves')
           if (queryStringResult.hasError.value) {
             errorParams.push(queryStringResult)
 
@@ -200,21 +201,19 @@ class ReserveController {
               query.status = status
             }
 
-            if ((skip || skip == 0) && limit) {
-              let skipResult = Analyzer.analyzeFilterSkip(skip)
-              if (skipResult.hasError.value)
-                errorParams.push(skipResult)
-              else
-                query.skip = parseInt(skip)
+            if (listOfQueryString.includes('offset')) {
+              const offsetResult = await Analyzer.analyzeFilterSkip(offset)
+              if (offsetResult.hasError.value) {
+                errorFields.push(offsetResult)
+              } else {
+                query.skip = parseInt(offset)
 
-              let limitResult = Analyzer.analyzeFilterLimit(limit)
-              if (limitResult.hasError.value)
-                errorParams.push(limitResult)
-              else
-                query.limit = parseInt(limit) + 1
-            } else {
-              query.skip = 0
-              query.limit = 20 + 1
+                const limitResult = Analyzer.analyzeFilterLimit(limit)
+                if (limitResult.hasError.value)
+                  errorFields.push(limitResult)
+                else
+                  query.limit = parseInt(limit) + 1
+              }
             }
 
             if (errorParams.length) {
@@ -253,6 +252,13 @@ class ReserveController {
 
           }
         }
+      }
+
+      if (!listOfQueryString.includes('offset')) {
+        query.skip = 0
+
+        // +1 é para cálculo do hasNext.
+        query.limit = 20 + 1
       }
 
       res.status(200)

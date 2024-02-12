@@ -224,8 +224,10 @@ class ApartmentController {
 
       let errorFields = []
 
+      const listOfQueryString = Object.keys(req.query)
+
+      // Os filtros só serão processados para funcionários++.
       if (!query.client_id) {
-        let listOfQueryString = Object.keys(req.query)
 
         if (listOfQueryString.length) {
           let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments', decodedToken.role > 0)
@@ -282,17 +284,14 @@ class ApartmentController {
                 errorFields.push(offsetResult)
               } else {
                 // Skip é equivalente ao offset, no mongodb.
-                query.skip = Number.parseInt(offset)
+                query.skip = parseInt(offset)
 
                 let limitResult = Analyzer.analyzeFilterLimit(limit)
                 if (limitResult.hasError.value)
                   errorFields.push(limitResult)
                 else
-                  query.limit = Number.parseInt(limit) + 1
+                  query.limit = parseInt(limit) + 1
               }
-            } else {
-              query.skip = 0
-              query.limit = 20 + 1
             }
 
             if (queryStringArray.includes('sort')) {
@@ -326,10 +325,14 @@ class ApartmentController {
             }
 
           }
-        } else {
-          query.skip = 0
-          query.limit = 20 + 1
         }
+      }
+
+      if (!listOfQueryString.includes('offset')) {
+        query.skip = 0
+
+        // +1 é para cálculo do hasNext.        
+        query.limit = 20 + 1
       }
 
       if (errorFields.length) {
