@@ -211,15 +211,15 @@ class ApartmentController {
         sort
       } = req.query
 
-      let query = {}
+      // Consulta, já com os valores padrões.
+      let query = { status: 'livre' }
+
       let decodedToken = { role: 0 }
       if (req.headers['authorization']) {
         let token = req.headers['authorization']
         decodedToken = Token.getDecodedToken(token)
-        if (decodedToken.role == 0) {
-          query.status = 'livre'
+        if (decodedToken.role == 0)
           query.client_id = decodedToken.id
-        }
       }
 
       let errorFields = []

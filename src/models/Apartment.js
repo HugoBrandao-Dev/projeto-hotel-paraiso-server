@@ -92,23 +92,22 @@ class Apartment {
       /* DEFINE OS VALORES INFORMADOS PELO NA URL */
 
       if (status) {
-        query[0].$redact.$cond[0].$and.push({
-          'status': status
-        })
-      }
-
-      // Soma a quantidade de dos cômodos do apto.
-      let calcRooms = {
-        $sum: {
-          $map: {
-            input: '$rooms',
-            as: 'total_rooms',
-            in: '$$total_rooms.quantity'
-          }
-        }
+        query.unshift({ $match: { 'reserve.status': status } })
       }
 
       if (rooms) {
+
+        // Soma a quantidade de dos cômodos do apto.
+        let calcRooms = {
+          $sum: {
+            $map: {
+              input: '$rooms',
+              as: 'total_rooms',
+              in: '$$total_rooms.quantity'
+            }
+          }
+        }
+
         query[0].$redact.$cond[0].$and.push({
           $eq: [calcRooms, rooms]
         })
