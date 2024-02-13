@@ -1,7 +1,6 @@
-const ApartmentCollection = require('../data/ApartmentCollection.json')
-const DateFormated = require('../tools/DateFormated')
 const mongoose = require('mongoose')
 
+const DateFormated = require('../tools/DateFormated')
 const date = new DateFormated('mongodb')
 
 const ApartmentSchema = require('../schemas/ApartmentSchema')
@@ -34,12 +33,13 @@ class Reserve {
 
     try {
 
-      let filter = {
-        $match: { "_id": ObjectId(_id) }
-      }
+      let query = []
 
-      // Faz o join com a collection USERS para saber PARA QUEM FOI RESERVADO.
-      let joinClient = {
+      query.push({
+        $match: { "_id": ObjectId(_id) }
+      })
+
+      query.push({
         $lookup: {
           localField: 'reserve.client_id',
           from: 'users',
@@ -49,10 +49,9 @@ class Reserve {
             { $project: { 'name': true } }
           ]
         }
-      }
+      })
 
-      // Faz o join com a collection USERS para saber QUEM RESERVOU.
-      let joinReservedBy = {
+      query.push({
         $lookup: {
           localField: 'reserve.reserved.reservedBy',
           from: 'users',
@@ -62,20 +61,16 @@ class Reserve {
             { $project: { 'name': true } }
           ]
         }
-      }
+      })
 
-      let onlyReserve = {
+      // Faz com que retorne somente o campo relacionado a reserva.
+      query.push({
         $project: {
           'reserve': true
         }
-      }
+      })
 
-      let reserve = await ApartmentModel.aggregate([
-        filter,
-        joinClient,
-        joinReservedBy,
-        onlyReserve
-      ])
+      let reserve = await ApartmentModel.aggregate(query)
 
       return reserve[0]
 
