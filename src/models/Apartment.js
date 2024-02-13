@@ -29,33 +29,37 @@ class Apartment {
 
     try {
 
-      let apartmentsFound = await ApartmentModel.aggregate([
-        {
-          $match: { _id: ObjectId(_id) }
-        },
-        {
-          $lookup: {
-            localField: 'created.createdBy',
-            from: 'users',
-            foreignField: '_id',
-            as: 'CREATED_BY',
-            pipeline: [
-              { $project: { 'name': true } }
-            ]
-          }
-        },
-        {
-          $lookup: {
-            localField: 'updated.updatedBy',
-            from: 'users',
-            foreignField: '_id',
-            as: 'UPDATED_BY',
-            pipeline: [
-              { $project: { 'name': true } }
-            ]
-          }
+      let query = []
+
+      query.push({
+        $match: { _id: ObjectId(_id) }
+      })
+
+      query.push({
+        $lookup: {
+          localField: 'created.createdBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'CREATED_BY',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
         }
-      ])
+      })
+
+      query.push({
+        $lookup: {
+          localField: 'updated.updatedBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'UPDATED_BY',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
+        }
+      })
+
+      let apartmentsFound = await ApartmentModel.aggregate(query)
       
       return apartmentsFound[0]
 
@@ -186,33 +190,37 @@ class Apartment {
 
     try {
 
-      let apartmentsFound = await ApartmentModel.aggregate([
-        {
-          $match: { number: _number }
-        },
-        {
-          $lookup: {
-            localField: 'created.createdBy',
-            from: 'users',
-            foreignField: '_id',
-            as: 'CREATED_BY',
-            pipeline: [
-              { $project: { 'name': true } }
-            ]
-          }
-        },
-        {
-          $lookup: {
-            localField: 'updated.updatedBy',
-            from: 'users',
-            foreignField: '_id',
-            as: 'UPDATED_BY',
-            pipeline: [
-              { $project: { 'name': true } }
-            ]
-          }
+      let query = []
+
+      query.push({
+        $match: { number: _number }
+      })
+
+      query.push({
+        $lookup: {
+          localField: 'created.createdBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'CREATED_BY',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
         }
-      ])
+      })
+
+      query.push({
+        $lookup: {
+          localField: 'updated.updatedBy',
+          from: 'users',
+          foreignField: '_id',
+          as: 'UPDATED_BY',
+          pipeline: [
+            { $project: { 'name': true } }
+          ]
+        }
+      })
+
+      let apartmentsFound = await ApartmentModel.aggregate(query)
 
       return apartmentsFound[0]
 
