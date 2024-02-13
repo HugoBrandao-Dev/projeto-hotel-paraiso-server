@@ -1,6 +1,7 @@
-const UserCollection = require('../data/UserCollection.json')
 const DateFormated = require('../tools/DateFormated')
-const _ = require('lodash')
+
+const Generator = require('../tools/Generator')
+const { toCreatedBy, toUpdatedBy } = Generator.genStructuresForCreatedByAndUpdatedBy()
 
 const mongoose = require('mongoose')
 
@@ -37,33 +38,9 @@ class User {
         $match: { _id: ObjectId(_id) }
       })
 
-      // Faz o join com a collection de USERS para saber QUEM CRIOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'created.createdBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'CREATED_BY',
-          pipeline: [
-            // Só retornará o nome de quem o criou (_id retorna por padrão).
-            { $project: { "name": true } }
-          ]
-        }
-      })
-
-      // Faz o join com a collection de USERS para saber QUEM ATUALIZOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'updated.updatedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'UPDATED_BY',
-          pipeline: [
-            // Só retornará o nome de quem fez a última alteração (_id retorna por padrão).
-            { $project: { "name": true } }
-          ]
-        }
-      })
+      // Joins para quem criou e atualizou o usuário.
+      query.push(toCreatedBy)
+      query.push(toUpdatedBy)
 
       const usersFound = await UserModel.aggregate(query)
 
@@ -86,35 +63,9 @@ class User {
         $match: { ..._searchBy }
       })
 
-      // Faz o join com a collection de USERS para saber QUEM CRIOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'created.createdBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'CREATED_BY',
-          pipeline: [
-            {
-              $project: { "name": true }
-            }
-          ]
-        }
-      })
-
-      // Faz o join com a collection de USERS para saber QUEM ATUALIZOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'updated.updatedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'UPDATED_BY',
-          pipeline: [
-            {
-              $project: { "name": true }
-            }
-          ]
-        }
-      })
+      // Joins para quem criou e atualizou o usuário.
+      query.push(toCreatedBy)
+      query.push(toUpdatedBy)
 
       const usersFound = await UserModel.aggregate(query)
 
@@ -137,31 +88,9 @@ class User {
         $match: { role: _role }
       })
 
-      // Faz o join com a collection de USERS para saber QUEM CRIOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'created.createdBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'CREATED_BY',
-          pipeline: [
-            { $project: { "name": true } }
-          ]
-        }
-      })
-
-      // Faz o join com a collection de USERS para saber QUEM ATUALIZOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'updated.updatedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'UPDATED_BY',
-          pipeline: [
-            { $project: { "name": true } }
-          ]
-        }
-      })
+      // Joins para quem criou e atualizou o usuário.
+      query.push(toCreatedBy)
+      query.push(toUpdatedBy)
 
       let usersFound = await UserModel.aggregate(query)
 
@@ -182,31 +111,9 @@ class User {
 
       let query = []
 
-      // Faz o join com a collection de USERS para saber QUEM CRIOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'created.createdBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'CREATED_BY',
-          pipeline: [
-            { $project: { "name": true } }
-          ]
-        }
-      })
-
-      // Faz o join com a collection de USERS para saber QUEM ATUALIZOU O USUÁRIO.
-      query.push({
-        $lookup: {
-          localField: 'updated.updatedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'UPDATED_BY',
-          pipeline: [
-            { $project: { "name": true } }
-          ]
-        }
-      })
+      // Joins para quem criou e atualizou o usuário.
+      query.push(toCreatedBy)
+      query.push(toUpdatedBy)
 
       if (skip || skip == 0)
         query.push({ $skip: skip })

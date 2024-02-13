@@ -1,5 +1,7 @@
-const Generator = require('../tools/Generator')
 let mongoose = require('mongoose')
+
+const Generator = require('../tools/Generator')
+const { toCreatedBy, toUpdatedBy } = Generator.genStructuresForCreatedByAndUpdatedBy()
 
 const ApartmentSchema = require('../schemas/ApartmentSchema')
 const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
@@ -35,30 +37,10 @@ class Apartment {
         $match: { _id: ObjectId(_id) }
       })
 
-      query.push({
-        $lookup: {
-          localField: 'created.createdBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'CREATED_BY',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
-
-      query.push({
-        $lookup: {
-          localField: 'updated.updatedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'UPDATED_BY',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
-
+      // Joins para quem criou e atualizou o usuário.
+      query.push(toCreatedBy)
+      query.push(toUpdatedBy)
+console.info(query)
       let apartmentsFound = await ApartmentModel.aggregate(query)
       
       return apartmentsFound[0]
@@ -137,31 +119,9 @@ class Apartment {
 
       /* JOIN PARA ACESSO AOS IDs DE QUEM CRIOU E QUE ATUALIZOU O APTO */
 
-      // Created
-      query.push({
-        $lookup: {
-          localField: 'created.createdBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'CREATED_BY',
-          pipeline: [
-            { $project: { "name": true } }
-          ]
-        }
-      })
-
-      // Updated
-      query.push({
-        $lookup: {
-          localField: 'updated.updatedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'UPDATED_BY',
-          pipeline: [
-            { $project: { "name": true } }
-          ]
-        }
-      })
+      // Joins para quem criou e atualizou o usuário.
+      query.push(toCreatedBy)
+      query.push(toUpdatedBy)
 
       /* DEFINE A ESTRUTRUA DO sort, skip e limit */
       
@@ -173,7 +133,7 @@ class Apartment {
 
       if (sort)
         query.push({ $sort: sort })
-
+console.info(query)
       let apartmentsFound = await ApartmentModel.aggregate(query)
 
       return apartmentsFound
@@ -196,30 +156,10 @@ class Apartment {
         $match: { number: _number }
       })
 
-      query.push({
-        $lookup: {
-          localField: 'created.createdBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'CREATED_BY',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
-
-      query.push({
-        $lookup: {
-          localField: 'updated.updatedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'UPDATED_BY',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
-
+      // Joins para quem criou e atualizou o usuário.
+      query.push(toCreatedBy)
+      query.push(toUpdatedBy)
+console.info(query)
       let apartmentsFound = await ApartmentModel.aggregate(query)
 
       return apartmentsFound[0]

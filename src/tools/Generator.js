@@ -141,6 +141,40 @@ class Generator {
 
   }
 
+  // Gera as estruturas para os joins de quem criou e atualizou um documento no BD.
+  static genStructuresForCreatedByAndUpdatedBy() {
+
+    // Faz o join com a collection para saber QUEM CRIOU O DOCUMENTO.
+    let toCreatedBy = {
+      $lookup: {
+        localField: 'created.createdBy',
+        from: 'users',
+        foreignField: '_id',
+        as: 'CREATED_BY',
+        pipeline: [
+          // Só retornará o nome de quem o criou, o _id retorna por padrão.
+          { $project: { "name": true } }
+        ]
+      }
+    }
+
+    // Faz o join com a collection para saber QUEM ATUALIZOU O DOCUMENTO.
+    let toUpdatedBy = {
+      $lookup: {
+        localField: 'updated.updatedBy',
+        from: 'users',
+        foreignField: '_id',
+        as: 'UPDATED_BY',
+        pipeline: [
+          // Só retornará o nome de quem fez a última alteração, o _id retorna por padrão.
+          { $project: { "name": true } }
+        ]
+      }
+    }
+
+    return { toCreatedBy, toUpdatedBy }
+  }
+
 }
 
 module.exports = Generator
