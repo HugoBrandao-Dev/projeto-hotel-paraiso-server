@@ -30,6 +30,7 @@ class ReserveController {
         }
       }
 
+      // O cliente tem os campos de status e client_id setados automaticamente.
       if (decodedToken.role == 0) {
         status = 'reservado'
         client_id = decodedToken.id

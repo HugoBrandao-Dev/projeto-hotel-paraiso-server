@@ -97,16 +97,6 @@ class Reserve {
         limit
       } = _query
 
-      /*
-      
-      Criar consultas para os seguintes filtros:
-        Menor -> Maior (diária)
-        Maior -> Menor (diária)
-        Quantidade de cômodos
-        Aceita animais?
-
-      */
-
       let query = []
 
       let filter = {

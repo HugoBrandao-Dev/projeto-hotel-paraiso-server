@@ -29,10 +29,15 @@ async function isActionAllowed(headers, path, method, params, body) {
 
           switch (decodedToken.role) {
             case 0:
+
+              /* ################ CLIENTE ################ */
+
               switch (upperMethod) {
                 case 'POST':
 
                   if (path == reserveEndpoints.toCreate) {
+
+                    // O cliente não pode informar o STATUS e o CLIENT_ID para a reserva.
                     if (!body.status && !body.client_id) {
                       allowed = true
                     }
@@ -129,6 +134,9 @@ async function isActionAllowed(headers, path, method, params, body) {
               }
               break
             case 1:
+
+              /* ################ FUNCIONÁRIO ################ */
+
               switch (upperMethod) {
                 case 'POST':
 
@@ -220,6 +228,9 @@ async function isActionAllowed(headers, path, method, params, body) {
               }
               break
             case 2:
+
+              /* ################ GERENTE ################ */
+
               switch (upperMethod) {
                 case 'POST':
                   if (path != apartmentEndpoints.toCreate && !(body.role >= 2)) {
@@ -273,6 +284,9 @@ async function isActionAllowed(headers, path, method, params, body) {
               }
               break
             case 4:
+
+              /* ################ ADMIN ################ */
+
               allowed = true
               break
           }
