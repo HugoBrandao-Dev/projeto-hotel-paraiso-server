@@ -161,7 +161,7 @@ class Apartment {
 
       /* DEFINE A ESTRUTRUA DO sort, skip e limit */
       
-      if (skip)
+      if (skip || skip == 0)
         query.push({ $skip: skip })
 
       if (limit)
