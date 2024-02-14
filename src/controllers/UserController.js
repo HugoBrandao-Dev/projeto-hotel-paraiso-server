@@ -396,7 +396,7 @@ class UserController {
 
       if (listOfQueryString.length) {
 
-        const queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'users', false)
+        const queryStringResult = Analyzer.analyzeQueryList(req.query, 'users', true)
 
         if (queryStringResult.hasError.value) {
           errorFields.push(queryStringResult)

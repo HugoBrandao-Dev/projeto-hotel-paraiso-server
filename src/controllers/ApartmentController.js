@@ -230,7 +230,7 @@ class ApartmentController {
       if (!query.client_id) {
 
         if (listOfQueryString.length) {
-          let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'apartments', decodedToken.role > 0)
+          let queryStringResult = Analyzer.analyzeQueryList(req.query, 'apartments', decodedToken.role > 0)
           if (queryStringResult.hasError.value) {
             errorFields.push(queryStringResult)
           } else {

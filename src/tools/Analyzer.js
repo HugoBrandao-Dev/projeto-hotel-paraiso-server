@@ -879,12 +879,24 @@ class Analyzer {
   }
 
   // Método utilizado para analise dos identificadores dos parâmetros das Query Strings das Listagens.
-  static analyzeQueryList(list, resource = 'users', hasPrivs = false) {
+  static analyzeQueryList(params, resource = 'users', hasPrivs = false) {
     let result = { field: 'queryString', hasError: { value: false, type: null, error: '' }}
+
+    // Verifica se foi passado um mesmo parâmetro duas vezes (o valor é um array).
+    for (let param of Object.keys(params)) {
+      if (params[param].length > 1) {
+        result.hasError.value = true
+        result.hasError.type = 2
+        result.hasError.error = `O parâmetro \'${ param }\' foi informado duas vezes`
+        return result
+      }
+    }
+
+    const listOfQueryString = Object.keys(params)
     let acceptableParams = []
 
-    let hasOffset = list.includes('offset')
-    let hasLimit = list.includes('limit')
+    let hasOffset = listOfQueryString.includes('offset')
+    let hasLimit = listOfQueryString.includes('limit')
 
     if (hasOffset && !hasLimit) {
       result.hasError.value = true
@@ -896,7 +908,7 @@ class Analyzer {
     switch (resource) {
       case 'reserves':
         acceptableParams = ['status', 'offset', 'limit']
-        for (let param of list) {
+        for (let param of listOfQueryString) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {
             result.hasError.value = true
@@ -910,7 +922,7 @@ class Analyzer {
         acceptableParams = ['rooms', 'lowest_daily_price', 'highest_daily_price', 'accepts_animals', 'offset', 'limit', 'sort']
         if (hasPrivs)
           acceptableParams.unshift('status')
-        for (let param of list) {
+        for (let param of listOfQueryString) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {
             result.hasError.value = true
@@ -922,7 +934,7 @@ class Analyzer {
         break
       case 'users':
         acceptableParams = ['name', 'offset', 'limit']
-        for (let param of list) {
+        for (let param of listOfQueryString) {
           let isParamValid = validator.isIn(param, acceptableParams)
           if (!isParamValid) {
             result.hasError.value = true

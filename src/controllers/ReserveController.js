@@ -187,7 +187,7 @@ class ReserveController {
         if (req.query) {
           listOfQueryString = Object.keys(req.query)
 
-          let queryStringResult = Analyzer.analyzeQueryList(listOfQueryString, 'reserves')
+          let queryStringResult = Analyzer.analyzeQueryList(req.query, 'reserves')
           if (queryStringResult.hasError.value) {
             errorParams.push(queryStringResult)
 
