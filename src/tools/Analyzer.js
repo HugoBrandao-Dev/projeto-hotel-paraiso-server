@@ -884,7 +884,7 @@ class Analyzer {
 
     // Verifica se foi passado um mesmo parâmetro duas vezes (o valor é um array).
     for (let param of Object.keys(params)) {
-      if (params[param].length > 1) {
+      if (typeof param != 'string' && params[param].length > 1) {
         result.hasError.value = true
         result.hasError.type = 2
         result.hasError.error = `O parâmetro \'${ param }\' foi informado duas vezes`

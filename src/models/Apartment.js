@@ -9,6 +9,11 @@ const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
 // Necessário para verificação de igualdade entre IDs.
 const ObjectId = mongoose.Types.ObjectId
 
+// Retorna o index de uma chave dentro do array de consulta.
+function findIndexQueryKey(_query = [], _key = '') {
+  return _query.findIndex(obj => Object.keys(obj).includes(_key))
+}
+
 class Apartment {
   async save(_apartment) {
 
@@ -94,27 +99,25 @@ class Apartment {
           }
         }
 
-        query[0].$redact.$cond[0].$and.push({
+        query[findIndexQueryKey(query, '$redact')].$redact.$cond[0].$and.push({
           $eq: [calcRooms, rooms]
         })
       }
 
       if (lowest_daily_price) {
-        query[0].$redact.$cond[0].$and.push({
+        query[findIndexQueryKey(query, '$redact')].$redact.$cond[0].$and.push({
           $gte: ['$daily_price', lowest_daily_price]
         })
       }
 
       if (highest_daily_price) {
-        query[0].$redact.$cond[0].$and.push({
+        query[findIndexQueryKey(query, '$redact')].$redact.$cond[0].$and.push({
           $lte: ['$daily_price', highest_daily_price]
         })
       }
 
-      if (accepts_animals == 0 || accepts_animals == 0) {
-        query[0].$redact.$cond[0].$and.push({
-          'accepts_animals': accepts_animals
-        })
+      if (accepts_animals == true || accepts_animals == false) {
+        query[findIndexQueryKey(query, '$match')]['$match']['accepts_animals'] = accepts_animals
       }
 
       /* JOIN PARA ACESSO AOS IDs DE QUEM CRIOU E QUE ATUALIZOU O APTO */
