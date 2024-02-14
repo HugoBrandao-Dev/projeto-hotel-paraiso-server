@@ -9,6 +9,32 @@ const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
 // Necessário para verificação de igualdade entre IDs.
 const ObjectId = mongoose.Types.ObjectId
 
+// Faz o join com a collection para QUEM FOI RESERVADO.
+const forClientID = {
+  $lookup: {
+    localField: 'reserve.client_id',
+    from: 'users',
+    foreignField: '_id',
+    as: 'reserve.CLIENT_ID',
+    pipeline: [
+      { $project: { 'name': true } }
+    ]
+  }
+}
+
+// Faz o join com a collection para saber QUEM RESERVOU.
+const forWhoReserved = {
+  $lookup: {
+    localField: 'reserve.reserved.reservedBy',
+    from: 'users',
+    foreignField: '_id',
+    as: 'reserve.reserved.RESERVED_BY',
+    pipeline: [
+      { $project: { 'name': true } }
+    ]
+  }
+}
+
 class Reserve {
   async save(_apartment_id, _reserve) {
 
@@ -39,29 +65,9 @@ class Reserve {
         $match: { "_id": ObjectId(_id) }
       })
 
-      query.push({
-        $lookup: {
-          localField: 'reserve.client_id',
-          from: 'users',
-          foreignField: '_id',
-          as: 'reserve.CLIENT_ID',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
-
-      query.push({
-        $lookup: {
-          localField: 'reserve.reserved.reservedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'reserve.reserved.RESERVED_BY',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
+      // Joins PARA QUEM FOI RESERVADO o apto e PARA QUEM RESERVOU.
+      query.push(forClientID)
+      query.push(forWhoReserved)
 
       // Faz com que retorne somente o campo relacionado a reserva.
       query.push({
@@ -119,31 +125,9 @@ class Reserve {
 
       query.push(filter)
 
-      // Faz o join com a collection USERS para saber PARA QUEM FOI RESERVADO.
-      query.push({
-        $lookup: {
-          localField: 'reserve.client_id',
-          from: 'users',
-          foreignField: '_id',
-          as: 'reserve.CLIENT_ID',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
-
-      // Faz o join com a collection USERS para saber QUEM RESERVOU.
-      query.push({
-        $lookup: {
-          localField: 'reserve.reserved.reservedBy',
-          from: 'users',
-          foreignField: '_id',
-          as: 'reserve.reserved.RESERVED_BY',
-          pipeline: [
-            { $project: { 'name': true } }
-          ]
-        }
-      })
+      // Joins PARA QUEM FOI RESERVADO o apto e PARA QUEM RESERVOU.
+      query.push(forClientID)
+      query.push(forWhoReserved)
 
       if (skip || skip == 0)
         query.push({ $skip: skip })

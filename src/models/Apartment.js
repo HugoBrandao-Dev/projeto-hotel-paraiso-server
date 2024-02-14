@@ -1,7 +1,7 @@
 let mongoose = require('mongoose')
 
 const Generator = require('../tools/Generator')
-const { toCreatedBy, toUpdatedBy } = Generator.genStructuresForCreatedByAndUpdatedBy()
+const { forCreatedBy, forUpdatedBy } = Generator.genStructuresForCreatedByAndUpdatedBy()
 
 const ApartmentSchema = require('../schemas/ApartmentSchema')
 const ApartmentModel = mongoose.model('apartments', ApartmentSchema)
@@ -38,9 +38,9 @@ class Apartment {
       })
 
       // Joins para quem criou e atualizou o usuário.
-      query.push(toCreatedBy)
-      query.push(toUpdatedBy)
-console.info(query)
+      query.push(forCreatedBy)
+      query.push(forUpdatedBy)
+
       let apartmentsFound = await ApartmentModel.aggregate(query)
       
       return apartmentsFound[0]
@@ -120,8 +120,8 @@ console.info(query)
       /* JOIN PARA ACESSO AOS IDs DE QUEM CRIOU E QUE ATUALIZOU O APTO */
 
       // Joins para quem criou e atualizou o usuário.
-      query.push(toCreatedBy)
-      query.push(toUpdatedBy)
+      query.push(forCreatedBy)
+      query.push(forUpdatedBy)
 
       /* DEFINE A ESTRUTRUA DO sort, skip e limit */
       
@@ -133,7 +133,7 @@ console.info(query)
 
       if (sort)
         query.push({ $sort: sort })
-console.info(query)
+
       let apartmentsFound = await ApartmentModel.aggregate(query)
 
       return apartmentsFound
@@ -157,9 +157,9 @@ console.info(query)
       })
 
       // Joins para quem criou e atualizou o usuário.
-      query.push(toCreatedBy)
-      query.push(toUpdatedBy)
-console.info(query)
+      query.push(forCreatedBy)
+      query.push(forUpdatedBy)
+
       let apartmentsFound = await ApartmentModel.aggregate(query)
 
       return apartmentsFound[0]

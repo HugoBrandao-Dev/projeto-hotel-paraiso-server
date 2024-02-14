@@ -145,7 +145,7 @@ class Generator {
   static genStructuresForCreatedByAndUpdatedBy() {
 
     // Faz o join com a collection para saber QUEM CRIOU O DOCUMENTO.
-    let toCreatedBy = {
+    let forCreatedBy = {
       $lookup: {
         localField: 'created.createdBy',
         from: 'users',
@@ -159,7 +159,7 @@ class Generator {
     }
 
     // Faz o join com a collection para saber QUEM ATUALIZOU O DOCUMENTO.
-    let toUpdatedBy = {
+    let forUpdatedBy = {
       $lookup: {
         localField: 'updated.updatedBy',
         from: 'users',
@@ -172,7 +172,7 @@ class Generator {
       }
     }
 
-    return { toCreatedBy, toUpdatedBy }
+    return { forCreatedBy, forUpdatedBy }
   }
 
 }

@@ -1,7 +1,7 @@
 const DateFormated = require('../tools/DateFormated')
 
 const Generator = require('../tools/Generator')
-const { toCreatedBy, toUpdatedBy } = Generator.genStructuresForCreatedByAndUpdatedBy()
+const { forCreatedBy, forUpdatedBy } = Generator.genStructuresForCreatedByAndUpdatedBy()
 
 const mongoose = require('mongoose')
 
@@ -39,8 +39,8 @@ class User {
       })
 
       // Joins para quem criou e atualizou o usuário.
-      query.push(toCreatedBy)
-      query.push(toUpdatedBy)
+      query.push(forCreatedBy)
+      query.push(forUpdatedBy)
 
       const usersFound = await UserModel.aggregate(query)
 
@@ -64,8 +64,8 @@ class User {
       })
 
       // Joins para quem criou e atualizou o usuário.
-      query.push(toCreatedBy)
-      query.push(toUpdatedBy)
+      query.push(forCreatedBy)
+      query.push(forUpdatedBy)
 
       const usersFound = await UserModel.aggregate(query)
 
@@ -89,8 +89,8 @@ class User {
       })
 
       // Joins para quem criou e atualizou o usuário.
-      query.push(toCreatedBy)
-      query.push(toUpdatedBy)
+      query.push(forCreatedBy)
+      query.push(forUpdatedBy)
 
       let usersFound = await UserModel.aggregate(query)
 
@@ -112,8 +112,8 @@ class User {
       let query = []
 
       // Joins para quem criou e atualizou o usuário.
-      query.push(toCreatedBy)
-      query.push(toUpdatedBy)
+      query.push(forCreatedBy)
+      query.push(forUpdatedBy)
 
       if (skip || skip == 0)
         query.push({ $skip: skip })
