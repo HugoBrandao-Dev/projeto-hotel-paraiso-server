@@ -727,7 +727,9 @@ class UserController {
       }
 
       if (city) {
-        let cityResult = await Analyzer.analyzeUserCity(country, state, city)
+        let countryToBeUsed = country ? country : userRegistred.address.country
+        let stateToBeUsed = state ? state : userRegistred.address.state
+        let cityResult = await Analyzer.analyzeUserCity(countryToBeUsed, stateToBeUsed, city)
         if (cityResult.hasError.value) {
           if (cityResult.hasError.type != 1) {
             errorFields.push(cityResult)
@@ -792,12 +794,16 @@ class UserController {
         updatedBy: userIDWhoUpdated
       }
 
-      let HATEOAS = Generator.genHATEOAS(id, 'user', 'users', roleToken > 0)
+      // Se não tiver sido informado algum endereço, a chave address será deletada.
+      if (Object.keys(fields.address).length == 0) {
+        delete fields.address
+      }
 
       let userBeforeModified = await User.edit(id, fields)
 
       if (userBeforeModified) {
         res.status(200)
+        let HATEOAS = Generator.genHATEOAS(id, 'user', 'users', roleToken > 0)
         res.json({ _links: HATEOAS })
         return
       }
