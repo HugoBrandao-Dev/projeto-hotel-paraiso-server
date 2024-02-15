@@ -136,7 +136,19 @@ class User {
 
     try {
 
-      let userBeforeModified = await UserModel.findByIdAndUpdate(`${ _userToBeUpdated }`, _user)
+      let user = { ..._user, $set: {} }
+
+      // Faz a atualização somente do endereço que foi informado, sem apagar os outros do DB.
+      if (Object.keys(_user.address).length > 0) {
+        for (let info of Object.keys(_user.address)) {
+          if (_user.address[info])
+            user.$set[`address.${ info }`] = _user.address[info]
+        }
+        delete user.address
+      }
+
+      console.log(user)
+      let userBeforeModified = await UserModel.findByIdAndUpdate(`${ _userToBeUpdated }`, user)
 
       return userBeforeModified
 
