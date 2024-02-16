@@ -2,7 +2,6 @@ class DateFormated {
   constructor(database, number = null) {
     this.number = number || Date.now()
     this.dateTime = new Date(Number.parseInt(this.number))
-    // this.dateTimeForDatabase = this.dateTime.toISOString()
     this.database = database
   }
   getDate() {
@@ -23,6 +22,14 @@ class DateFormated {
       day = `0${ day }`
     }
     return `${ year }-${ month }-${ day }`
+  }
+  getDateWithTimezone() {
+    const timezone = new Date().getTimezoneOffset()
+
+    // O MongoDB armazena a data e o horário juntos.
+    if (this.database == 'mongodb') {
+      return new Date(this.number + timezone * 60 * 1000)
+    }
   }
   getTime() {
     let hours = this.dateTime.getHours()

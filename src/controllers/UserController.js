@@ -1,5 +1,6 @@
 const Analyzer = require('../tools/Analyzer')
 const Generator = require('../tools/Generator')
+const DateFormated = require('../tools/DateFormated')
 const Token = require('../tools/TokenTools')
 const bcrypt = require('bcryptjs')
 
@@ -146,7 +147,10 @@ class UserController {
       user.role = role
       user.phoneCode = req.body.phoneCode
       user.phoneNumber = req.body.phoneNumber
-      user.birthDate = req.body.birthDate
+
+      const date = new DateFormated('mongodb', Date.parse(req.body.birthDate))
+      user.birthDate = date.getDateWithTimezone()
+
       user.address.country = req.body.country
       user.address.state = req.body.state
       user.address.city = req.body.city
@@ -568,7 +572,8 @@ class UserController {
             errorFields.push(birthDateResult)
           }
         } else {
-          fields.birthDate = birthDate
+          const date = new DateFormated('mongodb', Date.parse(req.body.birthDate))
+          fields.birthDate = date.getDateWithTimezone()
         }
       }
 

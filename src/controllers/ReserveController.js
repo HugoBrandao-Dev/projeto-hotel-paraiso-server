@@ -78,6 +78,12 @@ class ReserveController {
         }
       }
 
+      const startDate = new DateFormated('mongodb', Date.parse(start))
+      apartment.reserve.start = startDate.getDateWithTimezone()
+
+      const endDate = new DateFormated('mongodb', Date.parse(end))
+      apartment.reserve.end = endDate.getDateWithTimezone()
+
       let reserveRegistred = await Reserve.save(apartment_id, apartment)
 
       if (reserveRegistred) {
@@ -128,6 +134,8 @@ class ReserveController {
           delete reserve.reserve.reserved.reservedBy
         }
 
+        reserve.reserve.start = reserve.reserve.start.toLocaleDateString()
+        reserve.reserve.end = reserve.reserve.end.toLocaleDateString()
 
         let HATEOAS = Generator.genHATEOAS(id, 'reserve', 'reserves', true)
         reserve._links = HATEOAS
@@ -172,9 +180,8 @@ class ReserveController {
         if (reserves.length) {
           for (let reserve of reserves) {
 
-            /*
-              FORMATAR AS DATAS DE INÍCIO E TÉRMINO DA RESERVA.
-            */
+            reserve.reserve.start = reserve.reserve.start.toLocaleDateString()
+            reserve.reserve.end = reserve.reserve.end.toLocaleDateString()
 
             delete reserve.reserve.reserved
             delete reserve.reserve.client_id
@@ -234,6 +241,9 @@ class ReserveController {
 
               if (reserves.length) {
                 for (let reserve of reserves) {
+
+                  reserve.reserve.start = reserve.reserve.start.toLocaleDateString()
+                  reserve.reserve.end = reserve.reserve.end.toLocaleDateString()
 
                   delete reserve.reserve.reserved.reservedBy
                   delete reserve.reserve.client_id
@@ -327,13 +337,15 @@ class ReserveController {
         if (startDateResult.hasError.value) {
           errorFields.push(startDateResult)
         } else {
-          reserve.start = start
+          const startDate = new DateFormated('mongodb', Date.parse(start))
+          reserve.start = startDate.getDateWithTimezone()
           if (end) {
             let endDateResult = Analyzer.analyzeReserveEndDate(end, start)
             if (endDateResult.hasError.value) {
               errorFields.push(endDateResult)
             } else {
-              reserve.end = end
+              const endDate = new DateFormated('mongodb', Date.parse(end))
+              reserve.end = endDate.getDateWithTimezone()
             }
           }
         }
