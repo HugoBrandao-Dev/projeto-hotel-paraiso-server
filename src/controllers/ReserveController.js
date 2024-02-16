@@ -27,6 +27,10 @@ class ReserveController {
       if (idResult.hasError.value) {
         if (idResult.hasError.type != 4) {
           errorFields.push(idResult)
+          RestException = Generator.genRestException(errorFields)
+          res.status(parseInt(RestException.Status))
+          res.json({ RestException })
+          return
         }
       }
 
@@ -302,12 +306,17 @@ class ReserveController {
         end
       } = req.body
 
+      let RestException = null
       let errorFields = []
       let reserve = {}
 
       let apartmentIDResult = await Analyzer.analyzeApartmentID(apartment_id)
       if (apartmentIDResult.hasError.value) {
         errorFields.push(apartmentIDResult)
+        RestException = Generator.genRestException(errorFields)
+        res.status(parseInt(RestException.Status))
+        res.json({ RestException })
+        return
       }
 
       if (status) {
@@ -352,7 +361,7 @@ class ReserveController {
       }
 
       if (errorFields.length) {
-        const RestException = Generator.genRestException(errorFields)
+        RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
         return
@@ -393,8 +402,13 @@ class ReserveController {
 
       let idResult = await Analyzer.analyzeApartmentID(id)
       if (idResult.hasError.value) {
-        if (idResult.hasError.type != 4)
+        if (idResult.hasError.type != 4) {
           errorFields.push(idResult)
+          RestException = Generator.genRestException(errorFields)
+          res.status(parseInt(RestException.Status))
+          res.json({ RestException })
+          return
+        }
       }
 
       if (errorFields.length) {

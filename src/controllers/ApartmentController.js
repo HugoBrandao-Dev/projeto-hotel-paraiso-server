@@ -444,13 +444,19 @@ class ApartmentController {
         accepts_animals = req.body.accepts_animals
       }
 
+      let RestException = null
       let errorFields = []
       let apartment = {}
 
       const idResult = await Analyzer.analyzeApartmentID(id)
       if (idResult.hasError.value) {
-        if (idResult.hasError.value != 4)
+        if (idResult.hasError.value != 4) {
           errorFields.push(idResult)
+          RestException = Generator.genRestException(errorFields)
+          res.status(parseInt(RestException.Status))
+          res.json({ RestException })
+          return
+        }
       }
 
       let apartmentFound = await Apartment.findByNumber(number)
@@ -509,7 +515,7 @@ class ApartmentController {
       }
       
       if (errorFields.length) {
-        const RestException = Generator.genRestException(errorFields)
+        RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
         return
