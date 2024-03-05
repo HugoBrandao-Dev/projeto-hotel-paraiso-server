@@ -786,6 +786,19 @@ class Analyzer {
   static analyzeApartmentDailyPrice(price = '') {
     let result = { field: 'iptDailyPrice', hasError: { value: false, type: null, error: '' }}
 
+    let arrayPrice = price.split('.')
+
+    // Verifica se há centavos.
+    if (arrayPrice.length == 2) {
+
+      // Verifica se foi informado '9' (90 centavos).
+      if (arrayPrice[1] == '9') {
+
+        // Add 0 no final do valor da diária.
+        price = price + '0'
+      }
+    }
+
     let isCurrency = validator.isCurrency(price)
     if (!isCurrency) {
       result.hasError.value = true
