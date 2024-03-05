@@ -298,8 +298,9 @@ class ReserveController {
 
       const decodedToken = Token.getDecodedToken(req.headers['authorization'])
 
+      const apartment_id = req.params.id
+
       const {
-        apartment_id,
         status,
         client_id,
         start,

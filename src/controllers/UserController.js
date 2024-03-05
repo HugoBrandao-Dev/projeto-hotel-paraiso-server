@@ -516,8 +516,9 @@ class UserController {
 
       const { id: userIDWhoUpdated, role: roleToken } = Token.getDecodedToken(token)
 
-      const { 
-        id,
+      const id = req.params.id
+
+      const {
         name,
         email,
         password,

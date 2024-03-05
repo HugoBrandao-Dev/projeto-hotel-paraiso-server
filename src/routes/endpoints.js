@@ -25,7 +25,7 @@ class EndPoints {
   }
 
   get toUpdate() {
-    return `/${ this.substantive.plural }`
+    return `/${ this.substantive.plural }/:id`
   }
 
   get toDelete() {

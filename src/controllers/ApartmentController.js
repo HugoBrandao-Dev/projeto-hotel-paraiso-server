@@ -410,7 +410,8 @@ class ApartmentController {
 
     try {
 
-      let id = null
+      const id = req.params.id
+      
       let floor = null
       let number = null
       let rooms = null
@@ -422,7 +423,6 @@ class ApartmentController {
       if (req.body.apartment) {
         let parsedApartment = JSON.parse(req.body.apartment)
         declaredFields = Object.keys(parsedApartment)
-        id = parsedApartment.id
         floor = parsedApartment.floor
         number = parsedApartment.number
         rooms = parsedApartment.rooms
@@ -433,7 +433,6 @@ class ApartmentController {
         accepts_animals = parsedApartment.accepts_animals
       } else {
         declaredFields = Object.keys(req.body)
-        id = req.body.id
         floor = req.body.floor
         number = req.body.number
         rooms = req.body.rooms
