@@ -46,7 +46,7 @@ class Generator {
         rel: `self_${ singular }`
       },
       {
-        href: `${ baseURL }/${ plural }`,
+        href: `${ baseURL }/${ plural }/${ id }`,
         method: 'PUT',
         rel: `edit_${ singular }`
       },
