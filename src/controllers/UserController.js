@@ -380,7 +380,7 @@ class UserController {
       }
 
       res.status(200)
-      res.json(users)
+      res.json({ users })
 
     } catch (error) {
       console.error(error)
