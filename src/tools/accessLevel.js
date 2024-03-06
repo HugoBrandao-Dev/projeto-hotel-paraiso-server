@@ -101,7 +101,7 @@ async function isActionAllowed(headers, path, method, params, body) {
                   }
 
                   // Verifica se o ID passado no corpo é o mesmo do armazenado no Token.
-                  if (body.id === decodedToken.id) {
+                  if (params.id === decodedToken.id) {
 
                     // Verifica se o Cliente está tentando alterar sua função.
                     if (!(body.role >= 0)) {
