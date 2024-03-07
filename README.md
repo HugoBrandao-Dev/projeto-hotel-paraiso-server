@@ -60,7 +60,7 @@ conseguem reconhecer o this de sua classe, sendo impossível chamar outros méto
 A maioria dos parâmetros são avaliados utilizando métodos da biblioteca [Validator.js](https://github.com/validatorjs/validator.js).
 
 ### POST /users
-Faz o cadastro de um cliente.
+Cadastra um cliente.
 
 #### Parâmetros
 
@@ -190,8 +190,8 @@ O exemplo abaixo é do corpo de uma requisição de login de um usuário cadastr
 
 #### Respostas
 ##### OK 200
-Será retornado o _token_ de acesso e também o _HATEOAS_, que é um array contendo as ações possíveis 
-para o usuário.
+Será retornado o _token_ de acesso e também o _HATEOAS_, que é um array contendo as ações 
+possíveis para o usuário.
 
 ```json
 {
@@ -249,8 +249,8 @@ ou no preenchimento do formulário de login.
 ### GET /users/:id
 Faz a busca das informações do cliente que possui o ID informado.
 
-O exemplo abaixo é de uma consulta já com o ID do cliente.
-</users/65c41b52e22dc214b8853271>
+O exemplo abaixo é de uma consulta já com o ID do cliente.  
+<http://localhost:4000/users/65c41b52e22dc214b8853271>
 
 #### Parâmetros
 ##### URL
@@ -297,8 +297,8 @@ possíveis para o mesmo.
 ```
 
 ##### UNAUTHORIZED 401
-O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
-RestException_ com mais informações.
+O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
 
 ```json
 {
@@ -329,8 +329,8 @@ RestException_ com mais informações.
 ### GET /users
 Faz a listagem de todos os clientes cadastrados.  
 
-Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores são 
-suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
+Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
+são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
 
 #### Parâmetros
 N/A
@@ -442,8 +442,8 @@ de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
 ```
 
 ##### UNAUTHORIZED 401
-O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
-RestException_ com mais informações.
+O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
 
 ```json
 {
@@ -540,8 +540,8 @@ possíveis para o mesmo.
 ```
 
 ##### UNAUTHORIZED 401
-O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
-RestException_ com mais informações.
+O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
 
 ```json
 {
@@ -572,8 +572,8 @@ mais informações.
 ### PUT /users/:id
 Faz a atualização de um usuário.
 
-O exemplo abaixo é de um endpoint de atualização de usuário.
-</users/65e895d432a8650dfc58b72a>
+O exemplo abaixo é de um endpoint de atualização de usuário.  
+<http://localhost:4000/users/65e895d432a8650dfc58b72a>
 
 #### Parâmetros
 ##### URL
@@ -656,8 +656,8 @@ ou no preenchimento do formulário de login.
 ```
 
 ##### UNAUTHORIZED 401
-O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
-RestException_ com mais informações.
+O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
 
 ```json
 {
@@ -688,8 +688,8 @@ mais informações.
 ### DELETE /users/:id
 Faz a deleção de um usuário.
 
-O exemplo abaixo é de um endpoint de deleção de usuário.
-</users/65e895d432a8650dfc58b72a>
+O exemplo abaixo é de um endpoint de deleção de usuário.  
+<http://localhost:4000/users/65e895d432a8650dfc58b72a>
 
 #### Parâmetros
 ##### URL
@@ -704,8 +704,8 @@ Retorna um objeto JSON vazio.
 ```
 
 ##### UNAUTHORIZED 401
-O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
-RestException_ com mais informações.
+O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
 
 ```json
 {
@@ -729,6 +729,532 @@ com mais informações.
     "Message": "O usuário não está autenticado",
     "Status": "403",
     "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+### POST /apartments
+Cadastra um novo apartamento.
+
+#### Parâmetros
+##### Body
+
+###### Sem imagens
+floor: O piso em que o apartamento fica. Obrigatório;  
+number: Número do apartamento. Obrigatório;  
+rooms: Cômodos que o apartamento possui. Obrigatório;  
+* room: Nome do cômodo. Obrigatório;  
+* quantity: Quantidade do cômodo em questão. Obrigatório.  
+accepts_animals: Indica se o apartamento pode ou não receber animais. Obrigatório;  
+daily_price: Diária do apartamento. Obrigatório.  
+
+O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
+```json
+{
+  "floor": "1",
+  "number": "1",
+  "rooms": [
+    {
+      "room": "sala de estar",
+      "quantity": "1"
+    },
+    {
+      "room": "cozinha",
+      "quantity": "1"
+    },
+    {
+      "room": "banheiro",
+      "quantity": "1"
+    },
+    {
+      "room": "quarto",
+      "quantity": "1"
+    }
+  ],
+  "accepts_animals": "0",
+  "daily_price": "250"
+}
+```
+
+###### Com imagens
+apartment: Guarda todas as informações descritivas do apartamento. Obrigatório;
+* floor: O piso em que o apartamento fica. Obrigatório;  
+* number: Número do apartamento. Obrigatório;  
+* rooms: Cômodos que o apartamento possui. Obrigatório;  
++ room: Nome do cômodo. Obrigatório;  
++ quantity: Quantidade do cômodo em questão. Obrigatório.  
+* accepts_animals: Indica se o apartamento pode ou não receber animais. Obrigatório;  
+* daily_price: Diária do apartamento. Obrigatório.  
+iptImages: Imagens do apartamento. Condicional.
+
+#### Respostas
+##### CREATED 201
+Será retornado o _HATEOAS_ com as ações possíveis com o apartamento criado.
+
+```json
+{
+  "_links": [
+    {
+      "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+      "method": "GET",
+      "rel": "self_apartment"
+    },
+    {
+      "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+      "method": "PUT",
+      "rel": "edit_apartment"
+    },
+    {
+      "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+      "method": "DELETE",
+      "rel": "delete_apartment"
+    },
+    {
+      "href": "http://localhost:4000/apartments",
+      "method": "GET",
+      "rel": "apartment_list"
+    }
+  ]
+}
+```
+
+##### 400 BAD REQUEST
+Será retornado um _RestException_, contendo informações sobre os erros encontrados na estrutura e/
+ou no preenchimento do formulário de login.
+
+```json
+{
+  "RestException": {
+    "Code": "4",
+    "Message": "O Número do Apartamento já está cadastrado",
+    "Status": "400",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/4",
+    "ErrorFields": [
+      {
+        "field": "iptNumber",
+        "hasError": {
+          "value": true,
+          "type": 4,
+          "error": "O Número do Apartamento já está cadastrado"
+        }
+      }
+    ]
+  }
+}
+```
+
+##### UNAUTHORIZED 401
+O usuário está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O Token é inválido",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+##### FORBIDDEN 403
+O usuário não tem permissão acesso a esse endpoint.
+
+```json
+{
+  "RestException": {
+    "Code": "6",
+    "Message": "O usuário não está autenticado",
+    "Status": "403",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+### GET /apartments/:id
+Faz a busca por informações de um apartamento em específicio.
+
+O exemplo abaixo é de um endpoint de leitura de um apartamento.  
+<http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c>
+
+#### Parâmetros
+##### URL
+id: É o ID do apartamento. Obrigatório.
+
+#### Respostas
+##### OK 200
+Será retornado as informações do apartamento junto com o HATEOAS, que é um array contendo as ações 
+possíveis para o mesmo.
+
+```json
+{
+  "_id": "65e9fd9ffeeb4c158878f95c",
+  "reserve": {
+    "status": "livre"
+  },
+  "updated": {
+    "updatedAt": "07/03/2024 13:47:11",
+    "updatedBy": {}
+  },
+  "created": {
+    "createdBy": {
+      "id": "65e7bff8ae4fa20ae8a3d0a0",
+      "name": "tobias de oliveira"
+    },
+    "createdAt": "07/03/2024 13:47:11"
+  },
+  "floor": "1",
+  "number": "1",
+  "rooms": [
+    {
+      "room": "sala de estar",
+      "quantity": 1
+    },
+    {
+      "room": "cozinha",
+      "quantity": 1
+    },
+    {
+      "room": "banheiro",
+      "quantity": 1
+    },
+    {
+      "room": "quarto",
+      "quantity": 1
+    }
+  ],
+  "daily_price": 250,
+  "accepts_animals": false,
+  "__v": 0,
+  "pictures": [],
+  "_links": [
+    {
+      "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+      "method": "GET",
+      "rel": "self_apartment"
+    },
+    {
+      "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+      "method": "PUT",
+      "rel": "edit_apartment"
+    },
+    {
+      "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+      "method": "DELETE",
+      "rel": "delete_apartment"
+    },
+    {
+      "href": "http://localhost:4000/apartments",
+      "method": "GET",
+      "rel": "apartment_list"
+    }
+  ]
+}
+```
+
+##### FORBIDDEN 403
+O usuário _cliente_ não pode acessar informações de um apartamento reservado por outro cliente. 
+Será retornado um _RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "6",
+    "Message": "O usuário não está autenticado",
+    "Status": "403",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+### GET /apartments
+Faz a listagem de todos os clientes cadastrados.
+
+#### Parâmetros
+##### Query String
+rooms: Quantidade de cômodos. Opcional;  
+lowest_daily_price: Menor valor da diária. Opcional;  
+highest_daily_price: Maior valor da diária. Opcional;  
+accepts_animals: Aceita o não animais no apartamento. Opcional;  
+offset: A partir da qual posição serão retornados os resultados. Opcional;  
+limit:2: Quantidade máxima de apartamentos a serem retornados. Opcional;  
+sort: Ordenação do valores. Por enquanto, só há ordenação do _valor da diária (daily_price)_, 
+podendo ser _asc_ ou _desc_. Opcional.  
+
+Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
+são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
+
+O exemplo abaixo é da URL de uma consulta __limpa__.  
+<http://localhost:4000/apartments>  
+
+O exemplo abaixo é da URL de uma consulta com __Query String__.  
+<http://localhost:4000/apartments?rooms=7&lowest_daily_price=300&highest_daily_price=750&accepts_animals=1&offset=1&limit=2&sort=daily_price:desc>
+
+#### Respostas
+##### OK 200
+Será retornado a propriedade __apartments__, que é um _array com apartamentos livres_, e o 
+__hasNext__, que é a propriedade _booleana_ que indica se há ou não uma próxima página. Cada 
+elemento do array de apartamentos contém um _HATEOAS_ das ações possíveis com cada apartamento.
+
+```json
+{
+  "apartments": [
+    {
+      "_id": "65e9fd9ffeeb4c158878f95c",
+      "floor": "1",
+      "number": "1",
+      "rooms": [
+        {
+          "room": "sala de estar",
+          "quantity": 1
+        },
+        {
+          "room": "cozinha",
+          "quantity": 1
+        },
+        {
+          "room": "banheiro",
+          "quantity": 1
+        },
+        {
+          "room": "quarto",
+          "quantity": 1
+        }
+      ],
+      "daily_price": 250,
+      "accepts_animals": false,
+      "__v": 0,
+      "pictures": [],
+      "_links": [
+        {
+          "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+          "method": "GET",
+          "rel": "self_apartment"
+        },
+        {
+          "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+          "method": "PUT",
+          "rel": "edit_apartment"
+        },
+        {
+          "href": "http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c",
+          "method": "DELETE",
+          "rel": "delete_apartment"
+        }
+      ]
+    }
+  ],
+  "hasNext": false
+}
+```
+
+##### FORBIDDEN 403
+Apesar do endpoint ser livre, se o cliente estiver acessando-o com um token inválido, ele não está 
+autenticado. Será retornado um _RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "6",
+    "Message": "O usuário não está autenticado",
+    "Status": "403",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+### PUT /apartments/:id
+Faz a atualização de um apartamentos.
+
+O exemplo abaixo é de um endpoint de atualização de apartamento.  
+<http://localhost:4000/apartments/65ea32804f7d6e0acce3f411>
+
+#### Parâmetros
+##### URL
+id: ID do apartamento a ser atualizado. Obrigatório.  
+
+##### Body
+###### Sem imagens
+floor: O piso em que o apartamento fica. Opcional;  
+number: Número do apartamento. Opcional;  
+rooms: Cômodos que o apartamento possui. Opcional;  
+* room: Nome do cômodo. Opcional;  
+* quantity: Quantidade do cômodo em questão. Opcional.  
+accepts_animals: Indica se o apartamento pode ou não receber animais. Opcional;  
+daily_price: Diária do apartamento. Opcional.  
+
+O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
+```json
+{
+  "floor": 1,
+  "daily_price": 999.90
+}
+```
+
+###### Com imagens
+apartment: Guarda todas as informações descritivas do apartamento. Opcional/Condicional;
+* floor: O piso em que o apartamento fica. Opcional;  
+* number: Número do apartamento. Opcional;  
+* rooms: Cômodos que o apartamento possui. Opcional;  
++ room: Nome do cômodo. Opcional;  
++ quantity: Quantidade do cômodo em questão. Opcional.  
+* picturesToBeDeleted: Imagens (IDs/Hashs das imagens) que serão deletadas. Opcional;  
+* accepts_animals: Indica se o apartamento pode ou não receber animais. Opcional;  
+* daily_price: Diária do apartamento. Opcional.  
+iptImages: Imagens do apartamento. Opcional/Condicional.
+
+#### Respostas
+##### OK 200
+
+##### BAD REQUEST 400
+Será retornado um _RestException_, contendo informações sobre os erros encontrados na estrutura e/
+ou no preenchimento do formulário de atualização do apartamento.
+
+```json
+{
+  "RestException": {
+    "Code": "2",
+    "Message": "O valor da diária é inválido",
+    "Status": "400",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/2",
+    "ErrorFields": [
+      {
+        "field": "iptDailyPrice",
+        "hasError": {
+          "value": true,
+          "type": 2,
+          "error": "O valor da diária é inválido"
+        }
+      }
+    ]
+  }
+}
+```
+
+##### UNAUTHORIZED 401
+O usuário está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O usuário não está autorizado",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+##### FORBIDDEN 403
+O usuário _cliente_ não pode atualizar as informações de um apartamento. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "6",
+    "Message": "O usuário não está autenticado",
+    "Status": "403",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+##### NOT FOUND 404
+Retorna um _RestException_ com mais informações do error.
+
+```json
+{
+  "RestException": {
+    "Code": "3",
+    "Message": "Nenhum apartamento com o ID informado está cadastrado",
+    "Status": "404",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/3",
+    "ErrorFields": [
+      {
+        "field": "iptApartment",
+        "hasError": {
+          "value": true,
+          "type": 3,
+          "error": "Nenhum apartamento com o ID informado está cadastrado"
+        }
+      }
+    ]
+  }
+}
+```
+
+### DELETE /apartments/:id
+Faz a deleção de um apartamento.
+
+O exemplo abaixo é de um endpoint de deleção de apartamento.  
+<http://localhost:4000/apartments/65ea1dd64f7d6e0acce3f3fa>
+
+#### Parâmetros
+##### URL
+id: ID do apartamento a ser deletado. Obrigatório.
+
+#### Respostas
+##### OK 200
+Retorna um objeto JSON vazio.
+
+```json
+{}
+```
+
+##### UNAUTHORIZED 401
+O usuário está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O usuário não está autorizado",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+##### FORBIDDEN 403
+O usuário está tentando deletar um apartamento sem ter os privilégios para isso. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "6",
+    "Message": "O usuário não está autenticado",
+    "Status": "403",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+##### NOT FOUND 404
+Não existe um apartamento com o ID informado. Será retornado um _RestException_ com mais 
+informações.
+
+```json
+{
+  "RestException": {
+    "Code": "3",
+    "Message": "Nenhum apartamento com o ID informado está cadastrado",
+    "Status": "404",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/3",
+    "ErrorFields": [
+      {
+        "field": "iptApartment",
+        "hasError": {
+          "value": true,
+          "type": 3,
+          "error": "Nenhum apartamento com o ID informado está cadastrado"
+        }
+      }
+    ]
   }
 }
 ```
