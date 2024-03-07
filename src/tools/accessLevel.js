@@ -45,8 +45,8 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   break
                 case 'GET':
-
                   if (path.indexOf(reserveEndpoints.toRead) != -1 || path.indexOf(apartmentEndpoints.toRead) != -1) {
+
                     if (params.id) {
                       let idResult = await Analyzer.analyzeApartmentID(params.id)
                       if (!idResult.hasError.value) {
@@ -303,9 +303,9 @@ async function isActionAllowed(headers, path, method, params, body) {
         if (params.id) {
           let idResult = await Analyzer.analyzeApartmentID(params.id)
           if (!idResult.hasError.value) {
-            let reserve = await Reserve.findOne(params.id)
+            let result = await Reserve.findOne(params.id)
 
-            if (reserve.status == 'livre') {
+            if (result.reserve.status == 'livre') {
               allowed = true
             } 
 
