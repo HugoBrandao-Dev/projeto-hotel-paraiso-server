@@ -80,7 +80,7 @@ cpf: CPF do cliente. Condicional (somente para brasileiros);
 passportNumber: CPF do cliente. Condicional (somente para estrangeiros);  
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __brasileiro__.
-```
+```json
 {
   "name": "Tobias de Oliveira",
   "email": "tobias@gmail.com",
@@ -96,7 +96,7 @@ O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __bra
 ```
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __estrangeiro__.
-```
+```json
 {
   "name": "Dinorá de Oliveira",
   "email": "dinora@gmail.com",
@@ -115,7 +115,7 @@ O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __est
 ##### CREATED 201
 Será retornado um _HATEOAS_, que é um array contendo as ações possíveis para o cliente cadastrado.
 
-```
+```json
 {
   "_links": [
     {
@@ -141,7 +141,7 @@ Será retornado um _HATEOAS_, que é um array contendo as ações possíveis par
 Será retornado um _RestException_, contendo informações sobre os erros encontrados na estrutura e/
 ou no preenchimento do formulário de cadastro.
 
-```
+```json
 {
   "RestException": {
     "Code": "4;4",
@@ -177,11 +177,11 @@ Faz o login de um usuário.
 
 ##### Body
 email: Email de um usuário já cadastrado. Obrigatório;  
-password: Senha de um usuário já cadastrado. Obrigatório.  
+password: Senha do usuário cadastrado. Obrigatório.  
 
 O exemplo abaixo é do corpo de uma requisição de login de um usuário cadastrado.
 
-```
+```json
 {
   "email": "tobias@gmail.com",
   "password": "T1@odb7iaS&5S9a@1T2"
@@ -193,7 +193,7 @@ O exemplo abaixo é do corpo de uma requisição de login de um usuário cadastr
 Será retornado o _token_ de acesso e também o _HATEOAS_, que é um array contendo as ações possíveis 
 para o usuário.
 
-```
+```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTdiZmY4YWU0ZmEyMGFlOGEzZDBhMCIsImVtYWlsIjoidG9iaWFzQGdtYWlsLmNvbSIsInJvbGUiOjQsImlhdCI6MTcwOTc0MDQyNSwiZXhwIjoxNzEwMzQ1MjI1fQ.AD-I5II22h8ArLXNBDhaj3BgieqYSPbaQLSuarnRtGc",
   "_links": [
@@ -225,7 +225,7 @@ para o usuário.
 Será retornado um _RestException_, contendo informações sobre os erros encontrados na estrutura e/
 ou no preenchimento do formulário de login.
 
-```
+```json
 {
   "RestException": {
     "Code": "3",
@@ -261,7 +261,7 @@ id: ID do cliente. Obrigatório.
 Será retornado as informações do cliente junto com o HATEOAS, que é um array contendo as ações 
 possíveis para o mesmo.
 
-```
+```json
 {
   "_id": "65e895d432a8650dfc58b72a",
   "address": {
@@ -300,7 +300,7 @@ possíveis para o mesmo.
 O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
 RestException_ com mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "5",
@@ -315,7 +315,7 @@ RestException_ com mais informações.
 O usuário _cliente_ está tentando acessar informações de outro usuário. Será retornado um _
 RestException_ com mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "6",
@@ -341,7 +341,7 @@ Será retornado a propriedade __users__, que é um _array de usuários cadastrad
 que é a propriedade _booleana_ que indica se há ou não uma próxima página. Cada elemento do array 
 de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
 
-```
+```json
 {
   "users": [
     {
@@ -445,7 +445,7 @@ de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
 O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
 RestException_ com mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "5",
@@ -460,7 +460,7 @@ RestException_ com mais informações.
 O usuário _cliente_ não pode acessar a listagem de usuários. Será retornado um _RestException_ com 
 mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "6",
@@ -486,7 +486,7 @@ Informar somente __um__ dos parâmetros acima.
 Será retornado as informações do cliente junto com o HATEOAS, que é um array contendo as ações 
 possíveis para o mesmo.
 
-```
+```json
 {
   "users": [
     {
@@ -543,7 +543,7 @@ possíveis para o mesmo.
 O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
 RestException_ com mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "5",
@@ -558,7 +558,7 @@ RestException_ com mais informações.
 O usuário _cliente_ não pode acessar a listagem de usuários. Será retornado um _RestException_ com 
 mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "6",
@@ -595,7 +595,7 @@ cpf: CPF do cliente. Opcional/Condicional (somente para brasileiros);
 passportNumber: CPF do cliente. Opcional/Condicional (somente para estrangeiros);  
 
 Exemplo de atualização do _nome_, _email_ e _data de nascimento_ de um usuário.
-```
+```json
 {
   "name": "Dinorá Cruz",
   "email": "cruz@hotmail.com",
@@ -608,7 +608,7 @@ Exemplo de atualização do _nome_, _email_ e _data de nascimento_ de um usuári
 ##### OK 200
 Será retornado o _HATEOAS_ do usuário que teve suas informações atualizadas.
 
-```
+```json
 {
   "_links": [
     {
@@ -634,7 +634,7 @@ Será retornado o _HATEOAS_ do usuário que teve suas informações atualizadas.
 Será retornado um _RestException_, contendo informações sobre os erros encontrados na estrutura e/
 ou no preenchimento do formulário de login.
 
-```
+```json
 {
   "RestException": {
     "Code": "4",
@@ -659,7 +659,7 @@ ou no preenchimento do formulário de login.
 O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
 RestException_ com mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "5",
@@ -674,7 +674,7 @@ RestException_ com mais informações.
 O usuário _cliente_ não pode acessar a listagem de usuários. Será retornado um _RestException_ com 
 mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "6",
@@ -699,7 +699,7 @@ id: É o ID do usuário a ser deletado. Obrigatório.
 ##### OK 200
 Retorna um objeto JSON vazio.
 
-```
+```json
 {}
 ```
 
@@ -707,7 +707,7 @@ Retorna um objeto JSON vazio.
 O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um _
 RestException_ com mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "5",
@@ -722,7 +722,7 @@ RestException_ com mais informações.
 O usuário _cliente_ não pode deletar a conta de outro usuários. Será retornado um _RestException_
 com mais informações.
 
-```
+```json
 {
   "RestException": {
     "Code": "6",
