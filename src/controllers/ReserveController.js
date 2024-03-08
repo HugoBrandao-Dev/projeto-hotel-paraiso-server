@@ -21,6 +21,7 @@ class ReserveController {
       const { apartment_id, start, end } = req.body
       let { status, client_id } = req.body
 
+      let RestException = null
       let errorFields = []
 
       const idResult = await Analyzer.analyzeApartmentID(apartment_id)
@@ -63,7 +64,7 @@ class ReserveController {
         }
 
       if (errorFields.length) {
-        const RestException = Generator.genRestException(errorFields)
+        RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
         return
@@ -399,6 +400,7 @@ class ReserveController {
 
       let id = req.params.id
 
+      let RestException = null
       let errorFields = []
 
       let idResult = await Analyzer.analyzeApartmentID(id)
@@ -413,7 +415,7 @@ class ReserveController {
       }
 
       if (errorFields.length) {
-        const RestException = Generator.genRestException(errorFields)
+        RestException = Generator.genRestException(errorFields)
         res.status(parseInt(RestException.Status))
         res.json({ RestException })
         return
