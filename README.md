@@ -1258,3 +1258,570 @@ informações.
   }
 }
 ```
+
+### POST /reserves
+Faz o cadastro de uma nova reserva.
+
+#### Parâmetros
+##### Body
+apartment_id: ID do apartamento a ser reservado. Obrigatório;  
+status: Novo status que o apartamento terá. Condicinal;  
+client_id: ID do cliente ao qual o apartamento foi reservado. Condicional;  
+start: Data de início da reserva. Obrigatório;  
+end: Data de término da reserva. Obrigatório.
+
+O exemplo abaixo é do corpo de uma requisição de cadastro de uma reserva.
+```json
+{
+  "status": "reservado",
+  "client_id": "65ea22194f7d6e0acce3f407",
+  "start": "2024-10-10",
+  "end": "2024-10-15"
+}
+```
+
+#### Respostas
+##### CREATED 201
+Será retornado o _HATEOAS_, que é um array contendo as ações possíveis para a reserva feita.
+
+```json
+{
+  "_links": [
+    {
+      "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+      "method": "GET",
+      "rel": "self_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+      "method": "PUT",
+      "rel": "edit_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+      "method": "DELETE",
+      "rel": "delete_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves",
+      "method": "GET",
+      "rel": "reserve_list"
+    }
+  ]
+}
+```
+
+##### BAD REQUEST 400
+Será retornado um _RestException_, contendo informações sobre os erros encontrados na estrutura e/
+ou no preenchimento do formulário de login.
+
+```json
+{
+  "RestException": {
+    "Code": "2",
+    "Message": "O valor do campo de Status é inválido",
+    "Status": "400",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/2",
+    "ErrorFields": [
+      {
+        "field": "iptStatus",
+        "hasError": {
+          "value": true,
+          "type": 2,
+          "error": "O valor do campo de Status é inválido"
+        }
+      }
+    ]
+  }
+}
+```
+
+##### UNAUTHORIZED 401
+O usuário está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O Token é inválido",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+##### NOT FOUND 404
+Não existe um apartamento com o ID informado ou um não existe um cliente com o ID informado. Será 
+retornado um _RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "3",
+    "Message": "Nenhum apartamento com o ID informado está cadastrado",
+    "Status": "404",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/3",
+    "ErrorFields": [
+      {
+        "field": "iptApartment",
+        "hasError": {
+          "value": true,
+          "type": 3,
+          "error": "Nenhum apartamento com o ID informado está cadastrado"
+        }
+      }
+    ]
+  }
+}
+```
+
+### GET /reserves/:id
+Faz a busca por informações de uma reserva.
+
+O exemplo abaixo é de um endpoint de _reserva_ de um apartamento.  
+<http://localhost:4000/apartments/65ea1dd64f7d6e0acce3f3fa>
+
+#### Parâmetros
+##### URL
+id: ID do _apartamento_ no qual se quer buscar as informações da reserva. Obrigatório.
+
+#### Respostas
+##### OK 200
+Será retornado as informações da reserva junto com o HATEOAS, que é um array contendo as ações 
+possíveis para a mesma.
+
+```json
+{
+  "_id": "65ea32804f7d6e0acce3f411",
+  "reserve": {
+    "status": "reservado",
+    "start": "10/10/2024",
+    "end": "15/10/2024",
+    "reserved": {
+      "reservedAt": "2024-03-08T13:52:19.412Z",
+      "RESERVED_BY": [
+        {
+          "_id": "65e7bff8ae4fa20ae8a3d0a0",
+          "name": "tobias de oliveira"
+        }
+      ]
+    },
+    "CLIENT_ID": [
+      {
+        "_id": "65ea22194f7d6e0acce3f407",
+        "name": "dinorá de oliveira"
+      }
+    ]
+  },
+  "_links": [
+    {
+      "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+      "method": "GET",
+      "rel": "self_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+      "method": "PUT",
+      "rel": "edit_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+      "method": "DELETE",
+      "rel": "delete_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves",
+      "method": "GET",
+      "rel": "reserve_list"
+    }
+  ]
+}
+```
+
+##### UNAUTHORIZED 401
+O usuário está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O usuário não está autorizado",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+##### FORBIDDEN 403
+O usuário está tentando ler as informações de uma reserva sem ter os privilégios para isso. Será 
+retornado um _RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "6",
+    "Message": "O usuário não está autenticado",
+    "Status": "403",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+##### NOT FOUND 404
+Está se tentando buscar uma reserva de um apartamento que não existe. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "3",
+    "Message": "Nenhum apartamento com o ID informado está cadastrado",
+    "Status": "404",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/3",
+    "ErrorFields": [
+      {
+        "field": "iptApartment",
+        "hasError": {
+          "value": true,
+          "type": 3,
+          "error": "Nenhum apartamento com o ID informado está cadastrado"
+        }
+      }
+    ]
+  }
+}
+```
+
+### GET /reservas
+Lista todas as informações de todas as reservas.
+
+#### Parâmetros
+##### Query String
+offset: A partir da qual posição serão retornados os resultados. Opcional;  
+limit: Quantidade máxima de reservas a serem retornados. Opcional.  
+
+Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
+são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
+
+#### Respostas
+##### OK 200
+Será retornado a propriedade __reserves__, que é um _array das reservas_, e o __hasNext__, que é a 
+propriedade _booleana_ que indica se há ou não uma próxima página. Cada elemento do array de 
+reservas contém um _HATEOAS_ das ações possíveis com cada reserva.
+
+```json
+{
+  "reserves": [
+    {
+      "_id": "65ea32804f7d6e0acce3f411",
+      "reserve": {
+        "status": "reservado",
+        "start": "10/10/2024",
+        "end": "15/10/2024",
+        "reserved": {
+          "reservedAt": "08/03/2024 09:52:19",
+          "RESERVED_BY": [
+            {
+              "_id": "65e7bff8ae4fa20ae8a3d0a0",
+              "name": "tobias de oliveira"
+            }
+          ]
+        },
+        "CLIENT_ID": [
+          {
+            "_id": "65ea22194f7d6e0acce3f407",
+            "name": "dinorá de oliveira"
+          }
+        ]
+      },
+      "_links": [
+        {
+          "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+          "method": "GET",
+          "rel": "self_reserve"
+        },
+        {
+          "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+          "method": "PUT",
+          "rel": "edit_reserve"
+        },
+        {
+          "href": "http://localhost:4000/reserves/65ea32804f7d6e0acce3f411",
+          "method": "DELETE",
+          "rel": "delete_reserve"
+        },
+        {
+          "href": "http://localhost:4000/reserves",
+          "method": "GET",
+          "rel": "reserve_list"
+        }
+      ]
+    },
+    {
+      "_id": "65eb4045dff65f114c0718d6",
+      "reserve": {
+        "status": "reservado",
+        "start": "10/10/2024",
+        "end": "15/10/2024",
+        "reserved": {
+          "reservedAt": "08/03/2024 09:52:19",
+          "RESERVED_BY": [
+            {
+              "_id": "65e7bff8ae4fa20ae8a3d0a0",
+              "name": "tobias de oliveira"
+            }
+          ]
+        },
+        "CLIENT_ID": [
+          {
+            "_id": "65ea1e264f7d6e0acce3f3ff",
+            "name": "doricleide chagas"
+          }
+        ]
+      },
+      "_links": [
+        {
+          "href": "http://localhost:4000/reserves/65eb4045dff65f114c0718d6",
+          "method": "GET",
+          "rel": "self_reserve"
+        },
+        {
+          "href": "http://localhost:4000/reserves/65eb4045dff65f114c0718d6",
+          "method": "PUT",
+          "rel": "edit_reserve"
+        },
+        {
+          "href": "http://localhost:4000/reserves/65eb4045dff65f114c0718d6",
+          "method": "DELETE",
+          "rel": "delete_reserve"
+        },
+        {
+          "href": "http://localhost:4000/reserves",
+          "method": "GET",
+          "rel": "reserve_list"
+        }
+      ]
+    }
+  ],
+  "hasNext": false
+}
+```
+
+##### 401 UNAUTHORIZED
+O usuário está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O Token é inválido",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+### PUT /reserves/:id
+Atualiza as informações de uma reserva.
+
+#### Parâmetros
+##### URL
+id: ID do apartamento que terá sua reserva atualizada;  
+
+##### Body
+status: Novo status que o apartamento terá. Opcional e Condicinal;  
+client_id: ID do cliente ao qual o apartamento foi reservado. Opcional e Condicional;  
+start: Data de início da reserva. Opcional;  
+end: Data de término da reserva. Opcional.
+
+Exemplo de atualização do _nome_, _email_ e _data de nascimento_ de um usuário.
+```json
+{
+  "status": "ocupado",
+  "start": "2024-05-02",
+  "end": "2024-05-10"
+}
+```
+
+#### Respostas
+##### OK 200
+Será retornado o _HATEOAS_ do apartamento que teve suas informações de reserva atualizadas.
+
+```json
+{
+  "_links": [
+    {
+      "href": "http://localhost:4000/reserves/65eb4045dff65f114c0718d6",
+      "method": "GET",
+      "rel": "self_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves/65eb4045dff65f114c0718d6",
+      "method": "PUT",
+      "rel": "edit_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves/65eb4045dff65f114c0718d6",
+      "method": "DELETE",
+      "rel": "delete_reserve"
+    },
+    {
+      "href": "http://localhost:4000/reserves",
+      "method": "GET",
+      "rel": "reserve_list"
+    }
+  ]
+}
+```
+
+##### BAD REQUEST 400
+Será retornado um _RestException_, contendo informações sobre os erros encontrados na estrutura e/
+ou no preenchimento do formulário de login.
+
+```json
+{
+  "RestException": {
+    "Code": "2",
+    "Message": "O valor do campo de Status é inválido",
+    "Status": "400",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/2",
+    "ErrorFields": [
+      {
+        "field": "iptStatus",
+        "hasError": {
+          "value": true,
+          "type": 2,
+          "error": "O valor do campo de Status é inválido"
+        }
+      }
+    ]
+  }
+}
+```
+
+##### UNAUTHORIZED 401
+O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O Token é inválido",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+##### FORBIDDEN 403
+O usuário não tem privilégio suficiente a realizar tal atualização. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "6",
+    "Message": "O usuário não está autenticado",
+    "Status": "403",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+  }
+}
+```
+
+##### NOT FOUND 404
+O apartamento que se está tentando atualizar não existe. Será retornado um _RestException_ com 
+mais informações.
+
+```json
+{
+  "RestException": {
+    "Code": "3",
+    "Message": "Nenhum apartamento com o ID informado está cadastrado",
+    "Status": "404",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/3",
+    "ErrorFields": [
+      {
+        "field": "iptApartment",
+        "hasError": {
+          "value": true,
+          "type": 3,
+          "error": "Nenhum apartamento com o ID informado está cadastrado"
+        }
+      }
+    ]
+  }
+}
+```
+
+### DELETE /reserves/:id
+Faz a deleção/cancelamento da reserva de um apartamento.
+
+#### Parâmetros
+##### URL
+id: ID do apartamento que terá sua reserva deletada/cancelada.
+
+#### Respostas
+##### OK 200
+Retorna um objeto JSON vazio.
+
+```json
+{}
+```
+
+##### UNAUTHORIZED 401
+O cliente está tentando acessar esse endpoint sem um _token_ ou com um inválido. Será retornado um 
+_RestException_ com mais informações.
+
+```json
+{
+    "RestException": {
+        "Code": "5",
+        "Message": "O usuário não está autorizado",
+        "Status": "401",
+        "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+    }
+}
+``` 
+
+##### FORBIDDEN 403
+O usuário não tem privilégio suficiente para deletar a reserva. Será retornado um _RestException_
+com mais informações.
+
+```json
+{
+    "RestException": {
+        "Code": "6",
+        "Message": "O usuário não está autenticado",
+        "Status": "403",
+        "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/6"
+    }
+}
+```
+
+##### NOT FOUND 404
+
+
+```json
+{
+    "RestException": {
+        "Code": "3",
+        "Message": "Nenhum apartamento com o ID informado está cadastrado",
+        "Status": "404",
+        "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/3",
+        "ErrorFields": [
+            {
+                "field": "iptApartment",
+                "hasError": {
+                    "value": true,
+                    "type": 3,
+                    "error": "Nenhum apartamento com o ID informado está cadastrado"
+                }
+            }
+        ]
+    }
+}
+```
