@@ -32,23 +32,37 @@ Sistema Operacional (Windows 7, 32-bit)__.
 * Buscar uma forma de unir a listagem de usuários com a busca de usuários pelo documento;
 * Se o valor do updatedAt e do createdAt forem iguais, apagar o retorno do updatedAt;
 * Durante a armazenagem/atualização das fotos, verificar o mimetype das imagens no Multer;
-* Dentro do analyzer, impedir que dados não validados sejam utilizados em consultas nos Models. Por 
-exemplo, no analisador de CPF a busca por usuário que possui o CPF é feita _antes de outras 
+* Dentro do analyzer, impedir que dados não validados sejam utilizados em consultas nos Models. 
+Por exemplo, no analisador de CPF a busca por usuário que possui o CPF é feita _antes de outras 
 validações, como ser ou não um inteiro e possuir exatos 11 caracteres_;
 * Retirar o código, no cadastro de um usuário, que torna o _primeiro usuário_ a se cadastrar um 
 Admin, fazendo com que _cargo (role)_ do usuário seja alterado diretamente no Banco de Dados;
 * Integrar a API com a __AWS (Amazon Web Service)__, para que as imagens dos apartamentos sejam 
 armazenadas na nuvem, e também com o __Redis__, para que a sessão/token do usuário seja armazenada;
-* Concluir a crição de todos os testes com o _Jest_, já que tive que parar de utilizá-lo (
+* Concluir a criação de todos os testes com o _Jest_, já que tive que parar de utilizá-lo (
 codificá-lo) devido ao tempo de conclusão de todos os testes (meu computador é muito lento) e 
 possível "incompatibilidade" (tempo de resposta) com o MongoDB Atlas;
-* Impedir que clientes menores de idade se cadastrem ou sejam cadastrados.
+* Impedir que clientes menores de idade se cadastrem ou sejam cadastrados;
+* Impedir que sejam retornados HTML em erros do tipo 500 (Internal Server Error);
+* No login de um cliente, validar a senha depois de já ter avaliado o email;
+* Unificar estrutura d cadastro de uma apartamento com e sem imagens;
+* Para endpoints que requerem autorização ou autenticação, verificar o token __primeiro__ (antes 
+de qual outro processo);
+* Emitir erro (404) em todas as rotas de busca, atualização e deleção de um documento que não 
+existe;
+* Revisar caracteres permitidos nos inputs, para impedir ataques em campos de entrada.
 
 ## Bug(s)
-* Validação do Email: No método de validação de email, implementar o teste e o codigo para verificar 
-se o email informado pelo usuário já foi cadastrado;
-* Quando o valor de um parâmetro informado não pertence a um dado do documento que se quer obter, o 
-valor do Status Code retornado é 404.
+* Impedir que uma mesma propriedade seja setada duas vezes;
+* Impedir que propriedades que se "anulam" sejam informadas juntas (Ex.: cpf anula o número do 
+passaporte, no cadastro ou atualização de um cliente);
+* Na rota de busca por usuários através de seu documento (CPF ou Número de Passaporte) está 
+retornando a lista completa de usuário, quando não encontra um valor exato ao informado;
+* Quando um token de Admin expirado é usado para criação de conta, está retornando erro 500;
+* Impedir que a diária seja alterada, se o apartamento já estiver reservado/ocupado;
+* Impedir que um apartamento _reservado_ ou _ocupado_ seja deletado;
+* Se o cliente atualizar somente a _data de termino_ de uma reserva, verificar se a data informada 
+é anterior a data de início armazenada.
 
 ## Informações adicionais
 ### Jest e o this dos métodos de uma rota
@@ -254,7 +268,10 @@ O exemplo abaixo é de uma consulta já com o ID do cliente.
 
 #### Parâmetros
 ##### URL
-id: ID do cliente. Obrigatório.
+\* São obrigatórios
+Parâmetro | Descrição
+----------|----------
+id*       | ID do cliente.
 
 #### Respostas
 ##### OK 200
