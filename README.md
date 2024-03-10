@@ -79,19 +79,21 @@ Cadastra um cliente.
 #### Parâmetros
 
 ##### Body
-name: Nome do cliente. Obrigatório;  
-email: Email de contato do cliente. Obrigatório;  
-password: Senha de acesso ao site. É necessário informar uma __senha forte__, favor verificar o 
-método _isStrongPassword()_ da biblioteca Validator.js para a saber quais são os requisitos de uma 
-senha forte. Obrigatório;  
-phoneCode: Código do país do telefone do cliente. Obrigatório;  
-phoneNumber: Telefone com o código do estado do cliente. Obrigatório;  
-birthDate: Data de nascimento do cliente, no formato yyyy-mm-dd. Obrigatório;  
-country: País de nascimento do cliente. Obrigatório;  
-state: Estado de nascimento do cliente. Opcional;  
-city: Cidade de nascimento do cliente. Opcional;  
-cpf: CPF do cliente. Condicional (somente para brasileiros);  
-passportNumber: CPF do cliente. Condicional (somente para estrangeiros);  
+\* São obrigatórios
+** São condicionais
+Parâmetro | Tipo | Descrição
+----------|------|----------
+name*     | _String_ | Nome do cliente.
+email*    | _String_ | Email de contato do cliente.
+password* | _String_ | Senha de acesso ao site. É necessário informar uma __senha forte__, favor verificar o método _isStrongPassword()_ da biblioteca Validator.js para a saber quais são os requisitos de uma senha forte.
+phoneCode* | _String_ | Código do país do telefone do cliente.
+phoneNumber* | _String_ | Telefone com o código do estado do cliente.
+birthDate* | _String_ | Data de nascimento do cliente, no formato yyyy-mm-dd.
+country*  | _String_ | País de nascimento do cliente.
+state*    | _String_ | Estado de nascimento do cliente.
+city*     | _String_ | Cidade de nascimento do cliente.
+cpf**     | _String_ | CPF do cliente. Condicional (somente para brasileiros).
+passportNumber** | _String_ | CPF do cliente. Condicional (somente para estrangeiros).
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __brasileiro__.
 ```json
@@ -188,10 +190,12 @@ ou no preenchimento do formulário de cadastro.
 Faz o login de um usuário.
 
 #### Parâmetros
-
 ##### Body
-email: Email de um usuário já cadastrado. Obrigatório;  
-password: Senha do usuário cadastrado. Obrigatório.  
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+email*    | _String_ | Email de um usuário já cadastrado.
+password* | _String_ | Senha do usuário cadastrado.
 
 O exemplo abaixo é do corpo de uma requisição de login de um usuário cadastrado.
 
@@ -493,8 +497,11 @@ Faz a busca de um usuário pela documentação informada (CPF ou Número do Pass
 
 #### Parâmetros
 ##### Body
-cpf: _Número do CPF_ do usuário brasileiro. Condicional;  
-passportNumber: _Número do passaporte_ do usuário estrangeiro. Condicional.  
+** São condicionais
+Parâmetro | Tipo | Descrição
+----------|------|----------
+cpf**     | _String_ | Número do CPF do usuário brasileiro.
+passportNumber** | _String_ | Número do passaporte do usuário estrangeiro.
 
 Informar somente __um__ dos parâmetros acima.
 
@@ -594,22 +601,26 @@ O exemplo abaixo é de um endpoint de atualização de usuário.
 
 #### Parâmetros
 ##### URL
-id: É o ID do usuário a ser atualizado. Obrigatório.
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | É o ID do usuário a ser atualizado.
 
 ##### Body
-name: Nome do cliente. Opcional;  
-email: Email de contato do cliente. Opcional;  
-password: Senha de acesso ao site. É necessário informar uma __senha forte__, favor verificar o 
-método _isStrongPassword()_ da biblioteca Validator.js para a saber quais são os requisitos de uma 
-senha forte. Opcional;  
-phoneCode: Código do país do telefone do cliente. Opcional;  
-phoneNumber: Telefone com o código do estado do cliente. Opcional;  
-birthDate: Data de nascimento do cliente, no formato yyyy-mm-dd. Opcional;  
-country: País de nascimento do cliente. Opcional;  
-state: Estado de nascimento do cliente. Opcional;  
-city: Cidade de nascimento do cliente. Opcional;  
-cpf: CPF do cliente. Opcional/Condicional (somente para brasileiros);  
-passportNumber: CPF do cliente. Opcional/Condicional (somente para estrangeiros);  
+\*** São opcionais/condicionais
+Parâmetro | Tipo | Descrição
+----------|------|----------
+name      | _String_ | Nome do cliente.
+email     | _String_ | Email de contato do cliente.
+password  | _String_ | Senha de acesso ao site. É necessário informar uma __senha forte__, favor verificar o método _isStrongPassword()_ da biblioteca Validator.js para a saber quais são os requisitos de uma senha forte.
+phoneCode | _String_ | Código do país do telefone do cliente.
+phoneNumber | _String_ | Telefone com o código do estado do cliente.
+birthDate | _String_ | Data de nascimento do cliente, no formato yyyy-mm-dd.
+country   | _String_ | País de nascimento do cliente.
+state***  | _String_ | Estado de nascimento do cliente.
+city***   | _String_ | Cidade de nascimento do cliente.
+cpf***    | _String_ | CPF do cliente. (somente para brasileiros).
+passportNumber*** | _String_ | CPF do cliente. (somente para estrangeiros).
 
 Exemplo de atualização do _nome_, _email_ e _data de nascimento_ de um usuário.
 ```json
@@ -710,7 +721,10 @@ O exemplo abaixo é de um endpoint de deleção de usuário.
 
 #### Parâmetros
 ##### URL
-id: É o ID do usuário a ser deletado. Obrigatório.
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | É o ID do usuário a ser deletado.
 
 #### Resultados
 ##### OK 200
@@ -757,13 +771,22 @@ Cadastra um novo apartamento.
 ##### Body
 
 ###### Sem imagens
-floor: O piso em que o apartamento fica. Obrigatório;  
-number: Número do apartamento. Obrigatório;  
-rooms: Cômodos que o apartamento possui. Obrigatório;  
-* room: Nome do cômodo. Obrigatório;  
-* quantity: Quantidade do cômodo em questão. Obrigatório.  
-accepts_animals: Indica se o apartamento pode ou não receber animais. Obrigatório;  
-daily_price: Diária do apartamento. Obrigatório.  
+\* São obrigatórios
+\+ Números positivos
+Parâmetro | Tipo | Descrição
+----------|------|----------
+floor*    | _Int_+ | Piso em que o apartamento fica.
+number*   | _Int_+ | Número do apartamento.
+rooms*    | _Array_ | Cômodos que o apartamento possui.
+accepts_animals* | _Int_+ | Indica se o apartamento pode ou não receber animais.
+daily_price* | _Float_+ | Diária do apartamento.
+
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+room*     | _String_ | Nome do cômodo.
+quantity* | _Int_+ | Quantidade do cômodo em questão.
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
 ```json
@@ -794,15 +817,31 @@ O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
 ```
 
 ###### Com imagens
-apartment: Guarda todas as informações descritivas do apartamento. Obrigatório;
-* floor: O piso em que o apartamento fica. Obrigatório;  
-* number: Número do apartamento. Obrigatório;  
-* rooms: Cômodos que o apartamento possui. Obrigatório;  
-+ room: Nome do cômodo. Obrigatório;  
-+ quantity: Quantidade do cômodo em questão. Obrigatório.  
-* accepts_animals: Indica se o apartamento pode ou não receber animais. Obrigatório;  
-* daily_price: Diária do apartamento. Obrigatório.  
-iptImages: Imagens do apartamento. Condicional.
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+apartment* | _Object_ | Guarda todas as informações descritivas do apartamento.
+iptImages | _.jpg_ | Imagens do apartamento.
+
+O parâmetro _apartment_ é um objeto que contém as informações descritivas do apartamento. Sua 
+estrutura está descrita abaixo:
+\* São obrigatórios
+\+ Números positivos
+Parâmetro | Tipo | Descrição
+----------|------|----------
+floor*    | _Int_+ | O piso em que o apartamento fica.
+number*   | _Int_+ | Número do apartamento.
+rooms*    | _Array_ | Cômodos que o apartamento possui.
+accepts_animals* | _Int_+ | Indica se o apartamento pode ou não receber animais.
+daily_price* | _Float_+ | Diária do apartamento.
+
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
+\* São obrigatórios
+\+ Números positivos
+Parâmetro | Tipo | Descrição
+----------|------|----------
+room*     | _String_ | Nome do cômodo.
+quantity* | _Int_+ | Quantidade do cômodo em questão.
 
 #### Respostas
 ##### CREATED 201
@@ -897,7 +936,10 @@ O exemplo abaixo é de um endpoint de leitura de um apartamento.
 
 #### Parâmetros
 ##### URL
-id: É o ID do apartamento. Obrigatório.
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A |É o ID do apartamento.
 
 #### Respostas
 ##### OK 200
@@ -990,14 +1032,15 @@ Faz a listagem de todos os clientes cadastrados.
 
 #### Parâmetros
 ##### Query String
-rooms: Quantidade de cômodos. Opcional;  
-lowest_daily_price: Menor valor da diária. Opcional;  
-highest_daily_price: Maior valor da diária. Opcional;  
-accepts_animals: Aceita o não animais no apartamento. Opcional;  
-offset: A partir da qual posição serão retornados os resultados. Opcional;  
-limit:2: Quantidade máxima de apartamentos a serem retornados. Opcional;  
-sort: Ordenação do valores. Por enquanto, só há ordenação do _valor da diária (daily_price)_, 
-podendo ser _asc_ ou _desc_. Opcional.  
+Parâmetro | Tipo | Descrição
+----------|------|----------
+rooms     | _Int_+ | Quantidade de cômodos.
+lowest_daily_price | _Int_+ | Menor valor da diária.
+highest_daily_price | _Int_+ | Maior valor da diária.
+accepts_animals | _Int_+ | Aceita o não animais no apartamento.
+offset | _Int_+ | A partir da qual posição serão retornados os resultados.
+limit | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
+sort | N/A | Ordenação do valores. Por enquanto, só há ordenação do _valor da diária (daily_price), podendo ser _asc_ ou _desc_.  
 
 Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
 são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
@@ -1089,17 +1132,28 @@ O exemplo abaixo é de um endpoint de atualização de apartamento.
 
 #### Parâmetros
 ##### URL
-id: ID do apartamento a ser atualizado. Obrigatório.  
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | ID do apartamento a ser atualizado.
 
 ##### Body
 ###### Sem imagens
-floor: O piso em que o apartamento fica. Opcional;  
-number: Número do apartamento. Opcional;  
-rooms: Cômodos que o apartamento possui. Opcional;  
-* room: Nome do cômodo. Opcional;  
-* quantity: Quantidade do cômodo em questão. Opcional.  
-accepts_animals: Indica se o apartamento pode ou não receber animais. Opcional;  
-daily_price: Diária do apartamento. Opcional.  
+\+ Números positivos
+Parâmetro | Tipo | Descrição
+----------|------|----------
+floor     | _Int_+ | O piso em que o apartamento fica.
+number    | _Int_+ | Número do apartamento.
+rooms     | _Array_ | Cômodos que o apartamento possui.
+accepts_animals | _Int_+ | Indica se o apartamento pode ou não receber animais.
+daily_price | _Float_+ | Diária do apartamento.
+
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
+\+ Números positivos
+Parâmetro | Tipo | Descrição
+----------|------|----------
+room      | _String_ | Nome do cômodo.
+quantity  | _Int_+ | Quantidade do cômodo em questão.
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
 ```json
@@ -1110,16 +1164,29 @@ O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
 ```
 
 ###### Com imagens
-apartment: Guarda todas as informações descritivas do apartamento. Opcional/Condicional;
-* floor: O piso em que o apartamento fica. Opcional;  
-* number: Número do apartamento. Opcional;  
-* rooms: Cômodos que o apartamento possui. Opcional;  
-+ room: Nome do cômodo. Opcional;  
-+ quantity: Quantidade do cômodo em questão. Opcional.  
-* picturesToBeDeleted: Imagens (IDs/Hashs das imagens) que serão deletadas. Opcional;  
-* accepts_animals: Indica se o apartamento pode ou não receber animais. Opcional;  
-* daily_price: Diária do apartamento. Opcional.  
-iptImages: Imagens do apartamento. Opcional/Condicional.
+Parâmetro | Tipo | Descrição
+----------|------|----------
+apartment | _Object_ | Guarda todas as informações descritivas do apartamento.
+iptImages | _.jpg_ | Imagens do apartamento.
+
+O parâmetro _apartment_ é um objeto que contém as informações descritivas do apartamento. Sua 
+estrutura está descrita abaixo:
+\+ Números positivos
+Parâmetro | Tipo | Descrição
+----------|------|----------
+floor     | _Int_+ | O piso em que o apartamento fica.
+number    | _Int_+ | Número do apartamento.
+rooms     | _Array_ | Cômodos que o apartamento possui.
+picturesToBeDeleted | _Array_ | Imagens (IDs/Hashs das imagens) que serão deletadas.
+accepts_animals | _Int_+ | Indica se o apartamento pode ou não receber animais.
+daily_price | _Float_+ | Diária do apartamento.
+
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
+\+ Números positivos
+Parâmetro | Tipo | Descrição
+----------|------|----------
+room      | _String_ | Nome do cômodo.
+quantity  | _Int_+ | Quantidade do cômodo em questão.
 
 #### Respostas
 ##### OK 200
@@ -1211,7 +1278,10 @@ O exemplo abaixo é de um endpoint de deleção de apartamento.
 
 #### Parâmetros
 ##### URL
-id: ID do apartamento a ser deletado. Obrigatório.
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | ID do apartamento a ser deletado.
 
 #### Respostas
 ##### OK 200
@@ -1281,11 +1351,15 @@ Faz o cadastro de uma nova reserva.
 
 #### Parâmetros
 ##### Body
-apartment_id: ID do apartamento a ser reservado. Obrigatório;  
-status: Novo status que o apartamento terá. Condicinal;  
-client_id: ID do cliente ao qual o apartamento foi reservado. Condicional;  
-start: Data de início da reserva. Obrigatório;  
-end: Data de término da reserva. Obrigatório.
+\* São obrigatórios
+** São condicinais
+Parâmetro | Tipo | Descrição
+----------|------|----------
+apartment_id* | _String_ | ID do apartamento a ser reservado.
+status**  | _String_ | Novo status que o apartamento terá.
+client_id** | _String_ | ID do cliente ao qual o apartamento foi reservado.
+start* | _String_ | Data de início da reserva, seu formato é yyyy-mm-dd.
+end* | _String_ | Data de término da reserva, seu formato é yyyy-mm-dd.
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de uma reserva.
 ```json
@@ -1401,7 +1475,10 @@ O exemplo abaixo é de um endpoint de _reserva_ de um apartamento.
 
 #### Parâmetros
 ##### URL
-id: ID do _apartamento_ no qual se quer buscar as informações da reserva. Obrigatório.
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | ID do _apartamento_ no qual se quer buscar as informações da reserva.
 
 #### Respostas
 ##### OK 200
@@ -1646,13 +1723,19 @@ Atualiza as informações de uma reserva.
 
 #### Parâmetros
 ##### URL
-id: ID do apartamento que terá sua reserva atualizada;  
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | ID do apartamento que terá sua reserva atualizada.
 
 ##### Body
-status: Novo status que o apartamento terá. Opcional e Condicinal;  
-client_id: ID do cliente ao qual o apartamento foi reservado. Opcional e Condicional;  
-start: Data de início da reserva. Opcional;  
-end: Data de término da reserva. Opcional.
+** São condicinais
+Parâmetro | Tipo | Descrição
+----------|------|----------
+status**  | _String_ | Novo status que o apartamento terá.
+client_id** | _String_ | ID do cliente ao qual o apartamento foi reservado.
+start     | _String_ | Data de início da reserva, seu formato é yyyy-mm-dd.
+end       | _String_ | Data de término da reserva, seu formato é yyyy-mm-dd.
 
 Exemplo de atualização do _nome_, _email_ e _data de nascimento_ de um usuário.
 ```json
@@ -1779,7 +1862,10 @@ Faz a deleção/cancelamento da reserva de um apartamento.
 
 #### Parâmetros
 ##### URL
-id: ID do apartamento que terá sua reserva deletada/cancelada.
+\* São obrigatórios
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | ID do apartamento que terá sua reserva deletada/cancelada.
 
 #### Respostas
 ##### OK 200
@@ -1820,7 +1906,8 @@ com mais informações.
 ```
 
 ##### NOT FOUND 404
-
+O apartamento que se quer deletar/cancelar a reserva não existe. Será retornado um _RestException_
+com mais informações.
 
 ```json
 {
