@@ -58,7 +58,7 @@ class ApartmentController {
         errorFields.push(roomsResult)
       }
 
-      const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice(daily_price)
+      const dailyPriceResult = Analyzer.analyzeApartmentDailyPrice((daily_price).toString())
       if (dailyPriceResult.hasError.value) {
         errorFields.push(dailyPriceResult)
       }
