@@ -758,14 +758,15 @@ class Analyzer {
           result.hasError.error = `'${ item.room }' possui caracteres inválidos`
           return result
         } else {
-          let isInt = validator.isInt(item.quantity)
+          let quantity = item.quantity.toString()
+          let isInt = validator.isInt(quantity)
           if (!isInt) {
             result.hasError.value = true
             result.hasError.type = 2
             result.hasError.error = `A quantidade de ${ item.room } possui caracteres inválidos`
             return result
           } else {
-            let isValidInt = validator.isInt(item.quantity, {
+            let isValidInt = validator.isInt(quantity, {
               gt: 0
             })
             if (!isValidInt) {
@@ -791,8 +792,16 @@ class Analyzer {
     // Verifica se há centavos.
     if (arrayPrice.length == 2) {
 
-      // Verifica se foi informado '9' (90 centavos).
-      if (arrayPrice[1] == '9') {
+      /*
+      O método isCurrency() trabalha com DOIS algarismos nos centavos e quando números múltiplos 
+      de 10, com excessão 0, são enviados (10, 20, 30, ...) o zero é SUPRIMIDO, acarretando em 
+      erro no método de avaliação.
+      Ex.:
+      20.10 fica 20.1
+      20.20 fica 20.2
+      20.30 fica 20.3
+      */
+      if ((arrayPrice[1]).length == 1) {
 
         // Add 0 no final do valor da diária.
         price = price + '0'
