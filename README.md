@@ -45,7 +45,7 @@ possível "incompatibilidade" (tempo de resposta) com o MongoDB Atlas;
 * Impedir que clientes menores de idade se cadastrem ou sejam cadastrados;
 * Impedir que sejam retornados HTML em erros do tipo 500 (Internal Server Error);
 * No login de um cliente, validar a senha depois de já ter avaliado o email;
-* Unificar estrutura d cadastro de uma apartamento com e sem imagens;
+* Unificar estrutura de cadastro de uma apartamento com e sem imagens;
 * Para endpoints que requerem autorização ou autenticação, verificar o token __primeiro__ (antes 
 de qual outro processo);
 * Emitir erro (404) em todas as rotas de busca, atualização e deleção de um documento que não 
@@ -79,7 +79,7 @@ Cadastra um cliente.
 #### Parâmetros
 
 ##### Body
-\* São obrigatórios
+\* São obrigatórios  
 ** São condicionais
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -191,7 +191,7 @@ Faz o login de um usuário.
 
 #### Parâmetros
 ##### Body
-\* São obrigatórios
+\* São obrigatórios  
 Parâmetro | Tipo | Descrição
 ----------|------|----------
 email*    | _String_ | Email de um usuário já cadastrado.
@@ -268,14 +268,14 @@ ou no preenchimento do formulário de login.
 Faz a busca das informações do cliente que possui o ID informado.
 
 O exemplo abaixo é de uma consulta já com o ID do cliente.  
-<http://localhost:4000/users/65c41b52e22dc214b8853271>
+`http://localhost:4000/users/65c41b52e22dc214b8853271`
 
 #### Parâmetros
 ##### URL
-\* São obrigatórios
-Parâmetro | Descrição
-----------|----------
-id*       | ID do cliente.
+\* São obrigatórios  
+Parâmetro | Tipo | Descrição
+----------|------|----------
+id*       | N/A | ID do cliente.
 
 #### Respostas
 ##### OK 200
@@ -333,8 +333,8 @@ _RestException_ com mais informações.
 ```
 
 ##### FORBIDDEN 403
-O usuário _cliente_ está tentando acessar informações de outro usuário. Será retornado um _
-RestException_ com mais informações.
+O usuário _cliente_ está tentando acessar informações de outro usuário. Será retornado um 
+_RestException_ com mais informações.
 
 ```json
 {
@@ -354,7 +354,11 @@ Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Qu
 são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
 
 #### Parâmetros
-N/A
+\+ Número positivo
+Parâmetro | Tipo | Descrição
+----------|------|----------
+offset    | _Int_+ | A partir da qual posição serão retornados os resultados.
+limit     | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
 
 #### Respostas
 ##### OK 200
@@ -597,7 +601,7 @@ mais informações.
 Faz a atualização de um usuário.
 
 O exemplo abaixo é de um endpoint de atualização de usuário.  
-<http://localhost:4000/users/65e895d432a8650dfc58b72a>
+`http://localhost:4000/users/65e895d432a8650dfc58b72a`
 
 #### Parâmetros
 ##### URL
@@ -717,7 +721,7 @@ mais informações.
 Faz a deleção de um usuário.
 
 O exemplo abaixo é de um endpoint de deleção de usuário.  
-<http://localhost:4000/users/65e895d432a8650dfc58b72a>
+`http://localhost:4000/users/65e895d432a8650dfc58b72a`
 
 #### Parâmetros
 ##### URL
@@ -771,7 +775,7 @@ Cadastra um novo apartamento.
 ##### Body
 
 ###### Sem imagens
-\* São obrigatórios
+\* São obrigatórios  
 \+ Números positivos
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -781,7 +785,7 @@ rooms*    | _Array_ | Cômodos que o apartamento possui.
 accepts_animals* | _Int_+ | Indica se o apartamento pode ou não receber animais.
 daily_price* | _Float_+ | Diária do apartamento.
 
-O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:  
 \* São obrigatórios
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -824,8 +828,8 @@ apartment* | _Object_ | Guarda todas as informações descritivas do apartamento
 iptImages | _.jpg_ | Imagens do apartamento.
 
 O parâmetro _apartment_ é um objeto que contém as informações descritivas do apartamento. Sua 
-estrutura está descrita abaixo:
-\* São obrigatórios
+estrutura está descrita abaixo:  
+\* São obrigatórios  
 \+ Números positivos
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -835,8 +839,8 @@ rooms*    | _Array_ | Cômodos que o apartamento possui.
 accepts_animals* | _Int_+ | Indica se o apartamento pode ou não receber animais.
 daily_price* | _Float_+ | Diária do apartamento.
 
-O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
-\* São obrigatórios
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:  
+\* São obrigatórios  
 \+ Números positivos
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -932,14 +936,14 @@ O usuário não tem permissão acesso a esse endpoint.
 Faz a busca por informações de um apartamento em específicio.
 
 O exemplo abaixo é de um endpoint de leitura de um apartamento.  
-<http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c>
+`http://localhost:4000/apartments/65e9fd9ffeeb4c158878f95c`
 
 #### Parâmetros
 ##### URL
 \* São obrigatórios
 Parâmetro | Tipo | Descrição
 ----------|------|----------
-id*       | N/A |É o ID do apartamento.
+id*       | N/A | É o ID do apartamento.
 
 #### Respostas
 ##### OK 200
@@ -1032,24 +1036,25 @@ Faz a listagem de todos os clientes cadastrados.
 
 #### Parâmetros
 ##### Query String
+\+ Números positivos
 Parâmetro | Tipo | Descrição
 ----------|------|----------
 rooms     | _Int_+ | Quantidade de cômodos.
 lowest_daily_price | _Int_+ | Menor valor da diária.
 highest_daily_price | _Int_+ | Maior valor da diária.
 accepts_animals | _Int_+ | Aceita o não animais no apartamento.
-offset | _Int_+ | A partir da qual posição serão retornados os resultados.
-limit | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
-sort | N/A | Ordenação do valores. Por enquanto, só há ordenação do _valor da diária (daily_price), podendo ser _asc_ ou _desc_.  
+offset    | _Int_+ | A partir da qual posição serão retornados os resultados.
+limit     | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
+sort      | N/A | Ordenação do valores. Por enquanto, só há ordenação do _valor da diária (daily_price), podendo ser _asc_ ou _desc_.  
 
 Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
 são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
 
 O exemplo abaixo é da URL de uma consulta __limpa__.  
-<http://localhost:4000/apartments>  
+`http://localhost:4000/apartments`  
 
 O exemplo abaixo é da URL de uma consulta com __Query String__.  
-<http://localhost:4000/apartments?rooms=7&lowest_daily_price=300&highest_daily_price=750&accepts_animals=1&offset=1&limit=2&sort=daily_price:desc>
+`http://localhost:4000/apartments?rooms=7&lowest_daily_price=300&highest_daily_price=750&accepts_animals=1&offset=1&limit=2&sort=daily_price:desc`
 
 #### Respostas
 ##### OK 200
@@ -1128,7 +1133,7 @@ autenticado. Será retornado um _RestException_ com mais informações.
 Faz a atualização de um apartamentos.
 
 O exemplo abaixo é de um endpoint de atualização de apartamento.  
-<http://localhost:4000/apartments/65ea32804f7d6e0acce3f411>
+`http://localhost:4000/apartments/65ea32804f7d6e0acce3f411`
 
 #### Parâmetros
 ##### URL
@@ -1148,7 +1153,7 @@ rooms     | _Array_ | Cômodos que o apartamento possui.
 accepts_animals | _Int_+ | Indica se o apartamento pode ou não receber animais.
 daily_price | _Float_+ | Diária do apartamento.
 
-O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:  
 \+ Números positivos
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -1170,7 +1175,7 @@ apartment | _Object_ | Guarda todas as informações descritivas do apartamento.
 iptImages | _.jpg_ | Imagens do apartamento.
 
 O parâmetro _apartment_ é um objeto que contém as informações descritivas do apartamento. Sua 
-estrutura está descrita abaixo:
+estrutura está descrita abaixo:  
 \+ Números positivos
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -1181,7 +1186,7 @@ picturesToBeDeleted | _Array_ | Imagens (IDs/Hashs das imagens) que serão delet
 accepts_animals | _Int_+ | Indica se o apartamento pode ou não receber animais.
 daily_price | _Float_+ | Diária do apartamento.
 
-O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:
+O parâmetro _rooms_ é um array de cômodos do apartamento. Sua estrutura está descrita abaixo:  
 \+ Números positivos
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -1274,7 +1279,7 @@ Retorna um _RestException_ com mais informações do error.
 Faz a deleção de um apartamento.
 
 O exemplo abaixo é de um endpoint de deleção de apartamento.  
-<http://localhost:4000/apartments/65ea1dd64f7d6e0acce3f3fa>
+`http://localhost:4000/apartments/65ea1dd64f7d6e0acce3f3fa`
 
 #### Parâmetros
 ##### URL
@@ -1351,7 +1356,7 @@ Faz o cadastro de uma nova reserva.
 
 #### Parâmetros
 ##### Body
-\* São obrigatórios
+\* São obrigatórios  
 ** São condicinais
 Parâmetro | Tipo | Descrição
 ----------|------|----------
@@ -1470,8 +1475,8 @@ retornado um _RestException_ com mais informações.
 ### GET /reserves/:id
 Faz a busca por informações de uma reserva.
 
-O exemplo abaixo é de um endpoint de _reserva_ de um apartamento.  
-<http://localhost:4000/apartments/65ea1dd64f7d6e0acce3f3fa>
+O exemplo abaixo é de um endpoint de leitura da _reserva_ de um apartamento.  
+`http://localhost:4000/apartments/65ea1dd64f7d6e0acce3f3fa`
 
 #### Parâmetros
 ##### URL
@@ -1593,8 +1598,11 @@ Lista todas as informações de todas as reservas.
 
 #### Parâmetros
 ##### Query String
-offset: A partir da qual posição serão retornados os resultados. Opcional;  
-limit: Quantidade máxima de reservas a serem retornados. Opcional.  
+\+ Números positivos
+Parâmetro| Tipo | Descrição
+---------|------|----------
+offset   | _Int_+ | A partir da qual posição serão retornados os resultados.
+limit    | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
 
 Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
 são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
@@ -1721,6 +1729,9 @@ _RestException_ com mais informações.
 ### PUT /reserves/:id
 Atualiza as informações de uma reserva.
 
+O exemplo abaixo é de um endpoint de atualização da reserva de um apartamento.  
+`http://localhost:4000/reserves/65e9fd9ffeeb4c158878f95c`
+
 #### Parâmetros
 ##### URL
 \* São obrigatórios
@@ -1737,7 +1748,7 @@ client_id** | _String_ | ID do cliente ao qual o apartamento foi reservado.
 start     | _String_ | Data de início da reserva, seu formato é yyyy-mm-dd.
 end       | _String_ | Data de término da reserva, seu formato é yyyy-mm-dd.
 
-Exemplo de atualização do _nome_, _email_ e _data de nascimento_ de um usuário.
+Exemplo de atualização do _status_, _data de início_ e _data de fim_ de uma reserva.
 ```json
 {
   "status": "ocupado",
@@ -1859,6 +1870,9 @@ mais informações.
 
 ### DELETE /reserves/:id
 Faz a deleção/cancelamento da reserva de um apartamento.
+
+O exemplo abaixo é de um endpoint de deleção/cancelamento da _reserva_ de um apartamento.  
+`http://localhost:4000/apartments/65ea1dd64f7d6e0acce3f3fa`
 
 #### Parâmetros
 ##### URL
