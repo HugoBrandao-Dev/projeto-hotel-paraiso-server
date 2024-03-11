@@ -795,28 +795,28 @@ quantity* | _Int_+ | Quantidade do cômodo em questão.
 O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
 ```json
 {
-  "floor": "1",
-  "number": "1",
+  "floor": 1,
+  "number": 1,
   "rooms": [
     {
       "room": "sala de estar",
-      "quantity": "1"
+      "quantity": 1
     },
     {
       "room": "cozinha",
-      "quantity": "1"
+      "quantity": 1
     },
     {
       "room": "banheiro",
-      "quantity": "1"
+      "quantity": 1
     },
     {
       "room": "quarto",
-      "quantity": "1"
+      "quantity": 1
     }
   ],
-  "accepts_animals": "0",
-  "daily_price": "250"
+  "accepts_animals": 0,
+  "daily_price": 250.50
 }
 ```
 
@@ -1142,6 +1142,9 @@ Parâmetro | Tipo | Descrição
 ----------|------|----------
 id*       | N/A | ID do apartamento a ser atualizado.
 
+O exemplo abaixo é de uma URL de um apartamento que terá suas informações atualizadas.
+`http://localhost:4000/apartments/65ef5e033c487617d4a12815`
+
 ##### Body
 ###### Sem imagens
 \+ Números positivos
@@ -1160,7 +1163,7 @@ Parâmetro | Tipo | Descrição
 room      | _String_ | Nome do cômodo.
 quantity  | _Int_+ | Quantidade do cômodo em questão.
 
-O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
+O exemplo abaixo é do corpo de uma requisição de atualização de um apartamento SEM IMAGENS.
 ```json
 {
   "floor": 1,
@@ -1192,6 +1195,17 @@ Parâmetro | Tipo | Descrição
 ----------|------|----------
 room      | _String_ | Nome do cômodo.
 quantity  | _Int_+ | Quantidade do cômodo em questão.
+
+O exemplo abaixo é do corpo de uma requisição de atualização de um apartamento com deleção de uma 
+imagem.
+```json
+{
+  "number": 10,
+  "picturesToBeDeleted":["gng7jkmkgcij4fdhg78emjag&bedroom"],
+  "accepts_animals": 0,
+  "daily_price": 499.10
+}
+```
 
 #### Respostas
 ##### OK 200
