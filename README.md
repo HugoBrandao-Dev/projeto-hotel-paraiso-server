@@ -85,7 +85,7 @@ Parâmetro | Tipo | Descrição
 ----------|------|----------
 name*     | _String_ | Nome do cliente.
 email*    | _String_ | Email de contato do cliente.
-password* | _String_ | Senha de acesso ao site. É necessário informar uma __senha forte__, favor verificar o método _isStrongPassword()_ da biblioteca Validator.js para a saber quais são os requisitos de uma senha forte.
+password* | _String_ | Senha de acesso ao site.
 phoneCode* | _String_ | Código do país do telefone do cliente.
 phoneNumber* | _String_ | Telefone com o código do estado do cliente.
 birthDate* | _String_ | Data de nascimento do cliente, no formato yyyy-mm-dd.
@@ -94,6 +94,10 @@ state*    | _String_ | Estado de nascimento do cliente.
 city*     | _String_ | Cidade de nascimento do cliente.
 cpf**     | _String_ | CPF do cliente. Condicional (somente para brasileiros).
 passportNumber** | _String_ | CPF do cliente. Condicional (somente para estrangeiros).
+
+> A senha de acesso deve ser uma __senha forte__. Para ver quais são os requisitos para uma senha forte, verifique a documentação da biblioteca do Validator.js, no método _isStrongPassword()_.
+
+> A obrigatoriedade do parâmetro _cpf_ ou do _passportNumber_ vai depender do país de nascimento do usuário. Se for brasileiro, será exigido o _cpf_, se for estrangeiro, será exigido o _passportNumber_.
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __brasileiro__.
 ```json
@@ -350,8 +354,7 @@ _RestException_ com mais informações.
 ### GET /users
 Faz a listagem de todos os clientes cadastrados.  
 
-Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
-são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
+> Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
 
 #### Parâmetros
 \+ Número positivo
@@ -359,6 +362,12 @@ Parâmetro | Tipo | Descrição
 ----------|------|----------
 offset    | _Int_+ | A partir da qual posição serão retornados os resultados.
 limit     | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
+
+O exemplo abaixo é da URL de uma consulta __limpa__.  
+`http://localhost:4000/users`  
+
+O exemplo abaixo é da URL de uma consulta com __Query String__.  
+`http://localhost:4000/users?offset=1&limit=2`
 
 #### Respostas
 ##### OK 200
@@ -507,7 +516,7 @@ Parâmetro | Tipo | Descrição
 cpf**     | _String_ | Número do CPF do usuário brasileiro.
 passportNumber** | _String_ | Número do passaporte do usuário estrangeiro.
 
-Informar somente __um__ dos parâmetros acima.
+> Informe somente __um__ dos parâmetros acima.
 
 #### Respostas
 ##### OK 200
@@ -616,7 +625,7 @@ Parâmetro | Tipo | Descrição
 ----------|------|----------
 name      | _String_ | Nome do cliente.
 email     | _String_ | Email de contato do cliente.
-password  | _String_ | Senha de acesso ao site. É necessário informar uma __senha forte__, favor verificar o método _isStrongPassword()_ da biblioteca Validator.js para a saber quais são os requisitos de uma senha forte.
+password  | _String_ | Senha de acesso ao site.
 phoneCode | _String_ | Código do país do telefone do cliente.
 phoneNumber | _String_ | Telefone com o código do estado do cliente.
 birthDate | _String_ | Data de nascimento do cliente, no formato yyyy-mm-dd.
@@ -625,6 +634,10 @@ state***  | _String_ | Estado de nascimento do cliente.
 city***   | _String_ | Cidade de nascimento do cliente.
 cpf***    | _String_ | CPF do cliente. (somente para brasileiros).
 passportNumber*** | _String_ | CPF do cliente. (somente para estrangeiros).
+
+> A senha de acesso deve ser uma __senha forte__. Para ver quais são os requisitos para uma senha forte, verifique a documentação da biblioteca do Validator.js, no método _isStrongPassword()_.
+
+> A obrigatoriedade do parâmetro _cpf_ ou do _passportNumber_ vai depender do país de nascimento do usuário. Se for brasileiro, será exigido o _cpf_, se for estrangeiro, será exigido o _passportNumber_.
 
 Exemplo de atualização do _nome_, _email_ e _data de nascimento_ de um usuário.
 ```json
@@ -792,6 +805,10 @@ Parâmetro | Tipo | Descrição
 room*     | _String_ | Nome do cômodo.
 quantity* | _Int_+ | Quantidade do cômodo em questão.
 
+> Apesar do valor do _accepts_animals_ ser inteiro, o valor armazenado no banco será _booleano_.
+
+> O _daily_price_ tem o "." como caracter de separação entre os números inteiros e os decimais.
+
 O exemplo abaixo é do corpo de uma requisição de cadastro de um apartamento.
 ```json
 {
@@ -846,6 +863,10 @@ Parâmetro | Tipo | Descrição
 ----------|------|----------
 room*     | _String_ | Nome do cômodo.
 quantity* | _Int_+ | Quantidade do cômodo em questão.
+
+> Apesar do valor do _accepts_animals_ ser inteiro, o valor armazenado no banco será _booleano_.
+
+> O _daily_price_ tem o "." como caracter de separação entre os números inteiros e os decimais.
 
 #### Respostas
 ##### CREATED 201
@@ -1045,10 +1066,11 @@ highest_daily_price | _Int_+ | Maior valor da diária.
 accepts_animals | _Int_+ | Aceita o não animais no apartamento.
 offset    | _Int_+ | A partir da qual posição serão retornados os resultados.
 limit     | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
-sort      | N/A | Ordenação do valores. Por enquanto, só há ordenação do _valor da diária (daily_price), podendo ser _asc_ ou _desc_.  
+sort      | N/A | Ordenação do valores.
 
-Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
-são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
+> Por enquanto, só há ordenação do valor da diária (_daily_price_), podendo ser _asc_ ou _desc_.  
+
+> Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
 
 O exemplo abaixo é da URL de uma consulta __limpa__.  
 `http://localhost:4000/apartments`  
@@ -1163,6 +1185,10 @@ Parâmetro | Tipo | Descrição
 room      | _String_ | Nome do cômodo.
 quantity  | _Int_+ | Quantidade do cômodo em questão.
 
+> Apesar do valor do _accepts_animals_ ser inteiro, o valor armazenado no banco será _booleano_.
+
+> O _daily_price_ tem o "." como caracter de separação entre os números inteiros e os decimais.
+
 O exemplo abaixo é do corpo de uma requisição de atualização de um apartamento SEM IMAGENS.
 ```json
 {
@@ -1195,6 +1221,10 @@ Parâmetro | Tipo | Descrição
 ----------|------|----------
 room      | _String_ | Nome do cômodo.
 quantity  | _Int_+ | Quantidade do cômodo em questão.
+
+> Apesar do valor do _accepts_animals_ ser inteiro, o valor armazenado no banco será _booleano_.
+
+> O _daily_price_ tem o "." como caracter de separação entre os números inteiros e os decimais.
 
 O exemplo abaixo é do corpo de uma requisição de atualização de um apartamento com deleção de uma 
 imagem.
@@ -1379,6 +1409,10 @@ status**  | _String_ | Novo status que o apartamento terá.
 client_id** | _String_ | ID do cliente ao qual o apartamento foi reservado.
 start* | _String_ | Data de início da reserva, seu formato é yyyy-mm-dd.
 end* | _String_ | Data de término da reserva, seu formato é yyyy-mm-dd.
+
+> O parâmetro _status_ só pode ser passado por um funcionário ou alguém com função superior.
+
+> O parâmetro _client_id_ só pode ser passado por um funcionário ou alguém com função superior. Caso seja o cliente que esteja logado, será pego seu _id_ no token.
 
 O exemplo abaixo é do corpo de uma requisição de cadastro de uma reserva.
 ```json
@@ -1618,8 +1652,13 @@ Parâmetro| Tipo | Descrição
 offset   | _Int_+ | A partir da qual posição serão retornados os resultados.
 limit    | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
 
-Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores 
-são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
+> Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
+
+O exemplo abaixo é da URL de uma consulta __limpa__.  
+`http://localhost:4000/reserves`  
+
+O exemplo abaixo é da URL de uma consulta com __Query String__.  
+`http://localhost:4000/reserves?&offset=1&limit=1`
 
 #### Respostas
 ##### OK 200
@@ -1761,6 +1800,10 @@ status**  | _String_ | Novo status que o apartamento terá.
 client_id** | _String_ | ID do cliente ao qual o apartamento foi reservado.
 start     | _String_ | Data de início da reserva, seu formato é yyyy-mm-dd.
 end       | _String_ | Data de término da reserva, seu formato é yyyy-mm-dd.
+
+> O parâmetro _status_ só pode ser passado por um funcionário ou alguém com função superior.
+
+> O parâmetro _client_id_ só pode ser passado por um funcionário ou alguém com função superior. Caso seja o cliente que esteja logado, será pego seu _id_ no token.
 
 Exemplo de atualização do _status_, _data de início_ e _data de fim_ de uma reserva.
 ```json
