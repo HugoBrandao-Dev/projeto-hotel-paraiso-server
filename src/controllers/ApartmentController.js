@@ -63,7 +63,7 @@ class ApartmentController {
         errorFields.push(dailyPriceResult)
       }
 
-      const acceptsAnimalsResult = Analyzer.analyzeApartmentAcceptsAnimals(accepts_animals)
+      const acceptsAnimalsResult = Analyzer.analyzeApartmentAcceptsAnimals((accepts_animals).toString())
       if (acceptsAnimalsResult.hasError.value) {
         errorFields.push(acceptsAnimalsResult)
       }
