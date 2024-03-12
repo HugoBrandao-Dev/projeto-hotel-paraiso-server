@@ -83,19 +83,26 @@ Cadastra um cliente.
 ** São condicionais
 Parâmetro | Tipo | Descrição
 ----------|------|----------
-name*     | _String_ | Nome do cliente.
-email*    | _String_ | Email de contato do cliente.
+name*     | _String_ | Nome do cliente/usuário.
+email*    | _String_ | Email de contato do cliente/usuário.
 password* | _String_ | Senha de acesso ao site.
-phoneCode* | _String_ | Código do país do telefone do cliente.
-phoneNumber* | _String_ | Telefone com o código do estado do cliente.
-birthDate* | _String_ | Data de nascimento do cliente, no formato yyyy-mm-dd.
-country*  | _String_ | País de nascimento do cliente.
-state*    | _String_ | Estado de nascimento do cliente.
-city*     | _String_ | Cidade de nascimento do cliente.
-cpf**     | _String_ | CPF do cliente. Condicional (somente para brasileiros).
-passportNumber** | _String_ | CPF do cliente. Condicional (somente para estrangeiros).
+phoneCode* | _String_ | Código do país do telefone do cliente/usuário.
+phoneNumber* | _String_ | Telefone com o código do estado do cliente/usuário.
+birthDate* | _String_ | Data de nascimento do cliente/usuário, no formato yyyy-mm-dd.
+country*  | _String_ | País de nascimento do cliente/usuário.
+cep**     | _String_ | CEP do endereço do cliente/usuário.
+state*    | _String_ | Estado de nascimento do cliente/usuário.
+city*     | _String_ | Cidade de nascimento do cliente/usuário.
+neighborhood | _String_ | Bairro onde o cliente/usuário reside.
+road      | _String_ | Rua onde o cliente/usuário reside.
+house_number | _String_ | Número da casa onde o cliente/usuário reside.
+information | _String_ | Informações adicionais sobre o cliente ou o seu local.
+cpf**     | _String_ | CPF do cliente/usuário.
+passportNumber** | _String_ | CPF do cliente/usuário.
 
 > A senha de acesso deve ser uma __senha forte__. Para ver quais são os requisitos para uma senha forte, verifique a documentação da biblioteca do Validator.js, no método _isStrongPassword()_.
+
+> O _cep_ só será levado em consideração se o usuário for brasileiro.
 
 > A obrigatoriedade do parâmetro _cpf_ ou do _passportNumber_ vai depender do país de nascimento do usuário. Se for brasileiro, será exigido o _cpf_, se for estrangeiro, será exigido o _passportNumber_.
 
@@ -128,6 +135,28 @@ O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __est
   "state": "CA",
   "city": "Lodi",
   "passportNumber": "463024374"
+}
+```
+
+O exemplo abaixo é do corpo de uma requisição de cadastro de um cliente __brasileiro__ com todas 
+as informações.
+```json
+{
+  "name": "Dinorá de Oliveira",
+  "email": "dinora@gmail.com",
+  "password": "Dinor@A51#42",
+  "phoneCode": "55",
+  "phoneNumber": "11984752352",
+  "birthDate": "1985-06-09",
+  "cpf": "13113113113",
+  "country": "BR",
+  "state": "SP",
+  "city": "São Paulo",
+  "cep": "01153000",
+  "neighborhood": "Barra Funda",
+  "road": "Rua Vitorino Carmilo",
+  "house_number": "5010",
+  "information": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin tellus quis blandit maximus. Pellentesque lacinia urna eu iaculis imperdiet. Aliquam pharetra lobortis dui, in pulvinar tortor interdum eu. Nulla facilisi. Sed id enim finibus, fermentum eros sit amet, consequat quam. Pellentesque tortor purus, porta vitae volutpat nec, pellentesque laoreet justo. Duis sit amet vestibulum mi. Fusce pellentesque purus libero, non bibendum odio sodales eu. Pellentesque egestas arcu non erat posuere, vel tempor ligula ornare. Nam ultrices augue vitae metus malesuada mattis. Curabitur non condimentum dolor, at vulputate quam."
 }
 ```
 
@@ -354,14 +383,14 @@ _RestException_ com mais informações.
 ### GET /users
 Faz a listagem de todos os clientes cadastrados.  
 
-> Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
-
 #### Parâmetros
 \+ Número positivo
 Parâmetro | Tipo | Descrição
 ----------|------|----------
 offset    | _Int_+ | A partir da qual posição serão retornados os resultados.
 limit     | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
+
+> Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
 
 O exemplo abaixo é da URL de uma consulta __limpa__.  
 `http://localhost:4000/users`  
@@ -623,19 +652,29 @@ id*       | N/A | É o ID do usuário a ser atualizado.
 \*** São opcionais/condicionais
 Parâmetro | Tipo | Descrição
 ----------|------|----------
-name      | _String_ | Nome do cliente.
-email     | _String_ | Email de contato do cliente.
+name      | _String_ | Nome do usuário.
+email     | _String_ | Email de contato do usuário.
 password  | _String_ | Senha de acesso ao site.
-phoneCode | _String_ | Código do país do telefone do cliente.
-phoneNumber | _String_ | Telefone com o código do estado do cliente.
-birthDate | _String_ | Data de nascimento do cliente, no formato yyyy-mm-dd.
-country   | _String_ | País de nascimento do cliente.
-state***  | _String_ | Estado de nascimento do cliente.
-city***   | _String_ | Cidade de nascimento do cliente.
-cpf***    | _String_ | CPF do cliente. (somente para brasileiros).
-passportNumber*** | _String_ | CPF do cliente. (somente para estrangeiros).
+phoneCode | _String_ | Código do país do telefone do usuário.
+phoneNumber | _String_ | Telefone com o código do estado do usuário.
+birthDate | _String_ | Data de nascimento do usuário, no formato yyyy-mm-dd.
+role***   | _Int_+ | Nova função que o usuário passará a ter.
+country   | _String_ | País de nascimento do usuário.
+cep***    | _String_ | CEP do endereço do cliente/usuário.
+neighborhood | _String_ | Bairro onde o cliente/usuário reside.
+road      | _String_ | Rua onde o cliente/usuário reside.
+house_number | _String_ | Número da casa onde o cliente/usuário reside.
+information | _String_ | Informações adicionais sobre o usuário ou o seu local.
+state***  | _String_ | Estado de nascimento do usuário.
+city***   | _String_ | Cidade de nascimento do usuário.
+cpf***    | _String_ | CPF do usuário. (somente para brasileiros).
+passportNumber*** | _String_ | CPF do usuário. (somente para estrangeiros).
 
 > A senha de acesso deve ser uma __senha forte__. Para ver quais são os requisitos para uma senha forte, verifique a documentação da biblioteca do Validator.js, no método _isStrongPassword()_.
+
+> A _role_ só pode ser alterada por um funcioário ou outra função superior.
+
+> O _cep_ só será levado em consideração se o usuário for brasileiro.
 
 > A obrigatoriedade do parâmetro _cpf_ ou do _passportNumber_ vai depender do país de nascimento do usuário. Se for brasileiro, será exigido o _cpf_, se for estrangeiro, será exigido o _passportNumber_.
 
@@ -1646,6 +1685,7 @@ Lista todas as informações de todas as reservas.
 
 #### Parâmetros
 ##### Query String
+
 \+ Números positivos
 Parâmetro| Tipo | Descrição
 ---------|------|----------

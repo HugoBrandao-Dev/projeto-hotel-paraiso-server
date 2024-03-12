@@ -613,7 +613,6 @@ class UserController {
         }
       }
 
-      // O campo de Role não é obrigatório ser passado, mas é necessário para o banco de dados.
       if (role) {
         let roleResult = Analyzer.analyzeUserRole(role)
         if (roleResult.hasError.value) {
