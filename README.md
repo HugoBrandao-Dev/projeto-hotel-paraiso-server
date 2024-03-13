@@ -95,7 +95,7 @@ state*    | _String_ | Estado de nascimento do cliente/usuário.
 city*     | _String_ | Cidade de nascimento do cliente/usuário.
 neighborhood | _String_ | Bairro onde o cliente/usuário reside.
 road      | _String_ | Rua onde o cliente/usuário reside.
-house_number | _String_ | Número da casa onde o cliente/usuário reside.
+houseNumber | _String_ | Número da casa onde o cliente/usuário reside.
 information | _String_ | Informações adicionais sobre o cliente ou o seu local.
 cpf**     | _String_ | CPF do cliente/usuário.
 passportNumber** | _String_ | CPF do cliente/usuário.
@@ -155,7 +155,7 @@ as informações.
   "cep": "01153000",
   "neighborhood": "Barra Funda",
   "road": "Rua Vitorino Carmilo",
-  "house_number": "5010",
+  "houseNumber": "5010",
   "information": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin tellus quis blandit maximus. Pellentesque lacinia urna eu iaculis imperdiet. Aliquam pharetra lobortis dui, in pulvinar tortor interdum eu. Nulla facilisi. Sed id enim finibus, fermentum eros sit amet, consequat quam. Pellentesque tortor purus, porta vitae volutpat nec, pellentesque laoreet justo. Duis sit amet vestibulum mi. Fusce pellentesque purus libero, non bibendum odio sodales eu. Pellentesque egestas arcu non erat posuere, vel tempor ligula ornare. Nam ultrices augue vitae metus malesuada mattis. Curabitur non condimentum dolor, at vulputate quam."
 }
 ```
@@ -663,7 +663,7 @@ country   | _String_ | País de nascimento do usuário.
 cep***    | _String_ | CEP do endereço do cliente/usuário.
 neighborhood | _String_ | Bairro onde o cliente/usuário reside.
 road      | _String_ | Rua onde o cliente/usuário reside.
-house_number | _String_ | Número da casa onde o cliente/usuário reside.
+houseNumber | _String_ | Número da casa onde o cliente/usuário reside.
 information | _String_ | Informações adicionais sobre o usuário ou o seu local.
 state***  | _String_ | Estado de nascimento do usuário.
 city***   | _String_ | Cidade de nascimento do usuário.

@@ -110,7 +110,7 @@ class UserController {
         errorFields.push(roadResult)
       }
 
-      let houseNumberResult = Analyzer.analyzeUserHouseNumber(req.body.house_number)
+      let houseNumberResult = Analyzer.analyzeUserHouseNumber(req.body.houseNumber)
       if (houseNumberResult.hasError.value) {
         errorFields.push(houseNumberResult)
       }
@@ -171,8 +171,8 @@ class UserController {
       if (req.body.road) {
         user.address.road = req.body.road
       }
-      if (req.body.house_number) {
-        user.address.house_number = req.body.house_number
+      if (req.body.houseNumber) {
+        user.address.houseNumber = req.body.houseNumber
       }
       if (req.body.information) {
         user.address.information = req.body.information
@@ -534,7 +534,7 @@ class UserController {
         cep,
         neighborhood,
         road,
-        house_number,
+        houseNumber,
         information
       } = req.body
 
@@ -764,16 +764,16 @@ class UserController {
         } else {
           fields.address.road = road
         }
-      }      
+      }
 
-      if (house_number) {
-        let houseNumberResult = Analyzer.analyzeUserHouseNumber(house_number)
+      if (houseNumber) {
+        let houseNumberResult = Analyzer.analyzeUserHouseNumber(houseNumber)
         if (houseNumberResult.hasError.value) {
           if (houseNumberResult.hasError.type != 1) {
             errorFields.push(houseNumberResult)
           }
         } else {
-          fields.address.house_number = house_number
+          fields.address.houseNumber = houseNumber
         }
       }      
 

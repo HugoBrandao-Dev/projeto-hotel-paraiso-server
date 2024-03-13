@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema({
     city: String,
     neighborhood: String,
     road: String,
-    house_number: String,
+    houseNumber: String,
     information: String,
   },
   created: {
