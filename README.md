@@ -51,6 +51,7 @@ de qual outro processo);
 * Emitir erro (404) em todas as rotas de busca, atualização e deleção de um documento que não 
 existe;
 * Revisar caracteres permitidos nos inputs, para impedir ataques em campos de entrada.
+* Trocar o ViaCEP pelo [Buscador de CEP do próprio governo](https://www.gov.br/conecta/catalogo/apis/cep-codigo-de-enderecamento-postal/swagger-json/swagger_view#section/Campos-retornados).
 
 ## Bug(s)
 * Impedir que uma mesma propriedade seja setada duas vezes;
