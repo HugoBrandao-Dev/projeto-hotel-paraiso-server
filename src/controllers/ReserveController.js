@@ -233,6 +233,11 @@ class ReserveController {
                 else
                   query.limit = parseInt(limit) + 1
               }
+            } else {
+              query.skip = 0
+
+              // +1 é para cálculo do hasNext.
+              query.limit = 20 + 1
             }
 
             if (errorParams.length) {
@@ -274,13 +279,6 @@ class ReserveController {
 
           }
         }
-      }
-
-      if (!listOfQueryString.includes('offset')) {
-        query.skip = 0
-
-        // +1 é para cálculo do hasNext.
-        query.limit = 20 + 1
       }
 
       res.status(200)
