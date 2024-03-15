@@ -39,9 +39,9 @@ validações, como ser ou não um inteiro e possuir exatos 11 caracteres_;
 Admin, fazendo com que _cargo (role)_ do usuário seja alterado diretamente no Banco de Dados;
 * Integrar a API com a __AWS (Amazon Web Service)__, para que as imagens dos apartamentos sejam 
 armazenadas na nuvem, e também com o __Redis__, para que a sessão/token do usuário seja armazenada;
-* Concluir a criação de todos os testes com o _Jest_, já que tive que parar de utilizá-lo (
-codificá-lo) devido ao tempo de conclusão de todos os testes (meu computador é muito lento) e 
-possível "incompatibilidade" (tempo de resposta) com o MongoDB Atlas;
+* Concluir a correção e criação de todos os testes com o _Jest_, já que tive que parar de 
+utilizá-lo (codificá-lo) devido ao tempo de conclusão de todos os testes (meu computador é muito 
+lento) e possível "incompatibilidade" (tempo de resposta) com o MongoDB Atlas;
 * Impedir que clientes menores de idade se cadastrem ou sejam cadastrados;
 * Impedir que sejam retornados HTML em erros do tipo 500 (Internal Server Error);
 * No login de um cliente, validar a senha depois de já ter avaliado o email;
@@ -50,7 +50,7 @@ possível "incompatibilidade" (tempo de resposta) com o MongoDB Atlas;
 de qual outro processo);
 * Emitir erro (404) em todas as rotas de busca, atualização e deleção de um documento que não 
 existe;
-* Revisar caracteres permitidos nos inputs, para impedir ataques em campos de entrada.
+* Revisar caracteres permitidos nos inputs, para impedir possíveis ataques em campos de entrada.
 * Trocar o ViaCEP pelo [Buscador de CEP do próprio governo](https://www.gov.br/conecta/catalogo/apis/cep-codigo-de-enderecamento-postal/swagger-json/swagger_view#section/Campos-retornados).
 
 ## Bug(s)
