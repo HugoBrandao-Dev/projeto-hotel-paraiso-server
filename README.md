@@ -29,6 +29,7 @@ Sistema Operacional (Windows 7, 32-bit)__.
 * UUID: Pacote de geração de IDs. Utilizado durante os testes com o Jest.
 
 ## Possíveis melhorias futuras
+* Integrar a uma API de pagamento;
 * Buscar uma forma de unir a listagem de usuários com a busca de usuários pelo documento;
 * Se o valor do updatedAt e do createdAt forem iguais, apagar o retorno do updatedAt;
 * Durante a armazenagem/atualização das fotos, verificar o mimetype das imagens no Multer;
