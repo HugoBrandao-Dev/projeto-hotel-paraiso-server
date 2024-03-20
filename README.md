@@ -70,6 +70,14 @@ retornando a lista completa de usuário, quando não encontra um valor exato ao 
 ### Jest e o this dos métodos de uma rota
 * Métodos, que são usados para atender uma rota, como é o caso do create do UserController, não 
 conseguem reconhecer o this de sua classe, sendo impossível chamar outros métodos da mesma.
+* Para rodar o _front-end_, o Vue-CLI exige que se tenha a versão ^12.0.0 ou 14.0.0 ou superior do 
+Node.JS. As versões 14 ou superior já são imcompatíveis com o Windowns 7, restando somente a 
+versão ^12.0.0, porém essa mesma versão acarretou em uma imcompatibilidade com uma das bibliotecas 
+do _back-end_ utilizadas, que é o Axios. O seguinte erro era mostado no console:
+```
+Cannot use import statement outside a module
+```
+Foi necessário fazer um downgrade do Axios para uma versão compatível.
 
 ## Endpoints
 
