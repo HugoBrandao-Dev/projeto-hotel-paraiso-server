@@ -142,8 +142,8 @@ class Analyzer {
       }
 
       if (checkEquality.isToCheck) {
-        let result = await User.findByDoc({ email: checkEquality.email })
-        let isEqual = bcrypt.compareSync(password, result[0].password)
+        let userRegistred = await User.findByDoc({ email: checkEquality.email })
+        let isEqual = bcrypt.compareSync(password, userRegistred[0].password)
         if (!isEqual) {
           result.hasError.value = true
           result.hasError.type = 2
