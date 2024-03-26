@@ -178,17 +178,17 @@ Será retornado um _HATEOAS_, que é um array contendo as ações possíveis par
 {
   "_links": [
     {
-      "href": "http://localhost:4000/users/65e7bff8ae4fa20ae8a3d0a0",
+      "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
       "method": "GET",
       "rel": "self_user"
     },
     {
-      "href": "http://localhost:4000/users",
+      "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
       "method": "PUT",
       "rel": "edit_user"
     },
     {
-      "href": "http://localhost:4000/users/65e7bff8ae4fa20ae8a3d0a0",
+      "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
       "method": "DELETE",
       "rel": "delete_user"
     }
@@ -256,27 +256,22 @@ possíveis para o usuário.
 
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTdiZmY4YWU0ZmEyMGFlOGEzZDBhMCIsImVtYWlsIjoidG9iaWFzQGdtYWlsLmNvbSIsInJvbGUiOjQsImlhdCI6MTcwOTc0MDQyNSwiZXhwIjoxNzEwMzQ1MjI1fQ.AD-I5II22h8ArLXNBDhaj3BgieqYSPbaQLSuarnRtGc",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDM0Yjc2ZDQ3YTUyMDYwODYyYmE1MSIsImVtYWlsIjoiZG9yaV9jaGFnYXNAeWFob28uY29tIiwicm9sZSI6MCwiaWF0IjoxNzExNDkyMzYzLCJleHAiOjE3MTIwOTcxNjN9.YpZ4MjLfUcrGpL0tH4C_nSkm06eXJwQBCKsleOBofiE",
   "_links": [
     {
-      "href": "http://localhost:4000/users/65e7bff8ae4fa20ae8a3d0a0",
+      "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
       "method": "GET",
       "rel": "self_user"
     },
     {
-      "href": "http://localhost:4000/users",
+      "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
       "method": "PUT",
       "rel": "edit_user"
     },
     {
-      "href": "http://localhost:4000/users/65e7bff8ae4fa20ae8a3d0a0",
+      "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
       "method": "DELETE",
       "rel": "delete_user"
-    },
-    {
-      "href": "http://localhost:4000/users",
-      "method": "GET",
-      "rel": "user_list"
     }
   ]
 }
@@ -341,12 +336,12 @@ O exemplo abaixo é do resultado de uma requisição feita __sem token__.
 O exemplo abaixo é do resultado de uma requisição feita com token __expirado__ ou __incorreto__.
 ```json
 {
-    "RestException": {
-        "Code": "5",
-        "Message": "O Token é inválido",
-        "Status": "401",
-        "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
-    }
+  "RestException": {
+    "Code": "5",
+    "Message": "O Token é inválido",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
 }
 ```
 
