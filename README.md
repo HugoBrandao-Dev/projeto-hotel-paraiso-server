@@ -307,6 +307,49 @@ ou no preenchimento do formulário de login.
 }
 ```
 
+### POST /validate
+Verifica se o token é valido e se pertence a um cliente.
+
+#### Parâmetros
+N/A
+
+#### Respostas
+##### OK 200
+Retorna um json com o resultado do tipo de conta o qual o token pertence.
+
+```json
+{
+  "isClient": true
+}
+```
+
+##### UNAUTHORIZED 401
+O token é inválido (está incorreto, expirado ou não foi informado).
+
+O exemplo abaixo é do resultado de uma requisição feita __sem token__.
+```json
+{
+  "RestException": {
+    "Code": "5",
+    "Message": "O usuário não está autorizado",
+    "Status": "401",
+    "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+  }
+}
+```
+
+O exemplo abaixo é do resultado de uma requisição feita com token __expirado__ ou __incorreto__.
+```json
+{
+    "RestException": {
+        "Code": "5",
+        "Message": "O Token é inválido",
+        "Status": "401",
+        "MoreInfo": "https://projetohotelparaiso.dev/docs/erros/5"
+    }
+}
+```
+
 ### GET /users/:id
 Faz a busca das informações do cliente que possui o ID informado.
 

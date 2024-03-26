@@ -13,6 +13,7 @@ const authentication = require('../middlewares/authentication')
 const multerConfig = require('../middlewares/multerConfig')
 
 router.get('/', HomeController.index)
+router.post('/validate', authorization, HomeController.validate)
 
 /* ########### USER ########### */
 
