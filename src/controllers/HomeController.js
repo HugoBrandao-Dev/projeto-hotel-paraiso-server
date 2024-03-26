@@ -1,4 +1,5 @@
 const Token = require('../tools/TokenTools')
+const Generator = require('../tools/Generator')
 
 class HomeController {
   async index(req, res) {
@@ -9,9 +10,11 @@ class HomeController {
   async validate(req, res) {
     const token = req.headers['authorization']
     const decodedToken = Token.getDecodedToken(token)
+    const HATEOAS = Generator.genHATEOAS(decodedToken.id, 'user', 'users')
     res.status(200)
     res.json({
-      isClient: decodedToken.role == 0
+      isClient: decodedToken.role == 0,
+      _links: HATEOAS
     })
   }
 }
