@@ -365,32 +365,37 @@ possíveis para o mesmo.
 
 ```json
 {
-  "_id": "65e895d432a8650dfc58b72a",
+  "_id": "66034c72d47a52060862ba5c",
   "address": {
-    "country": "US",
-    "state": "MT",
-    "city": "Helena"
+    "country": "BR",
+    "state": "SP",
+    "city": "São Paulo",
+    "cep": "01153000",
+    "neighborhood": "Barra Funda",
+    "road": "Rua Vitorino Carmilo",
+    "houseNumber": "5010",
+    "information": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin tellus quis blandit maximus. Pellentesque lacinia urna eu iaculis imperdiet. Aliquam pharetra lobortis dui, in pulvinar tortor interdum eu. Nulla facilisi. Sed id enim finibus, fermentum eros sit amet, consequat quam. Pellentesque tortor purus, porta vitae volutpat nec, pellentesque laoreet justo. Duis sit amet vestibulum mi. Fusce pellentesque purus libero, non bibendum odio sodales eu. Pellentesque egestas arcu non erat posuere, vel tempor ligula ornare. Nam ultrices augue vitae metus malesuada mattis. Curabitur non condimentum dolor, at vulputate quam."
   },
-  "name": "doricleide chagas",
-  "email": "dori_chagas@yahoo.com",
-  "phoneCode": "406",
-  "phoneNumber": "4478000",
-  "birthDate": "09/06/1985",
-  "passportNumber": "329903747",
+  "name": "dinorá de oliveira",
+  "email": "dinora@gmail.com",
+  "phoneCode": "55",
+  "phoneNumber": "11984752352",
+  "birthDate": "1985-6-9",
+  "cpf": "13113113113",
   "__v": 0,
   "_links": [
     {
-      "href": "http://localhost:4000/users/65e895d432a8650dfc58b72a",
+      "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
       "method": "GET",
       "rel": "self_user"
     },
     {
-      "href": "http://localhost:4000/users",
+      "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
       "method": "PUT",
       "rel": "edit_user"
     },
     {
-      "href": "http://localhost:4000/users/65e895d432a8650dfc58b72a",
+      "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
       "method": "DELETE",
       "rel": "delete_user"
     }
@@ -456,41 +461,46 @@ de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
 {
   "users": [
     {
-      "_id": "65e7bff8ae4fa20ae8a3d0a0",
+      "_id": "65fdd3ce3b8be400f836f239",
       "updated": {
-        "updatedAt": "05/03/2024 20:59:36",
+        "updatedAt": "2024-3-22 14:54:06",
         "updatedBy": {}
       },
       "address": {
         "country": "BR",
         "state": "SP",
-        "city": "São Paulo"
+        "city": "São Paulo",
+        "cep": "01153000",
+        "neighborhood": "Barra Funda",
+        "road": "Rua Vitorino Carmilo",
+        "houseNumber": "2000",
+        "information": "Informacoes adicionais"
       },
       "created": {
-        "createdAt": "05/03/2024 20:59:36",
+        "createdAt": "2024-3-22 14:54:06",
         "createdBy": {}
       },
       "name": "tobias de oliveira",
       "email": "tobias@gmail.com",
       "role": 4,
       "phoneCode": "55",
-      "phoneNumber": "11984752352",
-      "birthDate": "09/06/1985",
-      "cpf": "12112112112",
+      "phoneNumber": "11999887777",
+      "birthDate": "1966-9-10",
+      "cpf": "11111111111",
       "__v": 0,
       "_links": [
         {
-          "href": "http://localhost:4000/users/65e7bff8ae4fa20ae8a3d0a0",
+          "href": "http://localhost:4000/users/65fdd3ce3b8be400f836f239",
           "method": "GET",
           "rel": "self_user"
         },
         {
-          "href": "http://localhost:4000/users",
+          "href": "http://localhost:4000/users/65fdd3ce3b8be400f836f239",
           "method": "PUT",
           "rel": "edit_user"
         },
         {
-          "href": "http://localhost:4000/users/65e7bff8ae4fa20ae8a3d0a0",
+          "href": "http://localhost:4000/users/65fdd3ce3b8be400f836f239",
           "method": "DELETE",
           "rel": "delete_user"
         },
@@ -502,9 +512,60 @@ de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
       ]
     },
     {
-      "_id": "65e895d432a8650dfc58b72a",
+      "_id": "65fe08dbaa28ce1688aa45ab",
       "updated": {
-        "updatedAt": "06/03/2024 12:12:04",
+        "updatedAt": "2024-3-22 18:40:27",
+        "updatedBy": {}
+      },
+      "address": {
+        "country": "BR",
+        "state": "PE",
+        "city": "Recife",
+        "cep": "50010080",
+        "neighborhood": "Santo Antônio",
+        "road": "Praça da Independência",
+        "houseNumber": "1234",
+        "information": "Mauris ac justo ut enim cursus varius. Cras dignissim sapien et libero tristique, vitae eleifend diam suscipit. Curabitur elit dolor, sollicitudin a pretium vitae, malesuada id odio. Mauris vitae posuere dui. Nulla facilisi. Aliquam luctus metus non mauris finibus, vehicula congue mi tristique. Quisque at elit sit amet risus convallis vulputate."
+      },
+      "created": {
+        "createdAt": "2024-3-22 18:40:27",
+        "createdBy": {}
+      },
+      "name": "josias de oliveira",
+      "email": "josias@hotmail.com",
+      "role": 0,
+      "phoneCode": "55",
+      "phoneNumber": "67999999999",
+      "birthDate": "1999-1-10",
+      "cpf": "22222222222",
+      "__v": 0,
+      "_links": [
+        {
+          "href": "http://localhost:4000/users/65fe08dbaa28ce1688aa45ab",
+          "method": "GET",
+          "rel": "self_user"
+        },
+        {
+          "href": "http://localhost:4000/users/65fe08dbaa28ce1688aa45ab",
+          "method": "PUT",
+          "rel": "edit_user"
+        },
+        {
+          "href": "http://localhost:4000/users/65fe08dbaa28ce1688aa45ab",
+          "method": "DELETE",
+          "rel": "delete_user"
+        },
+        {
+          "href": "http://localhost:4000/users",
+          "method": "GET",
+          "rel": "user_list"
+        }
+      ]
+    },
+    {
+      "_id": "66034b76d47a52060862ba51",
+      "updated": {
+        "updatedAt": "2024-3-26 18:25:58",
         "updatedBy": {}
       },
       "address": {
@@ -513,7 +574,7 @@ de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
         "city": "Helena"
       },
       "created": {
-        "createdAt": "06/03/2024 12:12:04",
+        "createdAt": "2024-3-26 18:25:58",
         "createdBy": {}
       },
       "name": "doricleide chagas",
@@ -521,22 +582,76 @@ de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
       "role": 0,
       "phoneCode": "406",
       "phoneNumber": "4478000",
-      "birthDate": "09/06/1985",
+      "birthDate": "1985-6-9",
       "passportNumber": "329903747",
       "__v": 0,
       "_links": [
         {
-          "href": "http://localhost:4000/users/65e895d432a8650dfc58b72a",
+          "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
           "method": "GET",
           "rel": "self_user"
         },
         {
-          "href": "http://localhost:4000/users",
+          "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
           "method": "PUT",
           "rel": "edit_user"
         },
         {
-          "href": "http://localhost:4000/users/65e895d432a8650dfc58b72a",
+          "href": "http://localhost:4000/users/66034b76d47a52060862ba51",
+          "method": "DELETE",
+          "rel": "delete_user"
+        },
+        {
+          "href": "http://localhost:4000/users",
+          "method": "GET",
+          "rel": "user_list"
+        }
+      ]
+    },
+    {
+      "_id": "66034c72d47a52060862ba5c",
+      "updated": {
+        "updatedAt": "2024-3-26 18:30:10",
+        "updatedBy": {}
+      },
+      "address": {
+        "country": "BR",
+        "state": "SP",
+        "city": "São Paulo",
+        "cep": "01153000",
+        "neighborhood": "Barra Funda",
+        "road": "Rua Vitorino Carmilo",
+        "houseNumber": "5010",
+        "information": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin tellus quis blandit maximus. Pellentesque lacinia urna eu iaculis imperdiet. Aliquam pharetra lobortis dui, in pulvinar tortor interdum eu. Nulla facilisi. Sed id enim finibus, fermentum eros sit amet, consequat quam. Pellentesque tortor purus, porta vitae volutpat nec, pellentesque laoreet justo. Duis sit amet vestibulum mi. Fusce pellentesque purus libero, non bibendum odio sodales eu. Pellentesque egestas arcu non erat posuere, vel tempor ligula ornare. Nam ultrices augue vitae metus malesuada mattis. Curabitur non condimentum dolor, at vulputate quam."
+      },
+      "created": {
+        "createdBy": {
+          "id": "65fdd3ce3b8be400f836f239",
+          "name": "tobias de oliveira"
+        },
+        "createdAt": "2024-3-26 18:30:10"
+      },
+      "name": "dinorá de oliveira",
+      "email": "dinora@gmail.com",
+      "role": 0,
+      "phoneCode": "55",
+      "phoneNumber": "11984752352",
+      "birthDate": "1985-6-9",
+      "cpf": "13113113113",
+      "__v": 0,
+      "_links": [
+        {
+          "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
+          "method": "GET",
+          "rel": "self_user"
+        },
+        {
+          "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
+          "method": "PUT",
+          "rel": "edit_user"
+        },
+        {
+          "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
           "method": "DELETE",
           "rel": "delete_user"
         },
@@ -548,7 +663,7 @@ de usuários contém um _HATEOAS_ das ações possíveis com cada usuário.
       ]
     }
   ],
-  "hasNext": false
+"hasNext": false
 }
 ```
 
@@ -604,41 +719,49 @@ possíveis para o mesmo.
 {
   "users": [
     {
-      "_id": "65e895d432a8650dfc58b72a",
+      "_id": "66034c72d47a52060862ba5c",
       "updated": {
-        "updatedAt": "06/03/2024 12:12:04",
+        "updatedAt": "2024-3-26 18:30:10",
         "updatedBy": {}
       },
       "address": {
-        "country": "US",
-        "state": "MT",
-        "city": "Helena"
+        "country": "BR",
+        "state": "SP",
+        "city": "São Paulo",
+        "cep": "01153000",
+        "neighborhood": "Barra Funda",
+        "road": "Rua Vitorino Carmilo",
+        "houseNumber": "5010",
+        "information": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sollicitudin tellus quis blandit maximus. Pellentesque lacinia urna eu iaculis imperdiet. Aliquam pharetra lobortis dui, in pulvinar tortor interdum eu. Nulla facilisi. Sed id enim finibus, fermentum eros sit amet, consequat quam. Pellentesque tortor purus, porta vitae volutpat nec, pellentesque laoreet justo. Duis sit amet vestibulum mi. Fusce pellentesque purus libero, non bibendum odio sodales eu. Pellentesque egestas arcu non erat posuere, vel tempor ligula ornare. Nam ultrices augue vitae metus malesuada mattis. Curabitur non condimentum dolor, at vulputate quam."
       },
       "created": {
-        "createdAt": "06/03/2024 12:12:04",
-        "createdBy": {}
+        "createdBy": {
+          "id": "65fdd3ce3b8be400f836f239",
+          "name": "tobias de oliveira"
+        },
+        "createdAt": "2024-3-26 18:30:10"
       },
-      "name": "doricleide chagas",
-      "email": "dori_chagas@yahoo.com",
+      "name": "dinorá de oliveira",
+      "email": "dinora@gmail.com",
       "role": 0,
-      "phoneCode": "406",
-      "phoneNumber": "4478000",
-      "birthDate": "09/06/1985",
-      "passportNumber": "329903747",
+      "phoneCode": "55",
+      "phoneNumber": "11984752352",
+      "birthDate": "1985-6-9",
+      "cpf": "13113113113",
       "__v": 0,
       "_links": [
         {
-          "href": "http://localhost:4000/users/65e895d432a8650dfc58b72a",
+          "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
           "method": "GET",
           "rel": "self_user"
         },
         {
-          "href": "http://localhost:4000/users",
+          "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
           "method": "PUT",
           "rel": "edit_user"
         },
         {
-          "href": "http://localhost:4000/users/65e895d432a8650dfc58b72a",
+          "href": "http://localhost:4000/users/66034c72d47a52060862ba5c",
           "method": "DELETE",
           "rel": "delete_user"
         },
