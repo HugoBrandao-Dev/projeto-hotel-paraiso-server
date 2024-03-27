@@ -314,7 +314,24 @@ Retorna um json com o resultado do tipo de conta o qual o token pertence.
 
 ```json
 {
-  "isClient": true
+  "isClient": false,
+  "_links": [
+    {
+      "href": "http://localhost:4000/users/65fdd3ce3b8be400f836f239",
+      "method": "GET",
+      "rel": "self_user"
+    },
+    {
+      "href": "http://localhost:4000/users/65fdd3ce3b8be400f836f239",
+      "method": "PUT",
+      "rel": "edit_user"
+    },
+    {
+      "href": "http://localhost:4000/users/65fdd3ce3b8be400f836f239",
+      "method": "DELETE",
+      "rel": "delete_user"
+    }
+  ]
 }
 ```
 
