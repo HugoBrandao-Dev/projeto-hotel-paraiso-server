@@ -45,8 +45,9 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   break
                 case 'GET':
-                  if (path.indexOf(reserveEndpoints.toRead) != -1 || path.indexOf(apartmentEndpoints.toRead) != -1) {
-
+                  const isReserveRoute = path.indexOf(reserveEndpoints.toRead) === 0
+                  const isApartmentRoute = path.indexOf(apartmentEndpoints.toRead) === 0
+                  if (isReserveRoute || isApartmentRoute) {
                     if (params.id) {
                       let idResult = await Analyzer.analyzeApartmentID(params.id)
                       if (!idResult.hasError.value) {
@@ -75,17 +76,15 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   break
                 case 'PUT':
+                  if (path.indexOf('/reserves') === 0) {
 
-                  if (path == reserveEndpoints.toUpdate) {
+                    if (params.id) {
 
-                    if (body.apartment_id) {
-
-                      let idResult = await Analyzer.analyzeApartmentID(body.apartment_id)
+                      let idResult = await Analyzer.analyzeApartmentID(params.id)
 
                       if (!idResult.hasError.value) {
 
-                        let result = await Reserve.findOne(body.apartment_id)
-
+                        let result = await Reserve.findOne(params.id)
                         if (result.reserve.client_id == decodedToken.id) {
                           if (!body.status) {
                             allowed = true
@@ -110,8 +109,7 @@ async function isActionAllowed(headers, path, method, params, body) {
                   }
                   break
                 case 'DELETE':
-
-                  if (path.indexOf(reserveEndpoints.toDelete) >= 0) {
+                  if (path.indexOf(reserveEndpoints.toDelete) === 0) {
 
                     let idResult = await Analyzer.analyzeApartmentID(params.id)
 
