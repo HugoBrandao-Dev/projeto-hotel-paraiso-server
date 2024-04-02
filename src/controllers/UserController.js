@@ -614,7 +614,7 @@ class UserController {
       }
 
       if (role) {
-        let roleResult = Analyzer.analyzeUserRole(role)
+        let roleResult = Analyzer.analyzeUserRole(role.toString())
         if (roleResult.hasError.value) {
           if (roleResult.hasError.type != 1) {
             errorFields.push(roleResult)

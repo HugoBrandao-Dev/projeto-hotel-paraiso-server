@@ -164,11 +164,14 @@ async function isActionAllowed(headers, path, method, params, body) {
                   allowed = true
                   break
                 case 'PUT':
+                  const isUserRoute = path.indexOf('/users') === 0
+                  const isApartmentRoute = path.indexOf('/apartments') === 0
+                  const isReserveRoute = path.indexOf('/reserves') === 0
 
-                  if (path == reserveEndpoints.toUpdate) {
-
+                  if (isUserRoute && !body.role) {
+                    allowed = true
+                  } else if (isReserveRoute) {
                     if (body.apartment_id) {
-
                       let idResult = await Analyzer.analyzeApartmentID(body.apartment_id)
                       if (!idResult.hasError.value) {
 
@@ -187,13 +190,9 @@ async function isActionAllowed(headers, path, method, params, body) {
                       } else {
                         allowed = true
                       }
-
                     } else {
                       allowed = true
                     }
-
-                  } else if (path != apartmentEndpoints.toUpdate && !(body.role > 0)) {
-                    allowed = true
                   }
 
                   break
