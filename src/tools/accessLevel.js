@@ -26,6 +26,9 @@ async function isActionAllowed(headers, path, method, params, body) {
         let decodedToken = await jwt.verify(token, secret)
 
         try {
+          const isUserRoute = path.indexOf('/users') === 0
+          const isApartmentRoute = path.indexOf('/apartments') === 0
+          const isReserveRoute = path.indexOf('/reserves') === 0
 
           switch (decodedToken.role) {
             case 0:
@@ -45,8 +48,6 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   break
                 case 'GET':
-                  const isReserveRoute = path.indexOf(reserveEndpoints.toRead) === 0
-                  const isApartmentRoute = path.indexOf(apartmentEndpoints.toRead) === 0
                   if (isReserveRoute || isApartmentRoute) {
                     if (params.id) {
                       let idResult = await Analyzer.analyzeApartmentID(params.id)
@@ -164,10 +165,6 @@ async function isActionAllowed(headers, path, method, params, body) {
                   allowed = true
                   break
                 case 'PUT':
-                  const isUserRoute = path.indexOf('/users') === 0
-                  const isApartmentRoute = path.indexOf('/apartments') === 0
-                  const isReserveRoute = path.indexOf('/reserves') === 0
-
                   if (isUserRoute && !body.role) {
                     allowed = true
                   } else if (isReserveRoute) {
@@ -230,9 +227,13 @@ async function isActionAllowed(headers, path, method, params, body) {
 
               switch (upperMethod) {
                 case 'POST':
+
                   if (path != apartmentEndpoints.toCreate && !(body.role >= 2)) {
                     allowed = true
+                  } else if (isApartmentRoute) {
+                    allowed = true
                   }
+
                   break
                 case 'GET':
                   allowed = true
@@ -277,6 +278,21 @@ async function isActionAllowed(headers, path, method, params, body) {
 
                   break
                 case 'DELETE':
+                  if (isUserRoute) {
+                    let idResult = await Analyzer.analyzeUserID(params.id)
+                    if (!idResult.hasError.value) {
+
+                      // Usuário que está se tentando deletar.
+                      let user = await User.findOne(params.id)
+
+                      if (user && decodedToken.role > user.role) {
+                        allowed = true
+                      }
+                    }
+                  } else if (isApartmentRoute || isReserveRoute) {
+                    allowed = true
+                  }
+
                   break
               }
               break
@@ -289,7 +305,7 @@ async function isActionAllowed(headers, path, method, params, body) {
           }
 
         } catch (errorAllowed) {
-          console.error(errorToken)
+          console.error(errorAllowed)
         }
       } catch (errorToken) {
         console.error(errorToken)

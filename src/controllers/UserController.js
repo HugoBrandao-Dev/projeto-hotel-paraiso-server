@@ -613,7 +613,7 @@ class UserController {
         }
       }
 
-      if (role) {
+      if (role || role == '0') {
         let roleResult = Analyzer.analyzeUserRole(role.toString())
         if (roleResult.hasError.value) {
           if (roleResult.hasError.type != 1) {
