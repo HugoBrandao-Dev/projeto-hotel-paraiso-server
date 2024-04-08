@@ -29,7 +29,7 @@ Sistema Operacional (Windows 7, 32-bit)__.
 * UUID: Pacote de geração de IDs. Utilizado durante os testes com o Jest.
 
 ## Possíveis melhorias futuras
-* Integrar a uma API de pagamento;
+* Integrar a uma API de pagamento e modificar a estrutura da tabela para guardar as informações;
 * Buscar uma forma de unir a listagem de usuários com a busca de usuários pelo documento;
 * Se o valor do updatedAt e do createdAt forem iguais, apagar o retorno do updatedAt;
 * Durante a armazenagem/atualização das fotos, verificar o mimetype das imagens no Multer;
@@ -52,7 +52,7 @@ de qual outro processo);
 * Emitir erro (404) em todas as rotas de busca, atualização e deleção de um documento que não 
 existe;
 * Revisar caracteres permitidos nos inputs, para impedir possíveis ataques em campos de entrada.
-* Trocar o ViaCEP pelo [Buscador de CEP do próprio governo](https://www.gov.br/conecta/catalogo/apis/cep-codigo-de-enderecamento-postal/swagger-json/swagger_view#section/Campos-retornados).
+* Trocar o ViaCEP pelo [Buscador de CEP do próprio governo](https://www.gov.br/conecta/catalogo/apis/cep-codigo-de-enderecamento-postal/swagger-json/swagger_view#section/Campos-retornados);
 
 ## Bug(s)
 * Impedir que uma mesma propriedade seja setada duas vezes;
@@ -63,8 +63,11 @@ retornando a lista completa de usuário, quando não encontra um valor exato ao 
 * Quando um token de Admin expirado é usado para criação de conta, está retornando erro 500;
 * Impedir que a diária seja alterada, se o apartamento já estiver reservado/ocupado;
 * Impedir que um apartamento _reservado_ ou _ocupado_ seja deletado;
-* Se o cliente atualizar somente a _data de termino_ de uma reserva, verificar se a data informada 
-é anterior a data de início armazenada.
+* Impedir que o usuário mude a data da reserva no dia de início da reserva;
+* Na busca por um usuário pelo _nome_, só retorna resultado se for informado o nome completo;
+* Nos controllers, urante a crição ou atualização de certas informações, por exemplo da aceitação 
+animais em um apto, os valores estão sendo convertidos em _string_, antes de se verificar se foram 
+passados. Isso está gerando erro de Internal Server Error (500).
 
 ## Informações adicionais
 ### Jest e o this dos métodos de uma rota
@@ -1644,6 +1647,7 @@ end* | _String_ | Data de término da reserva, seu formato é yyyy-mm-dd.
 O exemplo abaixo é do corpo de uma requisição de cadastro de uma reserva.
 ```json
 {
+  "apartment_id": "65ea32804f7d6e0acce3f411",
   "status": "reservado",
   "client_id": "65ea22194f7d6e0acce3f407",
   "start": "2024-10-10",
@@ -1868,7 +1872,7 @@ _RestException_ com mais informações.
 }
 ```
 
-### GET /reservas
+### GET /reserves
 Lista todas as informações de todas as reservas.
 
 #### Parâmetros
@@ -2029,9 +2033,11 @@ client_id** | _String_ | ID do cliente ao qual o apartamento foi reservado.
 start     | _String_ | Data de início da reserva, seu formato é yyyy-mm-dd.
 end       | _String_ | Data de término da reserva, seu formato é yyyy-mm-dd.
 
-> O parâmetro _status_ só pode ser passado por um funcionário ou alguém com função superior.
+> Os parâmetros _status_ e _client_id_ só podem ser passados por um funcionário ou alguém com
+função superior.
 
-> O parâmetro _client_id_ só pode ser passado por um funcionário ou alguém com função superior. Caso seja o cliente que esteja logado, será pego seu _id_ no token.
+> O parâmetro _client_id_ só pode ser passado por um funcionário ou alguém com função superior.
+Caso seja o cliente que esteja logado, será pego seu _id_ no token.
 
 Exemplo de atualização do _status_, _data de início_ e _data de fim_ de uma reserva.
 ```json
