@@ -694,21 +694,33 @@ class UserController {
             fields.passportNumber = passportNumber
           }
         } else {
-          let countryResult = Analyzer.analyzeUserCountry('')
+          let countryResult = await Analyzer.analyzeUserCountry('')
           errorFields.push(countryResult)
         }
       }
 
       if (country) {
-        let countryResult = Analyzer.analyzeUserCountry(country)
+        let countryResult = await Analyzer.analyzeUserCountry(country)
         if (countryResult.hasError.value) {
           if (countryResult.hasError.type != 1) {
             errorFields.push(countryResult)
           }
         } else {
           fields.address.country = country
+          if (country != 'BR') {
+            if (!passportNumber && !userRegistred.passportNumber) {
+              let passportNumberResult = await Analyzer.analyzeUserPassportNumber()
+              errorFields.push(passportNumberResult)
+            } else {
+              fields.address.cep = ''
+            }
+          }
 
           if (country == 'BR') {
+            if (!cpf && !userRegistred.cpf) {
+              let cpfResult = await Analyzer.analyzeUserCPF()
+              errorFields.push(cpfResult)
+            }
             let cepResult = await Analyzer.analyzeUserCEP(cep)
             if (cepResult.hasError.value)
               errorFields.push(cepResult)
@@ -729,6 +741,10 @@ class UserController {
         } else {
           fields.address.state = state
         }
+      } else {
+        if (country != userRegistred.address.country) {
+          fields.address.state = ''
+        }
       }
 
       if (city) {
@@ -742,6 +758,10 @@ class UserController {
         } else {
           fields.address.city = city
         }
+      } else {
+        if (country != userRegistred.address.country) {
+          fields.address.city = ''
+        }
       }
 
       if (neighborhood) {
@@ -752,6 +772,10 @@ class UserController {
           }
         } else {
           fields.address.neighborhood = neighborhood
+        }
+      } else {
+        if (city != userRegistred.address.city) {
+          fields.address.neighborhood = ''
         }
       }
       
@@ -764,6 +788,10 @@ class UserController {
         } else {
           fields.address.road = road
         }
+      } else {
+        if (neighborhood != userRegistred.address.neighborhood) {
+          fields.address.road = ''
+        }
       }
 
       if (houseNumber) {
@@ -775,7 +803,11 @@ class UserController {
         } else {
           fields.address.houseNumber = houseNumber
         }
-      }      
+      } else {
+        if (road != userRegistred.address.road) {
+          fields.address.houseNumber = ''
+        }
+      }
 
       if (information) {
         let informationsResult = Analyzer.analyzeUserAdditionalInformation(information)
@@ -786,7 +818,11 @@ class UserController {
         } else {
           fields.address.information = information
         }
-      }  
+      } else {
+        if (road != userRegistred.address.road) {
+          fields.address.information = ''
+        }
+      }
 
       if (errorFields.length) {
         RestException = Generator.genRestException(errorFields)

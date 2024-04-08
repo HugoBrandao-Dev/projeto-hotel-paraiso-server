@@ -143,6 +143,8 @@ class User {
         for (let info of Object.keys(_user.address)) {
           if (_user.address[info])
             user.$set[`address.${ info }`] = _user.address[info]
+          else
+            user.$set[`address.${ info }`] = ''
         }
         delete user.address
       }
