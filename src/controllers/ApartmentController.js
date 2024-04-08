@@ -218,8 +218,11 @@ class ApartmentController {
       if (req.headers['authorization']) {
         let token = req.headers['authorization']
         decodedToken = Token.getDecodedToken(token)
-        if (decodedToken.role == 0)
+        if (decodedToken.role == 0) {
           query.client_id = decodedToken.id
+        } else {
+          delete query.status
+        }
       }
 
       let errorFields = []

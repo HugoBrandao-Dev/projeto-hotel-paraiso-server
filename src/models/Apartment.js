@@ -56,7 +56,7 @@ class Apartment {
     }
 
   }
-
+  
   async findMany(_query) {
 
     try {
