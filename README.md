@@ -64,7 +64,6 @@ retornando a lista completa de usuário, quando não encontra um valor exato ao 
 * Impedir que a diária seja alterada, se o apartamento já estiver reservado/ocupado;
 * Impedir que um apartamento _reservado_ ou _ocupado_ seja deletado;
 * Impedir que o usuário mude a data da reserva no dia de início da reserva;
-* Na busca por um usuário pelo _nome_, só retorna resultado se for informado o nome completo;
 * Nos controllers, urante a crição ou atualização de certas informações, por exemplo da aceitação 
 animais em um apto, os valores estão sendo convertidos em _string_, antes de se verificar se foram 
 passados. Isso está gerando erro de Internal Server Error (500).

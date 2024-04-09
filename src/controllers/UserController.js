@@ -11,7 +11,6 @@ const roles = {
   cliente: 0,
   funcionario: 1,
   gerente: 2,
-  proprietário: 3,
   admin: 4
 }
 

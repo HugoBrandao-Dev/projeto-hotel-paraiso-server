@@ -59,9 +59,25 @@ class User {
 
       let query = []
 
-      query.push({
-        $match: { ..._searchBy }
-      })
+      if (Object.keys(_searchBy).includes('name')) {
+
+        // Faz a busca por um usuário que tenha um nome igual ou similiar ao informado.
+        query.push({
+          $redact: {
+            $cond: [
+              {
+                $gte: [
+                  { $indexOfCP: ['$name', _searchBy.name] }, 0
+                ]
+              }, '$$KEEP', '$$PRUNE'
+            ]
+          }
+        })
+      } else {
+        query.push({
+          $match: { ..._searchBy }
+        })
+      }
 
       // Joins para quem criou e atualizou o usuário.
       query.push(forCreatedBy)
