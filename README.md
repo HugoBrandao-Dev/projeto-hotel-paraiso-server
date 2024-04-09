@@ -53,6 +53,9 @@ de qual outro processo);
 existe;
 * Revisar caracteres permitidos nos inputs, para impedir possíveis ataques em campos de entrada;
 * Trocar o ViaCEP pelo [Buscador de CEP do próprio governo](https://www.gov.br/conecta/catalogo/apis/cep-codigo-de-enderecamento-postal/swagger-json/swagger_view#section/Campos-retornados);
+* Criar filtro de busca para apartamento(s), que possa receber o número ou andar;
+* Criar filtro de busca para reservas, baseado nas docs (_cpf_, _passport number_);
+* Buscar quantas reservas um cliente tem.
 
 ## Bug(s)
 * Impedir que uma mesma propriedade seja setada duas vezes;
