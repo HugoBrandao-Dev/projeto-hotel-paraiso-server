@@ -252,13 +252,17 @@ class ReserveController {
               if (reserves.length) {
                 for (let reserve of reserves) {
 
-                  reserve.reserve.start = reserve.reserve.start.toLocaleDateString()
-                  reserve.reserve.end = reserve.reserve.end.toLocaleDateString()
+                  if (reserve.reserve.start)
+                    reserve.reserve.start = reserve.reserve.start.toLocaleDateString()
+                  if (reserve.reserve.end)
+                    reserve.reserve.end = reserve.reserve.end.toLocaleDateString()
 
                   delete reserve.reserve.reserved.reservedBy
                   delete reserve.reserve.client_id
 
-                  reserve.reserve.reserved.reservedAt = new Date(reserve.reserve.reserved.reservedAt).toLocaleString()
+                  if (reserve.reserve.reserved.length) {
+                    reserve.reserve.reserved.reservedAt = new Date(reserve.reserve.reserved.reservedAt).toLocaleDateString()
+                  }
 
                   let HATEOAS = Generator.genHATEOAS(reserve._id, 'reserve', 'reserves', decodedToken.role > 0)
                   reserve._links = HATEOAS
