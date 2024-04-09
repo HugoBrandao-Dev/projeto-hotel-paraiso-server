@@ -51,7 +51,7 @@ lento) e possível "incompatibilidade" (tempo de resposta) com o MongoDB Atlas;
 de qual outro processo);
 * Emitir erro (404) em todas as rotas de busca, atualização e deleção de um documento que não 
 existe;
-* Revisar caracteres permitidos nos inputs, para impedir possíveis ataques em campos de entrada.
+* Revisar caracteres permitidos nos inputs, para impedir possíveis ataques em campos de entrada;
 * Trocar o ViaCEP pelo [Buscador de CEP do próprio governo](https://www.gov.br/conecta/catalogo/apis/cep-codigo-de-enderecamento-postal/swagger-json/swagger_view#section/Campos-retornados);
 
 ## Bug(s)
@@ -1287,8 +1287,10 @@ Faz a listagem de todos os clientes cadastrados.
 #### Parâmetros
 ##### Query String
 \+ Números positivos
+** São condicionais
 Parâmetro | Tipo | Descrição
 ----------|------|----------
+status**    | _String_ | Status do apartamento a ser buscado.
 rooms     | _Int_+ | Quantidade de cômodos.
 lowest_daily_price | _Int_+ | Menor valor da diária.
 highest_daily_price | _Int_+ | Maior valor da diária.
@@ -1296,6 +1298,8 @@ accepts_animals | _Int_+ | Aceita o não animais no apartamento.
 offset    | _Int_+ | A partir da qual posição serão retornados os resultados.
 limit     | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
 sort      | N/A | Ordenação do valores.
+
+> _status_ só pode ser passado por um funcionário ou alguém com função superior e recebe _um_ dos seguintes valores: _livre_, _reservado_, _ocupado_, _indisponível_.
 
 > Por enquanto, só há ordenação do valor da diária (_daily_price_), podendo ser _asc_ ou _desc_.  
 
@@ -1305,7 +1309,7 @@ O exemplo abaixo é da URL de uma consulta __limpa__.
 `http://localhost:4000/apartments`  
 
 O exemplo abaixo é da URL de uma consulta com __Query String__.  
-`http://localhost:4000/apartments?rooms=7&lowest_daily_price=300&highest_daily_price=750&accepts_animals=1&offset=1&limit=2&sort=daily_price:desc`
+`http://localhost:4000/apartments?status=livre&rooms=7&lowest_daily_price=300&highest_daily_price=750&accepts_animals=1&offset=1&limit=2&sort=daily_price:desc`
 
 #### Respostas
 ##### OK 200
@@ -1880,8 +1884,11 @@ Lista todas as informações de todas as reservas.
 \+ Números positivos
 Parâmetro| Tipo | Descrição
 ---------|------|----------
+status** | _String_ | Status do apartamento a ser buscado.
 offset   | _Int_+ | A partir da qual posição serão retornados os resultados.
 limit    | _Int_+ | Quantidade máxima de apartamentos a serem retornados.
+
+> _status_ só pode ser passado por um funcionário ou alguém com função superior e recebe _um_ dos seguintes valores: _livre_, _reservado_, _ocupado_, _indisponível_.
 
 > Para essa API, foi utilizado o sistema de paginação __offset__ e __limit__. Quando seus valores são suprimidos, eles assumem os valores padrões __0__ (offset) e __20__ (limit).
 
@@ -1889,7 +1896,7 @@ O exemplo abaixo é da URL de uma consulta __limpa__.
 `http://localhost:4000/reserves`  
 
 O exemplo abaixo é da URL de uma consulta com __Query String__.  
-`http://localhost:4000/reserves?&offset=1&limit=1`
+`http://localhost:4000/reserves?status=livre&offset=1&limit=1`
 
 #### Respostas
 ##### OK 200
