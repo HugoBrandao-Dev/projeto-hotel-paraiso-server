@@ -84,6 +84,8 @@ Cannot use import statement outside a module
 ```
 Foi necessário fazer um downgrade do Axios para uma versão compatível.
 
+* Implementar código da newsletter no BD, rota, controller, model e etc.
+
 ## Endpoints
 
 A maioria dos parâmetros são avaliados utilizando métodos da biblioteca [Validator.js](https://github.com/validatorjs/validator.js).
